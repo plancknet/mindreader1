@@ -138,20 +138,44 @@ const HeadPoseDetector = () => {
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
         const landmarks = results.faceLandmarks[0];
         
-        // Get nose tip (landmark 1)
+        // Calculate head rotation (yaw) using facial landmarks
+        // Using nose tip, left eye inner, right eye inner corners
         const noseTip = landmarks[1];
-        const noseX = noseTip.x * canvas.width;
-        const noseY = noseTip.y * canvas.height;
+        const leftEyeInner = landmarks[133];
+        const rightEyeInner = landmarks[362];
+        const leftMouth = landmarks[61];
+        const rightMouth = landmarks[291];
 
-        // Determine zone
+        // Calculate face center and width
+        const faceCenter = {
+          x: (leftEyeInner.x + rightEyeInner.x) / 2,
+          y: (leftEyeInner.y + rightEyeInner.y) / 2
+        };
+
+        const eyeDistance = Math.abs(rightEyeInner.x - leftEyeInner.x);
+        const mouthDistance = Math.abs(rightMouth.x - leftMouth.x);
+        
+        // Calculate horizontal offset from face center to nose
+        const noseOffset = noseTip.x - faceCenter.x;
+        
+        // Normalized rotation angle (-1 to 1, where -1 is full left, 1 is full right)
+        const rotationRatio = noseOffset / (eyeDistance * 0.5);
+        
+        // Determine zone based on rotation angle
         let zone: Zone = 'center';
-        if (noseX < leftZoneEnd) {
-          zone = 'right'; // Because video is mirrored
-        } else if (noseX > centerZoneEnd) {
-          zone = 'left'; // Because video is mirrored
+        const threshold = 0.3; // Rotation threshold
+        
+        if (rotationRatio < -threshold) {
+          zone = 'left'; // Head rotated to the left (looking left)
+        } else if (rotationRatio > threshold) {
+          zone = 'right'; // Head rotated to the right (looking right)
         }
 
         setCurrentZone(zone);
+
+        // Visual feedback - draw on canvas
+        const noseX = noseTip.x * canvas.width;
+        const noseY = noseTip.y * canvas.height;
 
         // Draw face outline
         ctx.strokeStyle = zone === 'left' ? '#fb923c' : zone === 'right' ? '#34d399' : '#60a5fa';
@@ -175,11 +199,31 @@ const HeadPoseDetector = () => {
         ctx.closePath();
         ctx.stroke();
 
-        // Draw nose indicator
+        // Draw rotation indicator
         ctx.fillStyle = zone === 'left' ? '#fb923c' : zone === 'right' ? '#34d399' : '#60a5fa';
         ctx.beginPath();
         ctx.arc(noseX, noseY, 8, 0, 2 * Math.PI);
         ctx.fill();
+
+        // Draw rotation angle visualization
+        const centerX = faceCenter.x * canvas.width;
+        const centerY = faceCenter.y * canvas.height;
+        
+        ctx.strokeStyle = zone === 'left' ? '#fb923c' : zone === 'right' ? '#34d399' : '#60a5fa';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(noseX, noseY);
+        ctx.stroke();
+
+        // Display rotation angle
+        ctx.font = 'bold 16px system-ui';
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        const angleText = `Rotação: ${(rotationRatio * 100).toFixed(0)}°`;
+        ctx.strokeText(angleText, 20, canvas.height - 30);
+        ctx.fillText(angleText, 20, canvas.height - 30);
 
         // Track time in zone
         if (zone !== 'center') {
@@ -231,10 +275,10 @@ const HeadPoseDetector = () => {
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Detector de Orientação de Cabeça
+            Detector de Rotação de Cabeça
           </h1>
           <p className="text-muted-foreground text-lg">
-            Mantenha sua cabeça por 3 segundos em um dos lados para detectar
+            Gire sua cabeça e mantenha por 3 segundos para um dos lados
           </p>
         </div>
 
