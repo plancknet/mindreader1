@@ -108,9 +108,9 @@ const HeadPoseDetector = () => {
       const startTimeMs = performance.now();
       const results = faceLandmarker.detectForVideo(video, startTimeMs);
 
-      // Draw zone dividers
-      const leftZoneEnd = canvas.width * 0.4;
-      const centerZoneEnd = canvas.width * 0.6;
+      // Draw zone dividers (Centro: 7%, Lados: 46.5% cada)
+      const leftZoneEnd = canvas.width * 0.465;
+      const centerZoneEnd = canvas.width * 0.535;
 
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.lineWidth = 2;
@@ -131,9 +131,9 @@ const HeadPoseDetector = () => {
       // Zone labels
       ctx.font = 'bold 20px system-ui';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.fillText('DIREITA', 20, 40);
-      ctx.fillText('CENTRO', leftZoneEnd + 20, 40);
-      ctx.fillText('ESQUERDA', centerZoneEnd + 20, 40);
+      ctx.fillText('DIREITA 46.5%', 20, 40);
+      ctx.fillText('CENTRO 7%', leftZoneEnd + 10, 40);
+      ctx.fillText('ESQUERDA 46.5%', centerZoneEnd + 20, 40);
 
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
         const landmarks = results.faceLandmarks[0];
@@ -163,7 +163,7 @@ const HeadPoseDetector = () => {
         
         // Determine zone based on rotation angle
         let zone: Zone = 'center';
-        const threshold = 0.3; // Rotation threshold
+        const threshold = 0.07; // 7% threshold - sai da zona central
         
         if (rotationRatio < -threshold) {
           zone = 'left'; // Head rotated to the left (looking left)
@@ -301,7 +301,7 @@ const HeadPoseDetector = () => {
         <div className="grid md:grid-cols-3 gap-6">
           <Card className={`p-6 transition-all ${currentZone === 'right' ? 'bg-zone-right/10 ring-2 ring-zone-right shadow-glow' : ''}`}>
             <div className="text-center space-y-2">
-              <div className="text-6xl font-bold text-zone-right">40%</div>
+              <div className="text-6xl font-bold text-zone-right">46.5%</div>
               <div className="text-xl font-semibold">Faixa Direita</div>
               {currentZone === 'right' && (
                 <div className="text-lg text-zone-right animate-pulse">
@@ -313,7 +313,7 @@ const HeadPoseDetector = () => {
 
           <Card className={`p-6 transition-all ${currentZone === 'center' ? 'bg-zone-center/10 ring-2 ring-zone-center shadow-glow' : ''}`}>
             <div className="text-center space-y-2">
-              <div className="text-6xl font-bold text-zone-center">20%</div>
+              <div className="text-6xl font-bold text-zone-center">7%</div>
               <div className="text-xl font-semibold">Faixa Central</div>
               {currentZone === 'center' && (
                 <div className="text-lg text-zone-center animate-pulse">
@@ -325,7 +325,7 @@ const HeadPoseDetector = () => {
 
           <Card className={`p-6 transition-all ${currentZone === 'left' ? 'bg-zone-left/10 ring-2 ring-zone-left shadow-glow' : ''}`}>
             <div className="text-center space-y-2">
-              <div className="text-6xl font-bold text-zone-left">40%</div>
+              <div className="text-6xl font-bold text-zone-left">46.5%</div>
               <div className="text-xl font-semibold">Faixa Esquerda</div>
               {currentZone === 'left' && (
                 <div className="text-lg text-zone-left animate-pulse">
