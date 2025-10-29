@@ -101,48 +101,45 @@ const GamePlay = () => {
     
     // Colors that can be used for detected side (with green/yellow)
     const detectedColors = [
-      'bg-green-500/20',
-      'bg-yellow-500/20',
-      'bg-lime-500/20',
-      'bg-emerald-500/20',
-      'bg-amber-500/20',
-      'bg-teal-500/20'
+      'bg-green-500/30',
+      'bg-yellow-500/30',
+      'bg-lime-500/30',
+      'bg-emerald-500/30',
+      'bg-amber-500/30',
+      'bg-teal-500/30'
     ];
     
     // Colors that can be used for non-detected side (no green/yellow)
     const nonDetectedColors = [
-      'bg-blue-500/20',
-      'bg-purple-500/20',
-      'bg-pink-500/20',
-      'bg-indigo-500/20',
-      'bg-cyan-500/20',
-      'bg-rose-500/20'
+      'bg-blue-500/30',
+      'bg-purple-500/30',
+      'bg-pink-500/30',
+      'bg-indigo-500/30',
+      'bg-cyan-500/30',
+      'bg-rose-500/30'
     ];
     
     // Determine which color pool to use based on detection
     let colorPool: string[];
-    let ringColor = '';
     
     if (currentSide === 'left' && isLeft) {
       colorPool = detectedColors;
-      ringColor = 'ring-4 ring-green-500';
     } else if (currentSide === 'right' && !isLeft) {
       colorPool = detectedColors;
-      ringColor = 'ring-4 ring-yellow-500';
     } else if (currentSide === 'left' && !isLeft) {
       colorPool = nonDetectedColors;
     } else if (currentSide === 'right' && isLeft) {
       colorPool = nonDetectedColors;
     } else {
-      // No side detected, alternate between pools based on position
-      colorPool = isLeft ? detectedColors : nonDetectedColors;
+      // No side detected, use balanced colors
+      colorPool = (isTop && isLeft) || (!isTop && !isLeft) ? detectedColors : nonDetectedColors;
     }
     
     // Calculate index based on rotation and quadrant position
     const quadrantIndex = isTop ? (isLeft ? 0 : 1) : (isLeft ? 2 : 3);
     const colorIndex = (colorRotation + quadrantIndex) % colorPool.length;
     
-    return `${colorPool[colorIndex]} ${ringColor}`;
+    return colorPool[colorIndex];
   };
 
   const progress = timer / 5 * 100;
