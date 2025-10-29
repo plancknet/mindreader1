@@ -60,8 +60,7 @@ const Result = () => {
 
         <div className="text-center text-sm text-muted-foreground space-y-2">
           <p>🎯 Como funciona?</p>
-          <p>Detectamos para qual lado você olha e eliminamos as outras opções</p>
-          <p>até sobrar apenas a palavra que você pensou!</p>
+          <p>Mistéééério!!!</p>
         </div>
       </div>
     </div>

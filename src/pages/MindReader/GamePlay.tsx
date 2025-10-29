@@ -260,9 +260,9 @@ const GamePlay = () => {
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
         <Card className="px-6 py-3 bg-background/90 backdrop-blur">
           <p className="text-sm text-muted-foreground text-center">
-            {currentSide === 'left' && '← Olhando para ESQUERDA'}
-            {currentSide === 'right' && 'Olhando para DIREITA →'}
-            {currentSide === 'center' && 'Olhe para o lado onde está sua palavra'}
+            {currentSide === 'left' && '...'}
+            {currentSide === 'right' && '...'}
+            {currentSide === 'center' && '...'}
           </p>
         </Card>
       </div>
