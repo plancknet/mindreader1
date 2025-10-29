@@ -1,0 +1,233 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Card } from '@/components/ui/card';
+import { themes } from '@/data/themes';
+import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
+import { Brain } from 'lucide-react';
+
+type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+interface QuadrantWords {
+  'top-left': string[];
+  'top-right': string[];
+  'bottom-left': string[];
+  'bottom-right': string[];
+}
+
+const GamePlay = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const themeId = searchParams.get('theme');
+  
+  const theme = themes.find(t => t.id === themeId);
+  const [words, setWords] = useState<string[]>([]);
+  const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
+  const [round, setRound] = useState(1);
+  const [isWaiting, setIsWaiting] = useState(true);
+
+  const { videoRef, currentSide, timer, resetDetection } = useHeadPoseDetection({
+    threshold: 0.07,
+    detectionTime: 5,
+    onSideDetected: handleSideDetected
+  });
+
+  const distributeWords = useCallback((wordList: string[]) => {
+    const shuffled = [...wordList].sort(() => Math.random() - 0.5);
+    const wordsPerQuadrant = Math.ceil(shuffled.length / 4);
+    
+    return {
+      'top-left': shuffled.slice(0, wordsPerQuadrant),
+      'top-right': shuffled.slice(wordsPerQuadrant, wordsPerQuadrant * 2),
+      'bottom-left': shuffled.slice(wordsPerQuadrant * 2, wordsPerQuadrant * 3),
+      'bottom-right': shuffled.slice(wordsPerQuadrant * 3)
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!theme) {
+      navigate('/select-theme');
+      return;
+    }
+
+    const initialWords = [...theme.words].sort(() => Math.random() - 0.5);
+    setWords(initialWords);
+    setQuadrantWords(distributeWords(initialWords));
+
+    setTimeout(() => setIsWaiting(false), 3000);
+  }, [theme, navigate, distributeWords]);
+
+  function handleSideDetected(side: 'left' | 'right') {
+    if (!quadrantWords || isWaiting) return;
+
+    let remainingWords: string[] = [];
+    
+    if (side === 'left') {
+      remainingWords = [...quadrantWords['top-left'], ...quadrantWords['bottom-left']];
+    } else {
+      remainingWords = [...quadrantWords['top-right'], ...quadrantWords['bottom-right']];
+    }
+
+    if (remainingWords.length === 1) {
+      navigate(`/result?word=${encodeURIComponent(remainingWords[0])}`);
+      return;
+    }
+
+    setWords(remainingWords);
+    setQuadrantWords(distributeWords(remainingWords));
+    setRound(prev => prev + 1);
+    setIsWaiting(true);
+    resetDetection();
+    
+    setTimeout(() => setIsWaiting(false), 2000);
+  }
+
+  if (!theme || !quadrantWords) {
+    return null;
+  }
+
+  const getQuadrantColor = (quadrant: Quadrant): string => {
+    const isLeft = quadrant.includes('left');
+    const isTop = quadrant.includes('top');
+    
+    if (currentSide === 'left' && isLeft) {
+      return 'bg-green-500/20 ring-4 ring-green-500';
+    }
+    if (currentSide === 'right' && !isLeft) {
+      return 'bg-yellow-500/20 ring-4 ring-yellow-500';
+    }
+    
+    if (isTop && isLeft) return 'bg-blue-500/10';
+    if (isTop && !isLeft) return 'bg-purple-500/10';
+    if (!isTop && isLeft) return 'bg-orange-500/10';
+    return 'bg-pink-500/10';
+  };
+
+  const progress = timer / 5 * 100;
+
+  return (
+    <div className="min-h-screen bg-background p-4 relative">
+      {/* Hidden camera */}
+      <video
+        ref={videoRef}
+        className="absolute opacity-0 pointer-events-none"
+        playsInline
+        muted
+      />
+
+      {/* Central Timer */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+        <div className="relative w-32 h-32">
+          <svg className="w-full h-full -rotate-90">
+            <circle
+              cx="64"
+              cy="64"
+              r="56"
+              stroke="currentColor"
+              strokeWidth="8"
+              fill="none"
+              className="text-muted"
+              opacity="0.2"
+            />
+            <circle
+              cx="64"
+              cy="64"
+              r="56"
+              stroke="currentColor"
+              strokeWidth="8"
+              fill="none"
+              className="text-primary transition-all duration-300"
+              strokeDasharray={`${2 * Math.PI * 56}`}
+              strokeDashoffset={`${2 * Math.PI * 56 * (1 - progress / 100)}`}
+              strokeLinecap="round"
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <Brain className="w-12 h-12 mx-auto text-primary mb-1" />
+              <div className="text-2xl font-bold">{Math.ceil(5 - timer)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Round indicator */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
+        <Card className="px-6 py-3">
+          <p className="text-sm font-semibold">Rodada {round} • {words.length} palavras</p>
+        </Card>
+      </div>
+
+      {/* Waiting overlay */}
+      {isWaiting && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 flex items-center justify-center">
+          <Card className="p-8 text-center space-y-4">
+            <Brain className="w-16 h-16 mx-auto text-primary animate-pulse" />
+            <p className="text-xl font-semibold">
+              {round === 1 ? 'Pense em uma palavra...' : 'Observe as novas posições...'}
+            </p>
+          </Card>
+        </div>
+      )}
+
+      {/* Quadrants Grid */}
+      <div className="h-screen grid grid-cols-2 gap-8 p-8">
+        {/* Top Left */}
+        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('top-left')}`}>
+          <div className="text-center space-y-3">
+            {quadrantWords['top-left'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Top Right */}
+        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('top-right')}`}>
+          <div className="text-center space-y-3">
+            {quadrantWords['top-right'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Bottom Left */}
+        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('bottom-left')}`}>
+          <div className="text-center space-y-3">
+            {quadrantWords['bottom-left'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Bottom Right */}
+        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('bottom-right')}`}>
+          <div className="text-center space-y-3">
+            {quadrantWords['bottom-right'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Instruction */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+        <Card className="px-6 py-3 bg-background/90 backdrop-blur">
+          <p className="text-sm text-muted-foreground text-center">
+            {currentSide === 'left' && '← Olhando para ESQUERDA'}
+            {currentSide === 'right' && 'Olhando para DIREITA →'}
+            {currentSide === 'center' && 'Olhe para o lado onde está sua palavra'}
+          </p>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default GamePlay;
