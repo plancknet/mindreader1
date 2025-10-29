@@ -34,7 +34,7 @@ const ConnectMind = () => {
             Leitor de Mentes
           </h1>
           <p className="text-muted-foreground text-xl">
-            Prepare-se para ter sua mente lida através da câmera
+            Prepare-se para ter sua mente lida pelo seu aparelho
           </p>
         </div>
 
