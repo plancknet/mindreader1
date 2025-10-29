@@ -44,7 +44,7 @@ const Result = () => {
 
         <div className="text-center space-y-4">
           <p className="text-lg text-muted-foreground">
-            ✨ Magia? Não! Ciência da computação e visão computacional! ✨
+            ✨ Magia? Não! Ciência da computação!✨
           </p>
           
           <div className="flex gap-4 justify-center">
