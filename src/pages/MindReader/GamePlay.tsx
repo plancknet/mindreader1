@@ -155,7 +155,7 @@ const GamePlay = () => {
       />
 
       {/* Central Timer */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
         <div className="relative w-32 h-32">
           <svg className="w-full h-full -rotate-90">
             <circle
@@ -182,7 +182,7 @@ const GamePlay = () => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
+            <div className="text-center bg-background/80 rounded-full p-4 backdrop-blur-sm">
               <Brain className="w-12 h-12 mx-auto text-primary mb-1" />
               <div className="text-2xl font-bold">{Math.ceil(5 - timer)}</div>
             </div>
@@ -212,10 +212,10 @@ const GamePlay = () => {
       {/* Quadrants Grid */}
       <div className="h-screen grid grid-cols-2 gap-8 p-8">
         {/* Top Left */}
-        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('top-left')}`}>
-          <div className="text-center space-y-3">
+        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('top-left')}`}>
+          <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-left'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold">
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -223,10 +223,10 @@ const GamePlay = () => {
         </Card>
 
         {/* Top Right */}
-        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('top-right')}`}>
-          <div className="text-center space-y-3">
+        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('top-right')}`}>
+          <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-right'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold">
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -234,10 +234,10 @@ const GamePlay = () => {
         </Card>
 
         {/* Bottom Left */}
-        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('bottom-left')}`}>
-          <div className="text-center space-y-3">
+        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('bottom-left')}`}>
+          <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-left'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold">
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -245,10 +245,10 @@ const GamePlay = () => {
         </Card>
 
         {/* Bottom Right */}
-        <Card className={`flex items-center justify-center p-8 transition-all ${getQuadrantColor('bottom-right')}`}>
-          <div className="text-center space-y-3">
+        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('bottom-right')}`}>
+          <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-right'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold">
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
