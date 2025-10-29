@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
 import { AlertCircle, Camera } from 'lucide-react';
 
 type Zone = 'left' | 'center' | 'right' | null;
@@ -16,10 +17,14 @@ const HeadPoseDetector = () => {
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [isCountdownFinished, setIsCountdownFinished] = useState(false);
 
   const zoneStartTimeRef = useRef<number | null>(null);
   const lastZoneRef = useRef<Zone>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const focusProgress = Math.min(100, Math.max(0, (timer / 3) * 100));
+  const countdownDisplay = countdown !== null ? Math.max(0, Math.ceil(countdown)) : null;
 
   useEffect(() => {
     const initializeFaceLandmarker = async () => {
@@ -81,6 +86,27 @@ const HeadPoseDetector = () => {
       }
     };
   }, [isModelLoading, faceLandmarker]);
+
+  useEffect(() => {
+    if (!cameraActive) return;
+
+    setIsCountdownFinished(false);
+    setCountdown(3);
+
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev === null) return prev;
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsCountdownFinished(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [cameraActive]);
 
   useEffect(() => {
     if (!faceLandmarker || !videoRef.current || !canvasRef.current || !cameraActive) return;
@@ -172,6 +198,17 @@ const HeadPoseDetector = () => {
         }
 
         setCurrentZone(zone);
+
+        if (!isCountdownFinished) {
+          zoneStartTimeRef.current = null;
+          lastZoneRef.current = null;
+          setTimer(0);
+          if (detectedSide !== null) {
+            setDetectedSide(null);
+          }
+          animationFrameRef.current = requestAnimationFrame(detectFace);
+          return;
+        }
 
         // Visual feedback - draw on canvas
         const noseX = noseTip.x * canvas.width;
@@ -268,7 +305,7 @@ const HeadPoseDetector = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [faceLandmarker, cameraActive, detectedSide]);
+  }, [faceLandmarker, cameraActive, detectedSide, isCountdownFinished]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -310,7 +347,6 @@ const HeadPoseDetector = () => {
               )}
             </div>
           </Card>
-
           <Card className={`p-6 transition-all ${currentZone === 'center' ? 'bg-zone-center/10 ring-2 ring-zone-center shadow-glow' : ''}`}>
             <div className="text-center space-y-2">
               <div className="text-6xl font-bold text-zone-center">7%</div>
@@ -322,7 +358,6 @@ const HeadPoseDetector = () => {
               )}
             </div>
           </Card>
-
           <Card className={`p-6 transition-all ${currentZone === 'left' ? 'bg-zone-left/10 ring-2 ring-zone-left shadow-glow' : ''}`}>
             <div className="text-center space-y-2">
               <div className="text-6xl font-bold text-zone-left">46.5%</div>
@@ -348,20 +383,31 @@ const HeadPoseDetector = () => {
               ref={canvasRef}
               className="absolute inset-0 w-full h-full"
             />
+            {!isCountdownFinished && countdownDisplay !== null && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white">
+                <span className="text-sm tracking-[0.4em] uppercase text-white/70">Deteccao inicia em</span>
+                <span className="mt-4 text-6xl font-bold animate-pulse">
+                  {countdownDisplay === 0 ? 'Vai!' : countdownDisplay}
+                </span>
+              </div>
+            )}
           </div>
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="p-6">
-            <div className="text-center space-y-2">
-              <div className="text-muted-foreground">Timer</div>
-              <div className={`text-5xl font-bold transition-colors ${
-                timer >= 2.5 ? 'text-alert' : timer >= 1.5 ? 'text-warning' : 'text-primary'
-              }`}>
-                {timer.toFixed(1)}s
+            <div className="space-y-4">
+              <div className="text-center space-y-2">
+                <div className="text-muted-foreground uppercase tracking-wide text-xs">Tempo de foco</div>
+                <div className={`text-5xl font-bold transition-colors ${
+                  timer >= 2.5 ? 'text-alert' : timer >= 1.5 ? 'text-warning' : 'text-primary'
+                }`}>
+                  {timer.toFixed(1)}s
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {timer >= 3 ? '✓ 3 segundos atingidos!' : 'Aguardando 3 segundos...'}
+              <Progress value={focusProgress} className="h-3 transition-all duration-500" />
+              <div className="text-sm text-muted-foreground text-center">
+                {timer >= 3 ? '3 segundos atingidos!' : 'Mantenha a posicao por 3 segundos'}
               </div>
             </div>
           </Card>
@@ -388,3 +434,5 @@ const HeadPoseDetector = () => {
 };
 
 export default HeadPoseDetector;
+
+
