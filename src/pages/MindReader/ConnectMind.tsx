@@ -70,7 +70,7 @@ const ConnectMind = () => {
           </div>
         </Card>
 
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-col items-center gap-4">
           <Button
             size="lg"
             onClick={handleConnect}
