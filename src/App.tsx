@@ -9,6 +9,7 @@ import ConnectMind from "./pages/MindReader/ConnectMind";
 import SelectTheme from "./pages/MindReader/SelectTheme";
 import GamePlay from "./pages/MindReader/GamePlay";
 import Result from "./pages/MindReader/Result";
+import Instructions from "./pages/MindReader/Instructions";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ConnectMind />} />
+          <Route path="/instructions" element={<Instructions />} />
           <Route path="/select-theme" element={<SelectTheme />} />
           <Route path="/gameplay" element={<GamePlay />} />
           <Route path="/result" element={<Result />} />
