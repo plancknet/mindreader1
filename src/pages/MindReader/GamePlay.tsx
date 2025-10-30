@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { themes } from '@/data/themes';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { Brain } from 'lucide-react';
@@ -26,7 +25,6 @@ const GamePlay = () => {
   const [round, setRound] = useState(1);
   const [isWaiting, setIsWaiting] = useState(true);
   const [colorRotation, setColorRotation] = useState(0);
-  const [isDetectionStarted, setIsDetectionStarted] = useState(false);
 
   const { videoRef, currentSide, timer, resetDetection } = useHeadPoseDetection({
     threshold: 0.07,
@@ -69,7 +67,7 @@ const GamePlay = () => {
   }, []);
 
   function handleSideDetected(side: 'left' | 'right') {
-    if (!quadrantWords || isWaiting || !isDetectionStarted) return;
+    if (!quadrantWords || isWaiting) return;
 
     let remainingWords: string[] = [];
     
@@ -88,16 +86,10 @@ const GamePlay = () => {
     setQuadrantWords(distributeWords(remainingWords));
     setRound(prev => prev + 1);
     setIsWaiting(true);
-    setIsDetectionStarted(false);
     resetDetection();
     
     setTimeout(() => setIsWaiting(false), 2000);
   }
-
-  const handleStartDetection = () => {
-    setIsDetectionStarted(true);
-    setIsWaiting(false);
-  };
 
   if (!theme || !quadrantWords) {
     return null;
@@ -213,12 +205,6 @@ const GamePlay = () => {
             <p className="text-xl font-semibold">
               {round === 1 ? 'Pense em uma palavra...' : 'Observe as novas posições...'}
             </p>
-            {words.length === 16 && !isDetectionStarted && (
-              <Button size="lg" onClick={handleStartDetection} className="mt-4">
-                <Brain className="mr-2 h-5 w-5" />
-                Iniciar
-              </Button>
-            )}
           </Card>
         </div>
       )}
