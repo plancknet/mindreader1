@@ -40,8 +40,8 @@ const Instructions = () => {
                 <h3 className="text-xl font-semibold">Detecção por Movimento de Cabeça</h3>
                 <p className="text-muted-foreground">
                   O aplicativo utiliza a câmera para detectar os movimentos da sua cabeça em tempo real. 
-                  Através de tecnologia de reconhecimento facial, conseguimos identificar quando você 
-                  olha para a esquerda ou para a direita.
+                  Através de tecnologia de reconhecimento facial, conseguimos identificar para qual  
+                  lado você girou levemente a cabeça. Para esquerda ou para a direita.
                 </p>
               </div>
             </div>
@@ -55,9 +55,8 @@ const Instructions = () => {
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold">Escolha Mental</h3>
                 <p className="text-muted-foreground">
-                  Quando você pensa em uma palavra específica, naturalmente seu olhar e cabeça tendem 
-                  a se direcionar para onde ela está. O sistema detecta esse movimento sutil e 
-                  interpreta qual lado você está focando.
+                  Gire DISCRETAMENTE a cabeça para um lado ou para outro. É IMPORTANTE SER DICRETO, para que 
+                  ninguém descruba esse segredo.
                 </p>
               </div>
             </div>
@@ -72,6 +71,9 @@ const Instructions = () => {
                 <h3 className="text-xl font-semibold">Processo de Eliminação</h3>
                 <p className="text-muted-foreground">
                   A cada rodada, metade das palavras são eliminadas baseadas na direção detectada. 
+                  Seu objetivo é deixar a cabeça apontada para o LADO OPOSTO onde a palavra escolhida está.
+                  O lado em que sua palvra está ficará com cores VERDE ou AMARELA. 
+                  A próxima etapa acotecerá quando você ficar com a VERDE ou AMARELA por 5 segundos em um lado.
                   Esse processo se repete até restar apenas uma palavra - aquela em que você estava pensando!
                 </p>
               </div>
@@ -92,7 +94,7 @@ const Instructions = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Olhe naturalmente para o lado onde sua palavra escolhida está</span>
+                    <span>Olhe naturalmente para o lado OPOSTO onde sua palavra escolhida está</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -101,6 +103,10 @@ const Instructions = () => {
                   <li className="flex items-start gap-2">
                     <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Evite movimentos bruscos durante a detecção</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>E o principal. Seja DISCRETO, faça MOVIMENTOS SUAVES.</span>
                   </li>
                 </ul>
               </div>
