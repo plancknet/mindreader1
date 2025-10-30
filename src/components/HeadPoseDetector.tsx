@@ -3,6 +3,7 @@ import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { AlertCircle, Camera } from 'lucide-react';
 
 type Zone = 'left' | 'center' | 'right' | null;
@@ -17,6 +18,7 @@ const HeadPoseDetector = () => {
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [isDetectionStarted, setIsDetectionStarted] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isCountdownFinished, setIsCountdownFinished] = useState(false);
 
@@ -25,6 +27,18 @@ const HeadPoseDetector = () => {
   const animationFrameRef = useRef<number | null>(null);
   const focusProgress = Math.min(100, Math.max(0, (timer / 3) * 100));
   const countdownDisplay = countdown !== null ? Math.max(0, Math.ceil(countdown)) : null;
+
+  const handleStartDetection = () => {
+    if (isModelLoading || isDetectionStarted || !faceLandmarker) return;
+    setError(null);
+    setIsDetectionStarted(true);
+    setDetectedSide(null);
+    setTimer(0);
+    setCountdown(null);
+    setIsCountdownFinished(false);
+    zoneStartTimeRef.current = null;
+    lastZoneRef.current = null;
+  };
 
   useEffect(() => {
     const initializeFaceLandmarker = async () => {
@@ -69,10 +83,12 @@ const HeadPoseDetector = () => {
       } catch (err) {
         console.error('Error accessing camera:', err);
         setError('Não foi possível acessar a câmera');
+        setCameraActive(false);
+        setIsDetectionStarted(false);
       }
     };
 
-    if (!isModelLoading && faceLandmarker) {
+    if (!isModelLoading && faceLandmarker && isDetectionStarted) {
       startCamera();
     }
 
@@ -85,10 +101,10 @@ const HeadPoseDetector = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isModelLoading, faceLandmarker]);
+  }, [isModelLoading, faceLandmarker, isDetectionStarted]);
 
   useEffect(() => {
-    if (!cameraActive) return;
+    if (!cameraActive || !isDetectionStarted) return;
 
     setIsCountdownFinished(false);
     setCountdown(3);
@@ -106,10 +122,10 @@ const HeadPoseDetector = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cameraActive]);
+  }, [cameraActive, isDetectionStarted]);
 
   useEffect(() => {
-    if (!faceLandmarker || !videoRef.current || !canvasRef.current || !cameraActive) return;
+    if (!faceLandmarker || !videoRef.current || !canvasRef.current || !cameraActive || !isDetectionStarted) return;
 
     const detectFace = () => {
       if (!videoRef.current || !canvasRef.current || !faceLandmarker) return;
@@ -305,7 +321,7 @@ const HeadPoseDetector = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [faceLandmarker, cameraActive, detectedSide, isCountdownFinished]);
+  }, [faceLandmarker, cameraActive, detectedSide, isCountdownFinished, isDetectionStarted]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -315,7 +331,7 @@ const HeadPoseDetector = () => {
             Detector de Rotação de Cabeça
           </h1>
           <p className="text-muted-foreground text-lg">
-            Gire sua cabeça e mantenha por 3 segundos para um dos lados
+            Clique em &quot;Iniciar detecao&quot;, gire sua cabeca e mantenha por 3 segundos para um dos lados
           </p>
         </div>
 
@@ -383,7 +399,22 @@ const HeadPoseDetector = () => {
               ref={canvasRef}
               className="absolute inset-0 w-full h-full"
             />
-            {!isCountdownFinished && countdownDisplay !== null && (
+            {!isDetectionStarted && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-black/70 text-white">
+                <div className="text-center space-y-2">
+                  <span className="text-lg font-semibold">Pronto para comecar?</span>
+                  <span className="text-sm text-white/70">Clique em &quot;Iniciar detecao&quot; para habilitar a camera.</span>
+                </div>
+                <Button
+                  size="lg"
+                  onClick={handleStartDetection}
+                  disabled={isModelLoading || !faceLandmarker}
+                >
+                  {isModelLoading ? 'Carregando modelo...' : 'Iniciar detecao'}
+                </Button>
+              </div>
+            )}
+            {isDetectionStarted && !isCountdownFinished && countdownDisplay !== null && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white">
                 <span className="text-sm tracking-[0.4em] uppercase text-white/70">Deteccao inicia em</span>
                 <span className="mt-4 text-6xl font-bold animate-pulse">
