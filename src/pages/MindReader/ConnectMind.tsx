@@ -35,9 +35,6 @@ const ConnectMind = () => {
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             Leitor de Mentes
           </h1>
-          <p className="text-muted-foreground text-xl">
-            Prepare-se para ter sua mente lida pelo seu aparelho
-          </p>
         </div>
 
         {error && (
@@ -91,12 +88,6 @@ const ConnectMind = () => {
             <BookOpen className="mr-2 h-6 w-6" />
             Instruções
           </Button>
-        </div>
-
-        <div className="text-center text-sm text-muted-foreground space-y-2">
-          <p>✓ Posicione seu rosto no centro da câmera</p>
-          <p>✓ Certifique-se de estar em um ambiente bem iluminado</p>
-          <p>✓ Mantenha a cabeça visível durante todo o processo</p>
         </div>
       </div>
     </div>
