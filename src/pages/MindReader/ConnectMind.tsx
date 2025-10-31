@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Camera, Brain, BookOpen } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
+import { InstallPWA } from '@/components/InstallPWA';
 
 const ConnectMind = () => {
   const navigate = useNavigate();
@@ -27,8 +28,9 @@ const ConnectMind = () => {
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-8">
         <div className="text-center space-y-4">
-          <div className="flex justify-center">
+          <div className="flex justify-center items-center gap-4">
             <Brain className="w-20 h-20 text-primary animate-pulse" />
+            <InstallPWA />
           </div>
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             Leitor de Mentes
