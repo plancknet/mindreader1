@@ -42,28 +42,28 @@
   "screenshots": [
     {
       "src": "/screenshots/screenshot-1.png",
-      "sizes": "512x1024",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Tela inicial do Leitor de Mente"
     },
     {
       "src": "/screenshots/screenshot-2.png",
-      "sizes": "512x1024",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Seleção de tema"
     },
     {
       "src": "/screenshots/screenshot-3.png",
-      "sizes": "512x1024",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Gameplay com detecção facial"
+      "label": "Gameplay"
     },
     {
       "src": "/screenshots/screenshot-4.png",
-      "sizes": "512x1024",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Resultado revelado"
