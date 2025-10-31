@@ -25,14 +25,14 @@ const ConnectMind = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
-      <div className="max-w-4xl w-full space-y-8">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center items-center gap-4">
-            <Brain className="w-20 h-20 text-primary animate-pulse" />
+    <div className="min-h-screen bg-background p-2 md:p-8 flex items-center justify-center">
+      <div className="max-w-4xl w-full space-y-3 md:space-y-8">
+        <div className="text-center space-y-2 md:space-y-4">
+          <div className="flex justify-center items-center gap-2 md:gap-4">
+            <Brain className="w-12 h-12 md:w-20 md:h-20 text-primary animate-pulse" />
             <InstallPWA />
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             Leitor de Mentes
           </h1>
         </div>
@@ -45,15 +45,15 @@ const ConnectMind = () => {
         )}
 
         {isModelLoading && (
-          <Card className="p-8 text-center">
-            <div className="space-y-4">
-              <Camera className="w-16 h-16 mx-auto animate-pulse text-primary" />
-              <p className="text-lg text-muted-foreground">Inicializando conexão mental...</p>
+          <Card className="p-4 md:p-8 text-center">
+            <div className="space-y-2 md:space-y-4">
+              <Camera className="w-12 h-12 md:w-16 md:h-16 mx-auto animate-pulse text-primary" />
+              <p className="text-sm md:text-lg text-muted-foreground">Inicializando conexão mental...</p>
             </div>
           </Card>
         )}
 
-        <Card className="p-6">
+        <Card className="p-3 md:p-6">
           <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
             <video
               ref={videoRef}
@@ -63,29 +63,29 @@ const ConnectMind = () => {
             />
             {!cameraActive && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white text-lg">Aguardando câmera...</p>
+                <p className="text-white text-sm md:text-lg">Aguardando câmera...</p>
               </div>
             )}
           </div>
         </Card>
 
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-2 md:gap-4">
           <Button
             size="lg"
             onClick={handleConnect}
             disabled={!cameraActive || isModelLoading || isConnecting}
-            className="text-xl px-8 py-6"
+            className="text-base md:text-xl px-6 py-4 md:px-8 md:py-6 w-full md:w-auto"
           >
-            <Brain className="mr-2 h-6 w-6" />
+            <Brain className="mr-2 h-5 w-5 md:h-6 md:w-6" />
             Conectar a mente
           </Button>
           <Button
             size="lg"
             variant="outline"
             onClick={() => navigate('/instructions')}
-            className="text-xl px-8 py-6"
+            className="text-base md:text-xl px-6 py-4 md:px-8 md:py-6 w-full md:w-auto"
           >
-            <BookOpen className="mr-2 h-6 w-6" />
+            <BookOpen className="mr-2 h-5 w-5 md:h-6 md:w-6" />
             Instruções
           </Button>
         </div>
