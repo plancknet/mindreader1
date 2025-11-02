@@ -14,6 +14,14 @@ interface QuadrantWords {
   'bottom-right': string[];
 }
 
+interface ClosestWordResult {
+  word: string;
+  normalizedWord: string;
+  distance: number;
+}
+
+const LOW_SIMILARITY_THRESHOLD = 0.45;
+
 const normalizeForComparison = (value: string) =>
   value
     .normalize('NFD')
@@ -53,39 +61,42 @@ const calculateLevenshteinDistance = (a: string, b: string) => {
   return matrix[a.length][b.length];
 };
 
-const findClosestWord = (input: string, candidates: string[]): string | null => {
+const findClosestWord = (input: string, candidates: string[]): ClosestWordResult | null => {
   if (!input || !candidates.length) {
     return null;
   }
 
-  let closestWord: string | null = null;
-  let smallestDistance = Number.POSITIVE_INFINITY;
-  let normalizedClosest = '';
+  let closest: ClosestWordResult | null = null;
 
   candidates.forEach(candidate => {
     const normalizedCandidate = normalizeForComparison(candidate);
     const distance = calculateLevenshteinDistance(input, normalizedCandidate);
 
-    if (distance < smallestDistance) {
-      smallestDistance = distance;
-      closestWord = candidate;
-      normalizedClosest = normalizedCandidate;
+    if (!closest || distance < closest.distance) {
+      closest = {
+        word: candidate,
+        normalizedWord: normalizedCandidate,
+        distance
+      };
       return;
     }
 
-    if (distance === smallestDistance && closestWord) {
+    if (distance === closest.distance && closest) {
       if (
-        normalizedCandidate.length < normalizedClosest.length ||
-        (normalizedCandidate.length === normalizedClosest.length &&
-          normalizedCandidate < normalizedClosest)
+        normalizedCandidate.length < closest.normalizedWord.length ||
+        (normalizedCandidate.length === closest.normalizedWord.length &&
+          normalizedCandidate < closest.normalizedWord)
       ) {
-        closestWord = candidate;
-        normalizedClosest = normalizedCandidate;
+        closest = {
+          word: candidate,
+          normalizedWord: normalizedCandidate,
+          distance
+        };
       }
     }
   });
 
-  return closestWord;
+  return closest;
 };
 
 const GamePlay = () => {
@@ -95,13 +106,46 @@ const GamePlay = () => {
   const userWord = searchParams.get('userWord');
   
   const theme = themes.find(t => t.id === themeId);
-  const normalizedInput = (userWord ?? '').trim();
-  const comparableInput = normalizedInput ? normalizeForComparison(normalizedInput) : '';
+  const trimmedInput = (userWord ?? '').trim();
+  const comparableInput = trimmedInput ? normalizeForComparison(trimmedInput) : '';
   const shouldUseTypedWord = comparableInput !== '' && comparableInput !== 'INICIAR';
-  const targetWord = useMemo(
+  const closestWordResult = useMemo(
     () => (theme && shouldUseTypedWord ? findClosestWord(comparableInput, theme.words) : null),
     [theme, shouldUseTypedWord, comparableInput]
   );
+  const hasLowSimilarity = useMemo(() => {
+    if (!shouldUseTypedWord) {
+      return false;
+    }
+    if (!closestWordResult) {
+      return true;
+    }
+
+    const referenceLength = Math.max(
+      comparableInput.length,
+      closestWordResult.normalizedWord.length
+    );
+
+    if (referenceLength === 0) {
+      return false;
+    }
+
+    const distanceRatio = closestWordResult.distance / referenceLength;
+    return distanceRatio > LOW_SIMILARITY_THRESHOLD;
+  }, [shouldUseTypedWord, closestWordResult, comparableInput]);
+
+  const targetWord = useMemo(() => {
+    if (!theme || !shouldUseTypedWord) {
+      return null;
+    }
+
+    if (hasLowSimilarity) {
+      return trimmedInput;
+    }
+
+    return closestWordResult?.word ?? trimmedInput;
+  }, [theme, shouldUseTypedWord, hasLowSimilarity, closestWordResult, trimmedInput]);
+
   const trickMode = !!targetWord;
   const [words, setWords] = useState<string[]>([]);
   const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
@@ -148,6 +192,10 @@ const GamePlay = () => {
           word => normalizeForComparison(word) !== normalizedTarget
         )
       ];
+
+      if (theme && initialWords.length > theme.words.length) {
+        initialWords = initialWords.slice(0, theme.words.length);
+      }
     }
     
     setWords(initialWords);
