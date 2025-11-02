@@ -9,10 +9,8 @@ const StartPrompt = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
-  
-  const [displayText, setDisplayText] = useState('');
-  const [actualInput, setActualInput] = useState('');
-  const [pendingWord, setPendingWord] = useState<string | null>(null);
+
+  const [typedWord, setTypedWord] = useState('');
   const targetWord = 'INICIAR';
 
   useEffect(() => {
@@ -21,40 +19,29 @@ const StartPrompt = () => {
     }
   }, [themeId, navigate]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newChar = e.target.value.slice(-1);
-    
-    if (!newChar) {
-      // Backspace
-      setActualInput(prev => prev.slice(0, -1));
-      setDisplayText(prev => prev.slice(0, -1));
-      setPendingWord(null);
-      return;
-    }
-
-    const currentLength = actualInput.length;
-    
-    if (currentLength < targetWord.length) {
-      const nextActualInput = actualInput + newChar;
-      const nextDisplayChar = targetWord[currentLength];
-      setDisplayText(prev => prev + nextDisplayChar);
-      setActualInput(nextActualInput);
-      setPendingWord(nextActualInput.length === targetWord.length ? nextActualInput : null);
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTypedWord(event.target.value.toUpperCase());
   };
 
   const handleSubmit = () => {
-    if (!themeId || !pendingWord) {
+    if (!themeId) {
       return;
     }
 
-    const normalizedWord = pendingWord.toUpperCase();
-    if (normalizedWord === targetWord) {
-      navigate(`/gameplay?theme=${themeId}`);
-    } else {
-      navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(pendingWord)}`);
+    const finalWord = typedWord.trim();
+    if (!finalWord) {
+      return;
     }
+
+    if (finalWord === targetWord) {
+      navigate(`/gameplay?theme=${themeId}`);
+      return;
+    }
+
+    navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(finalWord)}`);
   };
+
+  const trimmedLength = typedWord.trim().length;
 
   return (
     <div className="min-h-screen bg-background p-4 flex items-center justify-center">
@@ -64,7 +51,7 @@ const StartPrompt = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Vamos começar!
+            Vamos comecar!
           </h1>
           <p className="text-muted-foreground text-lg">
             Digite a palavra abaixo para iniciar o jogo
@@ -78,21 +65,20 @@ const StartPrompt = () => {
             </label>
             <Input
               type="text"
-              value={displayText}
+              value={typedWord}
               onChange={handleInputChange}
               className="text-center text-2xl font-bold tracking-widest uppercase"
               placeholder=""
               autoFocus
-              maxLength={targetWord.length}
             />
             <p className="text-xs text-muted-foreground text-center">
-              {displayText.length}/{targetWord.length} letras
+              {trimmedLength} letra{trimmedLength === 1 ? '' : 's'}
             </p>
             <Button
               type="button"
               className="w-full text-lg font-semibold"
               onClick={handleSubmit}
-              disabled={!pendingWord}
+              disabled={!trimmedLength}
             >
               Enviar
             </Button>
@@ -101,7 +87,7 @@ const StartPrompt = () => {
 
         <div className="text-center space-y-2">
           <p className="text-muted-foreground text-sm">
-            💡 Dica: Você pode digitar qualquer palavra
+            Dica: Voce pode digitar qualquer palavra
           </p>
         </div>
       </div>
