@@ -141,7 +141,13 @@ const GamePlay = () => {
     
     // If trick mode, keep the chosen target word highlighted
     if (trickMode && targetWord) {
-      initialWords[0] = targetWord;
+      const normalizedTarget = normalizeForComparison(targetWord);
+      initialWords = [
+        targetWord,
+        ...initialWords.filter(
+          word => normalizeForComparison(word) !== normalizedTarget
+        )
+      ];
     }
     
     setWords(initialWords);
