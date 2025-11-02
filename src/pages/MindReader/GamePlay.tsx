@@ -28,6 +28,7 @@ const GamePlay = () => {
   const [colorRotation, setColorRotation] = useState(0);
   const [trickMode] = useState(!!userWord);
   const [targetWord] = useState(userWord || null);
+  const [eliminatingSide, setEliminatingSide] = useState<'left' | 'right' | null>(null);
 
   // Random detection time for trick mode (between 3-7 seconds)
   const [detectionTime] = useState(() => 
@@ -90,26 +91,38 @@ const GamePlay = () => {
         // Keep words from the quadrant with target word
         const newWords = distributed[quadrantWithTarget];
 
+        // Determine which side to eliminate (opposite of target)
+        const sideToEliminate: 'left' | 'right' = 
+          quadrantWithTarget.includes('left') ? 'right' : 'left';
+
         if (newWords.length === 1) {
           setTimeout(() => {
-            navigate(`/result?word=${encodeURIComponent(targetWord)}`);
-          }, 3000 + Math.random() * 4000 + 3000);
+            setEliminatingSide(sideToEliminate);
+            setTimeout(() => {
+              navigate(`/result?word=${encodeURIComponent(targetWord)}`);
+            }, 2000);
+          }, 3000 + Math.random() * 4000);
           return;
         }
 
         setTimeout(() => {
-          currentWords = newWords;
-          currentRound++;
-          setWords(currentWords);
-          setQuadrantWords(distributeWords(currentWords));
-          setRound(currentRound);
-          setIsWaiting(true);
+          setEliminatingSide(sideToEliminate);
           
           setTimeout(() => {
-            setIsWaiting(false);
-            eliminateRound();
+            currentWords = newWords;
+            currentRound++;
+            setWords(currentWords);
+            setQuadrantWords(distributeWords(currentWords));
+            setRound(currentRound);
+            setIsWaiting(true);
+            setEliminatingSide(null);
+            
+            setTimeout(() => {
+              setIsWaiting(false);
+              eliminateRound();
+            }, 2000);
           }, 2000);
-        }, 3000 + Math.random() * 4000 + 3000);
+        }, 3000 + Math.random() * 4000);
       };
 
       setTimeout(() => {
@@ -130,6 +143,8 @@ const GamePlay = () => {
   function handleSideDetected(side: 'left' | 'right') {
     if (!quadrantWords || isWaiting) return;
 
+    const opposingSide = side === 'left' ? 'right' : 'left';
+    
     let remainingWords: string[] = [];
     
     if (side === 'left') {
@@ -138,23 +153,41 @@ const GamePlay = () => {
       remainingWords = [...quadrantWords['top-right'], ...quadrantWords['bottom-right']];
     }
 
-    if (remainingWords.length === 1) {
-      navigate(`/result?word=${encodeURIComponent(remainingWords[0])}`);
-      return;
-    }
+    // Show elimination animation
+    setEliminatingSide(opposingSide);
 
-    setWords(remainingWords);
-    setQuadrantWords(distributeWords(remainingWords));
-    setRound(prev => prev + 1);
-    setIsWaiting(true);
-    resetDetection();
-    
-    setTimeout(() => setIsWaiting(false), 2000);
+    setTimeout(() => {
+      if (remainingWords.length === 1) {
+        navigate(`/result?word=${encodeURIComponent(remainingWords[0])}`);
+        return;
+      }
+
+      setWords(remainingWords);
+      setQuadrantWords(distributeWords(remainingWords));
+      setRound(prev => prev + 1);
+      setIsWaiting(true);
+      setEliminatingSide(null);
+      resetDetection();
+      
+      setTimeout(() => setIsWaiting(false), 2000);
+    }, 2000);
   }
 
   if (!theme || !quadrantWords) {
     return null;
   }
+
+  const getQuadrantOpacity = (quadrant: Quadrant): string => {
+    const isLeft = quadrant.includes('left');
+    
+    if (eliminatingSide === 'left' && isLeft) {
+      return 'opacity-30 scale-95';
+    }
+    if (eliminatingSide === 'right' && !isLeft) {
+      return 'opacity-30 scale-95';
+    }
+    return 'opacity-100 scale-100';
+  };
 
   const getQuadrantColor = (quadrant: Quadrant): string => {
     const isLeft = quadrant.includes('left');
@@ -259,10 +292,22 @@ const GamePlay = () => {
         </Card>
       </div>
 
-      {/* Waiting overlay */}
-      {isWaiting && (
+      {/* Elimination overlay */}
+      {eliminatingSide && !isWaiting && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 flex items-center justify-center">
-          <Card className="p-8 text-center space-y-4">
+          <Card className="p-8 text-center space-y-4 animate-scale-in">
+            <Brain className="w-16 h-16 mx-auto text-primary animate-pulse" />
+            <p className="text-xl font-semibold">
+              Eliminando lado {eliminatingSide === 'left' ? 'esquerdo' : 'direito'}...
+            </p>
+          </Card>
+        </div>
+      )}
+
+      {/* Waiting overlay */}
+      {isWaiting && !eliminatingSide && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 flex items-center justify-center">
+          <Card className="p-8 text-center space-y-4 animate-fade-in">
             <Brain className="w-16 h-16 mx-auto text-primary animate-pulse" />
             <p className="text-xl font-semibold">
               {round === 1 ? 'Pense em uma palavra...' : 'Observe as novas posições...'}
@@ -274,7 +319,7 @@ const GamePlay = () => {
       {/* Quadrants Grid */}
       <div className="h-screen grid grid-cols-2 gap-8 p-8">
         {/* Top Left */}
-        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('top-left')}`}>
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-left')} ${getQuadrantOpacity('top-left')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-left'].map((word, idx) => (
               <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
@@ -285,7 +330,7 @@ const GamePlay = () => {
         </Card>
 
         {/* Top Right */}
-        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('top-right')}`}>
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-right')} ${getQuadrantOpacity('top-right')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-right'].map((word, idx) => (
               <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
@@ -296,7 +341,7 @@ const GamePlay = () => {
         </Card>
 
         {/* Bottom Left */}
-        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('bottom-left')}`}>
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-left')} ${getQuadrantOpacity('bottom-left')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-left'].map((word, idx) => (
               <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
@@ -307,7 +352,7 @@ const GamePlay = () => {
         </Card>
 
         {/* Bottom Right */}
-        <Card className={`flex items-center justify-center p-8 transition-colors duration-1000 border-0 ${getQuadrantColor('bottom-right')}`}>
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-right')} ${getQuadrantOpacity('bottom-right')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-right'].map((word, idx) => (
               <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
