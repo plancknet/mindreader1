@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Brain } from 'lucide-react';
 
 const StartPrompt = () => {
@@ -11,6 +12,7 @@ const StartPrompt = () => {
   
   const [displayText, setDisplayText] = useState('');
   const [actualInput, setActualInput] = useState('');
+  const [pendingWord, setPendingWord] = useState<string | null>(null);
   const targetWord = 'INICIAR';
 
   useEffect(() => {
@@ -26,29 +28,31 @@ const StartPrompt = () => {
       // Backspace
       setActualInput(prev => prev.slice(0, -1));
       setDisplayText(prev => prev.slice(0, -1));
+      setPendingWord(null);
       return;
     }
 
     const currentLength = actualInput.length;
     
     if (currentLength < targetWord.length) {
+      const nextActualInput = actualInput + newChar;
       const nextDisplayChar = targetWord[currentLength];
       setDisplayText(prev => prev + nextDisplayChar);
-      setActualInput(prev => prev + newChar);
-      
-      // Check if completed
-      if (currentLength + 1 === targetWord.length) {
-        const finalWord = actualInput + newChar;
-        setTimeout(() => {
-          if (finalWord.toUpperCase() === targetWord) {
-            // Normal mode
-            navigate(`/gameplay?theme=${themeId}`);
-          } else {
-            // Trick mode - pass the user's word
-            navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(finalWord)}`);
-          }
-        }, 500);
-      }
+      setActualInput(nextActualInput);
+      setPendingWord(nextActualInput.length === targetWord.length ? nextActualInput : null);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!themeId || !pendingWord) {
+      return;
+    }
+
+    const normalizedWord = pendingWord.toUpperCase();
+    if (normalizedWord === targetWord) {
+      navigate(`/gameplay?theme=${themeId}`);
+    } else {
+      navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(pendingWord)}`);
     }
   };
 
@@ -84,6 +88,14 @@ const StartPrompt = () => {
             <p className="text-xs text-muted-foreground text-center">
               {displayText.length}/{targetWord.length} letras
             </p>
+            <Button
+              type="button"
+              className="w-full text-lg font-semibold"
+              onClick={handleSubmit}
+              disabled={!pendingWord}
+            >
+              Enviar
+            </Button>
           </div>
         </Card>
 
