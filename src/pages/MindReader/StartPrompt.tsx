@@ -26,12 +26,9 @@ const StartPrompt = () => {
   const normalizedInput = useMemo(() => rawInput.toUpperCase(), [rawInput]);
   const trimmedInput = useMemo(() => rawInput.trim(), [rawInput]);
   const lettersCount = Math.min(rawInput.length, targetWord.length);
-  const maskedLetters = useMemo(
-    () =>
-      targetWord.split('').map((char, index) => ({
-        char,
-        isActive: index < lettersCount
-      })),
+  const typedMask = useMemo(() => targetWord.slice(0, lettersCount), [targetWord, lettersCount]);
+  const remainingMask = useMemo(
+    () => targetWord.slice(lettersCount),
     [targetWord, lettersCount]
   );
 
@@ -77,15 +74,9 @@ const StartPrompt = () => {
                 placeholder=""
                 autoFocus
               />
-              <span className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 text-2xl font-bold tracking-widest uppercase">
-                {maskedLetters.map(({ char, isActive }, index) => (
-                  <span
-                    key={`${char}-${index}`}
-                    className={isActive ? 'text-foreground' : 'text-muted-foreground/40'}
-                  >
-                    {char}
-                  </span>
-                ))}
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase">
+                <span className="text-foreground">{typedMask}</span>
+                <span className="text-muted-foreground/40">{remainingMask}</span>
               </span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
