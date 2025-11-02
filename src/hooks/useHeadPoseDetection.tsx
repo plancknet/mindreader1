@@ -130,7 +130,8 @@ export const useHeadPoseDetection = ({
               sideStartTimeRef.current = Date.now();
             } else {
               const elapsed = (Date.now() - sideStartTimeRef.current) / 1000;
-              setTimer(elapsed);
+              const clampedElapsed = Math.min(elapsed, detectionTime);
+              setTimer(clampedElapsed);
 
               if (elapsed >= detectionTime && !hasDetectedRef.current) {
                 hasDetectedRef.current = true;

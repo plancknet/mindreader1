@@ -326,8 +326,10 @@ const GamePlay = () => {
     return colorPool[colorIndex];
   };
 
-  const progress = timer / (trickMode ? 7 : 5) * 100;
-  const timeLeft = Math.ceil((trickMode ? 7 : 5) - timer);
+  const detectionDuration = trickMode ? 7 : 5;
+  const clampedTimer = Math.min(timer, detectionDuration);
+  const progress = (clampedTimer / detectionDuration) * 100;
+  const timeLeft = Math.max(0, Math.ceil(detectionDuration - clampedTimer));
 
   return (
     <div className="min-h-screen bg-background p-4 relative">
