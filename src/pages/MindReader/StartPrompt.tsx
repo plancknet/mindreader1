@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ const StartPrompt = () => {
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
 
-  const [rawInput, setRawInput] = useState('');
+  const [typedWord, setTypedWord] = useState('');
   const targetWord = 'INICIAR';
 
   useEffect(() => {
@@ -20,30 +20,28 @@ const StartPrompt = () => {
   }, [themeId, navigate]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRawInput(event.target.value);
+    setTypedWord(event.target.value.toUpperCase());
   };
-
-  const normalizedInput = useMemo(() => rawInput.toUpperCase(), [rawInput]);
-  const maskText = targetWord;
 
   const handleSubmit = () => {
     if (!themeId) {
       return;
     }
 
-    const finalWord = normalizedInput.trim();
+    const finalWord = typedWord.trim();
     if (!finalWord) {
       return;
     }
 
-    if (finalWord.toUpperCase() === targetWord) {
+    if (finalWord === targetWord) {
       navigate(`/gameplay?theme=${themeId}`);
-    } else {
-      navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(finalWord)}`);
+      return;
     }
+
+    navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(finalWord)}`);
   };
 
-  const lettersRevealed = Math.min(normalizedInput.length, targetWord.length);
+  const trimmedLength = typedWord.trim().length;
 
   return (
     <div className="min-h-screen bg-background p-4 flex items-center justify-center">
@@ -53,7 +51,7 @@ const StartPrompt = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Vamos começar!
+            Vamos comecar!
           </h1>
           <p className="text-muted-foreground text-lg">
             Digite a palavra abaixo para iniciar o jogo
@@ -65,27 +63,22 @@ const StartPrompt = () => {
             <label className="text-sm font-medium text-muted-foreground block text-center">
               Digite: INICIAR
             </label>
-            <div className="relative">
-              <Input
-                type="text"
-                value={rawInput}
-                onChange={handleInputChange}
-                className="text-center text-2xl font-bold tracking-widest uppercase text-transparent caret-primary selection:bg-transparent"
-                placeholder=""
-                autoFocus
-              />
-              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase text-foreground">
-                {maskText}
-              </span>
-            </div>
+            <Input
+              type="text"
+              value={typedWord}
+              onChange={handleInputChange}
+              className="text-center text-2xl font-bold tracking-widest uppercase"
+              placeholder=""
+              autoFocus
+            />
             <p className="text-xs text-muted-foreground text-center">
-              {lettersRevealed}/{targetWord.length} letras
+              {trimmedLength} letra{trimmedLength === 1 ? '' : 's'}
             </p>
             <Button
               type="button"
               className="w-full text-lg font-semibold"
               onClick={handleSubmit}
-              disabled={!normalizedInput.trim()}
+              disabled={!trimmedLength}
             >
               Enviar
             </Button>
@@ -94,7 +87,7 @@ const StartPrompt = () => {
 
         <div className="text-center space-y-2">
           <p className="text-muted-foreground text-sm">
-            💡 Dica: Você pode digitar qualquer palavra
+            Dica: Voce pode digitar qualquer palavra
           </p>
         </div>
       </div>
