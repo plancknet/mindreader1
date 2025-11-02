@@ -25,7 +25,15 @@ const StartPrompt = () => {
 
   const normalizedInput = useMemo(() => rawInput.toUpperCase(), [rawInput]);
   const trimmedInput = useMemo(() => rawInput.trim(), [rawInput]);
-  const lettersCount = Math.min(normalizedInput.length, targetWord.length);
+  const lettersCount = Math.min(rawInput.length, targetWord.length);
+  const maskedLetters = useMemo(
+    () =>
+      targetWord.split('').map((char, index) => ({
+        char,
+        isActive: index < lettersCount
+      })),
+    [targetWord, lettersCount]
+  );
 
   const handleSubmit = () => {
     if (!themeId || !trimmedInput) {
@@ -69,8 +77,15 @@ const StartPrompt = () => {
                 placeholder=""
                 autoFocus
               />
-              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase text-foreground">
-                {}
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 text-2xl font-bold tracking-widest uppercase">
+                {maskedLetters.map(({ char, isActive }, index) => (
+                  <span
+                    key={`${char}-${index}`}
+                    className={isActive ? 'text-foreground' : 'text-muted-foreground/40'}
+                  >
+                    {char}
+                  </span>
+                ))}
               </span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
