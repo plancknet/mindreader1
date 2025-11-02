@@ -70,7 +70,7 @@ const StartPrompt = () => {
                 autoFocus
               />
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase text-foreground">
-                {targetWord}
+                {}
               </span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
