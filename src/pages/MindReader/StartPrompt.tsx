@@ -95,8 +95,7 @@ const StartPrompt = () => {
 
         <div className="text-center space-y-2">
           <p className="text-muted-foreground text-sm">
-            Dica: Você pode digitar qualquer palavra
-          </p>
+           </p>
         </div>
       </div>
     </div>
