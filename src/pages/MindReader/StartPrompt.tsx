@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,8 +10,7 @@ const StartPrompt = () => {
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [actualInput, setActualInput] = useState('');
+  const [rawInput, setRawInput] = useState('');
   const targetWord = 'INICIAR';
 
   useEffect(() => {
@@ -21,90 +20,18 @@ const StartPrompt = () => {
   }, [themeId, navigate]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nativeEvent = event.nativeEvent as InputEvent | undefined;
-    const currentMaskLength = Math.min(actualInput.length, targetWord.length);
-
-    const appendValue = (value: string) => {
-      if (!value) return;
-      setActualInput(prev => prev + value);
-    };
-
-    if (nativeEvent) {
-      const { inputType } = nativeEvent;
-      const data = nativeEvent.data ?? '';
-      const dataTransfer = (nativeEvent as InputEvent & { dataTransfer?: DataTransfer }).dataTransfer;
-
-      switch (inputType) {
-        case 'deleteContentBackward':
-          setActualInput(prev => prev.slice(0, -1));
-          break;
-        case 'deleteContentForward':
-          setActualInput(prev => prev.slice(1));
-          break;
-        case 'deleteByCut':
-        case 'deleteByDrag':
-          setActualInput('');
-          break;
-        case 'insertReplacementText':
-          setActualInput(data);
-          break;
-        case 'insertFromPaste':
-        case 'insertFromDrop': {
-          const text = data || dataTransfer?.getData('text') || '';
-          if (text) {
-            appendValue(text);
-          }
-          break;
-        }
-        case 'insertCompositionText':
-        case 'insertFromComposition':
-        case 'insertText':
-        default: {
-          if (data) {
-            appendValue(data);
-          } else {
-            const rawValue = event.target.value;
-            if (rawValue.length < currentMaskLength) {
-              const removeCount = currentMaskLength - rawValue.length;
-              setActualInput(prev => prev.slice(0, Math.max(prev.length - removeCount, 0)));
-            } else if (rawValue.length > currentMaskLength) {
-              const appended = rawValue.slice(currentMaskLength);
-              appendValue(appended);
-            } else if (rawValue.length === 0) {
-              setActualInput('');
-            }
-          }
-          break;
-        }
-      }
-    } else {
-      const rawValue = event.target.value;
-      if (rawValue.length < currentMaskLength) {
-        const removeCount = currentMaskLength - rawValue.length;
-        setActualInput(prev => prev.slice(0, Math.max(prev.length - removeCount, 0)));
-      } else if (rawValue.length > currentMaskLength) {
-        const appended = rawValue.slice(currentMaskLength);
-        appendValue(appended);
-      } else if (rawValue.length === 0) {
-        setActualInput('');
-      }
-    }
+    setRawInput(event.target.value);
   };
 
-  useEffect(() => {
-    const input = inputRef.current;
-    if (input) {
-      const position = input.value.length;
-      input.setSelectionRange(position, position);
-    }
-  }, [actualInput]);
+  const normalizedInput = useMemo(() => rawInput.toUpperCase(), [rawInput]);
+  const maskText = targetWord;
 
   const handleSubmit = () => {
     if (!themeId) {
       return;
     }
 
-    const finalWord = actualInput.trim();
+    const finalWord = normalizedInput.trim();
     if (!finalWord) {
       return;
     }
@@ -116,8 +43,7 @@ const StartPrompt = () => {
     }
   };
 
-  const displayText = targetWord.slice(0, Math.min(actualInput.length, targetWord.length));
-  const lettersRevealed = displayText.length;
+  const lettersRevealed = Math.min(normalizedInput.length, targetWord.length);
 
   return (
     <div className="min-h-screen bg-background p-4 flex items-center justify-center">
@@ -139,15 +65,19 @@ const StartPrompt = () => {
             <label className="text-sm font-medium text-muted-foreground block text-center">
               Digite: INICIAR
             </label>
-            <Input
-              ref={inputRef}
-              type="text"
-              value={displayText}
-              onChange={handleInputChange}
-              className="text-center text-2xl font-bold tracking-widest uppercase"
-              placeholder=""
-              autoFocus
-            />
+            <div className="relative">
+              <Input
+                type="text"
+                value={rawInput}
+                onChange={handleInputChange}
+                className="text-center text-2xl font-bold tracking-widest uppercase text-transparent caret-primary selection:bg-transparent"
+                placeholder=""
+                autoFocus
+              />
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase text-foreground">
+                {maskText}
+              </span>
+            </div>
             <p className="text-xs text-muted-foreground text-center">
               {lettersRevealed}/{targetWord.length} letras
             </p>
@@ -155,7 +85,7 @@ const StartPrompt = () => {
               type="button"
               className="w-full text-lg font-semibold"
               onClick={handleSubmit}
-              disabled={!actualInput.trim()}
+              disabled={!normalizedInput.trim()}
             >
               Enviar
             </Button>
