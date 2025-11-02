@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { themes } from '@/data/themes';
@@ -14,6 +14,80 @@ interface QuadrantWords {
   'bottom-right': string[];
 }
 
+const normalizeForComparison = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+
+const calculateLevenshteinDistance = (a: string, b: string) => {
+  if (a === b) return 0;
+  if (!a) return b.length;
+  if (!b) return a.length;
+
+  const matrix: number[][] = Array.from({ length: a.length + 1 }, () =>
+    new Array(b.length + 1).fill(0)
+  );
+
+  for (let i = 0; i <= a.length; i++) {
+    matrix[i][0] = i;
+  }
+
+  for (let j = 0; j <= b.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  return matrix[a.length][b.length];
+};
+
+const findClosestWord = (input: string, candidates: string[]): string | null => {
+  if (!input || !candidates.length) {
+    return null;
+  }
+
+  let closestWord: string | null = null;
+  let smallestDistance = Number.POSITIVE_INFINITY;
+  let normalizedClosest = '';
+
+  candidates.forEach(candidate => {
+    const normalizedCandidate = normalizeForComparison(candidate);
+    const distance = calculateLevenshteinDistance(input, normalizedCandidate);
+
+    if (distance < smallestDistance) {
+      smallestDistance = distance;
+      closestWord = candidate;
+      normalizedClosest = normalizedCandidate;
+      return;
+    }
+
+    if (distance === smallestDistance && closestWord) {
+      if (
+        normalizedCandidate.length < normalizedClosest.length ||
+        (normalizedCandidate.length === normalizedClosest.length &&
+          normalizedCandidate < normalizedClosest)
+      ) {
+        closestWord = candidate;
+        normalizedClosest = normalizedCandidate;
+      }
+    }
+  });
+
+  return closestWord;
+};
+
 const GamePlay = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -21,13 +95,19 @@ const GamePlay = () => {
   const userWord = searchParams.get('userWord');
   
   const theme = themes.find(t => t.id === themeId);
+  const normalizedInput = (userWord ?? '').trim();
+  const comparableInput = normalizedInput ? normalizeForComparison(normalizedInput) : '';
+  const shouldUseTypedWord = comparableInput !== '' && comparableInput !== 'INICIAR';
+  const targetWord = useMemo(
+    () => (theme && shouldUseTypedWord ? findClosestWord(comparableInput, theme.words) : null),
+    [theme, shouldUseTypedWord, comparableInput]
+  );
+  const trickMode = !!targetWord;
   const [words, setWords] = useState<string[]>([]);
   const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
   const [round, setRound] = useState(1);
   const [isWaiting, setIsWaiting] = useState(true);
   const [colorRotation, setColorRotation] = useState(0);
-  const [trickMode] = useState(!!userWord);
-  const [targetWord] = useState(userWord || null);
   const [eliminatingSide, setEliminatingSide] = useState<'left' | 'right' | null>(null);
 
   // Fixed 7 seconds for trick mode
@@ -59,7 +139,7 @@ const GamePlay = () => {
 
     let initialWords = [...theme.words].sort(() => Math.random() - 0.5);
     
-    // If trick mode, replace first word with user's word
+    // If trick mode, keep the chosen target word highlighted
     if (trickMode && targetWord) {
       initialWords[0] = targetWord;
     }
