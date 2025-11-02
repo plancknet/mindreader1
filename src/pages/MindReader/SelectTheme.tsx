@@ -8,7 +8,7 @@ const SelectTheme = () => {
   const navigate = useNavigate();
 
   const handleThemeSelect = (themeId: string) => {
-    navigate(`/gameplay?theme=${themeId}`);
+    navigate(`/start-prompt?theme=${themeId}`);
   };
 
   return (

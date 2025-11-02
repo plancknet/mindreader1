@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ConnectMind from "./pages/MindReader/ConnectMind";
 import SelectTheme from "./pages/MindReader/SelectTheme";
+import StartPrompt from "./pages/MindReader/StartPrompt";
 import GamePlay from "./pages/MindReader/GamePlay";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<ConnectMind />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/select-theme" element={<SelectTheme />} />
+          <Route path="/start-prompt" element={<StartPrompt />} />
           <Route path="/gameplay" element={<GamePlay />} />
           <Route path="/result" element={<Result />} />
           <Route path="/detector" element={<Index />} />

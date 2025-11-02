@@ -18,6 +18,7 @@ const GamePlay = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
+  const userWord = searchParams.get('userWord');
   
   const theme = themes.find(t => t.id === themeId);
   const [words, setWords] = useState<string[]>([]);
@@ -25,11 +26,18 @@ const GamePlay = () => {
   const [round, setRound] = useState(1);
   const [isWaiting, setIsWaiting] = useState(true);
   const [colorRotation, setColorRotation] = useState(0);
+  const [trickMode] = useState(!!userWord);
+  const [targetWord] = useState(userWord || null);
+
+  // Random detection time for trick mode (between 3-7 seconds)
+  const [detectionTime] = useState(() => 
+    trickMode ? Math.random() * 4 + 3 : 5
+  );
 
   const { videoRef, currentSide, timer, resetDetection } = useHeadPoseDetection({
     threshold: 0.07,
-    detectionTime: 5,
-    onSideDetected: handleSideDetected
+    detectionTime: trickMode ? detectionTime : 5,
+    onSideDetected: trickMode ? () => {} : handleSideDetected
   });
 
   const distributeWords = useCallback((wordList: string[]) => {
@@ -55,7 +63,60 @@ const GamePlay = () => {
     setQuadrantWords(distributeWords(initialWords));
 
     setTimeout(() => setIsWaiting(false), 3000);
-  }, [theme, navigate, distributeWords]);
+
+    // Trick mode auto-elimination
+    if (trickMode && targetWord) {
+      let currentWords = initialWords;
+      let currentRound = 1;
+
+      const eliminateRound = () => {
+        const distributed = distributeWords(currentWords);
+        
+        // Find which quadrant contains the target word
+        let quadrantWithTarget: Quadrant | null = null;
+        for (const [quadrant, wordList] of Object.entries(distributed) as [Quadrant, string[]][]) {
+          if (wordList.some(w => w.toUpperCase() === targetWord.toUpperCase())) {
+            quadrantWithTarget = quadrant;
+            break;
+          }
+        }
+
+        if (!quadrantWithTarget) {
+          // Target word not found, end game
+          navigate(`/result?word=${encodeURIComponent(targetWord)}`);
+          return;
+        }
+
+        // Keep words from the quadrant with target word
+        const newWords = distributed[quadrantWithTarget];
+
+        if (newWords.length === 1) {
+          setTimeout(() => {
+            navigate(`/result?word=${encodeURIComponent(targetWord)}`);
+          }, 3000 + Math.random() * 4000 + 3000);
+          return;
+        }
+
+        setTimeout(() => {
+          currentWords = newWords;
+          currentRound++;
+          setWords(currentWords);
+          setQuadrantWords(distributeWords(currentWords));
+          setRound(currentRound);
+          setIsWaiting(true);
+          
+          setTimeout(() => {
+            setIsWaiting(false);
+            eliminateRound();
+          }, 2000);
+        }, 3000 + Math.random() * 4000 + 3000);
+      };
+
+      setTimeout(() => {
+        eliminateRound();
+      }, 3000);
+    }
+  }, [theme, navigate, distributeWords, trickMode, targetWord]);
 
   // Rotate colors every second
   useEffect(() => {
@@ -142,7 +203,8 @@ const GamePlay = () => {
     return colorPool[colorIndex];
   };
 
-  const progress = timer / 5 * 100;
+  const progress = timer / (trickMode ? detectionTime : 5) * 100;
+  const timeLeft = Math.ceil((trickMode ? detectionTime : 5) - timer);
 
   return (
     <div className="min-h-screen bg-background p-4 relative">
@@ -184,7 +246,7 @@ const GamePlay = () => {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center bg-background/80 rounded-full p-4 backdrop-blur-sm">
               <Brain className="w-12 h-12 mx-auto text-primary mb-1" />
-              <div className="text-2xl font-bold">{Math.ceil(5 - timer)}</div>
+              <div className="text-2xl font-bold">{timeLeft}</div>
             </div>
           </div>
         </div>
