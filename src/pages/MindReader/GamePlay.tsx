@@ -30,14 +30,12 @@ const GamePlay = () => {
   const [targetWord] = useState(userWord || null);
   const [eliminatingSide, setEliminatingSide] = useState<'left' | 'right' | null>(null);
 
-  // Random detection time for trick mode (between 3-7 seconds)
-  const [detectionTime] = useState(() => 
-    trickMode ? Math.random() * 4 + 3 : 5
-  );
+  // Fixed 7 seconds for trick mode
+  const [detectionTime] = useState(7);
 
   const { videoRef, currentSide, timer, resetDetection } = useHeadPoseDetection({
     threshold: 0.07,
-    detectionTime: trickMode ? detectionTime : 5,
+    detectionTime: trickMode ? 7 : 5,
     onSideDetected: trickMode ? () => {} : handleSideDetected
   });
 
@@ -59,7 +57,13 @@ const GamePlay = () => {
       return;
     }
 
-    const initialWords = [...theme.words].sort(() => Math.random() - 0.5);
+    let initialWords = [...theme.words].sort(() => Math.random() - 0.5);
+    
+    // If trick mode, replace first word with user's word
+    if (trickMode && targetWord) {
+      initialWords[0] = targetWord;
+    }
+    
     setWords(initialWords);
     setQuadrantWords(distributeWords(initialWords));
 
@@ -101,7 +105,7 @@ const GamePlay = () => {
             setTimeout(() => {
               navigate(`/result?word=${encodeURIComponent(targetWord)}`);
             }, 2000);
-          }, 3000 + Math.random() * 4000);
+          }, 7000);
           return;
         }
 
@@ -122,7 +126,7 @@ const GamePlay = () => {
               eliminateRound();
             }, 2000);
           }, 2000);
-        }, 3000 + Math.random() * 4000);
+        }, 7000);
       };
 
       setTimeout(() => {
@@ -236,8 +240,8 @@ const GamePlay = () => {
     return colorPool[colorIndex];
   };
 
-  const progress = timer / (trickMode ? detectionTime : 5) * 100;
-  const timeLeft = Math.ceil((trickMode ? detectionTime : 5) - timer);
+  const progress = timer / (trickMode ? 7 : 5) * 100;
+  const timeLeft = Math.ceil((trickMode ? 7 : 5) - timer);
 
   return (
     <div className="min-h-screen bg-background p-4 relative">
