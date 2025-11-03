@@ -6,9 +6,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Camera, Brain, BookOpen } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { InstallPWA } from '@/components/InstallPWA';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const ConnectMind = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isConnecting, setIsConnecting] = useState(false);
   const { videoRef, isModelLoading, error, cameraActive } = useHeadPoseDetection();
 
@@ -27,13 +30,17 @@ const ConnectMind = () => {
   return (
     <div className="min-h-screen bg-background p-2 md:p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-3 md:space-y-8">
+        <div className="flex justify-end mb-2">
+          <LanguageSelector />
+        </div>
+        
         <div className="text-center space-y-2 md:space-y-4">
           <div className="flex justify-center items-center gap-2 md:gap-4">
             <Brain className="w-12 h-12 md:w-20 md:h-20 text-primary animate-pulse" />
             <InstallPWA />
           </div>
           <h1 className="text-3xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Leitor de Mentes
+            {t('connectMind.title')}
           </h1>
         </div>
 
@@ -48,7 +55,7 @@ const ConnectMind = () => {
           <Card className="p-4 md:p-8 text-center">
             <div className="space-y-2 md:space-y-4">
               <Camera className="w-12 h-12 md:w-16 md:h-16 mx-auto animate-pulse text-primary" />
-              <p className="text-sm md:text-lg text-muted-foreground">Inicializando conexão mental...</p>
+              <p className="text-sm md:text-lg text-muted-foreground">{t('connectMind.initializing')}</p>
             </div>
           </Card>
         )}
@@ -63,7 +70,7 @@ const ConnectMind = () => {
             />
             {!cameraActive && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white text-sm md:text-lg">Aguardando câmera...</p>
+                <p className="text-white text-sm md:text-lg">{t('connectMind.waitingCamera')}</p>
               </div>
             )}
           </div>
@@ -77,7 +84,7 @@ const ConnectMind = () => {
             className="text-base md:text-xl px-6 py-4 md:px-8 md:py-6 w-full md:w-auto"
           >
             <Brain className="mr-2 h-5 w-5 md:h-6 md:w-6" />
-            Conectar a mente
+            {t('connectMind.connectButton')}
           </Button>
           <Button
             size="lg"
@@ -86,7 +93,7 @@ const ConnectMind = () => {
             className="text-base md:text-xl px-6 py-4 md:px-8 md:py-6 w-full md:w-auto"
           >
             <BookOpen className="mr-2 h-5 w-5 md:h-6 md:w-6" />
-            Instruções
+            {t('connectMind.instructionsButton')}
           </Button>
         </div>
       </div>

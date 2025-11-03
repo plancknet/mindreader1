@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/card';
 import { themes } from '@/data/themes';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { Brain } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { START_WORDS } from '@/i18n/languages';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -101,17 +103,20 @@ const findClosestWord = (input: string, candidates: string[]): ClosestWordResult
 
 const GamePlay = () => {
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
   const userWord = searchParams.get('userWord');
   
   const theme = themes.find(t => t.id === themeId);
+  const themeWords = theme?.words[language] || theme?.words['pt-BR'] || [];
   const trimmedInput = (userWord ?? '').trim();
   const comparableInput = trimmedInput ? normalizeForComparison(trimmedInput) : '';
-  const shouldUseTypedWord = comparableInput !== '' && comparableInput !== 'INICIAR';
+  const startWord = START_WORDS[language] || START_WORDS['pt-BR'];
+  const shouldUseTypedWord = comparableInput !== '' && comparableInput !== normalizeForComparison(startWord);
   const closestWordResult = useMemo(
-    () => (theme && shouldUseTypedWord ? findClosestWord(comparableInput, theme.words) : null),
-    [theme, shouldUseTypedWord, comparableInput]
+    () => (theme && shouldUseTypedWord ? findClosestWord(comparableInput, themeWords) : null),
+    [theme, shouldUseTypedWord, comparableInput, themeWords]
   );
   const hasLowSimilarity = useMemo(() => {
     if (!shouldUseTypedWord) {
@@ -181,7 +186,7 @@ const GamePlay = () => {
       return;
     }
 
-    let initialWords = [...theme.words].sort(() => Math.random() - 0.5);
+    let initialWords = [...themeWords].sort(() => Math.random() - 0.5);
     
     // If trick mode, keep the chosen target word highlighted
     if (trickMode && targetWord) {
@@ -193,8 +198,8 @@ const GamePlay = () => {
         )
       ];
 
-      if (theme && initialWords.length > theme.words.length) {
-        initialWords = initialWords.slice(0, theme.words.length);
+      if (themeWords && initialWords.length > themeWords.length) {
+        initialWords = initialWords.slice(0, themeWords.length);
       }
     }
     
@@ -267,7 +272,7 @@ const GamePlay = () => {
         eliminateRound();
       }, 3000);
     }
-  }, [theme, navigate, distributeWords, trickMode, targetWord]);
+  }, [theme, navigate, distributeWords, trickMode, targetWord, themeWords]);
 
   // Rotate colors every second
   useEffect(() => {
@@ -428,7 +433,9 @@ const GamePlay = () => {
       {/* Round indicator */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
         <Card className="px-6 py-3">
-          <p className="text-sm font-semibold">Rodada {round} • {words.length} palavras</p>
+          <p className="text-sm font-semibold">
+            {t('gameplay.round', { round: round, count: words.length })}
+          </p>
         </Card>
       </div>
 
@@ -438,7 +445,9 @@ const GamePlay = () => {
           <Card className="p-8 text-center space-y-4 animate-scale-in">
             <Brain className="w-16 h-16 mx-auto text-primary animate-pulse" />
             <p className="text-xl font-semibold">
-              Eliminando lado {eliminatingSide === 'left' ? 'esquerdo' : 'direito'}...
+              {t('gameplay.eliminatingSide', { 
+                side: t(`gameplay.${eliminatingSide}`)
+              })}
             </p>
           </Card>
         </div>
@@ -450,7 +459,7 @@ const GamePlay = () => {
           <Card className="p-8 text-center space-y-4 animate-fade-in">
             <Brain className="w-16 h-16 mx-auto text-primary animate-pulse" />
             <p className="text-xl font-semibold">
-              {round === 1 ? 'Pense em uma palavra...' : 'Observe as novas posições...'}
+              {round === 1 ? t('gameplay.thinkWord') : t('gameplay.observePositions')}
             </p>
           </Card>
         </div>

@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { themes } from '@/data/themes';
 import { Brain } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const SelectTheme = () => {
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
 
   const handleThemeSelect = (themeId: string) => {
     navigate(`/start-prompt?theme=${themeId}`);
@@ -19,10 +21,10 @@ const SelectTheme = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            O que está pensando?
+            {t('selectTheme.title')}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Escolha uma categoria e pense em uma palavra
+            {t('selectTheme.subtitle')}
           </p>
         </div>
 
@@ -35,9 +37,9 @@ const SelectTheme = () => {
             >
               <div className="text-center space-y-4">
                 <div className="text-7xl">{theme.emoji}</div>
-                <h2 className="text-2xl font-bold">{theme.name}</h2>
+                <h2 className="text-2xl font-bold">{theme.name[language] || theme.name['pt-BR']}</h2>
                 <Button className="w-full" variant="outline">
-                  Selecionar
+                  {t('common.select')}
                 </Button>
               </div>
             </Card>
@@ -46,7 +48,7 @@ const SelectTheme = () => {
 
         <div className="text-center space-y-2">
           <p className="text-muted-foreground">
-            💡 Dica: Pense em uma palavra assim que vir as opções
+            {t('selectTheme.tip')}
           </p>
         </div>
       </div>

@@ -2,10 +2,12 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, RotateCcw } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const Result = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const word = searchParams.get('word') || '';
 
   return (
@@ -17,11 +19,11 @@ const Result = () => {
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold">
-            Sua mente foi lida com sucesso! 🧠✨
+            {t('result.title')} 🧠✨
           </h1>
           
           <p className="text-xl text-muted-foreground">
-            Eu li sua mente. A palavra é:
+            {t('result.subtitle')}
           </p>
         </div>
 
@@ -50,10 +52,10 @@ const Result = () => {
           <div className="flex gap-4 justify-center">
             <Button size="lg" onClick={() => navigate('/select-theme')}>
               <RotateCcw className="mr-2" />
-              Jogar Novamente
+              {t('common.playAgain')}
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate('/')}>
-              Voltar ao Início
+              {t('common.backHome')}
             </Button>
           </div>
         </div>

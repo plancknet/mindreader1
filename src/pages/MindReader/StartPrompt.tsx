@@ -4,14 +4,17 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Brain } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { START_WORDS } from '@/i18n/languages';
 
 const StartPrompt = () => {
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
 
   const [rawInput, setRawInput] = useState('');
-  const targetWord = 'INICIAR';
+  const targetWord = START_WORDS[language] || START_WORDS['pt-BR'];
 
   useEffect(() => {
     if (!themeId) {
@@ -53,17 +56,17 @@ const StartPrompt = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Vamos começar!
+            {t('startPrompt.title')}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Digite a palavra abaixo para iniciar o jogo
+            {t('startPrompt.subtitle')}
           </p>
         </div>
 
         <Card className="p-8">
           <div className="space-y-4">
             <label className="text-sm font-medium text-muted-foreground block text-center">
-              Digite: INICIAR
+              {t('startPrompt.placeholder', { word: targetWord })}
             </label>
             <div className="relative">
               <Input
@@ -80,7 +83,7 @@ const StartPrompt = () => {
               </span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              {lettersCount}/{targetWord.length} letras
+              {t('startPrompt.letterCount', { count: lettersCount, total: targetWord.length })}
             </p>
             <Button
               type="button"
@@ -88,7 +91,7 @@ const StartPrompt = () => {
               onClick={handleSubmit}
               disabled={!trimmedInput}
             >
-              Enviar
+              {t('common.send')}
             </Button>
           </div>
         </Card>
