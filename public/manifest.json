@@ -1,8 +1,8 @@
 {
   "id": "/mindreader-mrs",
-  "name": "Leitor de Mente",
+  "name": "MindReader",
   "short_name": "Mind Reader",
-  "description": "Aplicativo para Ler a Mente do Usuário",
+  "description": "Aplicativo para Ler a Mente do seu Amigo",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F172A",

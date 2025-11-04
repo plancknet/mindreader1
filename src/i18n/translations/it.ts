@@ -9,7 +9,7 @@ export const it = {
     send: 'Invia',
   },
   connectMind: {
-    title: 'Lettore di Menti',
+    title: 'MindReader - Teste',
     initializing: 'Inizializzazione connessione mentale...',
     waitingCamera: 'In attesa della fotocamera...',
     connectButton: 'Connetti alla mente',
