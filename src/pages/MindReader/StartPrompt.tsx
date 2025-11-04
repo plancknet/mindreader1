@@ -38,7 +38,7 @@ const StartPrompt = () => {
   const typedPrefix = normalizedInput.slice(0, prefixLength);
   const isPrefixValid = typedPrefix === requiredPrefix.slice(0, typedPrefix.length);
   
-  // Mask logic: show mask only for last character
+  // Mask logic: show complete START_WORDS visually
   const lettersCount = Math.min(rawInput.length, targetWord.length);
   const showMask = isPrefixValid && lettersCount === targetWord.length;
   const typedMask = useMemo(() => {
@@ -46,14 +46,14 @@ const StartPrompt = () => {
     if (lettersCount < targetWord.length) {
       return targetWord.slice(0, lettersCount);
     }
-    // Show all letters except last when complete
-    return targetWord.slice(0, prefixLength);
-  }, [targetWord, lettersCount, isPrefixValid, prefixLength]);
+    // Show complete word when all letters typed
+    return targetWord;
+  }, [targetWord, lettersCount, isPrefixValid]);
   
   const remainingMask = useMemo(() => {
     if (!isPrefixValid) return '';
     if (lettersCount >= targetWord.length) {
-      return '?'; // Show ? for last character
+      return ''; // Nothing remaining, show complete word
     }
     return targetWord.slice(lettersCount);
   }, [targetWord, lettersCount, isPrefixValid]);
