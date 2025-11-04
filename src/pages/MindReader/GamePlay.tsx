@@ -110,46 +110,20 @@ const GamePlay = () => {
   
   const theme = themes.find(t => t.id === themeId);
   const themeWords = theme?.words[language] || theme?.words['pt-BR'] || [];
-  const trimmedInput = (userWord ?? '').trim();
-  const comparableInput = trimmedInput ? normalizeForComparison(trimmedInput) : '';
-  const startWord = START_WORDS[language] || START_WORDS['pt-BR'];
-  const shouldUseTypedWord = comparableInput !== '' && comparableInput !== normalizeForComparison(startWord);
-  const closestWordResult = useMemo(
-    () => (theme && shouldUseTypedWord ? findClosestWord(comparableInput, themeWords) : null),
-    [theme, shouldUseTypedWord, comparableInput, themeWords]
-  );
-  const hasLowSimilarity = useMemo(() => {
-    if (!shouldUseTypedWord) {
-      return false;
-    }
-    if (!closestWordResult) {
-      return true;
-    }
-
-    const referenceLength = Math.max(
-      comparableInput.length,
-      closestWordResult.normalizedWord.length
-    );
-
-    if (referenceLength === 0) {
-      return false;
-    }
-
-    const distanceRatio = closestWordResult.distance / referenceLength;
-    return distanceRatio > LOW_SIMILARITY_THRESHOLD;
-  }, [shouldUseTypedWord, closestWordResult, comparableInput]);
-
+  
+  // Find word that starts with the letter provided by user
   const targetWord = useMemo(() => {
-    if (!theme || !shouldUseTypedWord) {
+    if (!userWord || !theme) {
       return null;
     }
-
-    if (hasLowSimilarity) {
-      return trimmedInput;
-    }
-
-    return closestWordResult?.word ?? trimmedInput;
-  }, [theme, shouldUseTypedWord, hasLowSimilarity, closestWordResult, trimmedInput]);
+    
+    const firstLetter = userWord.trim().toUpperCase();
+    const matchingWord = themeWords.find(word => 
+      normalizeForComparison(word).startsWith(firstLetter)
+    );
+    
+    return matchingWord || null;
+  }, [userWord, theme, themeWords]);
 
   const trickMode = !!targetWord;
   const [words, setWords] = useState<string[]>([]);
