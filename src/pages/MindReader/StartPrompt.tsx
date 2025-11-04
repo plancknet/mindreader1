@@ -23,29 +23,51 @@ const StartPrompt = () => {
   }, [themeId, navigate]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRawInput(event.target.value);
+    const value = event.target.value.toUpperCase();
+    if (value.length <= targetWord.length) {
+      setRawInput(value);
+    }
   };
 
   const normalizedInput = useMemo(() => rawInput.toUpperCase(), [rawInput]);
   const trimmedInput = useMemo(() => rawInput.trim(), [rawInput]);
+  
+  // Check if first letters (except last) match START_WORDS
+  const prefixLength = targetWord.length - 1;
+  const requiredPrefix = targetWord.slice(0, prefixLength);
+  const typedPrefix = normalizedInput.slice(0, prefixLength);
+  const isPrefixValid = typedPrefix === requiredPrefix.slice(0, typedPrefix.length);
+  
+  // Mask logic: show mask only for last character
   const lettersCount = Math.min(rawInput.length, targetWord.length);
-  const typedMask = useMemo(() => targetWord.slice(0, lettersCount), [targetWord, lettersCount]);
-  const remainingMask = useMemo(
-    () => targetWord.slice(lettersCount),
-    [targetWord, lettersCount]
-  );
+  const showMask = isPrefixValid && lettersCount === targetWord.length;
+  const typedMask = useMemo(() => {
+    if (!isPrefixValid) return '';
+    if (lettersCount < targetWord.length) {
+      return targetWord.slice(0, lettersCount);
+    }
+    // Show all letters except last when complete
+    return targetWord.slice(0, prefixLength);
+  }, [targetWord, lettersCount, isPrefixValid, prefixLength]);
+  
+  const remainingMask = useMemo(() => {
+    if (!isPrefixValid) return '';
+    if (lettersCount >= targetWord.length) {
+      return '?'; // Show ? for last character
+    }
+    return targetWord.slice(lettersCount);
+  }, [targetWord, lettersCount, isPrefixValid]);
+
+  // Button enabled only if prefix is correct and all letters typed
+  const isComplete = isPrefixValid && normalizedInput.length === targetWord.length;
 
   const handleSubmit = () => {
-    if (!themeId || !trimmedInput) {
+    if (!themeId || !isComplete) {
       return;
     }
 
-    if (trimmedInput.toUpperCase() === targetWord) {
-      navigate(`/gameplay?theme=${themeId}`);
-      return;
-    }
-
-    navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(trimmedInput)}`);
+    const lastChar = normalizedInput.charAt(normalizedInput.length - 1);
+    navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(lastChar)}`);
   };
 
   return (
@@ -89,7 +111,7 @@ const StartPrompt = () => {
               type="button"
               className="w-full text-lg font-semibold"
               onClick={handleSubmit}
-              disabled={!trimmedInput}
+              disabled={!isComplete}
             >
               {t('common.send')}
             </Button>
