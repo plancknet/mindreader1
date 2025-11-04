@@ -19,8 +19,8 @@ export const DEFAULT_LANGUAGE = 'pt-BR';
 export const START_WORDS: Record<string, string> = {
   'pt-BR': 'INICIAR',
   'en': 'START',
-  'es': 'EMPEZAR',
+  'es': 'INICIAR',
   'zh-CN': '开始',
-  'fr': 'COMMENCER',
+  'fr': 'INITIER',
   'it': 'INIZIA',
 };
