@@ -22,19 +22,19 @@ export const themes: Theme[] = [
         'Japão', 'Brasil', 'Grécia', 'Peru',
         'França', 'Zimbábue', 'Canadá', 'Egito',
         'Honduras', 'Líbano', 'Itália', 'Noruega',
-        'México', 'Quênia', 'Dinamarca', 'Argentina'
+        'México', 'Quênia', 'Dinamarca', 'Omã'
       ],
       'en': [
         'Japan', 'Brazil', 'Greece', 'Peru',
         'France', 'Zimbabwe', 'Canada', 'Egypt',
         'Honduras', 'Lebanon', 'Italy', 'Norway',
-        'Mexico', 'Kenya', 'Denmark', 'Argentina'
+        'Mexico', 'Kenya', 'Denmark', 'Oman'
       ],
       'es': [
         'Japón', 'Brasil', 'Grecia', 'Perú',
         'Francia', 'Zimbabue', 'Canadá', 'Egipto',
         'Honduras', 'Líbano', 'Italia', 'Noruega',
-        'México', 'Kenia', 'Dinamarca', 'Argentina'
+        'México', 'Kenia', 'Dinamarca', 'Omán'
       ],
       'zh-CN': [
         '巴西', '阿根廷', '法国', '意大利',
@@ -46,12 +46,12 @@ export const themes: Theme[] = [
         'Japon', 'Brésil', 'Grèce', 'Pérou',
         'France', 'Zimbabwe', 'Canada', 'Égypte',
         'Honduras', 'Liban', 'Italie', 'Norvège',
-        'Mexique', 'Kenya', 'Danemark', 'Argentine'
+        'Mexique', 'Kenya', 'Danemark', 'Oman'
       ],
       'it': [
         'Messico', 'Qatar', 'Italia', 'Brasile',
         'Spagna', 'Egitto', 'Kenya', 'Canada',
-        'Norvegia', 'Argentina', 'Danimarca', 'Francia',
+        'Norvegia', 'Oman', 'Danimarca', 'Francia',
         'Oman', 'Germania', 'Honduras', 'Perù'
       ],
     }
@@ -69,22 +69,22 @@ export const themes: Theme[] = [
     },
     words: {
       'pt-BR': [
-        'Figo', 'Nectarina', 'Acerola', 'Uva',
-        'Kiwi', 'Tâmara', 'Limão', 'Damasco',
+        'Figo', 'Nectarina', 'Sapoti', 'Uva',
+        'Kiwi', 'Embuaba', 'Limão', 'Damasco',
         'Banana', 'Goiaba', 'Jaca', 'Ingá',
-        'Caju', 'Uva', 'Pitaia', 'Mamão'
+        'Caju', 'Xixá', 'Pitaia', 'Mamão'
       ],
       'en': [
         'Peach', 'Honeydew', 'Watermelon', 'Fig',
-        'Nectarine', 'Raspberry', 'Kiwi', 'Orange',
-        'Apple', 'Mango', 'Date', 'Grape',
+        'Nectarine', 'Jackfruit', 'Kiwi', 'Orange',
+        'Quince', 'Mango', 'Date', 'Grape',
         'Lemon', 'Cherry', 'Elderberry', 'Banana'
       ],
       'es': [
         'Mango', 'Limón', 'Cereza', 'Uva',
         'Naranja', 'Higo', 'Sandía', 'Banana',
         'Frambuesa', 'Dátil', 'Kiwi', 'Guayaba',
-        'Papaya', 'Arándano', 'Tamarindo', 'Zarzamora'
+        'Papaya', 'Quenapa', 'Icaco', 'Zarzamora'
       ],
       'zh-CN': [
         '苹果', '香蕉', '橙子', '葡萄',
@@ -93,16 +93,16 @@ export const themes: Theme[] = [
         '樱桃', '甜瓜', '覆盆子', '黑莓'
       ],
       'fr': [
-        'Mangue', 'Poire', 'Abricot', 'Kiwi',
-        'Quetsche', 'Raisin', 'Orange', 'Figue',
+        'Mangue', 'Poire', 'Starfruit', 'Kiwi',
+        'Quetsche', 'Elderberry', 'Orange', 'Figue',
         'Nectarine', 'Banane', 'Cerise', 'Litchi',
         'Grenade', 'Datte', 'Jujube', 'Tamarin'
       ],
       'it': [
-        'Mango', 'Albicocca', 'Uva', 'Kiwi',
-        'Ribes', 'Pesca', 'Banana', 'Visciola',
+        'Mango', 'Endrina', 'Uva', 'Kiwi',
+        'Jackfruit', 'Pesca', 'Banana', 'Visciola',
         'Fragola', 'Giuggiola', 'Lampone', 'Susina',
-        'Dattero', 'Nespola', 'Tamarindo', 'Ciliegia'
+        'Dattero', 'Nespola', 'Iberico', 'Ciliegia'
       ],
     }
   },
@@ -119,22 +119,22 @@ export const themes: Theme[] = [
     },
     words: {
       'pt-BR': [
-        'Leão', 'Baleia', 'Quati', 'Tartaruga',
+        'Leão', 'Baleia', 'Quati', 'Veado',
         'Canguru', 'Falcão', 'Elefante', 'Jacaré',
-        'Avestruz', 'Zebra', 'Urso', 'Macaco',
-        'Pinguim', 'Golfinho', 'Iguana', 'Raposa'
+        'Hiena', 'Zebra', 'Urso', 'Macaco',
+        'Pinguim', 'Golfinho', 'Iguana', 'Narval'
       ],
       'en': [
-        'Lion', 'Whale', 'Giraffe', 'Turtle',
+        'Lion', 'Whale', 'Giraffe', 'Horse',
         'Kangaroo', 'Falcon', 'Elephant', 'Crocodile',
-        'Rabbit', 'Zebra', 'Bear', 'Monkey',
-        'Penguin', 'Dolphin', 'Iguana', 'Alligator'
+        'Jaguar', 'Zebra', 'Bear', 'Monkey',
+        'Penguin', 'Dolphin', 'Iguana', 'Narwhal'
       ],
       'es': [
-        'León', 'Ballena', 'Jirafa', 'Tortuga',
+        'León', 'Ballena', 'Jirafa', 'Foca',
         'Canguro', 'Halcón', 'Elefante', 'Zorro',
         'Oso', 'Mono', 'Pingüino', 'Delfín',
-        'Iguana', 'Rinoceronte', 'Ñandú', 'Gato'
+        'Iguana', 'Koala', 'Ñandú', 'Gato'
       ],
       'zh-CN': [
         '狮子', '老虎', '大象', '长颈鹿',
@@ -143,16 +143,16 @@ export const themes: Theme[] = [
         '鹰', '海豚', '鲸鱼', '乌龟'
       ],
       'fr': [
-        'Renard', 'Koala', 'Âne', 'Tigre',
+        'Narval', 'Koala', 'Singe', 'Panda',
         'Éléphant', 'Girafe', 'Mouton', 'Baleine',
         'Hippopotame', 'Chat', 'Iguane', 'Dauphin',
         'Ours', 'Jaguar', 'Faucon', 'Lion'
       ],
       'it': [
-        'Tigre', 'Quaglia', 'Gatto', 'Mucca',
+        'Hamster', 'Quaglia', 'Gatto', 'Mucca',
         'Leone', 'Koala', 'Orso', 'Panda',
         'Ippopotamo', 'Balena', 'Canguro', 'Foca',
-        'Aquila', 'Rinoceronte', 'Elefante', 'Delfino'
+        'Jaguar', 'Narvalo', 'Elefante', 'Delfino'
       ],
     }
   }
