@@ -19,7 +19,6 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showGuestAlert, setShowGuestAlert] = useState(false);
 
   const handleOAuthLogin = async (provider: 'google') => {
     setIsLoading(true);
@@ -101,12 +100,6 @@ const Auth = () => {
     }
   };
 
-  const handleGuestMode = () => {
-    setShowGuestAlert(false);
-    // Create a guest session marker
-    sessionStorage.setItem('guestMode', 'true');
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
@@ -225,44 +218,6 @@ const Auth = () => {
               {isSignUp ? 'Já tem conta? Entrar' : 'Criar nova conta'}
             </button>
           </form>
-
-          {/* Guest Mode */}
-          <Button
-            variant="ghost"
-            className="w-full text-sm"
-            onClick={() => setShowGuestAlert(true)}
-            disabled={isLoading}
-            type="button"
-          >
-            Entrar como convidado
-          </Button>
-
-          {showGuestAlert && (
-            <Alert>
-              <AlertDescription className="space-y-3">
-                <p className="text-sm">
-                  Como convidado, você pode testar o MindReader, mas não salvará progresso.
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={handleGuestMode}
-                    className="flex-1"
-                  >
-                    Continuar mesmo assim
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setShowGuestAlert(false)}
-                    className="flex-1"
-                  >
-                    Cancelar
-                  </Button>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
 
           {/* Footer Links */}
           <div className="text-center text-xs text-muted-foreground pt-4 space-x-4">
