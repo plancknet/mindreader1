@@ -218,13 +218,6 @@ const Auth = () => {
               {isSignUp ? 'Já tem conta? Entrar' : 'Criar nova conta'}
             </button>
           </form>
-
-          {/* Footer Links */}
-          <div className="text-center text-xs text-muted-foreground pt-4 space-x-4">
-            <a href="#" className="hover:underline">Política de Privacidade</a>
-            <span>•</span>
-            <a href="#" className="hover:underline">Termos de Uso</a>
-          </div>
         </CardContent>
       </Card>
     </div>
