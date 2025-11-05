@@ -9,7 +9,7 @@ export const zhCN = {
     send: '发送',
   },
   connectMind: {
-    title: 'MindReader - Teste',
+    title: 'MindReader',
     initializing: '正在初始化心灵连接...',
     waitingCamera: '等待摄像头...',
     connectButton: '连接心灵',

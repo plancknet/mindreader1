@@ -9,7 +9,7 @@ export const ptBR = {
     send: 'Enviar',
   },
   connectMind: {
-    title: 'MindReader - Teste',
+    title: 'MindReader',
     initializing: 'Inicializando conexão mental...',
     waitingCamera: 'Aguardando câmera...',
     connectButton: 'Conectar a mente',
