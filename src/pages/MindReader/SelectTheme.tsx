@@ -1,20 +1,51 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { themes } from '@/data/themes';
-import { Brain } from 'lucide-react';
+import { Brain, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { PaywallModal } from '@/components/PaywallModal';
 
 const SelectTheme = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
+  const { usageData, isLoading, checkUsageLimit } = useUsageLimit();
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const handleThemeSelect = (themeId: string) => {
+    // Check if user can use the app
+    if (usageData && !usageData.canUse && !usageData.isPremium) {
+      setShowPaywall(true);
+      return;
+    }
+
     navigate(`/start-prompt?theme=${themeId}`);
   };
 
+  // Refresh usage data when component mounts
+  useEffect(() => {
+    checkUsageLimit();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        usageCount={usageData?.usageCount || 0}
+        freeLimit={usageData?.freeLimit || 3}
+      />
+      
       <div className="max-w-4xl w-full space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center">

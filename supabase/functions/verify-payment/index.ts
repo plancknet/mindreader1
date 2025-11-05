@@ -88,7 +88,7 @@ serve(async (req) => {
         }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error verifying payment:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

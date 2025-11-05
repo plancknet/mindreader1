@@ -24,6 +24,7 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_session_id: string | null
           updated_at: string
+          usage_count: number
           user_id: string
         }
         Insert: {
@@ -35,6 +36,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
           updated_at?: string
+          usage_count?: number
           user_id: string
         }
         Update: {
@@ -46,6 +48,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
           updated_at?: string
+          usage_count?: number
           user_id?: string
         }
         Relationships: []

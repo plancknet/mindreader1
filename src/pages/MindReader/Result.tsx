@@ -1,14 +1,32 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, RotateCcw } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { toast } from 'sonner';
 
 const Result = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const word = searchParams.get('word') || '';
+  const { incrementUsage } = useUsageLimit();
+
+  // Increment usage count when result is shown
+  useEffect(() => {
+    const incrementCount = async () => {
+      try {
+        await incrementUsage();
+      } catch (error) {
+        console.error('Error incrementing usage:', error);
+        toast.error('Erro ao registrar revelação');
+      }
+    };
+
+    incrementCount();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
