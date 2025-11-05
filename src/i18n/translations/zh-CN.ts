@@ -22,7 +22,7 @@ export const zhCN = {
   },
   startPrompt: {
     title: '让我们开始吧！',
-    subtitle: '在下方输入单词开始游戏',
+    subtitle: '在下方输入单词开始',
     placeholder: '输入：{word}',
     letterCount: '{count}/{total} 个字符',
   },

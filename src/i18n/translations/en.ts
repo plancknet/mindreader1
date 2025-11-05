@@ -22,7 +22,7 @@ export const en = {
   },
   startPrompt: {
     title: "Let's begin!",
-    subtitle: 'Type the word below to start the game',
+    subtitle: 'Type the word below to start',
     placeholder: 'Type: {word}',
     letterCount: '{count}/{total} letters',
   },

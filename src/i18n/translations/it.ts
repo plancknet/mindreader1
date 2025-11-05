@@ -22,7 +22,7 @@ export const it = {
   },
   startPrompt: {
     title: 'Cominciamo!',
-    subtitle: 'Digita la parola qui sotto per iniziare il gioco',
+    subtitle: 'Digita la parola qui sotto per iniziare',
     placeholder: 'Digita: {word}',
     letterCount: '{count}/{total} lettere',
   },

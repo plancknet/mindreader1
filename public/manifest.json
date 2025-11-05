@@ -60,7 +60,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Gameplay"
+      "label": "MindReader"
     },
     {
       "src": "/screenshots/screenshot-4.png",
@@ -70,7 +70,7 @@
       "label": "Resultado revelado"
     }
   ],
-  "categories": ["entertainment", "games"],
+  "categories": ["entertainment"],
   "lang": "pt-BR",
   "dir": "ltr"
 }

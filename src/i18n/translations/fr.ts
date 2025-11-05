@@ -22,7 +22,7 @@ export const fr = {
   },
   startPrompt: {
     title: 'Commençons !',
-    subtitle: 'Tapez le mot ci-dessous pour démarrer le jeu',
+    subtitle: 'Tapez le mot ci-dessous pour démarrer',
     placeholder: 'Tapez : {word}',
     letterCount: '{count}/{total} lettres',
   },

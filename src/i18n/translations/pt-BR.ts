@@ -3,7 +3,7 @@ export const ptBR = {
     back: 'Voltar',
     continue: 'Continuar',
     understood: 'Entendido',
-    playAgain: 'Jogar Novamente',
+    playAgain: 'Ler Novamente',
     backHome: 'Voltar ao Início',
     select: 'Selecionar',
     send: 'Enviar',
@@ -22,7 +22,7 @@ export const ptBR = {
   },
   startPrompt: {
     title: 'Vamos começar!',
-    subtitle: 'Digite a palavra abaixo para iniciar o jogo',
+    subtitle: 'Digite a palavra abaixo para iniciar',
     placeholder: 'Digite: {word}',
     letterCount: '{count}/{total} letras',
   },
