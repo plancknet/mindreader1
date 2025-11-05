@@ -135,7 +135,7 @@ const StartPrompt = () => {
     <div className="min-h-screen bg-background p-4 relative">
       {/* Central floating card */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
-        <Card className="p-8 shadow-glow bg-card/30 backdrop-blur-md border border-border/30">
+        <Card className="p-8 shadow-glow bg-card/10 border border-border/30">
           <div className="space-y-6">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
