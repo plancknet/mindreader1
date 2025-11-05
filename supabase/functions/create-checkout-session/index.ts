@@ -55,6 +55,7 @@ serve(async (req) => {
       mode: "payment",
       success_url: `${req.headers.get("origin")}/premium/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/premium`,
+      allow_promotion_codes: true,
       metadata: {
         userId: user.id,
         app: "mindreader",
