@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { LanguageSelector } from '@/components/LanguageSelector';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -102,18 +103,23 @@ const Auth = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            MindReader
-          </CardTitle>
-          <CardDescription className="text-base">
-            Comece em segundos
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-4">
+    <div className="min-h-screen flex flex-col p-4 bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="flex justify-end mb-4">
+        <LanguageSelector />
+      </div>
+
+      <div className="flex-1 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center space-y-2">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              MindReader
+            </CardTitle>
+            <CardDescription className="text-base">
+              Comece em segundos
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-4">
           {/* OAuth Buttons */}
           <div className="space-y-3">
             <Button
@@ -221,6 +227,7 @@ const Auth = () => {
         </CardContent>
       </Card>
     </div>
+  </div>
   );
 };
 
