@@ -47,6 +47,8 @@ export const en = {
     step2Text: 'Turn your head DISCREETLY to one side or the other. It is IMPORTANT TO BE DISCREET, so that no one discovers this secret.',
     step3Title: 'Elimination Process',
     step3Text: 'In each round, half of the words are eliminated based on the detected direction. Turn your head to the SIDE you want to ELIMINATE. The side where your word is will have GREEN or YELLOW colors.',
+    step4Title: 'Alternative Method: Typing Detection',
+    step4Text: 'When typing the start word, you can replace the LAST LETTER with a letter that indicates your thought word. Since each word starts with a different letter, just type that letter at the end. For example: if you thought of "Brazil", type "STARTB" instead of "START".',
     tipsTitle: 'Tips for Better Detection',
     tip1: 'Keep your position during the countdown',
     tip2: 'And most importantly. Be DISCREET, make SMOOTH MOVEMENTS.',

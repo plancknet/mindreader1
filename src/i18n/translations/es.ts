@@ -47,6 +47,8 @@ export const es = {
     step2Text: 'Gira la cabeza DISCRETAMENTE hacia un lado u otro. Es IMPORTANTE SER DISCRETO, para que nadie descubra este secreto.',
     step3Title: 'Proceso de Eliminación',
     step3Text: 'En cada ronda, la mitad de las palabras se eliminan según la dirección detectada. Gira la cabeza hacia el LADO que quieres ELIMINAR. El lado donde está tu palabra tendrá colores VERDE o AMARILLO.',
+    step4Title: 'Método Alternativo: Detección por Escritura',
+    step4Text: 'Al escribir la palabra inicial, puedes reemplazar la ÚLTIMA LETRA con una letra que indique tu palabra pensada. Como cada palabra comienza con una letra diferente, solo escribe esa letra al final. Por ejemplo: si pensaste en "Brasil", escribe "INICIAB" en lugar de "INICIAR".',
     tipsTitle: 'Consejos para una Mejor Detección',
     tip1: 'Mantén la posición durante la cuenta regresiva',
     tip2: 'Y lo más importante. Sé DISCRETO, haz MOVIMIENTOS SUAVES.',

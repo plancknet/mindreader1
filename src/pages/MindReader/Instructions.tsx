@@ -78,6 +78,20 @@ const Instructions = () => {
           <Card className="p-6">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">4</span>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold">{t('instructions.step4Title')}</h3>
+                <p className="text-muted-foreground">
+                  {t('instructions.step4Text')}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <Eye className="h-6 w-6 text-primary" />
               </div>
               <div className="space-y-2">

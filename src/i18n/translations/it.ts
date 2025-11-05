@@ -47,6 +47,8 @@ export const it = {
     step2Text: "Gira DISCRETAMENTE la testa da un lato o dall'altro. È IMPORTANTE ESSERE DISCRETI, affinché nessuno scopra questo segreto.",
     step3Title: 'Processo di eliminazione',
     step3Text: 'In ogni turno, metà delle parole vengono eliminate in base alla direzione rilevata. Gira la testa verso il LATO che vuoi ELIMINARE. Il lato dove si trova la tua parola avrà colori VERDI o GIALLI.',
+    step4Title: 'Metodo Alternativo: Rilevamento tramite Digitazione',
+    step4Text: "Quando digiti la parola iniziale, puoi sostituire l'ULTIMA LETTERA con una lettera che indica la tua parola pensata. Poiché ogni parola inizia con una lettera diversa, basta digitare quella lettera alla fine. Ad esempio: se hai pensato a \"Brasile\", digita \"INIZIAB\" invece di \"INIZIA\".",
     tipsTitle: 'Suggerimenti per un migliore rilevamento',
     tip1: 'Mantieni la posizione durante il conto alla rovescia',
     tip2: 'E la cosa più importante. Sii DISCRETO, fai MOVIMENTI FLUIDI.',
