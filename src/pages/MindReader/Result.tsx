@@ -2,7 +2,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, RotateCcw } from 'lucide-react';
+import { Brain, RotateCcw, BookOpen } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { toast } from 'sonner';
@@ -67,13 +67,17 @@ const Result = () => {
             ✨ Magia? Não! Ciência da computação!✨
           </p>
           
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" onClick={() => navigate('/select-theme')}>
               <RotateCcw className="mr-2" />
               {t('common.playAgain')}
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate('/')}>
               {t('common.backHome')}
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate('/instructions')}>
+              <BookOpen className="mr-2" />
+              {t('connectMind.instructionsButton')}
             </Button>
           </div>
         </div>
