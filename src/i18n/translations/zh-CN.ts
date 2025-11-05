@@ -21,8 +21,6 @@ export const zhCN = {
     tip: '💡 提示：一看到选项就想一个词',
   },
   startPrompt: {
-    title: '让我们开始吧！',
-    subtitle: '在下方输入单词开始',
     placeholder: '输入：{word}',
     letterCount: '{count}/{total} 个字符',
   },

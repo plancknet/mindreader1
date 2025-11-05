@@ -21,8 +21,6 @@ export const en = {
     tip: '💡 Tip: Think of a word as soon as you see the options',
   },
   startPrompt: {
-    title: "Let's begin!",
-    subtitle: 'Type the word below to start',
     placeholder: 'Type: {word}',
     letterCount: '{count}/{total} letters',
   },

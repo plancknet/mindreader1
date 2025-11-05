@@ -21,8 +21,6 @@ export const fr = {
     tip: '💡 Astuce : Pensez à un mot dès que vous voyez les options',
   },
   startPrompt: {
-    title: 'Commençons !',
-    subtitle: 'Tapez le mot ci-dessous pour démarrer',
     placeholder: 'Tapez : {word}',
     letterCount: '{count}/{total} lettres',
   },

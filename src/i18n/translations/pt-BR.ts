@@ -21,8 +21,6 @@ export const ptBR = {
     tip: '💡 Dica: Pense em uma palavra assim que vir as opções',
   },
   startPrompt: {
-    title: 'Vamos começar!',
-    subtitle: 'Digite a palavra abaixo para iniciar',
     placeholder: 'Digite: {word}',
     letterCount: '{count}/{total} letras',
   },

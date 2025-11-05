@@ -21,8 +21,6 @@ export const it = {
     tip: '💡 Suggerimento: Pensa a una parola non appena vedi le opzioni',
   },
   startPrompt: {
-    title: 'Cominciamo!',
-    subtitle: 'Digita la parola qui sotto per iniziare',
     placeholder: 'Digita: {word}',
     letterCount: '{count}/{total} lettere',
   },

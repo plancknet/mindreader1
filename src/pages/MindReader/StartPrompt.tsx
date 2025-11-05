@@ -135,7 +135,7 @@ const StartPrompt = () => {
     <div className="min-h-screen bg-background p-4 relative">
       {/* Central floating card */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
-        <Card className="p-8 shadow-glow bg-card/95 backdrop-blur-sm">
+        <Card className="p-8 shadow-glow bg-card/30 backdrop-blur-md border border-border/30">
           <div className="space-y-6">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
@@ -158,7 +158,7 @@ const StartPrompt = () => {
                   type="text"
                   value={rawInput}
                   onChange={handleInputChange}
-                  className="text-center text-2xl font-bold tracking-widest uppercase text-transparent caret-primary selection:bg-transparent"
+                  className="text-center text-2xl font-bold tracking-widest uppercase text-transparent caret-primary selection:bg-transparent bg-transparent backdrop-blur-none"
                   placeholder=""
                   autoFocus
                 />
