@@ -21,7 +21,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [showGuestAlert, setShowGuestAlert] = useState(false);
 
-  const handleOAuthLogin = async (provider: 'google' | 'azure') => {
+  const handleOAuthLogin = async (provider: 'google') => {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -153,23 +153,6 @@ const Auth = () => {
                 </svg>
               )}
               Continuar com Google
-            </Button>
-
-            <Button
-              onClick={() => handleOAuthLogin('azure')}
-              disabled={isLoading}
-              variant="outline"
-              className="w-full h-12 text-base"
-              type="button"
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ) : (
-                <svg className="mr-2 h-5 w-5" viewBox="0 0 23 23" fill="currentColor">
-                  <path d="M0 0h10.931v10.931H0zm12.069 0H23v10.931H12.069zM0 12.069h10.931V23H0zm12.069 0H23V23H12.069z"/>
-                </svg>
-              )}
-              Continuar com Microsoft
             </Button>
           </div>
 
