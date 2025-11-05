@@ -121,7 +121,7 @@ export default function Premium() {
         <CardContent className="space-y-6">
           <div className="bg-muted/50 rounded-lg p-6 text-center">
             <p className="text-sm text-muted-foreground mb-2">Pagamento único</p>
-            <p className="text-4xl font-bold">R$ 29,90</p>
+            <p className="text-4xl font-bold">R$ 14,90 ou USD 3,00</p>
             <p className="text-sm text-muted-foreground mt-2">Acesso vitalício</p>
           </div>
 

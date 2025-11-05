@@ -88,7 +88,7 @@ export const PaywallModal = ({ isOpen, onClose, usageCount, freeLimit }: Paywall
             </div>
             <div className="flex items-start gap-2">
               <Sparkles className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-              <p className="text-sm">Pagamento único - R$ 29,90</p>
+              <p className="text-sm">Pagamento único - R$ 14,90 ou USD 3,00</p>
             </div>
             <div className="flex items-start gap-2">
               <Sparkles className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
