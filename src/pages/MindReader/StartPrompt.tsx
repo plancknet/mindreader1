@@ -25,6 +25,7 @@ const StartPrompt = () => {
 
   const [rawInput, setRawInput] = useState('');
   const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
+  const [colorRotation, setColorRotation] = useState(0);
   const targetWord = START_WORDS[language] || START_WORDS['pt-BR'];
 
   const theme = themes.find(t => t.id === themeId);
@@ -49,6 +50,15 @@ const StartPrompt = () => {
       setQuadrantWords(distributeWords(themeWords));
     }
   }, [themeId, navigate, themeWords, distributeWords]);
+
+  // Rotate colors every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setColorRotation(prev => (prev + 1) % 6);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.toUpperCase();
@@ -98,72 +108,34 @@ const StartPrompt = () => {
     navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(lastChar)}`);
   };
 
+  const getQuadrantColor = (quadrant: Quadrant): string => {
+    const isLeft = quadrant.includes('left');
+    const isTop = quadrant.includes('top');
+    
+    const colors = [
+      'bg-blue-500/20',
+      'bg-purple-500/20',
+      'bg-pink-500/20',
+      'bg-indigo-500/20',
+      'bg-cyan-500/20',
+      'bg-rose-500/20'
+    ];
+    
+    const quadrantIndex = isTop ? (isLeft ? 0 : 1) : (isLeft ? 2 : 3);
+    const colorIndex = (colorRotation + quadrantIndex) % colors.length;
+    
+    return colors[colorIndex];
+  };
+
+  if (!quadrantWords) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Quadrants with words */}
-      {quadrantWords && (
-        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-          {/* Top-left */}
-          <div className="border-r border-b border-border/30 p-8 flex flex-col items-center justify-center">
-            <div className="flex flex-wrap gap-4 justify-center">
-              {quadrantWords['top-left'].map((word, index) => (
-                <span
-                  key={index}
-                  className="text-2xl md:text-3xl font-bold text-foreground/60"
-                >
-                  {word}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Top-right */}
-          <div className="border-b border-border/30 p-8 flex flex-col items-center justify-center">
-            <div className="flex flex-wrap gap-4 justify-center">
-              {quadrantWords['top-right'].map((word, index) => (
-                <span
-                  key={index}
-                  className="text-2xl md:text-3xl font-bold text-foreground/60"
-                >
-                  {word}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom-left */}
-          <div className="border-r border-border/30 p-8 flex flex-col items-center justify-center">
-            <div className="flex flex-wrap gap-4 justify-center">
-              {quadrantWords['bottom-left'].map((word, index) => (
-                <span
-                  key={index}
-                  className="text-2xl md:text-3xl font-bold text-foreground/60"
-                >
-                  {word}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom-right */}
-          <div className="border-border/30 p-8 flex flex-col items-center justify-center">
-            <div className="flex flex-wrap gap-4 justify-center">
-              {quadrantWords['bottom-right'].map((word, index) => (
-                <span
-                  key={index}
-                  className="text-2xl md:text-3xl font-bold text-foreground/60"
-                >
-                  {word}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Floating input card */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-        <Card className="max-w-md w-full p-8 shadow-glow pointer-events-auto bg-card/95 backdrop-blur-sm">
+    <div className="min-h-screen bg-background p-4 relative">
+      {/* Central floating card */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
+        <Card className="p-8 shadow-glow bg-card/95 backdrop-blur-sm">
           <div className="space-y-6">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
@@ -207,6 +179,53 @@ const StartPrompt = () => {
                 {t('common.send')}
               </Button>
             </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Quadrants Grid */}
+      <div className="h-screen grid grid-cols-2 gap-8 p-8">
+        {/* Top Left */}
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-left')}`}>
+          <div className="text-center space-y-3 relative z-10">
+            {quadrantWords['top-left'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Top Right */}
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-right')}`}>
+          <div className="text-center space-y-3 relative z-10">
+            {quadrantWords['top-right'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Bottom Left */}
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-left')}`}>
+          <div className="text-center space-y-3 relative z-10">
+            {quadrantWords['bottom-left'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+                {word}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Bottom Right */}
+        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-right')}`}>
+          <div className="text-center space-y-3 relative z-10">
+            {quadrantWords['bottom-right'].map((word, idx) => (
+              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+                {word}
+              </div>
+            ))}
           </div>
         </Card>
       </div>
