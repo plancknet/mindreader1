@@ -10,6 +10,8 @@ import { Session } from "@supabase/supabase-js";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Premium from "./pages/Premium";
+import PremiumSuccess from "./pages/PremiumSuccess";
 import ConnectMind from "./pages/MindReader/ConnectMind";
 import SelectTheme from "./pages/MindReader/SelectTheme";
 import StartPrompt from "./pages/MindReader/StartPrompt";
@@ -71,6 +73,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
+            <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
             <Route path="/" element={<ProtectedRoute><ConnectMind /></ProtectedRoute>} />
             <Route path="/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
