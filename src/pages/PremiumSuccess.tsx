@@ -56,7 +56,7 @@ export default function PremiumSuccess() {
   };
 
   const handleContinue = () => {
-    navigate('/connect-mind');
+    navigate('/select-theme');
   };
 
   if (isVerifying) {
