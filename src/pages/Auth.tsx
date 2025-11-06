@@ -46,6 +46,8 @@ const Auth = () => {
   };
 
   const handleMagicLink = async () => {
+    if (!isSignUp) return;
+
     if (!email) {
       toast({
         title: t('auth.toast.missingEmailTitle'),
@@ -270,7 +272,7 @@ const Auth = () => {
                 <form onSubmit={handleEmailAuth} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">{t('auth.emailLabel')}</Label>
-                    <div className="flex gap-2">
+                    <div className={isSignUp ? 'flex gap-2' : undefined}>
                       <Input
                         id="email"
                         type="email"
@@ -279,17 +281,19 @@ const Auth = () => {
                         onChange={(event) => setEmail(event.target.value)}
                         disabled={isLoading}
                         required
-                        className="flex-1"
+                        className={isSignUp ? 'flex-1' : undefined}
                       />
-                      <Button
-                        type="button"
-                        onClick={handleMagicLink}
-                        disabled={isLoading}
-                        variant="secondary"
-                        className="shrink-0"
-                      >
-                        {t('auth.magicLinkButton')}
-                      </Button>
+                      {isSignUp && (
+                        <Button
+                          type="button"
+                          onClick={handleMagicLink}
+                          disabled={isLoading}
+                          variant="secondary"
+                          className="shrink-0"
+                        >
+                          {t('auth.magicLinkButton')}
+                        </Button>
+                      )}
                     </div>
                   </div>
 

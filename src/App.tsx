@@ -21,11 +21,6 @@ import Instructions from "./pages/MindReader/Instructions";
 
 const queryClient = new QueryClient();
 
-// Guest routes - allow access without authentication
-const GuestRoute = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
-};
-
 // Protected routes - require authentication (no guest mode allowed)
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -70,18 +65,19 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to="/connect-mind" replace />} />
             <Route path="/auth" element={<Auth />} />
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
-            {/* Game routes allow guest mode */}
-            <Route path="/" element={<GuestRoute><ConnectMind /></GuestRoute>} />
-            <Route path="/instructions" element={<GuestRoute><Instructions /></GuestRoute>} />
-            <Route path="/select-theme" element={<GuestRoute><SelectTheme /></GuestRoute>} />
-            <Route path="/start-prompt" element={<GuestRoute><StartPrompt /></GuestRoute>} />
-            <Route path="/gameplay" element={<GuestRoute><GamePlay /></GuestRoute>} />
-            <Route path="/result" element={<GuestRoute><Result /></GuestRoute>} />
-            <Route path="/detector" element={<GuestRoute><Index /></GuestRoute>} />
+            {/* Game routes require authentication */}
+            <Route path="/connect-mind" element={<ProtectedRoute><ConnectMind /></ProtectedRoute>} />
+            <Route path="/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
+            <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
+            <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
+            <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
+            <Route path="/result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
+            <Route path="/detector" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
