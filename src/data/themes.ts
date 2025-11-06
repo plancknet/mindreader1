@@ -158,7 +158,7 @@ export const themes: Theme[] = [
   },
   {
     id: 'brainrots',
-    emoji: '�Y��',
+    emoji: '🥁🔥',
     name: {
       'pt-BR': 'Brainrots',
       'en': 'Brainrots',
