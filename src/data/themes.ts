@@ -205,5 +205,55 @@ export const themes: Theme[] = [
         'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
       ],
     }
+  },
+  {
+    id: 'naruto',
+    emoji: '\uD83E\uDD77\uD83C\uDF00',
+    name: {
+      'pt-BR': 'Naruto',
+      'en': 'Naruto',
+      'es': 'Naruto',
+      'zh-CN': 'Naruto',
+      'fr': 'Naruto',
+      'it': 'Naruto',
+    },
+    words: {
+      'pt-BR': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+      'en': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+      'es': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+      'zh-CN': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+      'fr': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+      'it': [
+        'Boruto', 'Chino', 'Danzo', 'Fugaken',
+        'Gaara', 'Hinta', 'Itach', 'Jiraia',
+        'Kakashi', 'Lee', 'Minato', 'Naruto',
+        'Obito', 'Paim', 'Sasuke', 'Nagato'
+      ],
+    }
   }
 ];
