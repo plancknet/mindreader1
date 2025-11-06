@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { z } from 'zod';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -57,6 +58,19 @@ const Auth = () => {
       return;
     }
 
+    // Validate email format
+    const emailSchema = z.string().email();
+    try {
+      emailSchema.parse(email);
+    } catch {
+      toast({
+        title: 'Email inválido',
+        description: 'Por favor, insira um endereço de email válido',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOtp({
@@ -90,6 +104,19 @@ const Auth = () => {
       toast({
         title: t('auth.toast.missingEmailTitle'),
         description: t('auth.toast.missingEmailDescription'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailSchema = z.string().email();
+    try {
+      emailSchema.parse(email);
+    } catch {
+      toast({
+        title: 'Email inválido',
+        description: 'Por favor, insira um endereço de email válido',
         variant: 'destructive',
       });
       return;
@@ -132,13 +159,29 @@ const Auth = () => {
       return;
     }
 
-    if (password.length < 8) {
-      toast({
-        title: t('auth.toast.weakPasswordTitle'),
-        description: t('auth.toast.weakPasswordDescription'),
-        variant: 'destructive',
-      });
-      return;
+    // Validate email and password with zod
+    const authSchema = z.object({
+      email: z.string().trim().email('Email inválido').max(255, 'Email muito longo'),
+      password: z.string()
+        .min(8, 'Senha deve ter no mínimo 8 caracteres')
+        .max(128, 'Senha muito longa')
+        .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
+        .regex(/[a-z]/, 'Senha deve conter letra minúscula')
+        .regex(/[0-9]/, 'Senha deve conter número'),
+    });
+
+    try {
+      authSchema.parse({ email, password });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast({
+          title: 'Erro de validação',
+          description: firstError.message,
+          variant: 'destructive',
+        });
+        return;
+      }
     }
 
     setIsLoading(true);

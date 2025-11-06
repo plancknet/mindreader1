@@ -33,13 +33,33 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Verificar se já existe customer
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      console.log("Existing Stripe customer found:", customerId);
+    // Check database first for Stripe customer ID
+    const { data: premiumUser } = await supabaseClient
+      .from('premium_users')
+      .select('stripe_customer_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    let customerId = premiumUser?.stripe_customer_id;
+
+    // If not in database, check Stripe by email
+    if (!customerId) {
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+        console.log("Existing Stripe customer found:", customerId);
+        
+        // Store customer ID in database for future use
+        await supabaseClient
+          .from('premium_users')
+          .upsert({ 
+            user_id: user.id, 
+            stripe_customer_id: customerId 
+          });
+      }
+    } else {
+      console.log("Stripe customer ID from database:", customerId);
     }
 
     // Criar checkout session
