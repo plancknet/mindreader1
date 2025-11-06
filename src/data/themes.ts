@@ -155,5 +155,55 @@ export const themes: Theme[] = [
         'Jaguar', 'Narvalo', 'Elefante', 'Delfino'
       ],
     }
+  },
+  {
+    id: 'brainrots',
+    emoji: '�Y��',
+    name: {
+      'pt-BR': 'Brainrots',
+      'en': 'Brainrots',
+      'es': 'Brainrots',
+      'zh-CN': 'Brainrots',
+      'fr': 'Brainrots',
+      'it': 'Brainrots',
+    },
+    words: {
+      'pt-BR': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+      'en': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+      'es': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+      'zh-CN': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+      'fr': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+      'it': [
+        'Bombardilo Crocodilo', 'Cappuccino Assassino', 'Dul Dul Dul', 'Elephanto Frigo',
+        'Frigo Camelo', 'Graipuss Medussi', 'Headless Horseman', 'Job Job Job Sahur',
+        'Karkerkar Kurkur', 'La Vacca Staturno Saturnita', 'Mariachi Corazoni', 'Noobini Pizzanini',
+        'Odin Din Din Dun', 'Pipi Kiwi', 'Quesadilla Crocodila', 'Strawberry Elephant'
+      ],
+    }
   }
 ];
