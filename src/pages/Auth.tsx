@@ -64,8 +64,6 @@ const Auth = () => {
   };
 
   const handleMagicLink = async () => {
-    if (!isSignUp) return;
-
     if (!email) {
       toast({
         title: t('auth.toast.missingEmailTitle'),
@@ -93,15 +91,15 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/connect-mind`,
+          emailRedirectTo: `${window.location.origin}/complete-signup`,
         },
       });
 
       if (error) throw error;
 
       toast({
-        title: t('auth.toast.magicLinkSentTitle'),
-        description: t('auth.toast.magicLinkSentDescription'),
+        title: 'Link enviado!',
+        description: 'Verifique seu email e clique no link para completar o cadastro.',
       });
     } catch (error: any) {
       toast({
@@ -329,10 +327,10 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <form onSubmit={handleEmailAuth} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">{t('auth.emailLabel')}</Label>
-                    <div className={isSignUp ? 'flex gap-2' : undefined}>
+                {isSignUp ? (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{t('auth.emailLabel')}</Label>
                       <Input
                         id="email"
                         type="email"
@@ -341,71 +339,84 @@ const Auth = () => {
                         onChange={(event) => setEmail(event.target.value)}
                         disabled={isLoading}
                         required
-                        className={isSignUp ? 'flex-1' : undefined}
                       />
-                      {isSignUp && (
-                        <Button
-                          type="button"
-                          onClick={handleMagicLink}
-                          disabled={isLoading}
-                          variant="secondary"
-                          className="shrink-0"
-                        >
-                          {t('auth.magicLinkButton')}
-                        </Button>
-                      )}
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="password">{t('auth.passwordLabel')}</Label>
-                    <div className="relative">
+                    <Button 
+                      type="button"
+                      onClick={handleMagicLink}
+                      className="w-full h-11" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+                      Enviar link de acesso
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleEmailAuth} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{t('auth.emailLabel')}</Label>
                       <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder={t('auth.passwordPlaceholder')}
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        id="email"
+                        type="email"
+                        placeholder={t('auth.emailPlaceholder')}
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
                         disabled={isLoading}
                         required
-                        minLength={8}
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        tabIndex={-1}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
                     </div>
-                  </div>
 
-                  <Button type="submit" className="w-full h-11" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                    {isSignUp ? t('auth.submitSignUp') : t('auth.submitLogin')}
-                  </Button>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">{t('auth.passwordLabel')}</Label>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder={t('auth.passwordPlaceholder')}
+                          value={password}
+                          onChange={(event) => setPassword(event.target.value)}
+                          disabled={isLoading}
+                          required
+                          minLength={8}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
 
-                  <div className="flex flex-col gap-2">
+                    <Button type="submit" className="w-full h-11" disabled={isLoading}>
+                      {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+                      {t('auth.submitLogin')}
+                    </Button>
+                  </form>
+                )}
+
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                  >
+                    {isSignUp ? t('auth.toggleToLogin') : t('auth.toggleToSignUp')}
+                  </button>
+                  
+                  {!isSignUp && (
                     <button
                       type="button"
-                      onClick={() => setIsSignUp(!isSignUp)}
+                      onClick={() => setIsForgotPassword(true)}
                       className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
                     >
-                      {isSignUp ? t('auth.toggleToLogin') : t('auth.toggleToSignUp')}
+                      {t('auth.forgotPassword')}
                     </button>
-                    
-                    {!isSignUp && (
-                      <button
-                        type="button"
-                        onClick={() => setIsForgotPassword(true)}
-                        className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
-                      >
-                        {t('auth.forgotPassword')}
-                      </button>
-                    )}
-                  </div>
-                </form>
+                  )}
+                </div>
               </>
             )}
           </CardContent>

@@ -10,6 +10,7 @@ import { Session } from "@supabase/supabase-js";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import CompleteSignup from "./pages/CompleteSignup";
 import Premium from "./pages/Premium";
 import PremiumSuccess from "./pages/PremiumSuccess";
 import ConnectMind from "./pages/MindReader/ConnectMind";
@@ -67,6 +68,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/connect-mind" replace />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/complete-signup" element={<CompleteSignup />} />
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
