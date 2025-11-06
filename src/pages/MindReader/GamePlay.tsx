@@ -445,7 +445,7 @@ const GamePlay = () => {
         <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-left')} ${getQuadrantOpacity('top-left')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-left'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -456,7 +456,7 @@ const GamePlay = () => {
         <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-right')} ${getQuadrantOpacity('top-right')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['top-right'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -467,7 +467,7 @@ const GamePlay = () => {
         <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-left')} ${getQuadrantOpacity('bottom-left')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-left'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
@@ -478,7 +478,7 @@ const GamePlay = () => {
         <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-right')} ${getQuadrantOpacity('bottom-right')}`}>
           <div className="text-center space-y-3 relative z-10">
             {quadrantWords['bottom-right'].map((word, idx) => (
-              <div key={idx} className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg">
+              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
                 {word}
               </div>
             ))}
