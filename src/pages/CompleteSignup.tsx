@@ -20,6 +20,23 @@ const CompleteSignup = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    if (url.hash === '#') {
+      url.hash = '';
+      if (url.searchParams.get('from') === 'email') {
+        url.searchParams.delete('from');
+      }
+      const searchString = url.searchParams.toString();
+      const cleanedPath = `${url.pathname}${searchString ? `?${searchString}` : ''}`;
+      window.history.replaceState({}, document.title, cleanedPath);
+    }
+  }, []);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setIsAuthenticated(true);
