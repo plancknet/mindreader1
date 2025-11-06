@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 
 export default function PremiumSuccess() {
   const navigate = useNavigate();
@@ -61,7 +63,11 @@ export default function PremiumSuccess() {
 
   if (isVerifying) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <LanguageSelector />
+          <LogoutButton />
+        </div>
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center space-y-4">
             <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
@@ -73,7 +79,11 @@ export default function PremiumSuccess() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <LanguageSelector />
+        <LogoutButton />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">

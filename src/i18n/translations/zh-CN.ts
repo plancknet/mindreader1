@@ -6,7 +6,8 @@ export const zhCN = {
     playAgain: '再玩一次',
     backHome: '返回首页',
     select: '选择',
-    send: '发送',
+    send: '??',
+    logout: '????',
   },
   auth: {
     title: 'MindReader',

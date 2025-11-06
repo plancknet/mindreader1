@@ -7,6 +7,7 @@ export const es = {
     backHome: 'Volver al Inicio',
     select: 'Seleccionar',
     send: 'Enviar',
+    logout: 'Cerrar sesión',
   },
   auth: {
     title: 'MindReader',

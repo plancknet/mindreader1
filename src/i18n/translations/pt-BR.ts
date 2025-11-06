@@ -7,6 +7,7 @@ export const ptBR = {
     backHome: 'Voltar ao Início',
     select: 'Selecionar',
     send: 'Enviar',
+    logout: 'Sair',
   },
   auth: {
     title: 'MindReader',
@@ -85,7 +86,7 @@ export const ptBR = {
     step3Title: 'Processo de Eliminação',
     step3Text: 'A cada rodada, metade das palavras são eliminadas baseadas na direção detectada. Gire a cabeça para o LADO que você quer ELIMINAR. O lado em que sua palavra está ficará com cores VERDE ou AMARELA.',
     step4Title: 'Método Alternativo: Detecção por Digitação',
-    step4Text: 'Ao digitar a palavra inicial, você pode substituir a ÚLTIMA LETRA por uma letra que indica sua palavra pensada. Como cada palavra começa com uma letra diferente, basta digitar essa letra no final. Por exemplo: se pensou em "Brasil", digite "INICIB" ao invés de "INICIAR".',
+    step4Text: 'Ao digitar a palavra para iniciar, você pode substituir a ÚLTIMA LETRA por uma letra que indica sua palavra pensada. Como cada palavra começa com uma letra diferente, basta digitar essa letra no final. Por exemplo: se pensou em "Brasil", digite "INICIAB" ao invés de "INICIAR".',
     tipsTitle: 'Dicas para Melhor Detecção',
     tip1: 'Mantenha a posição durante a contagem regressiva',
     tip2: 'E o principal. Seja DISCRETO, faça MOVIMENTOS SUAVES.',

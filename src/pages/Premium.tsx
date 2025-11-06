@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Sparkles, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 
 export default function Premium() {
   const navigate = useNavigate();
@@ -77,7 +79,11 @@ export default function Premium() {
 
   if (checkingStatus) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <LanguageSelector />
+          <LogoutButton />
+        </div>
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -85,7 +91,11 @@ export default function Premium() {
 
   if (isPremium) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <LanguageSelector />
+          <LogoutButton />
+        </div>
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -107,7 +117,11 @@ export default function Premium() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <LanguageSelector />
+        <LogoutButton />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">

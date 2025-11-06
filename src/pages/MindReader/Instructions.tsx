@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, Eye, ArrowLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -11,6 +13,11 @@ const Instructions = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex justify-end gap-2">
+          <LanguageSelector />
+          <LogoutButton />
+        </div>
+
         <Button 
           variant="ghost" 
           onClick={() => navigate('/')}

@@ -7,6 +7,7 @@ import { AlertCircle, Camera, Brain } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { InstallPWA } from '@/components/InstallPWA';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const ConnectMind = () => {
@@ -30,8 +31,9 @@ const ConnectMind = () => {
   return (
     <div className="min-h-screen bg-background p-2 md:p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-3 md:space-y-8">
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-end gap-2 mb-2">
           <LanguageSelector />
+          <LogoutButton />
         </div>
         
         <div className="text-center space-y-2 md:space-y-4">

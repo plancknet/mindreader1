@@ -7,6 +7,8 @@ import { Brain } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { START_WORDS } from '@/i18n/languages';
 import { themes } from '@/data/themes';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -133,6 +135,11 @@ const StartPrompt = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 relative">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <LanguageSelector />
+        <LogoutButton />
+      </div>
+
       {/* Central floating card */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
         <Card className="p-8 shadow-glow bg-card/20 border border-border/30">

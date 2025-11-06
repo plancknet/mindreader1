@@ -7,6 +7,8 @@ import { Brain, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { PaywallModal } from '@/components/PaywallModal';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LogoutButton } from '@/components/LogoutButton';
 
 const SelectTheme = () => {
   const navigate = useNavigate();
@@ -47,6 +49,11 @@ const SelectTheme = () => {
       />
       
       <div className="max-w-4xl w-full space-y-8">
+        <div className="flex justify-end gap-2">
+          <LanguageSelector />
+          <LogoutButton />
+        </div>
+
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <Brain className="w-16 h-16 text-primary animate-pulse" />

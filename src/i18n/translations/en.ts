@@ -7,6 +7,7 @@ export const en = {
     backHome: 'Back to Home',
     select: 'Select',
     send: 'Send',
+    logout: 'Log out',
   },
   auth: {
     title: 'MindReader',
