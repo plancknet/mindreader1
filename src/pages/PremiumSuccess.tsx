@@ -102,7 +102,7 @@ export default function PremiumSuccess() {
             </>
           )}
           {!isConfirmed && (
-            <Button onClick={() => navigate('/select-theme')} variant="outline" className="w-full">
+            <Button onClick={() => navigate('/premium')} variant="outline" className="w-full">
               Voltar
             </Button>
           )}
