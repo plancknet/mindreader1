@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,11 +28,15 @@ serve(async (req) => {
       throw new Error("Usuário não autenticado");
     }
 
-    const { sessionId } = await req.json();
+    const PaymentSchema = z.object({
+      sessionId: z.string()
+        .min(1, 'Session ID is required')
+        .regex(/^cs_[a-zA-Z0-9_]+$/, 'Invalid Stripe session ID format')
+        .max(255, 'Session ID too long')
+    });
 
-    if (!sessionId) {
-      throw new Error("Session ID é obrigatório");
-    }
+    const body = await req.json();
+    const { sessionId } = PaymentSchema.parse(body);
 
     console.log("Verifying payment for session:", sessionId);
 
