@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Camera, Brain } from 'lucide-react';
+import { AlertCircle, Camera, Brain, BookOpen } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { InstallPWA } from '@/components/InstallPWA';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -78,7 +78,7 @@ const ConnectMind = () => {
           </div>
         </Card>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-3">
           <Button
             size="lg"
             onClick={handleConnect}
@@ -87,6 +87,16 @@ const ConnectMind = () => {
           >
             <Brain className="mr-2 h-5 w-5 md:h-6 md:w-6" />
             {t('connectMind.connectButton')}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => navigate('/instructions')}
+            className="text-primary font-semibold hover:text-primary"
+          >
+            <BookOpen className="mr-2 h-4 w-4" />
+            {t('connectMind.instructionsButton')}
           </Button>
         </div>
       </div>
