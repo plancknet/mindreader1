@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { DEFAULT_LANGUAGE } from '@/i18n/languages';
+import { createContext, useContext, useState, ReactNode } from 'react';
+import { DEFAULT_LANGUAGE, languages } from '@/i18n/languages';
 
 interface LanguageContextType {
   language: string;
@@ -10,27 +10,68 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const LANGUAGE_STORAGE_KEY = 'mindreader-language';
 
+const resolveLanguage = (candidate?: string | null): string | null => {
+  if (!candidate) return null;
+  const normalized = candidate.toLowerCase();
+
+  const exactMatch = languages.find(
+    (language) => language.code.toLowerCase() === normalized,
+  );
+  if (exactMatch) return exactMatch.code;
+
+  const baseCode = normalized.split('-')[0];
+  const partialMatch = languages.find((language) =>
+    language.code.toLowerCase().startsWith(baseCode),
+  );
+  return partialMatch?.code ?? null;
+};
+
+const loadStoredLanguage = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return resolveLanguage(window.localStorage.getItem(LANGUAGE_STORAGE_KEY));
+  } catch {
+    return null;
+  }
+};
+
+const detectBrowserLanguage = (): string => {
+  if (typeof navigator === 'undefined') return DEFAULT_LANGUAGE;
+
+  const candidates: string[] = [];
+  if (Array.isArray(navigator.languages) && navigator.languages.length > 0) {
+    candidates.push(...navigator.languages);
+  }
+  if (navigator.language) {
+    candidates.push(navigator.language);
+  }
+
+  for (const candidate of candidates) {
+    const match = resolveLanguage(candidate);
+    if (match) return match;
+  }
+
+  return DEFAULT_LANGUAGE;
+};
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<string>(() => {
-    // Try to get from localStorage first
-    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored) return stored;
+    const storedLanguage = loadStoredLanguage();
+    if (storedLanguage) return storedLanguage;
 
-    // Try to detect browser language
-    const browserLang = navigator.language;
-    if (browserLang.startsWith('pt')) return 'pt-BR';
-    if (browserLang.startsWith('es')) return 'es';
-    if (browserLang.startsWith('zh')) return 'zh-CN';
-    if (browserLang.startsWith('fr')) return 'fr';
-    if (browserLang.startsWith('it')) return 'it';
-    if (browserLang.startsWith('en')) return 'en';
-
-    return DEFAULT_LANGUAGE;
+    return detectBrowserLanguage();
   });
 
   const setLanguage = (lang: string) => {
-    setLanguageState(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    const resolvedLanguage = resolveLanguage(lang) ?? DEFAULT_LANGUAGE;
+    setLanguageState(resolvedLanguage);
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem(LANGUAGE_STORAGE_KEY, resolvedLanguage);
+      } catch {
+        // ignore storage write errors
+      }
+    }
   };
 
   return (

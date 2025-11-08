@@ -1,4 +1,5 @@
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { DEFAULT_LANGUAGE } from '@/i18n/languages';
 import { ptBR } from '@/i18n/translations/pt-BR';
 import { en } from '@/i18n/translations/en';
 import { es } from '@/i18n/translations/es';
@@ -17,16 +18,17 @@ const translations: Record<string, typeof ptBR> = {
 
 export const useTranslation = () => {
   const { language } = useLanguageContext();
+  const fallbackLanguage = DEFAULT_LANGUAGE;
 
   const t = (key: string, vars?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = translations[language] || translations['pt-BR'];
+    let value: any = translations[language] || translations[fallbackLanguage];
 
     for (const k of keys) {
       value = value?.[k];
       if (value === undefined) {
-        // Fallback to Portuguese
-        value = translations['pt-BR'];
+        // Fallback to default language
+        value = translations[fallbackLanguage];
         for (const fallbackKey of keys) {
           value = value?.[fallbackKey];
           if (value === undefined) return key;

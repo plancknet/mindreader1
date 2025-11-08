@@ -14,7 +14,7 @@ export const languages: Language[] = [
   { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹' },
 ];
 
-export const DEFAULT_LANGUAGE = 'pt-BR';
+export const DEFAULT_LANGUAGE = 'en';
 
 export const START_WORDS: Record<string, string> = {
   'pt-BR': 'INICIAR',
