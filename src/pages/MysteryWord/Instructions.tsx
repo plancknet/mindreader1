@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
-import { ArrowLeft, MessageSquare, Type, Sparkles, Volume2 } from 'lucide-react';
+import { ArrowLeft, Brain, MessageCircle, CheckCircle, Sparkles } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 
@@ -47,14 +47,14 @@ const MysteryWordInstructions = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow border-primary/20">
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 p-3 rounded-full">
-                <MessageSquare className="h-6 w-6 text-primary" />
+                <Brain className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">
-                  {t('mysteryWordInstructions.step1Title')}
+                  {t('mentalConversationInstructions.step1Title')}
                 </h3>
                 <p className="text-muted-foreground">
-                  {t('mysteryWordInstructions.step1Text')}
+                  {t('mentalConversationInstructions.step1Text')}
                 </p>
               </div>
             </div>
@@ -63,14 +63,30 @@ const MysteryWordInstructions = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow border-primary/20">
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 p-3 rounded-full">
-                <Type className="h-6 w-6 text-primary" />
+                <MessageCircle className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">
-                  {t('mysteryWordInstructions.step2Title')}
+                  {t('mentalConversationInstructions.step2Title')}
                 </h3>
                 <p className="text-muted-foreground">
-                  {t('mysteryWordInstructions.step2Text')}
+                  {t('mentalConversationInstructions.step2Text')}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 hover:shadow-lg transition-shadow border-primary/20">
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 p-3 rounded-full">
+                <CheckCircle className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">
+                  {t('mentalConversationInstructions.step3Title')}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t('mentalConversationInstructions.step3Text')}
                 </p>
               </div>
             </div>
@@ -83,26 +99,10 @@ const MysteryWordInstructions = () => {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">
-                  {t('mysteryWordInstructions.step3Title')}
+                  {t('mentalConversationInstructions.step4Title')}
                 </h3>
                 <p className="text-muted-foreground">
-                  {t('mysteryWordInstructions.step3Text')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow border-primary/20">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 p-3 rounded-full">
-                <Volume2 className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  {t('mysteryWordInstructions.step4Title')}
-                </h3>
-                <p className="text-muted-foreground">
-                  {t('mysteryWordInstructions.step4Text')}
+                  {t('mentalConversationInstructions.step4Text')}
                 </p>
               </div>
             </div>
@@ -113,16 +113,16 @@ const MysteryWordInstructions = () => {
         <Card className="p-6 bg-primary/5 border-primary/20 mb-8">
           <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            {t('mysteryWordInstructions.tipsTitle')}
+            {t('mentalConversationInstructions.tipsTitle')}
           </h3>
           <ul className="space-y-2 text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-primary mt-1">•</span>
-              {t('mysteryWordInstructions.tip1')}
+              {t('mentalConversationInstructions.tip1')}
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-1">•</span>
-              {t('mysteryWordInstructions.tip2')}
+              {t('mentalConversationInstructions.tip2')}
             </li>
           </ul>
         </Card>
@@ -130,7 +130,7 @@ const MysteryWordInstructions = () => {
         {/* Action Button */}
         <div className="text-center">
           <Button
-            onClick={() => navigate('/mystery-word')}
+            onClick={() => navigate('/mental-conversation')}
             size="lg"
             className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
           >
