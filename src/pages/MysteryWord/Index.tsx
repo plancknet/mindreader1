@@ -184,7 +184,7 @@ const MysteryWord = () => {
               <Brain className="w-20 h-20 text-primary animate-pulse" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-2">
-              Palavra {wordCount}
+              ...
             </h2>
             <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent animate-pulse">
