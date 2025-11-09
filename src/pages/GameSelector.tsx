@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, Grid3x3, MessageSquare, Sparkles, HelpCircle } from 'lucide-react';
+import { Brain, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,14 +17,13 @@ import {
 const GameSelector = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [instructionsOpen, setInstructionsOpen] = useState(false);
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
   const baseGames = [
     {
       id: 'magic-quadrants',
       icon: Grid3x3,
       path: '/connect-mind',
+      instructionsPath: '/mind-reader/instructions',
       color: 'from-purple-500 to-pink-500',
       translationKey: 'gameSelector.cards.magicQuadrants',
       instructionsKey: 'gameSelector.cards.magicQuadrants.instructions'
@@ -88,9 +87,7 @@ const GameSelector = () => {
             return (
               <Card
                 key={game.id}
-                className={`p-8 hover:scale-105 transition-all group relative overflow-hidden ${
-                  game.disabled ? 'opacity-50' : ''
-                }`}
+                className="p-8 hover:scale-105 transition-all group relative overflow-hidden"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
                 
@@ -110,9 +107,7 @@ const GameSelector = () => {
                   <div className="flex gap-2">
                     <Button 
                       className="flex-1" 
-                      variant={game.disabled ? "outline" : "default"}
-                      disabled={game.disabled}
-                      onClick={() => !game.disabled && navigate(game.path)}
+                      onClick={() => navigate(game.path)}
                     >
                       {game.disabled ? t('gameSelector.comingSoon') : t('gameSelector.play')}
                     </Button>
@@ -121,7 +116,7 @@ const GameSelector = () => {
                       variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        openInstructions(game.id);
+                        navigate(game.instructionsPath);
                       }}
                     >
                       <HelpCircle className="w-4 h-4" />
