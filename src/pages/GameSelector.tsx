@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
@@ -35,6 +35,7 @@ const GAME_CARDS = [
 
 const GameSelector = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const games = GAME_CARDS.map((game) => {
@@ -100,7 +101,7 @@ const GameSelector = () => {
                       variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(game.instructionsPath);
+                        navigate(game.instructionsPath, { state: { from: location.pathname } });
                       }}
                       aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
                     >

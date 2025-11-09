@@ -1,4 +1,4 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import { LogoutButton } from '@/components/LogoutButton';
 const Result = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const word = searchParams.get('word') || '';
   const { incrementUsage } = useUsageLimit();
@@ -82,7 +83,11 @@ const Result = () => {
             <Button size="lg" variant="outline" onClick={() => navigate('/')}>
               {t('common.backHome')}
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/instructions')}>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate('/mind-reader/instructions', { state: { from: location.pathname } })}
+            >
               <BookOpen className="mr-2" />
               {t('connectMind.instructionsButton')}
             </Button>

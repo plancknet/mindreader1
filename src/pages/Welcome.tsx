@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 const Welcome = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -65,7 +66,7 @@ const Welcome = () => {
               <Card
                 key={game.id}
                 className="p-6 hover:scale-105 transition-all cursor-pointer group"
-                onClick={() => navigate(game.instructionsPath)}
+                onClick={() => navigate(game.instructionsPath, { state: { from: location.pathname } })}
               >
                 <div className="space-y-4">
                   <div className="flex justify-center">

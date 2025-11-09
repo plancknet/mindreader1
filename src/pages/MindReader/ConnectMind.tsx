@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -12,6 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 const ConnectMind = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const [isConnecting, setIsConnecting] = useState(false);
   const { videoRef, isModelLoading, error, cameraActive } = useHeadPoseDetection();
@@ -92,7 +93,7 @@ const ConnectMind = () => {
             type="button"
             size="sm"
             variant="ghost"
-            onClick={() => navigate('/instructions')}
+            onClick={() => navigate('/mind-reader/instructions', { state: { from: location.pathname } })}
             className="text-primary font-semibold hover:text-primary"
           >
             <BookOpen className="mr-2 h-4 w-4" />

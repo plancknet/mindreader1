@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, Eye, ArrowLeft, ChevronRight } from 'lucide-react';
@@ -8,6 +8,9 @@ import { LogoutButton } from '@/components/LogoutButton';
 
 const Instructions = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const navigationState = (location.state ?? {}) as { from?: string };
+  const backTarget = navigationState.from ?? '/game-selector';
   const { t } = useTranslation();
 
   return (
@@ -20,7 +23,7 @@ const Instructions = () => {
 
         <Button 
           variant="ghost" 
-          onClick={() => navigate('/')}
+          onClick={() => navigate(backTarget)}
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />

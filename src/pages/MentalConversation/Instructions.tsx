@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -8,6 +8,9 @@ import { LogoutButton } from '@/components/LogoutButton';
 
 const MentalConversationInstructions = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const navigationState = (location.state ?? {}) as { from?: string };
+  const backTarget = navigationState.from ?? '/game-selector';
   const { t } = useTranslation();
 
   return (
@@ -22,7 +25,7 @@ const MentalConversationInstructions = () => {
         {/* Back Button */}
         <Button
           variant="ghost"
-          onClick={() => navigate('/game-selector')}
+          onClick={() => navigate(backTarget)}
           className="mb-6 hover:bg-primary/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
