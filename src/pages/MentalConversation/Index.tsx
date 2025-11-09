@@ -73,6 +73,8 @@ const COUNTRIES = [
   'vietnã', 'zimbábue', 'zâmbia', 'áfrica do sul', 'áustria', 'índia'
 ];
 
+const TTS_ENABLED = import.meta.env.VITE_ENABLE_TTS === 'true';
+
 const MentalConversation = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
@@ -113,7 +115,11 @@ const MentalConversation = () => {
 
   const addAiMessage = (text: string) => {
     setMessages(prev => [...prev, { text, sender: 'ai' }]);
-    
+
+    if (!TTS_ENABLED || !text.trim()) {
+      return;
+    }
+
     // Generate and play audio for AI message (non-blocking)
     (async () => {
       try {
