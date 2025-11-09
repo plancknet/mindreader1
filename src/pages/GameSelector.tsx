@@ -16,14 +16,6 @@ const GAME_CARDS = [
     color: 'from-purple-500 to-pink-500',
   },
   {
-    id: 'mental-conversation',
-    translationKey: 'mentalConversation',
-    icon: MessageCircle,
-    path: '/mental-conversation',
-    instructionsPath: '/mental-conversation/instructions',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
     id: 'mystery-word',
     translationKey: 'mysteryWord',
     icon: Sparkles,
