@@ -204,7 +204,7 @@ const MysteryWord = () => {
             </h2>
             <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent animate-pulse">
-                {currentWord || '...'}
+                {currentWord ? currentWord.toUpperCase() : '...'}
               </div>
             </Card>
             <Button
