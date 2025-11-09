@@ -20,21 +20,57 @@ interface Message {
 }
 
 const ANIMALS = [
-  'abelha', 'águia', 'baleia', 'borboleta', 'cachorro', 'camelo', 'cavalo', 'coelho', 
-  'elefante', 'formiga', 'gato', 'girafa', 'gorila', 'hipopótamo', 'jacaré', 'leão',
-  'macaco', 'onça', 'papagaio', 'peixe', 'rato', 'sapo', 'tigre', 'urso', 'zebra'
+  'aguti', 'aie-aie', 'alce', 'anta', 'antílope', 'babuíno', 'baleia', 'bicho-preguiça', 'bisão',
+  'boi', 'burro', 'búfalo', 'cabra', 'cachorro', 'camelo', 'canguru', 'capivara', 'capuchinho',
+  'caracal', 'cavalo', 'chimpanzé', 'chinchila', 'coelho', 'cutia', 'delfim', 'doninha',
+  'dromedário', 'elefante', 'esquilo', 'foca', 'gato', 'gazela', 'gerbil', 'girafa', 'gnu',
+  'golfinho', 'gorila', 'guepardo', 'hamster', 'hiena', 'hipopótamo', 'jaguar', 'jaguarundi',
+  'koala', 'leopardo', 'leão', 'leão-marinho', 'lobo', 'lobo-guará', 'lontra', 'lêmure',
+  'macaco', 'macaco-aranha', 'macaco-prego', 'mandril', 'mangusto', 'morcego', 'morsa', 'mula',
+  'musaranho', 'narval', 'okapi', 'onça', 'orca', 'ornitorrinco', 'ouriço', 'ovelha', 'paca',
+  'panda', 'porco', 'porquinho-da-índia', 'preguiça', 'pônei', 'raposa', 'rato', 'rena',
+  'rinoceronte', 'sagui', 'suricato', 'tamanduá', 'tarsier', 'tatu', 'texugo', 'tigre', 'topo',
+  'urso', 'urso-negro', 'urso-pardo', 'urso-polar', 'vaca', 'veado', 'zebra'
 ];
 
 const FRUITS = [
-  'abacate', 'abacaxi', 'amora', 'banana', 'caju', 'cereja', 'coco', 'damasco',
-  'figo', 'framboesa', 'goiaba', 'laranja', 'limão', 'maçã', 'mamão', 'manga',
-  'maracujá', 'melancia', 'melão', 'morango', 'pera', 'pêssego', 'tangerina', 'uva'
+  'abacate', 'abacaxi', 'acerola', 'ameixa', 'amora', 'araçá', 'ata', 'atemoia', 'banana',
+  'biribá', 'buriti', 'cabeluda', 'cagaita', 'caju', 'cajá', 'cambuci', 'carambola', 'cereja',
+  'cupuaçu', 'damasco', 'durian', 'figo', 'framboesa', 'fruta-do-conde', 'goiaba', 'graviola',
+  'groselha', 'grumixama', 'ingá', 'jabuticaba', 'jaca', 'jambo', 'jenipapo', 'kiwi', 'laranja',
+  'lichia', 'limão', 'manga', 'mangaba', 'mangostão', 'maracujá', 'maçã', 'melancia', 'melão',
+  'mirtilo', 'morango', 'murici', 'nectarina', 'noni', 'pequi', 'pera', 'physalis', 'pinha',
+  'pitaia', 'pitanga', 'pitomba', 'pupunha', 'pêssego', 'rambutã', 'romã', 'sapota', 'sapoti',
+  'seriguela', 'tamarillo', 'tamarindo', 'tangerina', 'taperebá', 'umbu', 'uva'
 ];
 
 const COUNTRIES = [
-  'alemanha', 'argentina', 'austrália', 'bélgica', 'brasil', 'canadá', 'chile', 'china',
-  'colômbia', 'egito', 'espanha', 'frança', 'grécia', 'índia', 'inglaterra', 'itália',
-  'japão', 'méxico', 'noruega', 'peru', 'portugal', 'rússia', 'suécia', 'tailândia', 'uruguai'
+  'afeganistão', 'albânia', 'alemanha', 'andorra', 'angola', 'antígua e barbuda', 'argentina',
+  'argélia', 'armênia', 'arábia saudita', 'austrália', 'azerbaijão', 'bahamas', 'bahrein',
+  'bangladesh', 'barbados', 'belize', 'benin', 'bielorrússia', 'bolívia', 'botsuana', 'brasil',
+  'brunei', 'bulgária', 'burquina fasso', 'burúndi', 'butão', 'bélgica', 'bósnia e herzegovina',
+  'cabo verde', 'camarões', 'camboja', 'canadá', 'catar', 'cazaquistão', 'chade', 'chile',
+  'china', 'chipre', 'colômbia', 'comores', 'congo', 'coreia do norte', 'coreia do sul',
+  'costa rica', 'costa do marfim', 'croácia', 'cuba', 'dinamarca', 'dominica', 'egito',
+  'el salvador', 'emirados árabes unidos', 'equador', 'eritreia', 'eslováquia', 'eslovênia',
+  'espanha', 'estados unidos', 'estônia', 'etiópia', 'fiji', 'filipinas', 'finlândia', 'frança',
+  'gabão', 'gana', 'geórgia', 'granada', 'grécia', 'guatemala', 'guiana', 'guiné',
+  'guiné equatorial', 'guiné-bissau', 'gâmbia', 'haiti', 'holanda', 'honduras', 'hungria',
+  'ilhas maldivas', 'indonésia', 'inglaterra', 'iraque', 'irlanda', 'irã', 'islândia', 'israel',
+  'itália', 'iémen', 'jamaica', 'japão', 'jordânia', 'kiribati', 'kosovo', 'kuwait', 'laos',
+  'lesoto', 'letônia', 'libéria', 'liechtenstein', 'lituânia', 'luxemburgo', 'líbano', 'líbia',
+  'macedônia do norte', 'madagascar', 'malaui', 'mali', 'malta', 'malásia', 'marrocos', 'maurício',
+  'moldávia', 'mongólia', 'montenegro', 'moçambique', 'méxico', 'mônaco', 'namíbia', 'nepal',
+  'nicarágua', 'nigéria', 'noruega', 'nova zelândia', 'níger', 'omã', 'panamá', 'papua-nova guiné',
+  'paquistão', 'paraguai', 'país de gales', 'países baixos', 'peru', 'polônia', 'portugal',
+  'quirguistão', 'quênia', 'reino unido', 'república centro-africana', 'república dominicana',
+  'república tcheca', 'romênia', 'ruanda', 'rússia', 'salomão', 'samoa', 'san marino',
+  'santa lúcia', 'senegal', 'serra leoa', 'somália', 'sri lanka', 'sudão', 'sudão do sul',
+  'suriname', 'suécia', 'suíça', 'são cristóvão e névis', 'são tomé e príncipe',
+  'são vicente e granadinas', 'sérvia', 'síria', 'tailândia', 'taiwan', 'tanzânia', 'tchéquia',
+  'timor-leste', 'togo', 'tonga', 'trinidad e tobago', 'tunísia', 'turcomenistão', 'turquia',
+  'tuvalu', 'ucrânia', 'uganda', 'uruguai', 'uzbequistão', 'vanuatu', 'vaticano', 'venezuela',
+  'vietnã', 'zimbábue', 'zâmbia', 'áfrica do sul', 'áustria', 'índia'
 ];
 
 const MentalConversation = () => {
