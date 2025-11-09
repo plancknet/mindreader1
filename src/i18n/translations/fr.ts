@@ -91,4 +91,30 @@ export const fr = {
     tip1: 'Maintenez la position pendant le compte à rebours',
     tip2: "Et le plus important. Soyez DISCRET, faites des MOUVEMENTS DOUX.",
   },
+  mentalConversation: {
+    instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot secret de votre ami. Répétez l’opération trois fois.\n3. Si l’app n’a toujours rien trouvé après ces trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une nouvelle interaction avec 1, 2 ou 3 mots pour signaler si la bonne réponse est la 1ʳᵉ, la 2ᵉ ou la 3ᵉ option.'
+  },
+  gameSelector: {
+    heading: 'Lecteurs d’esprit',
+    subheading: 'Choisissez une expérience de lecture mentale',
+    modalTitle: 'Comment jouer',
+    play: 'Jouer',
+    comingSoon: 'Bientôt',
+    cards: {
+      magicQuadrants: {
+        title: 'Quadrants Magiques',
+        description: 'Découvrez dans quel quadrant vous pensez grâce à la lecture mentale',
+        instructions: '1. L’IA affichera une grille avec des chiffres\n2. Pensez à un chiffre de cette grille\n3. L’IA posera des questions sur les quadrants\n4. Répondez honnêtement\n5. L’IA révélera le chiffre auquel vous pensiez !'
+      },
+      mysteryWord: {
+        title: 'Mot Mystérieux',
+        description: 'Pensez à un mot et laissez l’IA deviner lequel',
+        instructions: '1. Pensez à un mot (animal, fruit ou pays)\n2. L’IA posera des questions\n3. Répondez naturellement\n4. L’IA utilisera les indices pour découvrir le mot\n5. Voyez si elle trouve !'
+      },
+      mentalConversation: {
+        title: 'Conversation Mentale',
+        description: 'Discutez mentalement avec l’IA'
+      }
+    }
+  },
 };

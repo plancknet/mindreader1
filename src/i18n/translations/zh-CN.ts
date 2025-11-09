@@ -91,4 +91,30 @@ export const zhCN = {
     tip1: '在倒计时期间保持位置',
     tip2: '最重要的是。要谨慎，做平滑的动作。',
   },
+  mentalConversation: {
+    instructions: '1. 第一次互动会告诉应用你朋友选择的类别（1 个词 = 动物，2 个词 = 水果，3 个词 = 国家）。\n2. 接下来的三次互动中，最后一个词的首字母会告诉应用你朋友单词的首字母，重复三次。\n3. 如果拿到三个字母后仍然没猜中，应用会显示一个候选列表。\n4. 再发送一次由 1、2 或 3 个词组成的互动，表示正确答案是列表中的第 1、2 或 3 个选项。'
+  },
+  gameSelector: {
+    heading: '读心者',
+    subheading: '选择一次读心体验',
+    modalTitle: '怎么玩',
+    play: '开始',
+    comingSoon: '敬请期待',
+    cards: {
+      magicQuadrants: {
+        title: '魔法象限',
+        description: '通过读心来发现你正在想的象限',
+        instructions: '1. AI 会显示一个数字网格\n2. 在网格中想一个数字\n3. AI 会询问关于象限的问题\n4. 如实回答\n5. AI 会揭示你想到的数字！'
+      },
+      mysteryWord: {
+        title: '神秘单词',
+        description: '想一个单词并让 AI 猜出它',
+        instructions: '1. 想一个单词（动物、水果或国家）\n2. AI 会提问\n3. 用你的回答回复\n4. AI 会利用线索找出这个单词\n5. 看看它能不能猜中！'
+      },
+      mentalConversation: {
+        title: '心灵对话',
+        description: '与 AI 进行心灵交流'
+      }
+    }
+  },
 };

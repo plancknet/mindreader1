@@ -20,36 +20,40 @@ const GameSelector = () => {
   const [instructionsOpen, setInstructionsOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
-  const games = [
+  const baseGames = [
     {
       id: 'magic-quadrants',
-      title: 'Quadrantes Mágicos',
-      description: 'Descubra em qual quadrante você está pensando através da leitura mental',
       icon: Grid3x3,
       path: '/connect-mind',
       color: 'from-purple-500 to-pink-500',
-      instructions: '1. A IA mostrará uma grade com números\n2. Pense em um número da grade\n3. A IA fará perguntas sobre quadrantes\n4. Responda honestamente\n5. A IA revelará o número que você pensou!'
+      translationKey: 'gameSelector.cards.magicQuadrants',
+      instructionsKey: 'gameSelector.cards.magicQuadrants.instructions'
     },
     {
       id: 'mystery-word',
-      title: 'Palavra Misteriosa',
-      description: 'Pense em uma palavra e deixe a IA descobrir qual é',
       icon: Sparkles,
       path: '/mystery-word',
       color: 'from-blue-500 to-cyan-500',
-      instructions: '1. Pense em uma palavra (animal, fruta ou país)\n2. A IA fará perguntas\n3. Responda com suas respostas\n4. A IA usará pistas para descobrir a palavra\n5. Veja se ela acerta!'
+      translationKey: 'gameSelector.cards.mysteryWord',
+      instructionsKey: 'gameSelector.cards.mysteryWord.instructions'
     },
     {
       id: 'mental-conversation',
-      title: 'Conversa Mental',
-      description: 'Converse mentalmente com a IA',
       icon: MessageSquare,
       path: '/mental-conversation',
       color: 'from-green-500 to-emerald-500',
       disabled: false,
-      instructions: '1. Peça ao seu amigo para pensar em um ANIMAL, FRUTA ou PAÍS\n2. Não conte qual é a categoria\n3. A IA fará perguntas naturais\n4. Responda usando voz ou texto\n5. A IA descobrirá a palavra através das suas respostas!'
+      translationKey: 'gameSelector.cards.mentalConversation',
+      instructionsKey: 'mentalConversation.instructions'
     }
   ];
+
+  const games = baseGames.map(({ translationKey, instructionsKey, ...game }) => ({
+    ...game,
+    title: t(`${translationKey}.title`),
+    description: t(`${translationKey}.description`),
+    instructions: t(instructionsKey),
+  }));
 
   const openInstructions = (gameId: string) => {
     setSelectedGame(gameId);
@@ -71,10 +75,10 @@ const GameSelector = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Leitores de Mente
+            {t('gameSelector.heading')}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Escolha uma experiência de leitura mental
+            {t('gameSelector.subheading')}
           </p>
         </div>
 
@@ -110,7 +114,7 @@ const GameSelector = () => {
                       disabled={game.disabled}
                       onClick={() => !game.disabled && navigate(game.path)}
                     >
-                      {game.disabled ? 'Em breve' : 'Jogar'}
+                      {game.disabled ? t('gameSelector.comingSoon') : t('gameSelector.play')}
                     </Button>
                     <Button 
                       size="icon"
@@ -133,7 +137,7 @@ const GameSelector = () => {
       <Dialog open={instructionsOpen} onOpenChange={setInstructionsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Como Jogar</DialogTitle>
+            <DialogTitle>{t('gameSelector.modalTitle')}</DialogTitle>
             <DialogDescription className="whitespace-pre-line pt-4">
               {currentGameInstructions}
             </DialogDescription>

@@ -91,4 +91,30 @@ export const es = {
     tip1: 'Mantén la posición durante la cuenta regresiva',
     tip2: 'Y lo más importante. Sé DISCRETO, haz MOVIMIENTOS SUAVES.',
   },
+  mentalConversation: {
+    instructions: '1. Tu primera interacción revela la categoría elegida (1 palabra = Animal, 2 palabras = Fruta, 3 palabras = País).\n2. En las siguientes tres interacciones, la primera letra de la ÚLTIMA palabra indica la primera letra de la palabra de tu amigo. Repite esto 3 veces.\n3. Si con esas tres letras la app aún no acierta, mostrará una lista de posibilidades.\n4. Haz otra interacción con 1, 2 o 3 palabras para indicar si la respuesta correcta es la 1.ª, 2.ª o 3.ª opción.'
+  },
+  gameSelector: {
+    heading: 'Lectores de Mentes',
+    subheading: 'Elige una experiencia de lectura mental',
+    modalTitle: 'Cómo jugar',
+    play: 'Jugar',
+    comingSoon: 'Próximamente',
+    cards: {
+      magicQuadrants: {
+        title: 'Cuadrantes Mágicos',
+        description: 'Descubre en qué cuadrante estás pensando mediante la lectura mental',
+        instructions: '1. La IA mostrará una cuadrícula con números\n2. Piensa en un número de la cuadrícula\n3. La IA hará preguntas sobre los cuadrantes\n4. Responde con sinceridad\n5. ¡La IA revelará el número en el que pensaste!'
+      },
+      mysteryWord: {
+        title: 'Palabra Misteriosa',
+        description: 'Piensa en una palabra y deja que la IA descubra cuál es',
+        instructions: '1. Piensa en una palabra (animal, fruta o país)\n2. La IA hará preguntas\n3. Responde con tus respuestas\n4. La IA usará pistas para descubrir la palabra\n5. ¡Mira si acierta!'
+      },
+      mentalConversation: {
+        title: 'Conversación Mental',
+        description: 'Conversa mentalmente con la IA'
+      }
+    }
+  },
 };

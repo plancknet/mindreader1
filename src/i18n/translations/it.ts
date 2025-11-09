@@ -91,4 +91,30 @@ export const it = {
     tip1: 'Mantieni la posizione durante il conto alla rovescia',
     tip2: 'E la cosa più importante. Sii DISCRETO, fai MOVIMENTI FLUIDI.',
   },
+  mentalConversation: {
+    instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell’ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l’app non indovina, mostrerà un elenco di possibilità.\n4. Fai un’altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1ª, 2ª o 3ª opzione.'
+  },
+  gameSelector: {
+    heading: 'Lettori di Mente',
+    subheading: "Scegli un'esperienza di lettura mentale",
+    modalTitle: 'Come giocare',
+    play: 'Gioca',
+    comingSoon: 'In arrivo',
+    cards: {
+      magicQuadrants: {
+        title: 'Quadranti Magici',
+        description: 'Scopri in quale quadrante stai pensando grazie alla lettura della mente',
+        instructions: "1. L'IA mostrerà una griglia con numeri\n2. Pensa a un numero della griglia\n3. L'IA farà domande sui quadranti\n4. Rispondi con sincerità\n5. L'IA rivelerà il numero a cui stavi pensando!"
+      },
+      mysteryWord: {
+        title: 'Parola Misteriosa',
+        description: "Pensa a una parola e lascia che l'IA scopra qual è",
+        instructions: "1. Pensa a una parola (animale, frutta o paese)\n2. L'IA farà domande\n3. Rispondi con le tue parole\n4. L'IA userà gli indizi per scoprire la parola\n5. Guarda se indovina!"
+      },
+      mentalConversation: {
+        title: 'Conversazione Mentale',
+        description: "Conversa mentalmente con l'IA"
+      }
+    }
+  },
 };

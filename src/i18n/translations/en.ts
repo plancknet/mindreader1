@@ -91,4 +91,30 @@ export const en = {
     tip1: 'Keep your position during the countdown',
     tip2: 'And most importantly. Be DISCREET, make SMOOTH MOVEMENTS.',
   },
+  mentalConversation: {
+    instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend\'s secret word. Repeat this three times.\n3. If the app still can\'t guess after three letters, it will display a shortlist of possibilities.\n4. Send another reply with 1, 2, or 3 words to indicate whether the correct answer is the 1st, 2nd, or 3rd option.'
+  },
+  gameSelector: {
+    heading: 'Mind Readers',
+    subheading: 'Choose a mind-reading experience',
+    modalTitle: 'How to Play',
+    play: 'Play',
+    comingSoon: 'Coming soon',
+    cards: {
+      magicQuadrants: {
+        title: 'Magic Quadrants',
+        description: "Discover which quadrant you're thinking of through mind reading",
+        instructions: '1. The AI will show a grid with numbers\n2. Think of a number from the grid\n3. The AI will ask about quadrants\n4. Answer honestly\n5. The AI will reveal the number you thought of!'
+      },
+      mysteryWord: {
+        title: 'Mystery Word',
+        description: 'Think of a word and let the AI figure out which one it is',
+        instructions: '1. Think of a word (animal, fruit, or country)\n2. The AI will ask questions\n3. Reply with your answers\n4. The AI will use clues to guess the word\n5. See if it gets it right!'
+      },
+      mentalConversation: {
+        title: 'Mental Conversation',
+        description: 'Chat mentally with the AI'
+      }
+    }
+  },
 };
