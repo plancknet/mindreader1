@@ -121,4 +121,74 @@ export const en = {
     tip1: 'Choose a clear and easy to pronounce word',
     tip2: 'Click "Stop" when you want to end the game',
   },
+  mysteryWord: {
+    title: 'Mystery Word',
+    startButton: "Yes, let's begin!",
+    inputTitle: 'Type your mystery word',
+    inputDescription: 'Secretly type a word.',
+    inputPlaceholder: 'Your secret word...',
+    startPresentation: 'Start Presentation',
+    stopButton: 'Stop',
+    stoppedTitle: 'I read your mind! ✨',
+    stoppedSubtitle: 'Did I get it right?',
+    menuButton: 'Back to Menu',
+    playAgain: 'Play Again',
+    phrases: "Let's get started!||Ready for a mind-reading game?||Can I begin reading your thoughts?||Shall we awaken our telepathy powers?||How about starting the psychic challenge?"
+  },
+  mentalConversation: {
+    instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
+    title: 'Mental Conversation',
+    messages: {
+      greeting: "Hi! I'm an artificial intelligence with mind-reading powers. 🧠✨\n\nAsk your friend to think of an ANIMAL, FRUIT, or COUNTRY. Don't tell me the category or the word, just ask them to think about it!",
+      readyCheck: 'Has your friend already chosen and is ready to begin?',
+      startCollecting: "Perfect! I'll ask a few questions to read your friend's mind... Answer naturally! 🔮\n\nWhat is your favorite color?",
+      askHobby: 'Interesting! And what is your favorite hobby?',
+      askSeason: 'Great! Last question: what is your favorite season of the year?',
+      singleResult: '🎯 Amazing! I am sensing a very strong energy...\n\n✨ The word your friend thought of is:\n\n🌟 **{word}** 🌟\n\nAm I right? ✨',
+      multipleOptions: 'Hmm... I’m receiving some signals. The word starts with "{letters}"...\n\nThese are the possibilities I’m picking up: {options}\n\nAm I on the right track?',
+      noMatch: 'Oops! I couldn’t quite capture the word. Shall we try again? Type "reiniciar" to start over.',
+      finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nI read your friend’s mind! The category was {category} and the word was {word}! 🧠✨\n\nWant to play again? Type anything to go back to the menu!'
+    },
+    status: {
+      processingAudio: 'Processing audio...',
+      speaking: 'Speaking...'
+    },
+    input: {
+      placeholder: 'Type your answer...',
+      recording: 'Recording...'
+    },
+    toast: {
+      errorTitle: 'Error',
+      audioProcessingFailed: "Couldn't process the audio. Please try again.",
+      recordingTitle: 'Recording',
+      recordingDescription: 'Speak now...',
+      micErrorDescription: "Couldn't access the microphone."
+    },
+    categories: {
+      animal: 'ANIMAL',
+      fruit: 'FRUIT',
+      country: 'COUNTRY'
+    }
+  },
+  gameSelector: {
+    heading: 'Mind Readers',
+    subheading: 'Choose a mind-reading experience',
+    play: 'Play',
+    comingSoon: 'Coming soon',
+    modalTitle: 'How to Play',
+    cards: {
+      mindReader: {
+        title: 'Magic Quadrant',
+        description: 'Read minds through subtle head movements'
+      },
+      mentalConversation: {
+        title: 'Mental Conversation',
+        description: 'Chat with an AI that tries to guess your word'
+      },
+      mysteryWord: {
+        title: 'Mystery Word',
+        description: 'Secretly reveal your word to the audience'
+      }
+    }
+  },
 };

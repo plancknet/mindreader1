@@ -9,19 +9,6 @@ import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 
-const PHRASES = [
-  'Bora começar!',
-  'Podemos começar o jogo de leitura de mente já?',
-  'Está pronto para o teste da mente? Estou ansioso. Me diga que sim.',
-  'Bora começar a leitura da sua mente logo?',
-  'Vamos iniciar o jogo psíquico agora?',
-  'Preparado para o truque mental mentes?',
-  'Podemos dar início à leitura. Vou revelar seu segredo.',
-  'Podemos abrir o portal do jogo da fantasia?',
-  'Vamos ativar o poder da telepatia?',
-  'Que tal começarmos o desafio da imaginação?'
-];
-
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
   'en': ['house', 'love', 'life', 'time', 'water', 'earth', 'fire', 'light', 'peace', 'dream', 'soul', 'sun', 'moon', 'sea', 'sky', 'flower', 'tree', 'rain', 'wind', 'night'],
@@ -42,7 +29,7 @@ const shuffleWords = (words: string[]): string[] => {
 
 const MysteryWord = () => {
   const navigate = useNavigate();
-  const { language } = useTranslation();
+  const { t, language } = useTranslation();
   const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [secretPosition, setSecretPosition] = useState(0);
@@ -53,11 +40,20 @@ const MysteryWord = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const wordPoolRef = useRef<string[]>([]);
 
-  const getRandomPhrase = () => {
-    const randomIndex = Math.floor(Math.random() * PHRASES.length);
-    setSelectedPhrase(PHRASES[randomIndex]);
+  const getPhraseList = useCallback(() => {
+    return t('mysteryWord.phrases')
+      .split('||')
+      .map((phrase) => phrase.trim())
+      .filter(Boolean);
+  }, [t]);
+
+  const getRandomPhrase = useCallback(() => {
+    const phrases = getPhraseList();
+    if (phrases.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+    setSelectedPhrase(phrases[randomIndex]);
     setSecretPosition(randomIndex + 1);
-  };
+  }, [getPhraseList]);
 
   const refreshWordPool = useCallback(() => {
     const words = WORD_LISTS[language] || WORD_LISTS['en'];
@@ -100,11 +96,6 @@ const MysteryWord = () => {
     }
   };
 
-  const handleStart = () => {
-    getRandomPhrase();
-    setStage('greeting');
-  };
-
   const handleContinueToInput = () => {
     setStage('input');
   };
@@ -133,10 +124,10 @@ const MysteryWord = () => {
   };
 
   useEffect(() => {
-    if (stage === 'greeting' && !selectedPhrase) {
+    if (stage === 'greeting') {
       getRandomPhrase();
     }
-  }, [stage]);
+  }, [stage, getRandomPhrase]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -173,7 +164,7 @@ const MysteryWord = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Voltar
+            {t('common.back')}
           </Button>
           <div className="flex gap-2">
             <LanguageSelector />
@@ -187,14 +178,14 @@ const MysteryWord = () => {
               <Brain className="w-20 h-20 text-primary animate-pulse" />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Palavra Misteriosa
+              {t('mysteryWord.title')}
             </h1>
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
                 <Button size="lg" onClick={handleContinueToInput} className="text-xl px-8 py-6">
                   <Brain className="mr-2 h-6 w-6" />
-                  Sim, vamos começar!
+                  {t('mysteryWord.startButton')}
                 </Button>
               </div>
             </Card>
@@ -207,18 +198,18 @@ const MysteryWord = () => {
               <Brain className="w-20 h-20 text-primary animate-pulse" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold">
-              Digite sua palavra misteriosa
+              {t('mysteryWord.inputTitle')}
             </h2>
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-muted-foreground">
-                  Digite secretamente uma palavra.
+                  {t('mysteryWord.inputDescription')}
                 </p>
                 <Input
                   type="text"
                   value={secretWord}
                   onChange={(e) => setSecretWord(e.target.value)}
-                  placeholder="Sua palavra secreta..."
+                  placeholder={t('mysteryWord.inputPlaceholder')}
                   className="text-center text-2xl py-6"
                   autoFocus
                 />
@@ -228,7 +219,7 @@ const MysteryWord = () => {
                   disabled={!secretWord.trim()}
                   className="text-xl px-8 py-6"
                 >
-                  Iniciar Apresentação
+                  {t('mysteryWord.startPresentation')}
                 </Button>
               </div>
             </Card>
@@ -255,7 +246,7 @@ const MysteryWord = () => {
               className="text-xl px-8 py-6 gap-2"
             >
               <Square className="w-6 h-6" />
-              Parar
+              {t('mysteryWord.stopButton')}
             </Button>
           </div>
         )}
@@ -264,11 +255,11 @@ const MysteryWord = () => {
           <div className="text-center space-y-8">
             <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
             <h2 className="text-3xl md:text-4xl font-bold">
-              Li sua mente! 🎯
+              {t('mysteryWord.stoppedTitle')}
             </h2>
             <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <p className="text-2xl mb-4 text-muted-foreground">
-                E aí? Acertou?
+                {t('mysteryWord.stoppedSubtitle')}
               </p>
               <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 ...
@@ -281,7 +272,7 @@ const MysteryWord = () => {
                 onClick={() => navigate('/game-selector')}
                 className="text-xl px-8 py-6"
               >
-                Voltar ao Menu
+                {t('mysteryWord.menuButton')}
               </Button>
               <Button
                 size="lg"
@@ -289,7 +280,7 @@ const MysteryWord = () => {
                 className="text-xl px-8 py-6"
               >
                 <Brain className="mr-2 h-6 w-6" />
-                Jogar Novamente
+                {t('mysteryWord.playAgain')}
               </Button>
             </div>
           </div>

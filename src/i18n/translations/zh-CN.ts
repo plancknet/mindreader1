@@ -121,4 +121,98 @@ export const zhCN = {
     tip1: '选择一个清晰且容易发音的词',
     tip2: '当你想结束游戏时点击"停止"',
   },
+  mysteryWord: {
+    title: '神秘单词',
+    startButton: '开始吧！',
+    inputTitle: '输入你的神秘单词',
+    inputDescription: '悄悄输入一个单词。',
+    inputPlaceholder: '你的秘密单词...',
+    startPresentation: '开始展示',
+    stopButton: '停止',
+    stoppedTitle: '我读到你的心了！✨',
+    stoppedSubtitle: '猜对了吗？',
+    menuButton: '返回菜单',
+    playAgain: '再玩一次',
+    phrases: '准备好开始了吗？||我们来玩读心游戏吧？||让我来扫描你的想法可以吗？||一起唤醒心灵感应？||启动超能力挑战吧？'
+  },
+  mentalConversation: {
+    instructions: '1. 第一次回复用 1、2 或 3 个词告诉应用类别（1 = 动物，2 = 水果，3 = 国家）。
+2. 接下来的 3 次回复里，最后一个词的首字母就是你朋友单词的首字母。
+3. 如果得到 3 个字母后仍没猜对，应用会显示可能的单词列表。
+4. 再用 1、2 或 3 个词回答，表示正确答案在列表中的第 1、2 或 3 个位置。',
+    title: '心灵对话',
+    messages: {
+      greeting: '你好！我是一个拥有读心术的 AI。🧠✨
+
+请让你的朋友想一个动物、水果或国家，不要告诉我类别或单词，只要让 TA 想好！',
+      readyCheck: '你的朋友已经选好并准备开始了吗？',
+      startCollecting: '太好了！我会问几个问题来读取你朋友的想法……自然回答就行！🔮
+
+你最喜欢的颜色是什么？',
+      askHobby: '有意思！你最喜欢的爱好是什么？',
+      askSeason: '不错！最后一个问题：你最喜欢哪个季节？',
+      singleResult: '🎯 太棒了！我感受到非常强的能量……
+
+✨ 你朋友想到的单词是：
+
+🌟 **{word}** 🌟
+
+我猜对了吗？✨',
+      multipleOptions: '嗯……我收到了一些信号。这个单词以“{letters}”开头……
+
+我捕捉到的可能性有：{options}
+
+我走在正确的方向吗？',
+      noMatch: '哎呀！我没能捕捉到这个单词。要不要再试一次？输入“reiniciar”重新开始。',
+      finalReveal: '🎊 成功啦！
+
+🔮 **{word}** 🔮
+
+我读到了你朋友的想法！类别是 {category}，单词是 {word}！🧠✨
+
+还想再玩一局吗？输入任何内容即可返回菜单。'
+    },
+    status: {
+      processingAudio: '正在处理音频...',
+      speaking: '播放中...'
+    },
+    input: {
+      placeholder: '输入你的回答...',
+      recording: '录音中...'
+    },
+    toast: {
+      errorTitle: '错误',
+      audioProcessingFailed: '无法处理音频，请重试。',
+      recordingTitle: '录音中',
+      recordingDescription: '现在开始说话...',
+      micErrorDescription: '无法访问麦克风。'
+    },
+    categories: {
+      animal: '动物',
+      fruit: '水果',
+      country: '国家'
+    }
+  },
+  gameSelector: {
+    heading: '读心者',
+    subheading: '选择一次读心体验',
+    play: '开始',
+    comingSoon: '敬请期待',
+    modalTitle: '玩法说明',
+    cards: {
+      mindReader: {
+        title: '魔法象限',
+        description: '通过细微的头部动作读取想法'
+      },
+      mentalConversation: {
+        title: '心灵对话',
+        description: '与尝试猜词的 AI 进行对话'
+      },
+      mysteryWord: {
+        title: '神秘单词',
+        description: '把你的单词悄悄展示给观众'
+      }
+    }
+  },
+
 };

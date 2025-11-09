@@ -121,4 +121,74 @@ export const fr = {
     tip1: 'Choisissez un mot clair et facile à prononcer',
     tip2: 'Cliquez sur "Arrêter" lorsque vous voulez terminer le jeu',
   },
+  mysteryWord: {
+    title: 'Mot Mystérieux',
+    startButton: 'Oui, commençons !',
+    inputTitle: 'Tapez votre mot mystérieux',
+    inputDescription: 'Saisissez un mot en secret.',
+    inputPlaceholder: 'Votre mot secret...',
+    startPresentation: 'Lancer la présentation',
+    stopButton: 'Arrêter',
+    stoppedTitle: 'J’ai lu dans vos pensées ! ✨',
+    stoppedSubtitle: 'Alors, ai-je visé juste ?',
+    menuButton: 'Retour au menu',
+    playAgain: 'Rejouer',
+    phrases: 'On commence ?||Prêt pour un jeu de lecture mentale ?||Puis-je commencer à lire vos pensées ?||Et si on activait nos pouvoirs de télépathie ?||Envie de relever le défi psychique ?'
+  },
+  mentalConversation: {
+    instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot de votre ami. Répétez cela 3 fois.\n3. Si l’app ne trouve rien après trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une interaction supplémentaire avec 1, 2 ou 3 mots pour indiquer si la bonne réponse est la 1ʳᵉ, la 2ᵉ ou la 3ᵉ option.',
+    title: 'Conversation Mentale',
+    messages: {
+      greeting: 'Bonjour ! Je suis une intelligence artificielle aux pouvoirs de lecture mentale. 🧠✨\n\nDemandez à votre ami de penser à un ANIMAL, un FRUIT ou un PAYS. Ne me dites ni la catégorie ni le mot, demandez-lui simplement d’y penser !',
+      readyCheck: 'Votre ami a-t-il déjà choisi et est-il prêt à commencer ?',
+      startCollecting: 'Parfait ! Je vais poser quelques questions pour lire l’esprit de votre ami... Répondez naturellement ! 🔮\n\nQuelle est votre couleur préférée ?',
+      askHobby: 'Intéressant ! Quel est votre passe-temps favori ?',
+      askSeason: 'Génial ! Dernière question : quelle est votre saison préférée ?',
+      singleResult: '🎯 Incroyable ! Je capte une énergie très forte...\n\n✨ Le mot auquel votre ami pensait est :\n\n🌟 **{word}** 🌟\n\nAi-je deviné ? ✨',
+      multipleOptions: 'Hmm... je reçois certains signaux. Le mot commence par « {letters} »...\n\nVoici les possibilités que je perçois : {options}\n\nSuis-je sur la bonne voie ?',
+      noMatch: 'Oups ! Je n’ai pas réussi à capter le mot. On réessaie ? Tapez "reiniciar" pour recommencer.',
+      finalReveal: '🎊 EUREKA !\n\n🔮 **{word}** 🔮\n\nJ’ai lu dans l’esprit de votre ami ! La catégorie était {category} et le mot était {word} ! 🧠✨\n\nEnvie de rejouer ? Tapez n’importe quoi pour revenir au menu.'
+    },
+    status: {
+      processingAudio: 'Traitement de l’audio...',
+      speaking: 'Parole en cours...'
+    },
+    input: {
+      placeholder: 'Tapez votre réponse...',
+      recording: 'Enregistrement...'
+    },
+    toast: {
+      errorTitle: 'Erreur',
+      audioProcessingFailed: 'Impossible de traiter l’audio. Réessayez.',
+      recordingTitle: 'Enregistrement',
+      recordingDescription: 'Parlez maintenant...',
+      micErrorDescription: 'Impossible d’accéder au microphone.'
+    },
+    categories: {
+      animal: 'ANIMAL',
+      fruit: 'FRUIT',
+      country: 'PAYS'
+    }
+  },
+  gameSelector: {
+    heading: 'Lecteurs d’esprit',
+    subheading: 'Choisissez une expérience de lecture mentale',
+    play: 'Jouer',
+    comingSoon: 'Bientôt',
+    modalTitle: 'Comment jouer',
+    cards: {
+      mindReader: {
+        title: 'Quadrant Magique',
+        description: 'Lisez les pensées grâce à de subtils mouvements de tête'
+      },
+      mentalConversation: {
+        title: 'Conversation Mentale',
+        description: 'Discutez avec une IA qui tente de deviner votre mot'
+      },
+      mysteryWord: {
+        title: 'Mot Mystérieux',
+        description: 'Révélez secrètement votre mot au public'
+      }
+    }
+  },
 };

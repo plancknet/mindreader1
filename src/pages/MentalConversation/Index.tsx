@@ -11,7 +11,7 @@ import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-type Category = 'animal' | 'fruta' | 'país' | null;
+type Category = 'animal' | 'fruit' | 'country' | null;
 type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
 
 interface Message {
@@ -25,13 +25,13 @@ const ANIMALS = [
   'macaco', 'onça', 'papagaio', 'peixe', 'rato', 'sapo', 'tigre', 'urso', 'zebra'
 ];
 
-const FRUTAS = [
+const FRUITS = [
   'abacate', 'abacaxi', 'amora', 'banana', 'caju', 'cereja', 'coco', 'damasco',
   'figo', 'framboesa', 'goiaba', 'laranja', 'limão', 'maçã', 'mamão', 'manga',
   'maracujá', 'melancia', 'melão', 'morango', 'pera', 'pêssego', 'tangerina', 'uva'
 ];
 
-const PAISES = [
+const COUNTRIES = [
   'alemanha', 'argentina', 'austrália', 'bélgica', 'brasil', 'canadá', 'chile', 'china',
   'colômbia', 'egito', 'espanha', 'frança', 'grécia', 'índia', 'inglaterra', 'itália',
   'japão', 'méxico', 'noruega', 'peru', 'portugal', 'rússia', 'suécia', 'tailândia', 'uruguai'
@@ -52,15 +52,24 @@ const MentalConversation = () => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const initialMessageSent = useRef(false);
+  const followUpQuestionKeys = [
+    'mentalConversation.messages.askHobby',
+    'mentalConversation.messages.askSeason'
+  ] as const;
 
   useEffect(() => {
-    // Mensagem inicial
-    addAiMessage('Olá! Eu sou uma inteligência artificial com poderes de leitura mental. 🧠✨\n\nPeça ao seu amigo para pensar em um ANIMAL, FRUTA ou PAÍS. Não me conte qual é a categoria ou a palavra, apenas peça para ele pensar!');
-    setTimeout(() => {
-      addAiMessage('Seu amigo já escolheu e está pronto para começar?');
+    if (initialMessageSent.current) return;
+    initialMessageSent.current = true;
+
+    addAiMessage(t('mentalConversation.messages.greeting'));
+    const timeout = setTimeout(() => {
+      addAiMessage(t('mentalConversation.messages.readyCheck'));
       setStep('ready');
     }, 2000);
-  }, []);
+
+    return () => clearTimeout(timeout);
+  }, [t]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,8 +136,8 @@ const MentalConversation = () => {
 
   const getWordList = (cat: Category): string[] => {
     if (cat === 'animal') return ANIMALS;
-    if (cat === 'fruta') return FRUTAS;
-    if (cat === 'país') return PAISES;
+    if (cat === 'fruit') return FRUITS;
+    if (cat === 'country') return COUNTRIES;
     return [];
   };
 
@@ -142,10 +151,8 @@ const MentalConversation = () => {
   };
 
   const getCategoryName = (cat: Category): string => {
-    if (cat === 'animal') return 'ANIMAL';
-    if (cat === 'fruta') return 'FRUTA';
-    if (cat === 'país') return 'PAÍS';
-    return '';
+    if (!cat) return '';
+    return t(`mentalConversation.categories.${cat}`);
   };
 
   const handleVoiceInput = async () => {
@@ -198,8 +205,8 @@ const MentalConversation = () => {
       } catch (error) {
         console.error('Error processing voice:', error);
         toast({
-          title: 'Erro',
-          description: 'Não foi possível processar o áudio. Tente novamente.',
+          title: t('mentalConversation.toast.errorTitle'),
+          description: t('mentalConversation.toast.audioProcessingFailed'),
           variant: 'destructive'
         });
         setIsProcessingAudio(false);
@@ -208,14 +215,14 @@ const MentalConversation = () => {
       try {
         await startRecording();
         toast({
-          title: 'Gravando',
-          description: 'Fale agora...',
+          title: t('mentalConversation.toast.recordingTitle'),
+          description: t('mentalConversation.toast.recordingDescription'),
         });
       } catch (error) {
         console.error('Error starting recording:', error);
         toast({
-          title: 'Erro',
-          description: 'Não foi possível acessar o microfone.',
+          title: t('mentalConversation.toast.errorTitle'),
+          description: t('mentalConversation.toast.micErrorDescription'),
           variant: 'destructive'
         });
       }
@@ -241,12 +248,12 @@ const MentalConversation = () => {
       // Determinar categoria baseado no número de palavras
       let detectedCategory: Category = null;
       if (wordCount === 1) detectedCategory = 'animal';
-      else if (wordCount === 2) detectedCategory = 'fruta';
-      else if (wordCount === 3) detectedCategory = 'país';
+      else if (wordCount === 2) detectedCategory = 'fruit';
+      else if (wordCount === 3) detectedCategory = 'country';
 
       setCategory(detectedCategory);
       setStep('collecting');
-      addAiMessage('Perfeito! Vou fazer algumas perguntas para ler a mente do seu amigo... Responda naturalmente! 🔮\n\nQual é a sua cor favorita?');
+      addAiMessage(t('mentalConversation.messages.startCollecting'));
       return;
     }
 
@@ -257,11 +264,8 @@ const MentalConversation = () => {
 
       if (newLetters.length < 3) {
         // Perguntas para coletar letras
-        const questions = [
-          'Interessante! E qual é o seu hobby preferido?',
-          'Que legal! Uma última pergunta: qual é a sua estação do ano favorita?'
-        ];
-        addAiMessage(questions[newLetters.length - 1]);
+        const questionKey = followUpQuestionKeys[newLetters.length - 1];
+        addAiMessage(t(questionKey));
       } else {
         // Temos 3 letras, filtrar palavras
         const wordList = getWordList(category);
@@ -270,14 +274,17 @@ const MentalConversation = () => {
         setStep('filtering');
 
         if (filtered.length === 1) {
+          const revealedWord = filtered[0].toUpperCase();
           setTimeout(() => {
-            addAiMessage(`🎯 Incrível! Estou captando uma energia muito forte...\n\n✨ A palavra em que seu amigo pensou é:\n\n🌟 **${filtered[0].toUpperCase()}** 🌟\n\nEstou certo? ✨`);
+            addAiMessage(t('mentalConversation.messages.singleResult', { word: revealedWord }));
             setStep('revealing');
           }, 1500);
         } else if (filtered.length > 1) {
-          addAiMessage(`Hmm... estou recebendo alguns sinais. A palavra começa com "${newLetters.join('')}"...\n\nEstas são as possibilidades que estou captando: ${filtered.map(w => w.toUpperCase()).join(', ')}\n\nEstou no caminho certo?`);
+          const lettersText = newLetters.join('').toUpperCase();
+          const optionsText = filtered.map(w => w.toUpperCase()).join(', ');
+          addAiMessage(t('mentalConversation.messages.multipleOptions', { letters: lettersText, options: optionsText }));
         } else {
-          addAiMessage('Ops! Parece que não consegui captar a palavra corretamente. Vamos tentar novamente? Digite "reiniciar" para começar de novo.');
+          addAiMessage(t('mentalConversation.messages.noMatch'));
         }
       }
       return;
@@ -287,8 +294,13 @@ const MentalConversation = () => {
       const responseWordCount = countWords(userInput);
       if (responseWordCount > 0 && responseWordCount <= possibleWords.length) {
         const selectedWord = possibleWords[responseWordCount - 1];
+        const revealedWord = selectedWord.toUpperCase();
+        const categoryName = getCategoryName(category);
         setTimeout(() => {
-          addAiMessage(`🎊 EUREKA!\n\n✨🌟 A palavra misteriosa é:\n\n🔮 **${selectedWord.toUpperCase()}** 🔮\n\nEu li a mente do seu amigo! A categoria era ${getCategoryName(category)} e a palavra era ${selectedWord.toUpperCase()}! 🧠✨\n\nQuer jogar novamente? Digite qualquer coisa para voltar ao menu!`);
+          addAiMessage(t('mentalConversation.messages.finalReveal', {
+            word: revealedWord,
+            category: categoryName
+          }));
           setStep('revealing');
         }, 1500);
       }
@@ -314,7 +326,7 @@ const MentalConversation = () => {
           
           <div className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-bold">Conversa Mental</h1>
+            <h1 className="text-xl font-bold">{t('mentalConversation.title')}</h1>
           </div>
 
           <div className="flex items-center gap-2">
@@ -341,7 +353,9 @@ const MentalConversation = () => {
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">
-                {isProcessingAudio ? 'Processando áudio...' : 'Falando...'}
+                {isProcessingAudio
+                  ? t('mentalConversation.status.processingAudio')
+                  : t('mentalConversation.status.speaking')}
               </span>
             </div>
           </Card>
@@ -384,7 +398,7 @@ const MentalConversation = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && !isRecording && handleSubmit()}
-            placeholder={isRecording ? "Gravando..." : "Digite sua resposta..."}
+            placeholder={isRecording ? t('mentalConversation.input.recording') : t('mentalConversation.input.placeholder')}
             className="flex-1"
             disabled={isRecording || isProcessingAudio}
           />
