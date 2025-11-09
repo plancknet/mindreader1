@@ -13,12 +13,14 @@ import Auth from "./pages/Auth";
 import CompleteSignup from "./pages/CompleteSignup";
 import Premium from "./pages/Premium";
 import PremiumSuccess from "./pages/PremiumSuccess";
+import GameSelector from "./pages/GameSelector";
 import ConnectMind from "./pages/MindReader/ConnectMind";
 import SelectTheme from "./pages/MindReader/SelectTheme";
 import StartPrompt from "./pages/MindReader/StartPrompt";
 import GamePlay from "./pages/MindReader/GamePlay";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
+import MysteryWord from "./pages/MysteryWord/Index";
 
 const queryClient = new QueryClient();
 
@@ -66,19 +68,23 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/connect-mind" replace />} />
+            <Route path="/" element={<Navigate to="/game-selector" replace />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
-            {/* Game routes require authentication */}
+            {/* Game selector */}
+            <Route path="/game-selector" element={<ProtectedRoute><GameSelector /></ProtectedRoute>} />
+            {/* Magic Quadrants game routes */}
             <Route path="/connect-mind" element={<ProtectedRoute><ConnectMind /></ProtectedRoute>} />
             <Route path="/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
             <Route path="/result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
+            {/* Mystery Word game */}
+            <Route path="/mystery-word" element={<ProtectedRoute><MysteryWord /></ProtectedRoute>} />
             <Route path="/detector" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />

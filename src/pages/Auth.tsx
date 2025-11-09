@@ -26,13 +26,13 @@ const Auth = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/connect-mind', { replace: true });
+        navigate('/game-selector', { replace: true });
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && event !== 'SIGNED_OUT') {
-        navigate('/connect-mind', { replace: true });
+        navigate('/game-selector', { replace: true });
       }
     });
 
@@ -45,7 +45,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/connect-mind`,
+          redirectTo: `${window.location.origin}/game-selector`,
         },
       });
 
@@ -206,7 +206,7 @@ const Auth = () => {
             email,
             password,
             options: {
-              emailRedirectTo: `${window.location.origin}/connect-mind`,
+              emailRedirectTo: `${window.location.origin}/game-selector`,
             },
           })
         : await supabase.auth.signInWithPassword({ email, password });
