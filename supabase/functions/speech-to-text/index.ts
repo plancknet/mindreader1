@@ -41,19 +41,24 @@ serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json();
+    const { audio, language } = await req.json();
     
     if (!audio) {
       throw new Error('No audio data provided');
     }
 
-    console.log('Processing audio data...');
+    console.log('Processing audio data with language:', language || 'auto-detect');
     const binaryAudio = processBase64Chunks(audio);
     
     const formData = new FormData();
     const blob = new Blob([binaryAudio], { type: 'audio/webm' });
     formData.append('file', blob, 'audio.webm');
     formData.append('model', 'whisper-1');
+    
+    // Add language parameter if provided
+    if (language) {
+      formData.append('language', language);
+    }
 
     console.log('Sending to OpenAI Whisper...');
     const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -81,7 +86,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in speech-to-text:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

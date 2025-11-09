@@ -39,7 +39,7 @@ const PAISES = [
 
 const MentalConversation = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { toast } = useToast();
   const { isRecording, startRecording, stopRecording } = useAudioRecorder();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -164,9 +164,21 @@ const MentalConversation = () => {
             throw new Error('Failed to convert audio');
           }
 
-          // Send to speech-to-text edge function
+          // Send to speech-to-text edge function with language
+          const languageMap: Record<string, string> = {
+            'pt-BR': 'pt',
+            'en': 'en',
+            'es': 'es',
+            'zh-CN': 'zh',
+            'fr': 'fr',
+            'it': 'it'
+          };
+          
           const { data, error } = await supabase.functions.invoke('speech-to-text', {
-            body: { audio: base64Audio }
+            body: { 
+              audio: base64Audio,
+              language: languageMap[language] || 'pt'
+            }
           });
 
           if (error) throw error;
