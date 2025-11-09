@@ -286,7 +286,7 @@ const MentalConversation = () => {
   const processInput = (userInput: string) => {
     const wordCount = countWords(userInput);
 
-    if (step === 'ready') {
+    if (step === 'ready' || step === 'initial') {
       // Determinar categoria baseado no número de palavras
       let detectedCategory: Category = null;
       if (wordCount === 1) detectedCategory = 'animal';
