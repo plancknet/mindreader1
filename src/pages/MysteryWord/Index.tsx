@@ -155,7 +155,7 @@ const MysteryWord = () => {
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-muted-foreground">
-                  Digite secretamente uma palavra. Ela aparecerá na posição {secretPosition} da sequência.
+                  Digite secretamente uma palavra.
                 </p>
                 <Input
                   type="text"
@@ -211,10 +211,10 @@ const MysteryWord = () => {
             </h2>
             <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <p className="text-2xl mb-4 text-muted-foreground">
-                Sua palavra misteriosa apareceu na posição {secretPosition}!
+                E aí? Acertou?
               </p>
               <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                {secretWord}
+                ...
               </div>
             </Card>
             <div className="flex gap-4 justify-center">
