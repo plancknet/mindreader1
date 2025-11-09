@@ -7,7 +7,6 @@ import { Brain, ArrowLeft, Square } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
-import { supabase } from '@/integrations/supabase/client';
 
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
@@ -37,7 +36,6 @@ const MysteryWord = () => {
   const [currentWord, setCurrentWord] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const wordPoolRef = useRef<string[]>([]);
 
   const getPhraseList = useCallback(() => {
@@ -71,30 +69,6 @@ const MysteryWord = () => {
     return wordPoolRef.current.shift() || '';
   }, [refreshWordPool]);
 
-  const speakWord = async (word: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text: word, voice: 'alloy' }
-      });
-
-      if (error) throw error;
-
-      if (data?.audioContent) {
-        const audioBlob = new Blob(
-          [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
-          { type: 'audio/mp3' }
-        );
-        const audioUrl = URL.createObjectURL(audioBlob);
-        
-        if (audioRef.current) {
-          audioRef.current.src = audioUrl;
-          await audioRef.current.play();
-        }
-      }
-    } catch (error) {
-      console.error('Error speaking word:', error);
-    }
-  };
 
   const handleContinueToInput = () => {
     setStage('input');
@@ -147,15 +121,9 @@ const MysteryWord = () => {
     }
   }, [isPlaying, secretPosition, secretWord, language, getNextUniqueWord]);
 
-  useEffect(() => {
-    if (currentWord && isPlaying) {
-      speakWord(currentWord);
-    }
-  }, [currentWord, isPlaying]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
-      <audio ref={audioRef} className="hidden" />
       <div className="max-w-4xl w-full space-y-8">
         <div className="flex justify-between items-center">
           <Button
