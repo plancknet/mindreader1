@@ -111,38 +111,40 @@ const MentalConversation = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const addAiMessage = async (text: string) => {
+  const addAiMessage = (text: string) => {
     setMessages(prev => [...prev, { text, sender: 'ai' }]);
     
-    // Generate and play audio for AI message
-    try {
-      const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text, voice: 'alloy' }
-      });
+    // Generate and play audio for AI message (non-blocking)
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('text-to-speech', {
+          body: { text, voice: 'alloy' }
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      if (data?.audioContent) {
-        const audioBlob = base64ToBlob(data.audioContent, 'audio/mpeg');
-        const audioUrl = URL.createObjectURL(audioBlob);
-        
-        if (audioRef.current) {
-          audioRef.current.pause();
+        if (data?.audioContent) {
+          const audioBlob = base64ToBlob(data.audioContent, 'audio/mpeg');
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          if (audioRef.current) {
+            audioRef.current.pause();
+          }
+          
+          const audio = new Audio(audioUrl);
+          audioRef.current = audio;
+          
+          audio.onplay = () => setIsPlayingAudio(true);
+          audio.onended = () => setIsPlayingAudio(false);
+          audio.onerror = () => setIsPlayingAudio(false);
+          
+          await audio.play();
         }
-        
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-        
-        audio.onplay = () => setIsPlayingAudio(true);
-        audio.onended = () => setIsPlayingAudio(false);
-        audio.onerror = () => setIsPlayingAudio(false);
-        
-        await audio.play();
+      } catch (error) {
+        console.error('Error generating speech:', error);
+        // Continue without audio if there's an error
       }
-    } catch (error) {
-      console.error('Error generating speech:', error);
-      // Continue without audio if there's an error
-    }
+    })();
   };
 
   const base64ToBlob = (base64: string, mimeType: string): Blob => {
