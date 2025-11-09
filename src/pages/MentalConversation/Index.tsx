@@ -271,7 +271,7 @@ const MentalConversation = () => {
 
         if (filtered.length === 1) {
           setTimeout(() => {
-            addAiMessage(`🎯 Incrível! Estou captando uma energia muito forte...\n\nA palavra em que seu amigo pensou é: **${filtered[0].toUpperCase()}**!\n\nEstou certo? ✨`);
+            addAiMessage(`🎯 Incrível! Estou captando uma energia muito forte...\n\n✨ A palavra em que seu amigo pensou é:\n\n🌟 **${filtered[0].toUpperCase()}** 🌟\n\nEstou certo? ✨`);
             setStep('revealing');
           }, 1500);
         } else if (filtered.length > 1) {
@@ -288,7 +288,7 @@ const MentalConversation = () => {
       if (responseWordCount > 0 && responseWordCount <= possibleWords.length) {
         const selectedWord = possibleWords[responseWordCount - 1];
         setTimeout(() => {
-          addAiMessage(`🎊 EUREKA! A palavra misteriosa é: **${selectedWord.toUpperCase()}**!\n\nEu li a mente do seu amigo! A categoria era ${getCategoryName(category)} e a palavra era ${selectedWord.toUpperCase()}! 🧠✨\n\nQuer jogar novamente? Digite qualquer coisa para voltar ao menu!`);
+          addAiMessage(`🎊 EUREKA!\n\n✨🌟 A palavra misteriosa é:\n\n🔮 **${selectedWord.toUpperCase()}** 🔮\n\nEu li a mente do seu amigo! A categoria era ${getCategoryName(category)} e a palavra era ${selectedWord.toUpperCase()}! 🧠✨\n\nQuer jogar novamente? Digite qualquer coisa para voltar ao menu!`);
           setStep('revealing');
         }, 1500);
       }
@@ -360,10 +360,16 @@ const MentalConversation = () => {
                 className={`max-w-[80%] p-4 ${
                   message.sender === 'user'
                     ? 'bg-primary text-primary-foreground'
+                    : message.text.includes('🔮') || message.text.includes('🌟')
+                    ? 'bg-card animate-pulse border-2 border-primary shadow-lg shadow-primary/50'
                     : 'bg-card'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{message.text}</p>
+                <p className={`whitespace-pre-wrap ${
+                  message.text.includes('🔮') || message.text.includes('🌟')
+                    ? 'text-center text-lg font-bold'
+                    : ''
+                }`}>{message.text}</p>
               </Card>
             </div>
           ))}
