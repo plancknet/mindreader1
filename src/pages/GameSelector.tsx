@@ -30,11 +30,11 @@ const GameSelector = () => {
     {
       id: 'mental-conversation',
       title: 'Conversa Mental',
-      description: 'Em breve - Converse mentalmente com a IA',
+      description: 'Converse mentalmente com a IA',
       icon: MessageSquare,
-      path: '#',
+      path: '/mental-conversation',
       color: 'from-green-500 to-emerald-500',
-      disabled: true
+      disabled: false
     }
   ];
 

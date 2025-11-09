@@ -21,6 +21,7 @@ import GamePlay from "./pages/MindReader/GamePlay";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
 import MysteryWord from "./pages/MysteryWord/Index";
+import MentalConversation from "./pages/MentalConversation/Index";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,8 @@ const App = () => (
             <Route path="/result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
             {/* Mystery Word game */}
             <Route path="/mystery-word" element={<ProtectedRoute><MysteryWord /></ProtectedRoute>} />
+            {/* Mental Conversation game */}
+            <Route path="/mental-conversation" element={<ProtectedRoute><MentalConversation /></ProtectedRoute>} />
             <Route path="/detector" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
