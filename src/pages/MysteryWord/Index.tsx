@@ -1,57 +1,110 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Brain, ArrowLeft, Square } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
+import { useTranslation } from '@/hooks/useTranslation';
+
+const PHRASES = [
+  'Bora começar!',
+  'Podemos começar o jogo de leitura de mente já?',
+  'Está pronto para o teste da mente? Estou ansioso. Me diga que sim.',
+  'Bora começar a leitura da sua mente logo?',
+  'Vamos iniciar o jogo psíquico agora?',
+  'Preparado para o truque mental mentes?',
+  'Podemos dar início à leitura. Vou revelar seu segredo.',
+  'Podemos abrir o portal do jogo da fantasia?',
+  'Vamos ativar o poder da telepatia?',
+  'Que tal começarmos o desafio da imaginação?'
+];
+
+const WORD_LISTS: Record<string, string[]> = {
+  'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
+  'en': ['house', 'love', 'life', 'time', 'water', 'earth', 'fire', 'light', 'peace', 'dream', 'soul', 'sun', 'moon', 'sea', 'sky', 'flower', 'tree', 'rain', 'wind', 'night'],
+  'es': ['casa', 'amor', 'vida', 'tiempo', 'agua', 'tierra', 'fuego', 'luz', 'paz', 'sueño', 'alma', 'sol', 'luna', 'mar', 'cielo', 'flor', 'árbol', 'lluvia', 'viento', 'noche'],
+  'zh-CN': ['房子', '爱', '生活', '时间', '水', '地球', '火', '光', '和平', '梦', '灵魂', '太阳', '月亮', '海', '天空', '花', '树', '雨', '风', '夜'],
+  'fr': ['maison', 'amour', 'vie', 'temps', 'eau', 'terre', 'feu', 'lumière', 'paix', 'rêve', 'âme', 'soleil', 'lune', 'mer', 'ciel', 'fleur', 'arbre', 'pluie', 'vent', 'nuit'],
+  'it': ['casa', 'amore', 'vita', 'tempo', 'acqua', 'terra', 'fuoco', 'luce', 'pace', 'sogno', 'anima', 'sole', 'luna', 'mare', 'cielo', 'fiore', 'albero', 'pioggia', 'vento', 'notte']
+};
 
 const MysteryWord = () => {
   const navigate = useNavigate();
-  const [stage, setStage] = useState<'intro' | 'thinking' | 'cards' | 'reveal'>('intro');
-  const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const { language } = useTranslation();
+  const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
+  const [selectedPhrase, setSelectedPhrase] = useState('');
+  const [secretPosition, setSecretPosition] = useState(0);
+  const [secretWord, setSecretWord] = useState('');
+  const [currentWord, setCurrentWord] = useState('');
+  const [wordCount, setWordCount] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Cartões com números binários para descobrir um número de 1-63
-  const cards = [
-    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63],
-    [2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23, 26, 27, 30, 31, 34, 35, 38, 39, 42, 43, 46, 47, 50, 51, 54, 55, 58, 59, 62, 63],
-    [4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23, 28, 29, 30, 31, 36, 37, 38, 39, 44, 45, 46, 47, 52, 53, 54, 55, 60, 61, 62, 63],
-    [8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30, 31, 40, 41, 42, 43, 44, 45, 46, 47, 56, 57, 58, 59, 60, 61, 62, 63],
-    [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63],
-    [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
-  ];
+  const getRandomPhrase = () => {
+    const randomIndex = Math.floor(Math.random() * PHRASES.length);
+    setSelectedPhrase(PHRASES[randomIndex]);
+    setSecretPosition(randomIndex + 1);
+  };
+
+  const getRandomWord = () => {
+    const words = WORD_LISTS[language] || WORD_LISTS['en'];
+    return words[Math.floor(Math.random() * words.length)];
+  };
 
   const handleStart = () => {
-    setStage('thinking');
-    setTimeout(() => {
-      setStage('cards');
-      setCurrentCardIndex(0);
-      setSelectedCards([]);
-    }, 3000);
+    getRandomPhrase();
+    setStage('greeting');
   };
 
-  const handleCardResponse = (hasNumber: boolean) => {
-    if (hasNumber) {
-      setSelectedCards([...selectedCards, currentCardIndex]);
-    }
-
-    if (currentCardIndex < cards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
-    } else {
-      setStage('reveal');
-    }
+  const handleContinueToInput = () => {
+    setStage('input');
   };
 
-  const getRevealedNumber = () => {
-    return selectedCards.reduce((sum, cardIndex) => sum + cards[cardIndex][0], 0);
+  const handleStartPlaying = () => {
+    if (!secretWord.trim()) return;
+    setStage('playing');
+    setIsPlaying(true);
+    setWordCount(0);
+  };
+
+  const handleStop = () => {
+    setIsPlaying(false);
+    setStage('stopped');
   };
 
   const handlePlayAgain = () => {
-    setStage('intro');
-    setSelectedCards([]);
-    setCurrentCardIndex(0);
+    setStage('greeting');
+    setSecretWord('');
+    setCurrentWord('');
+    setWordCount(0);
+    setIsPlaying(false);
+    getRandomPhrase();
   };
+
+  useEffect(() => {
+    if (stage === 'greeting' && !selectedPhrase) {
+      getRandomPhrase();
+    }
+  }, [stage]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setWordCount(prev => {
+          const nextCount = prev + 1;
+          if (nextCount === secretPosition) {
+            setCurrentWord(secretWord);
+          } else {
+            setCurrentWord(getRandomWord());
+          }
+          return nextCount;
+        });
+      }, 3000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isPlaying, secretPosition, secretWord]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
@@ -71,7 +124,7 @@ const MysteryWord = () => {
           </div>
         </div>
 
-        {stage === 'intro' && (
+        {stage === 'greeting' && (
           <div className="text-center space-y-8">
             <div className="flex justify-center">
               <Brain className="w-20 h-20 text-primary animate-pulse" />
@@ -81,84 +134,76 @@ const MysteryWord = () => {
             </h1>
             <Card className="p-8">
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Como funciona?</h2>
-                <div className="space-y-4 text-lg text-muted-foreground text-left">
-                  <p>1. Pense em um número entre 1 e 63</p>
-                  <p>2. Você verá 6 cartões com diversos números</p>
-                  <p>3. Para cada cartão, indique se o número que você pensou está presente</p>
-                  <p>4. A IA lerá sua mente e revelará o número!</p>
-                </div>
-                <Button size="lg" onClick={handleStart} className="text-xl px-8 py-6">
+                <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
+                <Button size="lg" onClick={handleContinueToInput} className="text-xl px-8 py-6">
                   <Brain className="mr-2 h-6 w-6" />
-                  Começar Leitura Mental
+                  Sim, vamos começar!
                 </Button>
               </div>
             </Card>
           </div>
         )}
 
-        {stage === 'thinking' && (
+        {stage === 'input' && (
           <div className="text-center space-y-8">
-            <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
+            <div className="flex justify-center">
+              <Brain className="w-20 h-20 text-primary animate-pulse" />
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold">
-              Pense em um número entre 1 e 63...
+              Digite sua palavra misteriosa
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Concentre-se nele intensamente
-            </p>
-            <div className="flex justify-center gap-2">
-              <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-            </div>
-          </div>
-        )}
-
-        {stage === 'cards' && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">
-                Cartão {currentCardIndex + 1} de {cards.length}
-              </h2>
-              <p className="text-muted-foreground">
-                O número que você pensou está neste cartão?
-              </p>
-            </div>
-
-            <Card className="p-6">
-              <div className="grid grid-cols-8 gap-2 mb-6">
-                {cards[currentCardIndex].map((num) => (
-                  <div
-                    key={num}
-                    className="aspect-square flex items-center justify-center bg-primary/10 rounded-lg font-bold text-lg"
-                  >
-                    {num}
-                  </div>
-                ))}
+            <Card className="p-8">
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  Digite secretamente uma palavra. Ela aparecerá na posição {secretPosition} da sequência.
+                </p>
+                <Input
+                  type="text"
+                  value={secretWord}
+                  onChange={(e) => setSecretWord(e.target.value)}
+                  placeholder="Sua palavra secreta..."
+                  className="text-center text-2xl py-6"
+                  autoFocus
+                />
+                <Button 
+                  size="lg" 
+                  onClick={handleStartPlaying}
+                  disabled={!secretWord.trim()}
+                  className="text-xl px-8 py-6"
+                >
+                  Iniciar Apresentação
+                </Button>
               </div>
             </Card>
-
-            <div className="flex gap-4 justify-center">
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => handleCardResponse(false)}
-                className="text-xl px-8 py-6"
-              >
-                Não
-              </Button>
-              <Button
-                size="lg"
-                onClick={() => handleCardResponse(true)}
-                className="text-xl px-8 py-6"
-              >
-                Sim
-              </Button>
-            </div>
           </div>
         )}
 
-        {stage === 'reveal' && (
+        {stage === 'playing' && (
+          <div className="text-center space-y-8">
+            <div className="flex justify-center">
+              <Brain className="w-20 h-20 text-primary animate-pulse" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">
+              Palavra {wordCount}
+            </h2>
+            <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+              <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent animate-pulse">
+                {currentWord || '...'}
+              </div>
+            </Card>
+            <Button
+              size="lg"
+              variant="destructive"
+              onClick={handleStop}
+              className="text-xl px-8 py-6 gap-2"
+            >
+              <Square className="w-6 h-6" />
+              Parar
+            </Button>
+          </div>
+        )}
+
+        {stage === 'stopped' && (
           <div className="text-center space-y-8">
             <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
             <h2 className="text-3xl md:text-4xl font-bold">
@@ -166,10 +211,10 @@ const MysteryWord = () => {
             </h2>
             <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
               <p className="text-2xl mb-4 text-muted-foreground">
-                O número que você pensou foi:
+                Sua palavra misteriosa apareceu na posição {secretPosition}!
               </p>
-              <div className="text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                {getRevealedNumber()}
+              <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                {secretWord}
               </div>
             </Card>
             <div className="flex gap-4 justify-center">
