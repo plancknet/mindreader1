@@ -240,7 +240,7 @@ const MentalConversation = () => {
             setTimeout(() => {
               addUserMessage(data.text);
               setInput('');
-              setTimeout(() => processInput(data.text), 1000);
+              processInput(data.text);
             }, 100);
           }
 
@@ -280,9 +280,7 @@ const MentalConversation = () => {
     addUserMessage(userInput);
     setInput('');
 
-    setTimeout(() => {
-      processInput(userInput);
-    }, 1000);
+    processInput(userInput);
   };
 
   const processInput = (userInput: string) => {
