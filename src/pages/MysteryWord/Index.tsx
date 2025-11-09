@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -31,6 +31,15 @@ const WORD_LISTS: Record<string, string[]> = {
   'it': ['casa', 'amore', 'vita', 'tempo', 'acqua', 'terra', 'fuoco', 'luce', 'pace', 'sogno', 'anima', 'sole', 'luna', 'mare', 'cielo', 'fiore', 'albero', 'pioggia', 'vento', 'notte']
 };
 
+const shuffleWords = (words: string[]): string[] => {
+  const shuffled = [...words];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 const MysteryWord = () => {
   const navigate = useNavigate();
   const { language } = useTranslation();
@@ -42,6 +51,7 @@ const MysteryWord = () => {
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const wordPoolRef = useRef<string[]>([]);
 
   const getRandomPhrase = () => {
     const randomIndex = Math.floor(Math.random() * PHRASES.length);
@@ -49,10 +59,21 @@ const MysteryWord = () => {
     setSecretPosition(randomIndex + 1);
   };
 
-  const getRandomWord = () => {
+  const refreshWordPool = useCallback(() => {
     const words = WORD_LISTS[language] || WORD_LISTS['en'];
-    return words[Math.floor(Math.random() * words.length)];
-  };
+    const sanitizedSecret = secretWord.trim().toLowerCase();
+    const filteredWords = sanitizedSecret
+      ? words.filter(word => word.toLowerCase() !== sanitizedSecret)
+      : [...words];
+    wordPoolRef.current = shuffleWords(filteredWords);
+  }, [language, secretWord]);
+
+  const getNextUniqueWord = useCallback(() => {
+    if (wordPoolRef.current.length === 0) {
+      refreshWordPool();
+    }
+    return wordPoolRef.current.shift() || '';
+  }, [refreshWordPool]);
 
   const speakWord = async (word: string) => {
     try {
@@ -90,6 +111,7 @@ const MysteryWord = () => {
 
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
+    refreshWordPool();
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -106,6 +128,7 @@ const MysteryWord = () => {
     setCurrentWord('');
     setWordCount(0);
     setIsPlaying(false);
+    wordPoolRef.current = [];
     getRandomPhrase();
   };
 
@@ -123,7 +146,7 @@ const MysteryWord = () => {
           if (nextCount === secretPosition) {
             setCurrentWord(secretWord);
           } else {
-            setCurrentWord(getRandomWord());
+            setCurrentWord(getNextUniqueWord());
           }
           return nextCount;
         });
@@ -131,7 +154,7 @@ const MysteryWord = () => {
 
       return () => clearInterval(interval);
     }
-  }, [isPlaying, secretPosition, secretWord]);
+  }, [isPlaying, secretPosition, secretWord, language, getNextUniqueWord]);
 
   useEffect(() => {
     if (currentWord && isPlaying) {
