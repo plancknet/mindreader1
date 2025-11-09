@@ -133,7 +133,7 @@ export const ptBR = {
     stoppedSubtitle: 'E aí? Acertou?',
     menuButton: 'Voltar ao Menu',
     playAgain: 'Jogar Novamente',
-    phrases: 'Bora começar!||Podemos começar o jogo de leitura de mente?||Preparado para um truque mental?||Vamos ativar o poder da telepatia?||Que tal iniciar o desafio psíquico?'
+    phrases: 'Bora começar!||Podemos começar o jogo de leitura de mente já?||Está pronto para o teste da mente? Estou ansioso. Me diga que sim.||Bora começar a leitura da sua mente logo?||Vamos iniciar o jogo psíquico agora?||Preparado para o truque mental mentes?||Podemos dar início à leitura. Vou revelar seu segredo.||Podemos abrir o portal do jogo da fantasia?||Vamos ativar o poder da telepatia?||Que tal começarmos o desafio da imaginação?'
   },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
