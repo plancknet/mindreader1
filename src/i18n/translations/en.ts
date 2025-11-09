@@ -91,30 +91,34 @@ export const en = {
     tip1: 'Keep your position during the countdown',
     tip2: 'And most importantly. Be DISCREET, make SMOOTH MOVEMENTS.',
   },
-  mentalConversation: {
-    instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend\'s secret word. Repeat this three times.\n3. If the app still can\'t guess after three letters, it will display a shortlist of possibilities.\n4. Send another reply with 1, 2, or 3 words to indicate whether the correct answer is the 1st, 2nd, or 3rd option.'
+  mentalConversationInstructions: {
+    title: 'How Mental Conversation Works',
+    subtitle: 'Learn to play this guessing game',
+    step1Title: 'Think of a Word',
+    step1Text: 'Think of a word and keep it secret. It can be any word you want.',
+    step2Title: 'Chat with the AI',
+    step2Text: 'The AI will ask questions to try to guess your word. Answer only with YES or NO.',
+    step3Title: 'Be Honest',
+    step3Text: 'For the game to work, you need to answer the AI\'s questions honestly.',
+    step4Title: 'Magical Revelation',
+    step4Text: 'After some questions, the AI will reveal your word with a special magical effect!',
+    tipsTitle: 'Tips for Better Experience',
+    tip1: 'Choose clear words, not too abstract',
+    tip2: 'Answer questions consistently',
   },
-  gameSelector: {
-    heading: 'Mind Readers',
-    subheading: 'Choose a mind-reading experience',
-    modalTitle: 'How to Play',
-    play: 'Play',
-    comingSoon: 'Coming soon',
-    cards: {
-      magicQuadrants: {
-        title: 'Magic Quadrants',
-        description: "Discover which quadrant you're thinking of through mind reading",
-        instructions: '1. The AI will show a grid with numbers\n2. Think of a number from the grid\n3. The AI will ask about quadrants\n4. Answer honestly\n5. The AI will reveal the number you thought of!'
-      },
-      mysteryWord: {
-        title: 'Mystery Word',
-        description: 'Think of a word and let the AI figure out which one it is',
-        instructions: '1. Think of a word (animal, fruit, or country)\n2. The AI will ask questions\n3. Reply with your answers\n4. The AI will use clues to guess the word\n5. See if it gets it right!'
-      },
-      mentalConversation: {
-        title: 'Mental Conversation',
-        description: 'Chat mentally with the AI'
-      }
-    }
+  mysteryWordInstructions: {
+    title: 'How Mystery Word Works',
+    subtitle: 'Learn to play this telepathy game',
+    step1Title: 'Initial Phrase',
+    step1Text: 'The game will start with a random phrase. The phrase number determines at which position your word will be revealed.',
+    step2Title: 'Type Your Secret Word',
+    step2Text: 'Secretly type the word you thought of. Nobody else needs to see it.',
+    step3Title: 'Word Presentation',
+    step3Text: 'Random words will appear on screen for 3 seconds each. Your word will be shown at the position defined by the initial phrase.',
+    step4Title: 'Audio and Revelation',
+    step4Text: 'Each word will be spoken in audio. When your word appears, it will be revealed to everyone!',
+    tipsTitle: 'Tips for Better Experience',
+    tip1: 'Choose a clear and easy to pronounce word',
+    tip2: 'Click "Stop" when you want to end the game',
   },
 };

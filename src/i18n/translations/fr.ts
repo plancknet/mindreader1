@@ -91,30 +91,34 @@ export const fr = {
     tip1: 'Maintenez la position pendant le compte à rebours',
     tip2: "Et le plus important. Soyez DISCRET, faites des MOUVEMENTS DOUX.",
   },
-  mentalConversation: {
-    instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot secret de votre ami. Répétez l’opération trois fois.\n3. Si l’app n’a toujours rien trouvé après ces trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une nouvelle interaction avec 1, 2 ou 3 mots pour signaler si la bonne réponse est la 1ʳᵉ, la 2ᵉ ou la 3ᵉ option.'
+  mentalConversationInstructions: {
+    title: 'Comment Fonctionne la Conversation Mentale',
+    subtitle: 'Apprenez à jouer à ce jeu de devinettes',
+    step1Title: 'Pensez à un Mot',
+    step1Text: 'Pensez à un mot et gardez-le secret. Cela peut être n\'importe quel mot que vous voulez.',
+    step2Title: 'Discutez avec l\'IA',
+    step2Text: 'L\'IA posera des questions pour essayer de deviner votre mot. Répondez seulement par OUI ou NON.',
+    step3Title: 'Soyez Honnête',
+    step3Text: 'Pour que le jeu fonctionne, vous devez répondre honnêtement aux questions de l\'IA.',
+    step4Title: 'Révélation Magique',
+    step4Text: 'Après quelques questions, l\'IA révélera votre mot avec un effet magique spécial !',
+    tipsTitle: 'Conseils pour une Meilleure Expérience',
+    tip1: 'Choisissez des mots clairs et pas trop abstraits',
+    tip2: 'Répondez de manière cohérente aux questions',
   },
-  gameSelector: {
-    heading: 'Lecteurs d’esprit',
-    subheading: 'Choisissez une expérience de lecture mentale',
-    modalTitle: 'Comment jouer',
-    play: 'Jouer',
-    comingSoon: 'Bientôt',
-    cards: {
-      magicQuadrants: {
-        title: 'Quadrants Magiques',
-        description: 'Découvrez dans quel quadrant vous pensez grâce à la lecture mentale',
-        instructions: '1. L’IA affichera une grille avec des chiffres\n2. Pensez à un chiffre de cette grille\n3. L’IA posera des questions sur les quadrants\n4. Répondez honnêtement\n5. L’IA révélera le chiffre auquel vous pensiez !'
-      },
-      mysteryWord: {
-        title: 'Mot Mystérieux',
-        description: 'Pensez à un mot et laissez l’IA deviner lequel',
-        instructions: '1. Pensez à un mot (animal, fruit ou pays)\n2. L’IA posera des questions\n3. Répondez naturellement\n4. L’IA utilisera les indices pour découvrir le mot\n5. Voyez si elle trouve !'
-      },
-      mentalConversation: {
-        title: 'Conversation Mentale',
-        description: 'Discutez mentalement avec l’IA'
-      }
-    }
+  mysteryWordInstructions: {
+    title: 'Comment Fonctionne le Mot Mystère',
+    subtitle: 'Apprenez à jouer à ce jeu de télépathie',
+    step1Title: 'Phrase Initiale',
+    step1Text: 'Le jeu commencera par une phrase aléatoire. Le numéro de la phrase détermine à quelle position votre mot sera révélé.',
+    step2Title: 'Tapez Votre Mot Secret',
+    step2Text: 'Tapez secrètement le mot auquel vous avez pensé. Personne d\'autre n\'a besoin de le voir.',
+    step3Title: 'Présentation des Mots',
+    step3Text: 'Des mots aléatoires apparaîtront à l\'écran pendant 3 secondes chacun. Votre mot sera affiché à la position définie par la phrase initiale.',
+    step4Title: 'Audio et Révélation',
+    step4Text: 'Chaque mot sera prononcé en audio. Lorsque votre mot apparaîtra, il sera révélé à tous !',
+    tipsTitle: 'Conseils pour une Meilleure Expérience',
+    tip1: 'Choisissez un mot clair et facile à prononcer',
+    tip2: 'Cliquez sur "Arrêter" lorsque vous voulez terminer le jeu',
   },
 };

@@ -91,30 +91,34 @@ export const ptBR = {
     tip1: 'Mantenha a posição durante a contagem regressiva',
     tip2: 'E o principal. Seja DISCRETO, faça MOVIMENTOS SUAVES.',
   },
-  mentalConversation: {
-    instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.'
+  mentalConversationInstructions: {
+    title: 'Como Funciona a Conversa Mental',
+    subtitle: 'Aprenda a jogar este jogo de adivinhação',
+    step1Title: 'Pense em uma Palavra',
+    step1Text: 'Pense em uma palavra e mantenha-a em segredo. Pode ser qualquer palavra que você quiser.',
+    step2Title: 'Converse com a IA',
+    step2Text: 'A IA fará perguntas para tentar adivinhar sua palavra. Responda apenas com SIM ou NÃO.',
+    step3Title: 'Seja Honesto',
+    step3Text: 'Para o jogo funcionar, você precisa responder honestamente às perguntas da IA.',
+    step4Title: 'Revelação Mágica',
+    step4Text: 'Após algumas perguntas, a IA revelará sua palavra com um efeito mágico especial!',
+    tipsTitle: 'Dicas para Melhor Experiência',
+    tip1: 'Escolha palavras claras e não muito abstratas',
+    tip2: 'Responda consistentemente às perguntas',
   },
-  gameSelector: {
-    heading: 'Leitores de Mente',
-    subheading: 'Escolha uma experiência de leitura mental',
-    modalTitle: 'Como Jogar',
-    play: 'Jogar',
-    comingSoon: 'Em breve',
-    cards: {
-      magicQuadrants: {
-        title: 'Quadrantes Mágicos',
-        description: 'Descubra em qual quadrante você está pensando através da leitura mental',
-        instructions: '1. A IA mostrará uma grade com números\n2. Pense em um número da grade\n3. A IA fará perguntas sobre quadrantes\n4. Responda honestamente\n5. A IA revelará o número que você pensou!'
-      },
-      mysteryWord: {
-        title: 'Palavra Misteriosa',
-        description: 'Pense em uma palavra e deixe a IA descobrir qual é',
-        instructions: '1. Pense em uma palavra (animal, fruta ou país)\n2. A IA fará perguntas\n3. Responda com suas respostas\n4. A IA usará pistas para descobrir a palavra\n5. Veja se ela acerta!'
-      },
-      mentalConversation: {
-        title: 'Conversa Mental',
-        description: 'Converse mentalmente com a IA'
-      }
-    }
+  mysteryWordInstructions: {
+    title: 'Como Funciona a Palavra Misteriosa',
+    subtitle: 'Aprenda a jogar este jogo de telepatia',
+    step1Title: 'Frase Inicial',
+    step1Text: 'O jogo começará com uma frase aleatória. O número da frase determina em qual posição sua palavra será revelada.',
+    step2Title: 'Digite Sua Palavra Secreta',
+    step2Text: 'Digite secretamente a palavra que você pensou. Ninguém mais precisa ver.',
+    step3Title: 'Apresentação de Palavras',
+    step3Text: 'Palavras aleatórias aparecerão na tela por 3 segundos cada. Sua palavra será mostrada na posição definida pela frase inicial.',
+    step4Title: 'Áudio e Revelação',
+    step4Text: 'Cada palavra será falada em áudio. Quando sua palavra aparecer, ela será revelada para todos!',
+    tipsTitle: 'Dicas para Melhor Experiência',
+    tip1: 'Escolha uma palavra clara e fácil de pronunciar',
+    tip2: 'Clique em "Parar" quando quiser encerrar o jogo',
   },
 };

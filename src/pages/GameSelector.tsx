@@ -18,48 +18,36 @@ const GameSelector = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const baseGames = [
+  const games = [
     {
-      id: 'magic-quadrants',
-      icon: Grid3x3,
+      id: 'mind-reader',
+      title: 'Quadrante Mágico',
+      description: 'Leia a mente através de movimentos sutis da cabeça',
+      icon: Brain,
       path: '/connect-mind',
       instructionsPath: '/mind-reader/instructions',
       color: 'from-purple-500 to-pink-500',
-      translationKey: 'gameSelector.cards.magicQuadrants',
-      instructionsKey: 'gameSelector.cards.magicQuadrants.instructions'
-    },
-    {
-      id: 'mystery-word',
-      icon: Sparkles,
-      path: '/mystery-word',
-      color: 'from-blue-500 to-cyan-500',
-      translationKey: 'gameSelector.cards.mysteryWord',
-      instructionsKey: 'gameSelector.cards.mysteryWord.instructions'
     },
     {
       id: 'mental-conversation',
-      icon: MessageSquare,
+      title: 'Conversa Mental',
+      description: 'Converse com uma IA que tenta adivinhar sua palavra',
+      icon: MessageCircle,
       path: '/mental-conversation',
-      color: 'from-green-500 to-emerald-500',
-      disabled: false,
-      translationKey: 'gameSelector.cards.mentalConversation',
-      instructionsKey: 'mentalConversation.instructions'
-    }
+      instructionsPath: '/mental-conversation/instructions',
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      id: 'mystery-word',
+      title: 'Palavra Misteriosa',
+      description: 'Revele secretamente sua palavra para o público',
+      icon: Sparkles,
+      path: '/mystery-word',
+      instructionsPath: '/mystery-word/instructions',
+      color: 'from-orange-500 to-red-500',
+    },
   ];
 
-  const games = baseGames.map(({ translationKey, instructionsKey, ...game }) => ({
-    ...game,
-    title: t(`${translationKey}.title`),
-    description: t(`${translationKey}.description`),
-    instructions: t(instructionsKey),
-  }));
-
-  const openInstructions = (gameId: string) => {
-    setSelectedGame(gameId);
-    setInstructionsOpen(true);
-  };
-
-  const currentGameInstructions = games.find(g => g.id === selectedGame)?.instructions || '';
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
@@ -74,10 +62,10 @@ const GameSelector = () => {
             <Brain className="w-16 h-16 text-primary animate-pulse" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            {t('gameSelector.heading')}
+            Leitores de Mente
           </h1>
           <p className="text-muted-foreground text-lg">
-            {t('gameSelector.subheading')}
+            Escolha uma experiência de leitura mental
           </p>
         </div>
 
@@ -109,7 +97,7 @@ const GameSelector = () => {
                       className="flex-1" 
                       onClick={() => navigate(game.path)}
                     >
-                      {game.disabled ? t('gameSelector.comingSoon') : t('gameSelector.play')}
+                      Jogar
                     </Button>
                     <Button 
                       size="icon"
@@ -128,17 +116,6 @@ const GameSelector = () => {
           })}
         </div>
       </div>
-
-      <Dialog open={instructionsOpen} onOpenChange={setInstructionsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('gameSelector.modalTitle')}</DialogTitle>
-            <DialogDescription className="whitespace-pre-line pt-4">
-              {currentGameInstructions}
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

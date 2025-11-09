@@ -91,30 +91,34 @@ export const zhCN = {
     tip1: '在倒计时期间保持位置',
     tip2: '最重要的是。要谨慎，做平滑的动作。',
   },
-  mentalConversation: {
-    instructions: '1. 第一次互动会告诉应用你朋友选择的类别（1 个词 = 动物，2 个词 = 水果，3 个词 = 国家）。\n2. 接下来的三次互动中，最后一个词的首字母会告诉应用你朋友单词的首字母，重复三次。\n3. 如果拿到三个字母后仍然没猜中，应用会显示一个候选列表。\n4. 再发送一次由 1、2 或 3 个词组成的互动，表示正确答案是列表中的第 1、2 或 3 个选项。'
+  mentalConversationInstructions: {
+    title: '心灵对话如何工作',
+    subtitle: '学习玩这个猜谜游戏',
+    step1Title: '想一个词',
+    step1Text: '想一个词并保密。可以是你想要的任何词。',
+    step2Title: '与AI对话',
+    step2Text: 'AI会提问试图猜测你的词。只用是或否回答。',
+    step3Title: '诚实回答',
+    step3Text: '为了让游戏正常进行，你需要诚实回答AI的问题。',
+    step4Title: '神奇的揭示',
+    step4Text: '经过几个问题后，AI会用特殊的魔法效果揭示你的词！',
+    tipsTitle: '更好体验的提示',
+    tip1: '选择清晰且不太抽象的词',
+    tip2: '始终如一地回答问题',
   },
-  gameSelector: {
-    heading: '读心者',
-    subheading: '选择一次读心体验',
-    modalTitle: '怎么玩',
-    play: '开始',
-    comingSoon: '敬请期待',
-    cards: {
-      magicQuadrants: {
-        title: '魔法象限',
-        description: '通过读心来发现你正在想的象限',
-        instructions: '1. AI 会显示一个数字网格\n2. 在网格中想一个数字\n3. AI 会询问关于象限的问题\n4. 如实回答\n5. AI 会揭示你想到的数字！'
-      },
-      mysteryWord: {
-        title: '神秘单词',
-        description: '想一个单词并让 AI 猜出它',
-        instructions: '1. 想一个单词（动物、水果或国家）\n2. AI 会提问\n3. 用你的回答回复\n4. AI 会利用线索找出这个单词\n5. 看看它能不能猜中！'
-      },
-      mentalConversation: {
-        title: '心灵对话',
-        description: '与 AI 进行心灵交流'
-      }
-    }
+  mysteryWordInstructions: {
+    title: '神秘词如何工作',
+    subtitle: '学习玩这个心灵感应游戏',
+    step1Title: '初始短语',
+    step1Text: '游戏将以随机短语开始。短语编号决定你的词将在哪个位置揭示。',
+    step2Title: '输入你的秘密词',
+    step2Text: '秘密输入你想到的词。没有人需要看到它。',
+    step3Title: '词的展示',
+    step3Text: '随机词将在屏幕上出现，每个持续3秒。你的词将在初始短语定义的位置显示。',
+    step4Title: '音频和揭示',
+    step4Text: '每个词都会被朗读出来。当你的词出现时，它将被揭示给所有人！',
+    tipsTitle: '更好体验的提示',
+    tip1: '选择一个清晰且容易发音的词',
+    tip2: '当你想结束游戏时点击"停止"',
   },
 };
