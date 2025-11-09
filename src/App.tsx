@@ -21,7 +21,9 @@ import GamePlay from "./pages/MindReader/GamePlay";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
 import MysteryWord from "./pages/MysteryWord/Index";
+import MysteryWordInstructions from "./pages/MysteryWord/Instructions";
 import MentalConversation from "./pages/MentalConversation/Index";
+import MentalConversationInstructions from "./pages/MentalConversation/Instructions";
 
 const queryClient = new QueryClient();
 
@@ -77,17 +79,19 @@ const App = () => (
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
             {/* Game selector */}
             <Route path="/game-selector" element={<ProtectedRoute><GameSelector /></ProtectedRoute>} />
-            {/* Magic Quadrants game routes */}
+            {/* Mind Reader game routes */}
             <Route path="/connect-mind" element={<ProtectedRoute><ConnectMind /></ProtectedRoute>} />
-            <Route path="/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
+            <Route path="/mind-reader/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
             <Route path="/result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
             {/* Mystery Word game */}
             <Route path="/mystery-word" element={<ProtectedRoute><MysteryWord /></ProtectedRoute>} />
+            <Route path="/mystery-word/instructions" element={<ProtectedRoute><MysteryWordInstructions /></ProtectedRoute>} />
             {/* Mental Conversation game */}
             <Route path="/mental-conversation" element={<ProtectedRoute><MentalConversation /></ProtectedRoute>} />
+            <Route path="/mental-conversation/instructions" element={<ProtectedRoute><MentalConversationInstructions /></ProtectedRoute>} />
             <Route path="/detector" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />

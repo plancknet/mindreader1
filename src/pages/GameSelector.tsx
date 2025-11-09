@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, Grid3x3, MessageSquare, Sparkles, HelpCircle } from 'lucide-react';
+import { Brain, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,46 +17,37 @@ import {
 const GameSelector = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [instructionsOpen, setInstructionsOpen] = useState(false);
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
   const games = [
     {
-      id: 'magic-quadrants',
-      title: 'Quadrantes Mágicos',
-      description: 'Descubra em qual quadrante você está pensando através da leitura mental',
-      icon: Grid3x3,
+      id: 'mind-reader',
+      title: 'Quadrante Mágico',
+      description: 'Leia a mente através de movimentos sutis da cabeça',
+      icon: Brain,
       path: '/connect-mind',
+      instructionsPath: '/mind-reader/instructions',
       color: 'from-purple-500 to-pink-500',
-      instructions: '1. A IA mostrará uma grade com números\n2. Pense em um número da grade\n3. A IA fará perguntas sobre quadrantes\n4. Responda honestamente\n5. A IA revelará o número que você pensou!'
-    },
-    {
-      id: 'mystery-word',
-      title: 'Palavra Misteriosa',
-      description: 'Pense em uma palavra e deixe a IA descobrir qual é',
-      icon: Sparkles,
-      path: '/mystery-word',
-      color: 'from-blue-500 to-cyan-500',
-      instructions: '1. Pense em uma palavra (animal, fruta ou país)\n2. A IA fará perguntas\n3. Responda com suas respostas\n4. A IA usará pistas para descobrir a palavra\n5. Veja se ela acerta!'
     },
     {
       id: 'mental-conversation',
       title: 'Conversa Mental',
-      description: 'Converse mentalmente com a IA',
-      icon: MessageSquare,
+      description: 'Converse com uma IA que tenta adivinhar sua palavra',
+      icon: MessageCircle,
       path: '/mental-conversation',
-      color: 'from-green-500 to-emerald-500',
-      disabled: false,
-      instructions: '1. Peça ao seu amigo para pensar em um ANIMAL, FRUTA ou PAÍS\n2. Não conte qual é a categoria\n3. A IA fará perguntas naturais\n4. Responda usando voz ou texto\n5. A IA descobrirá a palavra através das suas respostas!'
-    }
+      instructionsPath: '/mental-conversation/instructions',
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      id: 'mystery-word',
+      title: 'Palavra Misteriosa',
+      description: 'Revele secretamente sua palavra para o público',
+      icon: Sparkles,
+      path: '/mystery-word',
+      instructionsPath: '/mystery-word/instructions',
+      color: 'from-orange-500 to-red-500',
+    },
   ];
 
-  const openInstructions = (gameId: string) => {
-    setSelectedGame(gameId);
-    setInstructionsOpen(true);
-  };
-
-  const currentGameInstructions = games.find(g => g.id === selectedGame)?.instructions || '';
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
@@ -84,9 +75,7 @@ const GameSelector = () => {
             return (
               <Card
                 key={game.id}
-                className={`p-8 hover:scale-105 transition-all group relative overflow-hidden ${
-                  game.disabled ? 'opacity-50' : ''
-                }`}
+                className="p-8 hover:scale-105 transition-all group relative overflow-hidden"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
                 
@@ -106,18 +95,16 @@ const GameSelector = () => {
                   <div className="flex gap-2">
                     <Button 
                       className="flex-1" 
-                      variant={game.disabled ? "outline" : "default"}
-                      disabled={game.disabled}
-                      onClick={() => !game.disabled && navigate(game.path)}
+                      onClick={() => navigate(game.path)}
                     >
-                      {game.disabled ? 'Em breve' : 'Jogar'}
+                      Jogar
                     </Button>
                     <Button 
                       size="icon"
                       variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        openInstructions(game.id);
+                        navigate(game.instructionsPath);
                       }}
                     >
                       <HelpCircle className="w-4 h-4" />
@@ -129,17 +116,6 @@ const GameSelector = () => {
           })}
         </div>
       </div>
-
-      <Dialog open={instructionsOpen} onOpenChange={setInstructionsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Como Jogar</DialogTitle>
-            <DialogDescription className="whitespace-pre-line pt-4">
-              {currentGameInstructions}
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
