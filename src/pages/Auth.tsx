@@ -26,13 +26,15 @@ const Auth = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/game-selector', { replace: true });
+        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+        navigate(hasSeenWelcome ? '/game-selector' : '/welcome', { replace: true });
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && event !== 'SIGNED_OUT') {
-        navigate('/game-selector', { replace: true });
+        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+        navigate(hasSeenWelcome ? '/game-selector' : '/welcome', { replace: true });
       }
     });
 

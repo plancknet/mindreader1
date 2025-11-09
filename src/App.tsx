@@ -24,6 +24,7 @@ import MysteryWord from "./pages/MysteryWord/Index";
 import MysteryWordInstructions from "./pages/MysteryWord/Instructions";
 import MentalConversation from "./pages/MentalConversation/Index";
 import MentalConversationInstructions from "./pages/MentalConversation/Instructions";
+import Welcome from "./pages/Welcome";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/" element={<Navigate to="/game-selector" replace />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
+            <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
