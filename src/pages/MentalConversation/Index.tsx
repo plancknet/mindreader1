@@ -127,7 +127,15 @@ const MentalConversation = () => {
           body: { text, voice: 'alloy' }
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Text-to-speech error:', error);
+          return; // Continue without audio
+        }
+
+        if (data?.error) {
+          console.error('Text-to-speech API error:', data.error);
+          return; // Continue without audio
+        }
 
         if (data?.audioContent) {
           const audioBlob = base64ToBlob(data.audioContent, 'audio/mpeg');
@@ -232,7 +240,15 @@ const MentalConversation = () => {
             }
           });
 
-          if (error) throw error;
+          if (error) {
+            console.error('Speech-to-text error:', error);
+            throw new Error('Erro ao processar áudio. Verifique se a API OpenAI está configurada corretamente.');
+          }
+
+          if (data?.error) {
+            console.error('Speech-to-text API error:', data.error);
+            throw new Error('Erro na API de transcrição de áudio. Verifique sua quota do OpenAI.');
+          }
 
           if (data?.text) {
             setInput(data.text);
