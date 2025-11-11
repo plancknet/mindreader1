@@ -382,33 +382,35 @@ const MyEmojis = () => {
           </Card>
 
           <Card className="p-6 space-y-5">
-            <MatrixBlock
-              title="Matriz 0 (3x3)"
-              subtitle="Escolha três emojis aleatórios"
-            >
-              <div className="space-y-2">
-                {matrix0.map((row, rowIndex) => (
-                  <div key={`row-${rowIndex}`} className="grid grid-cols-3 gap-2">
-                    {row.map((emoji) => {
-                      const isSelected = selectedInitial.includes(emoji);
-                      return (
-                        <Button
-                          key={emoji}
-                          variant={isSelected ? 'default' : 'outline'}
-                          className="h-16 text-3xl"
-                          onClick={() => handleInitialSelect(emoji)}
-                          disabled={phase !== 'selectInitial'}
-                        >
-                          {emoji}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </MatrixBlock>
+            {matrixOriginal.length === 0 && (
+              <MatrixBlock
+                title="Matriz 0 (3x3)"
+                subtitle="Escolha três emojis aleatórios"
+              >
+                <div className="space-y-2">
+                  {matrix0.map((row, rowIndex) => (
+                    <div key={`row-${rowIndex}`} className="grid grid-cols-3 gap-2">
+                      {row.map((emoji) => {
+                        const isSelected = selectedInitial.includes(emoji);
+                        return (
+                          <Button
+                            key={emoji}
+                            variant={isSelected ? 'default' : 'outline'}
+                            className="h-16 text-3xl"
+                            onClick={() => handleInitialSelect(emoji)}
+                            disabled={phase !== 'selectInitial'}
+                          >
+                            {emoji}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </MatrixBlock>
+            )}
 
-            {matrixOriginal.length === 3 && (
+            {matrixOriginal.length === 3 && matrixEmbaralhada.length === 0 && (
               <MatrixBlock
                 title="Matriz original (1x3)"
                 subtitle="Referência para a previsão"
