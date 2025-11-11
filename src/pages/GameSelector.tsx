@@ -1,12 +1,21 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Brain, MessageCircle, Sparkles, HelpCircle, Smile } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const GAME_CARDS = [
+  {
+    id: 'mystery-word',
+    translationKey: 'mysteryWord',
+    icon: Sparkles,
+    path: '/mystery-word',
+    instructionsPath: '/mystery-word/instructions',
+    color: 'from-orange-500 to-red-500',
+  },
   {
     id: 'mind-reader',
     translationKey: 'mindReader',
@@ -24,12 +33,13 @@ const GAME_CARDS = [
     color: 'from-blue-500 to-cyan-500',
   },
   {
-    id: 'mystery-word',
-    translationKey: 'mysteryWord',
-    icon: Sparkles,
-    path: '/mystery-word',
-    instructionsPath: '/mystery-word/instructions',
-    color: 'from-orange-500 to-red-500',
+    id: 'my-emojis',
+    translationKey: 'myEmojis',
+    icon: Smile,
+    path: '/my-emojis',
+    instructionsPath: '/my-emojis/instructions',
+    color: 'from-yellow-400 to-lime-400',
+    badgeKey: 'underConstruction',
   },
 ] as const;
 
@@ -44,6 +54,7 @@ const GameSelector = () => {
       ...game,
       title: t(`${baseKey}.title`),
       description: t(`${baseKey}.description`),
+      badge: game.badgeKey ? t(`gameSelector.${game.badgeKey}`) : undefined,
     };
   });
 
@@ -75,6 +86,11 @@ const GameSelector = () => {
                 key={game.id}
                 className="p-8 hover:scale-105 transition-all group relative overflow-hidden"
               >
+                {game.badge && (
+                  <Badge className="absolute top-4 right-4 uppercase tracking-wide">
+                    {game.badge}
+                  </Badge>
+                )}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
                 />

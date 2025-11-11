@@ -13,6 +13,25 @@ const Instructions = () => {
   const backTarget = navigationState.from ?? '/game-selector';
   const { t } = useTranslation();
 
+  const steps = [
+    {
+      title: t('instructions.step4Title'),
+      text: t('instructions.step4Text'),
+    },
+    {
+      title: t('instructions.step1Title'),
+      text: t('instructions.step1Text'),
+    },
+    {
+      title: t('instructions.step2Title'),
+      text: t('instructions.step2Text'),
+    },
+    {
+      title: t('instructions.step3Title'),
+      text: t('instructions.step3Text'),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -21,8 +40,8 @@ const Instructions = () => {
           <LogoutButton />
         </div>
 
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate(backTarget)}
           className="mb-4"
         >
@@ -43,61 +62,21 @@ const Instructions = () => {
         </div>
 
         <div className="space-y-6">
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">1</span>
+          {steps.map((step, index) => (
+            <Card key={step.title} className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">{index + 1}</span>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p className="text-muted-foreground">
+                    {step.text}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">{t('instructions.step1Title')}</h3>
-                <p className="text-muted-foreground">
-                  {t('instructions.step1Text')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">2</span>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">{t('instructions.step2Title')}</h3>
-                <p className="text-muted-foreground">
-                  {t('instructions.step2Text')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">3</span>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">{t('instructions.step3Title')}</h3>
-                <p className="text-muted-foreground">
-                  {t('instructions.step3Text')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">4</span>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">{t('instructions.step4Title')}</h3>
-                <p className="text-muted-foreground">
-                  {t('instructions.step4Text')}
-                </p>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          ))}
 
           <Card className="p-6">
             <div className="flex items-start gap-4">

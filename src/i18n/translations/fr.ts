@@ -85,7 +85,7 @@ export const fr = {
     step2Text: "Tournez DISCRÈTEMENT la tête d'un côté ou de l'autre. Il est IMPORTANT D'ÊTRE DISCRET, pour que personne ne découvre ce secret.",
     step3Title: "Processus d'élimination",
     step3Text: "À chaque tour, la moitié des mots sont éliminés en fonction de la direction détectée. Tournez la tête vers le CÔTÉ que vous voulez ÉLIMINER. Le côté où se trouve votre mot aura des couleurs VERTES ou JAUNES.",
-    step4Title: 'Méthode Alternative : Détection par Frappe',
+    step4Title: 'Méthode Principale : Détection par Frappe',
     step4Text: "Lors de la saisie du mot initial, vous pouvez remplacer la DERNIÈRE LETTRE par une lettre qui indique votre mot pensé. Comme chaque mot commence par une lettre différente, il suffit de taper cette lettre à la fin. Par exemple : si vous avez pensé à \"Brésil\", tapez \"INITIEB\" au lieu de \"INITIER\".",
     tipsTitle: 'Conseils pour une meilleure détection',
     tip1: 'Maintenez la position pendant le compte à rebours',
@@ -175,6 +175,7 @@ export const fr = {
     subheading: 'Choisissez une expérience de lecture mentale',
     play: 'Jouer',
     comingSoon: 'Bientôt',
+    underConstruction: 'En construction',
     modalTitle: 'Comment jouer',
     cards: {
       mindReader: {

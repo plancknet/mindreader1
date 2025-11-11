@@ -175,6 +175,7 @@ export const zhCN = {
     subheading: 'Choose a mind-reading experience',
     play: 'Play',
     comingSoon: 'Coming soon',
+    underConstruction: '建设中',
     modalTitle: 'How to Play',
     cards: {
       mindReader: {
