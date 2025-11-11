@@ -78,26 +78,6 @@ const Instructions = () => {
             </Card>
           ))}
 
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Eye className="h-6 w-6 text-primary" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">{t('instructions.tipsTitle')}</h3>
-                <ul className="text-muted-foreground space-y-2">
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('instructions.tip1')}</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('instructions.tip2')}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </Card>
         </div>
 
         <div className="flex justify-center pt-4">

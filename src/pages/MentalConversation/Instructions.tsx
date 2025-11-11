@@ -68,24 +68,6 @@ const MentalConversationInstructions = () => {
           ))}
         </div>
 
-        {/* Tips Section */}
-        <Card className="p-6 bg-primary/5 border-primary/20 mb-8">
-          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            {t('mentalConversationInstructions.tipsTitle')}
-          </h3>
-          <ul className="space-y-2 text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              {t('mentalConversationInstructions.tip1')}
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              {t('mentalConversationInstructions.tip2')}
-            </li>
-          </ul>
-        </Card>
-
         {/* Action Button */}
         <div className="text-center">
           <Button
