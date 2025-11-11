@@ -79,7 +79,7 @@ export const ptBR = {
   instructions: {
     title: 'Como Funciona',
     subtitle: 'Entenda o processo de detecção mental',
-    step1Title: 'Detecção por Movimento de Cabeça',
+    step1Title: 'Método de Detecção por Movimento de Cabeça',
     step1Text: 'Conseguimos identificar para qual lado você girou levemente a cabeça.',
     step2Title: 'Escolha Mental',
     step2Text: 'Gire DISCRETAMENTE a cabeça para um lado ou para outro. É IMPORTANTE SER DISCRETO, para que ninguém descubra esse segredo.',
@@ -100,6 +100,8 @@ export const ptBR = {
     step2Text: 'Nas próximas interações, a PRIMEIRA letra da ÚLTIMA palavra revelará uma letra da palavra misteriosa. Repita até indicar as três letras da palavra secreta.',
     step3Title: 'Lista de Possibilidades',
     step3Text: 'Se o app tiver mais de uma possibilidade com a categoria e as três letras indicadas, ele mostrará as opções disponíveis.',
+    step4Title: 'Escolha final',
+    step4Text: 'Diga 1 palavra para indicar que a escolhida é a 1a. opção. Diga 2 palavras para indicar que a escolhida é a 2a. opção. E assim por diante...',
   },
   mysteryWordInstructions: {
     title: 'Como Funciona a Palavra Misteriosa',
