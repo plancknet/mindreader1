@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, MessageCircle, Sparkles, HelpCircle, Smile } from 'lucide-react';
+import { Brain, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -30,14 +30,6 @@ const GAME_CARDS = [
     path: '/mystery-word',
     instructionsPath: '/mystery-word/instructions',
     color: 'from-orange-500 to-red-500',
-  },
-  {
-    id: 'my-emojis',
-    translationKey: 'myEmojis',
-    icon: Smile,
-    path: '/my-emojis',
-    instructionsPath: '/my-emojis/instructions',
-    color: 'from-yellow-400 to-lime-400',
   },
 ] as const;
 
