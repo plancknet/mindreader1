@@ -335,7 +335,7 @@ const MyEmojis = () => {
   );
 
   const renderFinalMatrix = () => (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-rows-3 grid-cols-1 gap-2">
       {matrixFinal.map((emoji, index) => (
         <Button
           key={`final-${index}`}
@@ -444,7 +444,7 @@ const MyEmojis = () => {
 
             {(phase === 'firstTransfer' || phase === 'selectOne' || phase === 'reveal') && (
               <MatrixBlock
-                title="Matriz final (1x3)"
+                title="Matriz final (3x1)"
                 subtitle="Preencha seguindo as regras"
               >
                 {renderFinalMatrix()}
