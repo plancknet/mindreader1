@@ -186,10 +186,22 @@ const MentalConversation = () => {
   };
 
   const filterWordsByLetters = (words: string[], letters: string[]): string[] => {
+    if (!letters.length) return words;
+    const normalizedLetters = letters.map(letter => letter.toLowerCase());
+
     return words.filter(word => {
-      const normalizedWord = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      return letters.every((letter, index) => {
-        return normalizedWord[index] && normalizedWord[index].toLowerCase() === letter.toLowerCase();
+      const normalizedWord = word
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+
+      let searchIndex = 0;
+
+      return normalizedLetters.every(letter => {
+        const foundIndex = normalizedWord.indexOf(letter, searchIndex);
+        if (foundIndex === -1) return false;
+        searchIndex = foundIndex + 1;
+        return true;
       });
     });
   };
