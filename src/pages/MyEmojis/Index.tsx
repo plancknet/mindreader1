@@ -382,7 +382,7 @@ const MyEmojis = () => {
           </Card>
 
           <Card className="p-6 space-y-5">
-            {matrixOriginal.length === 0 && (
+            {phase === 'selectInitial' && (
               <MatrixBlock
                 title="Matriz 0 (3x3)"
                 subtitle="Escolha três emojis aleatórios"
@@ -410,7 +410,7 @@ const MyEmojis = () => {
               </MatrixBlock>
             )}
 
-            {matrixOriginal.length === 3 && matrixEmbaralhada.length === 0 && (
+            {matrixOriginal.length === 3 && (phase === 'prediction' || phase === 'shuffle') && (
               <MatrixBlock
                 title="Matriz original (1x3)"
                 subtitle="Referência para a previsão"
