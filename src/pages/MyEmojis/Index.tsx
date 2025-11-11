@@ -59,7 +59,7 @@ const MyEmojis = () => {
   const [selectedInitial, setSelectedInitial] = useState<string[]>([]);
   const [matrixOriginal, setMatrixOriginal] = useState<string[]>([]);
   const [matrixOriginalWorking, setMatrixOriginalWorking] = useState<string[]>([]);
-  const [matrixEmbaralhada, setMatrixEmbaralhada] = useState<string[]>([]);
+  const [matrixEmbaralhada, setMatrixEmbaralhada] = useState<(string | null)[]>([]);
   const [matrixFinal, setMatrixFinal] = useState<(string | null)[]>([null, null, null]);
   const [selectedTwo, setSelectedTwo] = useState<string[]>([]);
   const [selectedSingle, setSelectedSingle] = useState<string | null>(null);
@@ -128,13 +128,14 @@ const MyEmojis = () => {
     if (selectedTwo.length !== 2 || matrixEmbaralhada.length !== 3 || matrixOriginal.length !== 3) {
       return;
     }
-    const unselected = matrixEmbaralhada.find((emoji) => !selectedTwo.includes(emoji));
+    const unselected = matrixEmbaralhada.find((emoji) => emoji && !selectedTwo.includes(emoji));
     if (!unselected) return;
     const includesMiddle = selectedTwo.includes(matrixOriginal[1]);
     const nextFinal: (string | null)[] = [null, null, null];
     const placementIndex = includesMiddle ? 2 : 1;
     nextFinal[placementIndex] = unselected;
     setMatrixFinal(nextFinal);
+    setMatrixEmbaralhada((prev) => prev.map((emoji) => (emoji === unselected ? null : emoji)));
     setPhase('firstTransfer');
   };
 
@@ -164,6 +165,9 @@ const MyEmojis = () => {
       nextFinal[emptyIndex] = remaining;
     }
     setMatrixFinal(nextFinal);
+    setMatrixEmbaralhada((prev) =>
+      prev.map((emoji) => (emoji === selectedSingle || emoji === remaining ? null : emoji)),
+    );
     setPhase('reveal');
   };
 
@@ -312,7 +316,12 @@ const MyEmojis = () => {
 
   const renderShuffledMatrix = () => (
     <div className="grid grid-cols-3 gap-2">
-      {matrixEmbaralhada.map((emoji) => {
+      {matrixEmbaralhada.map((emoji, index) => {
+        if (!emoji) {
+          return (
+            <div key={`empty-${index}`} className="h-16 rounded-md border border-dashed"></div>
+          );
+        }
         const isSelectTwoPhase = phase === 'selectTwo';
         const isSelectOnePhase = phase === 'selectOne';
         const isEligible = isSelectTwoPhase || (isSelectOnePhase && selectedTwo.includes(emoji));
@@ -321,7 +330,7 @@ const MyEmojis = () => {
           (isSelectOnePhase && selectedSingle === emoji);
         return (
           <Button
-            key={emoji}
+            key={`${emoji}-${index}`}
             variant={isSelected ? 'default' : 'outline'}
             className="h-16 text-3xl"
             onClick={() => (isSelectTwoPhase ? toggleSelectTwo(emoji) : handleSelectSingle(emoji))}
