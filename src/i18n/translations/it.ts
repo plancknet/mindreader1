@@ -145,7 +145,7 @@ export const it = {
       askHobby: 'Interessante! Qual è il tuo hobby preferito?',
       askSeason: 'Fantastico! Ultima domanda: qual è la tua stagione preferita?',
       singleResult: '🎯 Incredibile! Sto percependo un’energia molto forte...\n\n✨ La parola pensata dal tuo amico è:\n\n🌟 **{word}** 🌟\n\nHo indovinato? ✨',
-      multipleOptions: 'Hmm... sto ricevendo alcuni segnali. La parola inizia con "{letters}"...\n\nQueste sono le possibilità che percepisco: {options}\n\nSono sulla strada giusta?',
+      multipleOptions: 'Hmm... sto ricevendo alcuni segnali.\n\nQueste sono le possibilità che percepisco: {options}\n\nSono sulla strada giusta?',
       noMatch: 'Ops! Non sono riuscito a captare la parola. Riproviamo? Digita "reiniciar" per ricominciare.',
       finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nHo letto la mente del tuo amico! La categoria era {category} e la parola era {word}! 🧠✨\n\nVuoi giocare di nuovo? Digita qualsiasi cosa per tornare al menu.'
     },

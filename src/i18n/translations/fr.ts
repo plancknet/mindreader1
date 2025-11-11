@@ -145,7 +145,7 @@ export const fr = {
       askHobby: 'Intéressant ! Quel est votre passe-temps favori ?',
       askSeason: 'Génial ! Dernière question : quelle est votre saison préférée ?',
       singleResult: '🎯 Incroyable ! Je capte une énergie très forte...\n\n✨ Le mot auquel votre ami pensait est :\n\n🌟 **{word}** 🌟\n\nAi-je deviné ? ✨',
-      multipleOptions: 'Hmm... je reçois certains signaux. Le mot commence par « {letters} »...\n\nVoici les possibilités que je perçois : {options}\n\nSuis-je sur la bonne voie ?',
+      multipleOptions: 'Hmm... je reçois certains signaux. \nVoici les possibilités que je perçois : {options}\n\nSuis-je sur la bonne voie ?',
       noMatch: 'Oups ! Je n’ai pas réussi à capter le mot. On réessaie ? Tapez "reiniciar" pour recommencer.',
       finalReveal: '🎊 EUREKA !\n\n🔮 **{word}** 🔮\n\nJ’ai lu dans l’esprit de votre ami ! La catégorie était {category} et le mot était {word} ! 🧠✨\n\nEnvie de rejouer ? Tapez n’importe quoi pour revenir au menu.'
     },

@@ -145,7 +145,7 @@ export const zhCN = {
       askHobby: 'Interesting! And what is your favorite hobby?',
       askSeason: 'Great! Last question: what is your favorite season of the year?',
       singleResult: '🎯 Amazing! I am sensing a very strong energy...\n\n✨ The word your friend thought of is:\n\n🌟 **{word}** 🌟\n\nAm I right? ✨',
-      multipleOptions: 'Hmm... I’m receiving some signals. The word starts with "{letters}"...\n\nThese are the possibilities I’m picking up: {options}\n\nAm I on the right track?',
+      multipleOptions: 'Hmm... I’m receiving some signals.\n\nThese are the possibilities I’m picking up: {options}\n\nAm I on the right track?',
       noMatch: 'Oops! I couldn’t quite capture the word. Shall we try again? Type "reiniciar" to start over.',
       finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nI read your friend’s mind! The category was {category} and the word was {word}! 🧠✨\n\nWant to play again? Type anything to go back to the menu!'
     },
