@@ -24,6 +24,8 @@ import MysteryWord from "./pages/MysteryWord/Index";
 import MysteryWordInstructions from "./pages/MysteryWord/Instructions";
 import MentalConversation from "./pages/MentalConversation/Index";
 import MentalConversationInstructions from "./pages/MentalConversation/Instructions";
+import MyEmojis from "./pages/MyEmojis/Index";
+import MyEmojisInstructions from "./pages/MyEmojis/Instructions";
 import Welcome from "./pages/Welcome";
 
 const queryClient = new QueryClient();
@@ -94,6 +96,9 @@ const App = () => (
             {/* Mental Conversation game */}
             <Route path="/mental-conversation" element={<ProtectedRoute><MentalConversation /></ProtectedRoute>} />
             <Route path="/mental-conversation/instructions" element={<ProtectedRoute><MentalConversationInstructions /></ProtectedRoute>} />
+            {/* My Emojis game */}
+            <Route path="/my-emojis" element={<ProtectedRoute><MyEmojis /></ProtectedRoute>} />
+            <Route path="/my-emojis/instructions" element={<ProtectedRoute><MyEmojisInstructions /></ProtectedRoute>} />
             <Route path="/detector" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
