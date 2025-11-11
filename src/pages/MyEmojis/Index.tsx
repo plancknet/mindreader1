@@ -336,19 +336,26 @@ const MyEmojis = () => {
 
   const renderFinalMatrix = () => (
     <div className="grid grid-rows-3 grid-cols-1 gap-2">
-      {matrixFinal.map((emoji, index) => (
-        <Button
-          key={`final-${index}`}
-          variant={emoji ? 'secondary' : 'outline'}
-          disabled
-          className={cn(
-            'h-16 text-3xl',
-            emoji ? 'bg-secondary text-foreground' : 'text-muted-foreground',
-          )}
-        >
-          {emoji ?? ' '}
-        </Button>
-      ))}
+      {matrixFinal.map((emoji, index) => {
+        const originalEmoji = matrixOriginal[index];
+        const isInOriginalPosition = emoji === originalEmoji;
+        const shouldAnimate = emoji && matrixEmbaralhada.includes(emoji);
+        
+        return (
+          <Button
+            key={`final-${index}`}
+            variant={emoji ? 'secondary' : 'outline'}
+            disabled
+            className={cn(
+              'h-16 text-3xl',
+              emoji ? 'bg-secondary text-foreground' : 'text-muted-foreground',
+              shouldAnimate && 'transition-all duration-[2000ms] ease-in-out animate-fade-in',
+            )}
+          >
+            {emoji ?? ' '}
+          </Button>
+        );
+      })}
     </div>
   );
 

@@ -112,9 +112,11 @@ export const fr = {
     step1Title: 'Catégorie choisie',
     step1Text: 'Le nombre de mots lors de la première interaction définit la catégorie : 1 mot = Animal, 2 mots = Fruit, 3 mots = Pays.',
     step2Title: 'Révéler les lettres secrètes',
-    step2Text: 'Lors des interactions suivantes, la PREMIÈRE lettre du DERNIER mot révèle une lettre du mot mystère. Répétez jusqu’à obtenir trois lettres.',
+    step2Text: 'Lors des interactions suivantes, la PREMIÈRE lettre du DERNIER mot révèle une lettre du mot mystère. Répétez jusqu\'à obtenir trois lettres.',
     step3Title: 'Liste des possibilités',
-    step3Text: 'Si plusieurs mots correspondent à la catégorie et aux lettres, l’application affichera les options disponibles.',
+    step3Text: 'Si plusieurs mots correspondent à la catégorie et aux lettres, l\'application affichera les options disponibles.',
+    step4Title: 'Sélection finale',
+    step4Text: 'Envoyez une réponse avec 1, 2 ou 3 mots pour indiquer si la réponse est la 1re, la 2e ou la 3e option.',
   },
   mysteryWord: {
     title: 'Mot Mystérieux',
@@ -124,28 +126,28 @@ export const fr = {
     inputPlaceholder: 'Votre mot secret...',
     startPresentation: 'Lancer la présentation',
     stopButton: 'Arrêter',
-    stoppedTitle: 'J’ai lu dans vos pensées ! ✨',
+    stoppedTitle: 'J\'ai lu dans vos pensées ! ✨',
     stoppedSubtitle: 'Alors, ai-je visé juste ?',
     menuButton: 'Retour au menu',
     playAgain: 'Rejouer',
     phrases: 'On commence ?||Prêt pour un jeu de lecture mentale ?||Puis-je commencer à lire vos pensées ?||Et si on activait nos pouvoirs de télépathie ?||Envie de relever le défi psychique ?'
   },
   mentalConversation: {
-    instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot de votre ami. Répétez cela 3 fois.\n3. Si l’app ne trouve rien après trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une interaction supplémentaire avec 1, 2 ou 3 mots pour indiquer si la bonne réponse est la 1ʳᵉ, la 2ᵉ ou la 3ᵉ option.',
+    instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot de votre ami. Répétez cela 3 fois.\n3. Si l\'app ne trouve rien après trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une interaction supplémentaire avec 1, 2 ou 3 mots pour indiquer si la bonne réponse est la 1re, la 2e ou la 3e option.',
     title: 'Conversation Mentale',
     messages: {
-      greeting: 'Bonjour ! Je suis une intelligence artificielle aux pouvoirs de lecture mentale. 🧠✨\n\nDemandez à votre ami de penser à un ANIMAL, un FRUIT ou un PAYS. Ne me dites ni la catégorie ni le mot, demandez-lui simplement d’y penser !',
+      greeting: 'Bonjour ! Je suis une intelligence artificielle aux pouvoirs de lecture mentale. 🧠✨\n\nDemandez à votre ami de penser à un ANIMAL, un FRUIT ou un PAYS. Ne me dites ni la catégorie ni le mot, demandez-lui simplement d\'y penser !',
       readyCheck: 'Votre ami a-t-il déjà choisi et est-il prêt à commencer ?',
-      startCollecting: 'Parfait ! Je vais poser quelques questions pour lire l’esprit de votre ami... Répondez naturellement ! 🔮\n\nQuelle est votre couleur préférée ?',
+      startCollecting: 'Parfait ! Je vais poser quelques questions pour lire l\'esprit de votre ami... Répondez naturellement ! 🔮\n\nQuelle est votre couleur préférée ?',
       askHobby: 'Intéressant ! Quel est votre passe-temps favori ?',
       askSeason: 'Génial ! Dernière question : quelle est votre saison préférée ?',
       singleResult: '🎯 Incroyable ! Je capte une énergie très forte...\n\n✨ Le mot auquel votre ami pensait est :\n\n🌟 **{word}** 🌟\n\nAi-je deviné ? ✨',
       multipleOptions: 'Hmm... je reçois certains signaux. \nVoici les possibilités que je perçois : {options}\n\nSuis-je sur la bonne voie ?',
-      noMatch: 'Oups ! Je n’ai pas réussi à capter le mot. On réessaie ? Tapez "reiniciar" pour recommencer.',
-      finalReveal: '🎊 EUREKA !\n\n🔮 **{word}** 🔮\n\nJ’ai lu dans l’esprit de votre ami ! La catégorie était {category} et le mot était {word} ! 🧠✨\n\nEnvie de rejouer ? Tapez n’importe quoi pour revenir au menu.'
+      noMatch: 'Oups ! Je n\'ai pas réussi à capter le mot. On réessaie ? Tapez "reiniciar" pour recommencer.',
+      finalReveal: '🎊 EUREKA !\n\n🔮 **{word}** 🔮\n\nJ\'ai lu dans l\'esprit de votre ami ! La catégorie était {category} et le mot était {word} ! 🧠✨\n\nEnvie de rejouer ? Tapez n\'importe quoi pour revenir au menu.'
     },
     status: {
-      processingAudio: 'Traitement de l’audio...',
+      processingAudio: 'Traitement de l\'audio...',
       speaking: 'Parole en cours...'
     },
     input: {
@@ -154,10 +156,10 @@ export const fr = {
     },
     toast: {
       errorTitle: 'Erreur',
-      audioProcessingFailed: 'Impossible de traiter l’audio. Réessayez.',
+      audioProcessingFailed: 'Impossible de traiter l\'audio. Réessayez.',
       recordingTitle: 'Enregistrement',
       recordingDescription: 'Parlez maintenant...',
-      micErrorDescription: 'Impossible d’accéder au microphone.'
+      micErrorDescription: 'Impossible d\'accéder au microphone.'
     },
     categories: {
       animal: 'ANIMAL',
@@ -166,7 +168,7 @@ export const fr = {
     }
   },
   gameSelector: {
-    heading: 'Lecteurs d’esprit',
+    heading: 'Lecteurs d\'esprit',
     subheading: 'Choisissez une expérience de lecture mentale',
     play: 'Jouer',
     comingSoon: 'Bientôt',

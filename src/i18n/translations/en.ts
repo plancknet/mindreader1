@@ -115,6 +115,8 @@ export const en = {
     step2Text: 'In the next interactions, the FIRST letter of the LAST word reveals one letter of the secret word. Repeat until you have three letters.',
     step3Title: 'List of Possibilities',
     step3Text: 'If more than one word matches the category and letters, the app will display the available options.',
+    step4Title: 'Final Selection',
+    step4Text: 'Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
   },
   mysteryWord: {
     title: 'Mystery Word',

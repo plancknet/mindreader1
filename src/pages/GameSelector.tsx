@@ -15,6 +15,7 @@ const GAME_CARDS = [
     path: '/mystery-word',
     instructionsPath: '/mystery-word/instructions',
     color: 'from-orange-500 to-red-500',
+    badgeKey: undefined,
   },
   {
     id: 'mind-reader',
@@ -23,6 +24,7 @@ const GAME_CARDS = [
     path: '/connect-mind',
     instructionsPath: '/mind-reader/instructions',
     color: 'from-purple-500 to-pink-500',
+    badgeKey: undefined,
   },
   {
     id: 'mental-conversation',
@@ -31,6 +33,7 @@ const GAME_CARDS = [
     path: '/mental-conversation',
     instructionsPath: '/mental-conversation/instructions',
     color: 'from-blue-500 to-cyan-500',
+    badgeKey: undefined,
   },
   {
     id: 'my-emojis',

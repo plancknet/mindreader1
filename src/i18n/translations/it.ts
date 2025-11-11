@@ -112,9 +112,11 @@ export const it = {
     step1Title: 'Categoria scelta',
     step1Text: 'Il numero di parole nella prima interazione definisce la categoria: 1 parola = Animale, 2 parole = Frutta, 3 parole = Paese.',
     step2Title: 'Rivelare le lettere segrete',
-    step2Text: 'Nelle interazioni successive, la PRIMA lettera dell’ULTIMA parola rivela una lettera della parola misteriosa. Ripeti finché non hai tre lettere.',
+    step2Text: 'Nelle interazioni successive, la PRIMA lettera dell\'ULTIMA parola rivela una lettera della parola misteriosa. Ripeti finché non hai tre lettere.',
     step3Title: 'Lista di possibilità',
-    step3Text: 'Se più di una parola corrisponde alla categoria e alle lettere, l’app mostrerà le opzioni disponibili.',
+    step3Text: 'Se più di una parola corrisponde alla categoria e alle lettere, l\'app mostrerà le opzioni disponibili.',
+    step4Title: 'Selezione finale',
+    step4Text: 'Invia un\'altra risposta con 1, 2 o 3 parole per indicare se la risposta è la 1a, 2a o 3a opzione.',
   },
   mysteryWord: {
     title: 'Parola Misteriosa',
@@ -131,21 +133,21 @@ export const it = {
     phrases: 'Cominciamo?||Pronto per un gioco di lettura mentale?||Posso iniziare a leggere i tuoi pensieri?||Attiviamo il potere della telepatia?||Che ne dici di iniziare la sfida psichica?'
   },
   mentalConversation: {
-    instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell’ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l’app non indovina, mostrerà un elenco di possibilità.\n4. Fai un’altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1ª, 2ª o 3ª opzione.',
+    instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell\'ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l\'app non indovina, mostrerà un elenco di possibilità.\n4. Fai un\'altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1a, 2a o 3a opzione.',
     title: 'Conversazione Mentale',
     messages: {
-      greeting: 'Ciao! Sono un’intelligenza artificiale con poteri di lettura della mente. 🧠✨\n\nChiedi al tuo amico di pensare a un ANIMALE, una FRUTTA o un PAESE. Non dirmi la categoria o la parola, chiedigli solo di pensarci!',
+      greeting: 'Ciao! Sono un\'intelligenza artificiale con poteri di lettura della mente. 🧠✨\n\nChiedi al tuo amico di pensare a un ANIMALE, una FRUTTA o un PAESE. Non dirmi la categoria o la parola, chiedigli solo di pensarci!',
       readyCheck: 'Il tuo amico ha già scelto ed è pronto per iniziare?',
       startCollecting: 'Perfetto! Farò qualche domanda per leggere la mente del tuo amico... Rispondi con naturalezza! 🔮\n\nQual è il tuo colore preferito?',
       askHobby: 'Interessante! Qual è il tuo hobby preferito?',
       askSeason: 'Fantastico! Ultima domanda: qual è la tua stagione preferita?',
-      singleResult: '🎯 Incredibile! Sto percependo un’energia molto forte...\n\n✨ La parola pensata dal tuo amico è:\n\n🌟 **{word}** 🌟\n\nHo indovinato? ✨',
+      singleResult: '🎯 Incredibile! Sto percependo un\'energia molto forte...\n\n✨ La parola pensata dal tuo amico è:\n\n🌟 **{word}** 🌟\n\nHo indovinato? ✨',
       multipleOptions: 'Hmm... sto ricevendo alcuni segnali.\n\nQueste sono le possibilità che percepisco: {options}\n\nSono sulla strada giusta?',
       noMatch: 'Ops! Non sono riuscito a captare la parola. Riproviamo? Digita "reiniciar" per ricominciare.',
       finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nHo letto la mente del tuo amico! La categoria era {category} e la parola era {word}! 🧠✨\n\nVuoi giocare di nuovo? Digita qualsiasi cosa per tornare al menu.'
     },
     status: {
-      processingAudio: "Elaborazione dell'audio...",
+      processingAudio: 'Elaborazione dell\'audio...',
       speaking: 'Riproduzione in corso...'
     },
     input: {
@@ -154,7 +156,7 @@ export const it = {
     },
     toast: {
       errorTitle: 'Errore',
-      audioProcessingFailed: "Impossibile elaborare l'audio. Riprova.",
+      audioProcessingFailed: 'Impossibile elaborare l\'audio. Riprova.',
       recordingTitle: 'Registrazione',
       recordingDescription: 'Parla ora...',
       micErrorDescription: 'Impossibile accedere al microfono.'
@@ -179,7 +181,7 @@ export const it = {
       },
       mentalConversation: {
         title: 'Conversazione Mentale',
-        description: 'Conversa con un’IA che prova a indovinare la tua parola'
+        description: 'Conversa con un\'IA che prova a indovinare la tua parola'
       },
       mysteryWord: {
         title: 'Parola Misteriosa',

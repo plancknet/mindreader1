@@ -115,6 +115,8 @@ export const zhCN = {
     step2Text: '接下来的互动中，最后一个词的第一个字母会揭示神秘词的一个字母，重复直到得到三个字母。',
     step3Title: '可能的选项',
     step3Text: '如果有多个词符合类别和字母，应用会显示所有可能的选项。',
+    step4Title: '最终选择',
+    step4Text: '再发送一个包含 1、2 或 3 个词的回复，以指示答案是第 1、第 2 还是第 3 个选项。',
   },
     mysteryWord: {
     title: 'Mystery Word',

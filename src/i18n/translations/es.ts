@@ -115,6 +115,8 @@ export const es = {
     step2Text: 'En las siguientes interacciones, la PRIMERA letra de la ÚLTIMA palabra revela una letra de la palabra misteriosa. Repite hasta tener tres letras.',
     step3Title: 'Lista de posibilidades',
     step3Text: 'Si más de una palabra coincide con la categoría y las letras, la app mostrará las opciones disponibles.',
+    step4Title: 'Selección final',
+    step4Text: 'Envía otra respuesta con 1, 2 o 3 palabras para indicar si la respuesta es la 1.ª, 2.ª o 3.ª opción.',
   },
   mysteryWord: {
     title: 'Palabra Misteriosa',
