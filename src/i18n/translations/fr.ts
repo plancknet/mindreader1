@@ -188,6 +188,10 @@ export const fr = {
       mysteryWord: {
         title: 'Mot Mystérieux',
         description: 'Révélez secrètement votre mot au public'
+      },
+      myEmojis: {
+        title: 'Mes Emojis',
+        description: 'À qui appartient chaque emoji ?'
       }
     }
   },

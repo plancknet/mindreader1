@@ -112,7 +112,7 @@ export const ptBR = {
     step1Title: 'Categoria Escolhida',
     step1Text: 'A categoria escolhida será determinada pela quantidade de palavras da primeira interação. 1 palavra para a categoria "Animal", 2 palavras para a categoria "Fruta" e 3 palavras para a categoria "País".',
     step2Title: 'Indicação das letras da Palavra Misteriosa',
-    step2Text: 'Nas próximas interações, a PRIMEIRA letra da ÚLTIMA palavra revelará uma letra da palavra misteriosa. Repita até indicar as três primeiras letras da palavra secreta.',
+    step2Text: 'Nas próximas interações, a PRIMEIRA letra da ÚLTIMA palavra revelará uma letra da palavra misteriosa. Repita até indicar as três letras da palavra secreta.',
     step3Title: 'Lista de Possibilidades',
     step3Text: 'Se o app tiver mais de uma possibilidade com a categoria e as três letras indicadas, ele mostrará as opções disponíveis.',
     step4Title: 'Definindo a Palavra Misteriosa',
@@ -188,6 +188,10 @@ export const ptBR = {
       mysteryWord: {
         title: 'Palavra Misteriosa',
         description: 'Revele secretamente sua palavra para o público'
+      },
+      myEmojis: {
+        title: 'Meus Emojis',
+        description: 'De quem é qual Emoji'
       }
     }
   },

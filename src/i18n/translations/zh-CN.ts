@@ -188,6 +188,10 @@ export const zhCN = {
       mysteryWord: {
         title: 'Mystery Word',
         description: 'Secretly reveal your word to the audience'
+      },
+      myEmojis: {
+        title: '我的表情符号',
+        description: '猜出每个表情符号属于谁'
       }
     }
   },
