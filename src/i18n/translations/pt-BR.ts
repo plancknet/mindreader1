@@ -115,11 +115,6 @@ export const ptBR = {
     step2Text: 'Nas próximas interações, a PRIMEIRA letra da ÚLTIMA palavra revelará uma letra da palavra misteriosa. Repita até indicar as três letras da palavra secreta.',
     step3Title: 'Lista de Possibilidades',
     step3Text: 'Se o app tiver mais de uma possibilidade com a categoria e as três letras indicadas, ele mostrará as opções disponíveis.',
-    step4Title: 'Definindo a Palavra Misteriosa',
-    step4Text: 'Se uma lista com várias palavras for exibida, sua próxima interação determinará a palavra correta pela quantidade de palavras: 1 palavra = 1ª opção, 2 palavras = 2ª opção, 3 palavras = 3ª opção.',
-    tipsTitle: 'Dicas para Melhor Experiência',
-    tip1: 'Escolha uma palavra clara e fácil de pronunciar',
-    tip2: 'Clique em "Parar" quando quiser encerrar o jogo',
   },
   mysteryWord: {
     title: 'Palavra Misteriosa',
