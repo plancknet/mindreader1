@@ -21,6 +21,9 @@ const Auth = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const defaultGameMessage = 'Me ajude a Ler a Mente dos seus Amigos';
+  const [gameMessage, setGameMessage] = useState(defaultGameMessage);
+  const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -237,10 +240,34 @@ const Auth = () => {
   };
 
   const games = [
-    { icon: Sparkles, title: t('gameSelector.cards.mysteryWord.title'), color: 'from-orange-500 to-red-500' },
-    { icon: Brain, title: t('gameSelector.cards.mindReader.title'), color: 'from-purple-500 to-pink-500' },
-    { icon: MessageCircle, title: t('gameSelector.cards.mentalConversation.title'), color: 'from-blue-500 to-cyan-500' },
-    { icon: Smile, title: t('gameSelector.cards.myEmojis.title'), color: 'from-yellow-400 to-lime-400' },
+    {
+      id: 'mystery-word',
+      icon: Sparkles,
+      title: t('gameSelector.cards.mysteryWord.title'),
+      color: 'from-orange-500 to-red-500',
+      message: 'Ele digita uma palavra qualquer e vc le a mente dele',
+    },
+    {
+      id: 'mind-reader',
+      icon: Brain,
+      title: t('gameSelector.cards.mindReader.title'),
+      color: 'from-purple-500 to-pink-500',
+      message: 'Ele anota uma das palavras dos quadrantes e eu leio a mente dele',
+    },
+    {
+      id: 'mental-conversation',
+      icon: MessageCircle,
+      title: t('gameSelector.cards.mentalConversation.title'),
+      color: 'from-blue-500 to-cyan-500',
+      message: 'Eu e vc conversamos e eu leio a mente dele',
+    },
+    {
+      id: 'my-emojis',
+      icon: Smile,
+      title: t('gameSelector.cards.myEmojis.title'),
+      color: 'from-yellow-400 to-lime-400',
+      message: 'Em construção',
+    },
   ];
 
   return (
@@ -263,19 +290,21 @@ const Auth = () => {
 
             {!isForgotPassword && (
               <>
-                <div className="text-center space-y-2 pt-2">
-                  <p className="text-[2rem] font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    Me ajude a Ler a Mente dos seus Amigos
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-4 gap-2">
-                  {games.map((game, index) => {
+                <div className="grid grid-cols-4 gap-2 pt-2">
+                  {games.map((game) => {
                     const Icon = game.icon;
+                    const isSelected = selectedGame === game.id;
                     return (
-                      <div
-                        key={index}
-                        className="p-2 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden"
+                      <button
+                        type="button"
+                        key={game.id}
+                        onClick={() => {
+                          setSelectedGame(game.id);
+                          setGameMessage(game.message);
+                        }}
+                        className={`p-2 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
+                          isSelected ? 'border-primary ring-2 ring-primary/30' : ''
+                        }`}
                       >
                         <div
                           className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
@@ -288,9 +317,15 @@ const Auth = () => {
                           </div>
                           <p className="text-[10px] font-semibold text-center leading-tight">{game.title}</p>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
+                </div>
+
+                <div className="text-center space-y-2 pt-4">
+                  <p className="text-[2rem] font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    {gameMessage}
+                  </p>
                 </div>
               </>
             )}
