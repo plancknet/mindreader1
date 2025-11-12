@@ -27,6 +27,7 @@ import MentalConversationInstructions from "./pages/MentalConversation/Instructi
 import MyEmojis from "./pages/MyEmojis/Index";
 import MyEmojisInstructions from "./pages/MyEmojis/Instructions";
 import Welcome from "./pages/Welcome";
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
+            {/* Admin panel */}
+            <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
