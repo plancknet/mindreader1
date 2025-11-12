@@ -255,36 +255,38 @@ const Auth = () => {
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               {isForgotPassword ? t('auth.resetPasswordTitle') : t('auth.title')}
             </CardTitle>
-            <CardDescription className="text-base">
-              {isForgotPassword ? t('auth.resetPasswordSubtitle') : t('auth.subtitle')}
-            </CardDescription>
+            {isForgotPassword && (
+              <CardDescription className="text-base">
+                {t('auth.resetPasswordSubtitle')}
+              </CardDescription>
+            )}
 
             {!isForgotPassword && (
               <>
                 <div className="text-center space-y-2 pt-2">
-                  <p className="text-lg font-semibold text-foreground">
+                  <p className="text-base font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
                     Juntos vamos ler a mente dos seus amigos
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-4 gap-2">
                   {games.map((game, index) => {
                     const Icon = game.icon;
                     return (
                       <div
                         key={index}
-                        className="p-4 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden"
+                        className="p-2 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden"
                       >
                         <div
                           className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
                         />
-                        <div className="relative space-y-2">
+                        <div className="relative space-y-1">
                           <div className="flex justify-center">
-                            <div className={`p-2 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
-                              <Icon className="w-5 h-5 text-primary" />
+                            <div className={`p-1.5 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
+                              <Icon className="w-4 h-4 text-primary" />
                             </div>
                           </div>
-                          <p className="text-xs font-semibold text-center">{game.title}</p>
+                          <p className="text-[10px] font-semibold text-center leading-tight">{game.title}</p>
                         </div>
                       </div>
                     );
@@ -315,13 +317,15 @@ const Auth = () => {
                   {t('auth.sendResetLink')}
                 </Button>
 
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsForgotPassword(false)}
-                  className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full h-9 text-xs"
                 >
                   {t('auth.backToLogin')}
-                </button>
+                </Button>
               </form>
             ) : (
               <>
@@ -441,23 +445,27 @@ const Auth = () => {
                   </form>
                 )}
 
-                <div className="flex flex-col gap-2">
-                  <button
+                <div className="flex gap-2">
+                  <Button
                     type="button"
                     onClick={() => setIsSignUp(!isSignUp)}
-                    className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-1 h-9 text-xs"
                   >
                     {isSignUp ? t('auth.toggleToLogin') : t('auth.toggleToSignUp')}
-                  </button>
+                  </Button>
                   
                   {!isSignUp && (
-                    <button
+                    <Button
                       type="button"
                       onClick={() => setIsForgotPassword(true)}
-                      className="w-full text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 h-9 text-xs"
                     >
                       {t('auth.forgotPassword')}
-                    </button>
+                    </Button>
                   )}
                 </div>
               </>
