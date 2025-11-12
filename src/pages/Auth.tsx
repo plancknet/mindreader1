@@ -264,7 +264,7 @@ const Auth = () => {
             {!isForgotPassword && (
               <>
                 <div className="text-center space-y-2 pt-2">
-                  <p className="text-base font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  <p className="text-[2rem] font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
                     Me ajude a Ler a Mente dos seus Amigos
                   </p>
                 </div>
