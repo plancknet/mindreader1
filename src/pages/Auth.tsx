@@ -249,49 +249,49 @@ const Auth = () => {
         <LanguageSelector />
       </div>
 
-      <div className="flex-1 flex items-center justify-center gap-8 max-w-7xl mx-auto w-full">
-        {/* Games Preview Section */}
-        <div className="hidden lg:flex flex-col items-center justify-center flex-1 space-y-6">
-          <div className="text-center space-y-4">
-            <Brain className="w-20 h-20 text-primary mx-auto animate-pulse" />
-            <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Juntos vamos ler a mente dos seus amigos
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 w-full max-w-md">
-            {games.map((game, index) => {
-              const Icon = game.icon;
-              return (
-                <div
-                  key={index}
-                  className="p-6 rounded-lg border bg-card hover:scale-105 transition-all group relative overflow-hidden"
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
-                  />
-                  <div className="relative space-y-3">
-                    <div className="flex justify-center">
-                      <div className={`p-3 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
-                        <Icon className="w-8 h-8 text-primary" />
-                      </div>
-                    </div>
-                    <p className="text-sm font-semibold text-center">{game.title}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center space-y-2">
+      <div className="flex-1 flex items-center justify-center max-w-md mx-auto w-full">
+        <Card className="w-full">
+          <CardHeader className="text-center space-y-4">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               {isForgotPassword ? t('auth.resetPasswordTitle') : t('auth.title')}
             </CardTitle>
             <CardDescription className="text-base">
               {isForgotPassword ? t('auth.resetPasswordSubtitle') : t('auth.subtitle')}
             </CardDescription>
+
+            {!isForgotPassword && (
+              <>
+                <div className="text-center space-y-2 pt-2">
+                  <p className="text-lg font-semibold text-foreground">
+                    Juntos vamos ler a mente dos seus amigos
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {games.map((game, index) => {
+                    const Icon = game.icon;
+                    return (
+                      <div
+                        key={index}
+                        className="p-4 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden"
+                      >
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
+                        />
+                        <div className="relative space-y-2">
+                          <div className="flex justify-center">
+                            <div className={`p-2 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
+                              <Icon className="w-5 h-5 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-xs font-semibold text-center">{game.title}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </CardHeader>
 
           <CardContent className="space-y-4">
