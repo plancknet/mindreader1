@@ -7,6 +7,8 @@ import { Brain, ArrowLeft, Square } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { GAME_IDS } from '@/constants/games';
 
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
@@ -29,6 +31,7 @@ const shuffleWords = (words: string[]): string[] => {
 const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
+  const { incrementUsage } = useUsageLimit();
   const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [secretPosition, setSecretPosition] = useState(0);
@@ -85,6 +88,7 @@ const MysteryWord = () => {
   const handleStop = () => {
     setIsPlaying(false);
     setStage('stopped');
+    incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
   };
 
   const handlePlayAgain = () => {

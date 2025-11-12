@@ -1,9 +1,11 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, RefreshCw, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { GAME_IDS } from '@/constants/games';
 
 const EMOJIS = [
   '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯',
@@ -54,6 +56,7 @@ const MatrixBlock = ({
 
 const MyEmojis = () => {
   const navigate = useNavigate();
+  const { incrementUsage } = useUsageLimit();
   const [phase, setPhase] = useState<Phase>('selectInitial');
   const [matrix0, setMatrix0] = useState<string[][]>(generateMatrix0);
   const [selectedInitial, setSelectedInitial] = useState<string[]>([]);
@@ -63,6 +66,12 @@ const MyEmojis = () => {
   const [matrixFinal, setMatrixFinal] = useState<(string | null)[]>([null, null, null]);
   const [selectedTwo, setSelectedTwo] = useState<string[]>([]);
   const [selectedSingle, setSelectedSingle] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (phase === 'reveal') {
+      incrementUsage(GAME_IDS.MY_EMOJIS).catch(console.error);
+    }
+  }, [phase]);
 
   const resetGame = () => {
     setMatrix0(generateMatrix0());

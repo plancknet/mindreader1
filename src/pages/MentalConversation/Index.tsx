@@ -9,6 +9,8 @@ import { Brain, ArrowLeft, Send } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { GAME_IDS } from '@/constants/games';
 
 type Category = 'animal' | 'fruit' | 'country' | null;
 type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
@@ -78,6 +80,7 @@ const MentalConversation = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { toast } = useToast();
+  const { incrementUsage } = useUsageLimit();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [step, setStep] = useState<GameStep>('initial');
@@ -287,6 +290,7 @@ const MentalConversation = () => {
     }
 
     if (step === 'revealing') {
+      incrementUsage(GAME_IDS.MENTAL_CONVERSATION).catch(console.error);
       navigate('/game-selector');
     }
   };
