@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Smile } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { z } from 'zod';
@@ -236,13 +236,54 @@ const Auth = () => {
     }
   };
 
+  const games = [
+    { icon: Sparkles, title: t('gameSelector.cards.mysteryWord.title'), color: 'from-orange-500 to-red-500' },
+    { icon: Brain, title: t('gameSelector.cards.mindReader.title'), color: 'from-purple-500 to-pink-500' },
+    { icon: MessageCircle, title: t('gameSelector.cards.mentalConversation.title'), color: 'from-blue-500 to-cyan-500' },
+    { icon: Smile, title: t('gameSelector.cards.myEmojis.title'), color: 'from-yellow-400 to-lime-400' },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col p-4 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="flex justify-end mb-4">
         <LanguageSelector />
       </div>
 
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center gap-8 max-w-7xl mx-auto w-full">
+        {/* Games Preview Section */}
+        <div className="hidden lg:flex flex-col items-center justify-center flex-1 space-y-6">
+          <div className="text-center space-y-4">
+            <Brain className="w-20 h-20 text-primary mx-auto animate-pulse" />
+            <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Juntos vamos ler a mente dos seus amigos
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+            {games.map((game, index) => {
+              const Icon = game.icon;
+              return (
+                <div
+                  key={index}
+                  className="p-6 rounded-lg border bg-card hover:scale-105 transition-all group relative overflow-hidden"
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
+                  />
+                  <div className="relative space-y-3">
+                    <div className="flex justify-center">
+                      <div className={`p-3 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
+                        <Icon className="w-8 h-8 text-primary" />
+                      </div>
+                    </div>
+                    <p className="text-sm font-semibold text-center">{game.title}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <Card className="w-full max-w-md">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
