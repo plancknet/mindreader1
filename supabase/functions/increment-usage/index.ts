@@ -26,7 +26,13 @@ serve(async (req) => {
       throw new Error("Usuário não autenticado");
     }
 
-    console.log("Incrementing usage for user:", user.id);
+    // Get game_id from request body
+    const { game_id } = await req.json();
+    if (!game_id || ![1, 2, 3, 4].includes(game_id)) {
+      throw new Error("game_id inválido. Deve ser 1, 2, 3 ou 4");
+    }
+
+    console.log(`Incrementing usage for user ${user.id}, game ${game_id}`);
 
     // Get current premium status
     const { data: premiumUser, error: fetchError } = await supabaseClient
@@ -39,7 +45,10 @@ serve(async (req) => {
       throw fetchError;
     }
 
-    // If no record exists, create one with usage_count = 1
+    // Determine which counter to increment
+    const gameCountField = `jogo${game_id}_count`;
+
+    // If no record exists, create one with the appropriate game counter = 1
     if (!premiumUser) {
       const { data: newUser, error: createError } = await supabaseClient
         .from("premium_users")
@@ -47,6 +56,8 @@ serve(async (req) => {
           user_id: user.id,
           is_premium: false,
           usage_count: 1,
+          [`jogo${game_id}_count`]: 1,
+          last_accessed_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -57,6 +68,8 @@ serve(async (req) => {
         JSON.stringify({
           success: true,
           usageCount: 1,
+          gameCount: 1,
+          totalCount: 1,
           isPremium: false,
         }),
         {
@@ -66,14 +79,17 @@ serve(async (req) => {
       );
     }
 
-    // Don't increment if user is premium (optional - for analytics you might still want to count)
-    // For now, we'll increment even for premium users for analytics purposes
-    const newCount = premiumUser.usage_count + 1;
+    // Increment the appropriate game counter and overall usage_count
+    const newGameCount = (premiumUser[gameCountField] || 0) + 1;
+    const newTotalCount = premiumUser.jogo1_count + premiumUser.jogo2_count + 
+                          premiumUser.jogo3_count + premiumUser.jogo4_count + 1;
 
     const { error: updateError } = await supabaseClient
       .from("premium_users")
       .update({
-        usage_count: newCount,
+        [gameCountField]: newGameCount,
+        usage_count: premiumUser.usage_count + 1,
+        last_accessed_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq("user_id", user.id);
@@ -83,7 +99,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        usageCount: newCount,
+        usageCount: premiumUser.usage_count + 1,
+        gameCount: newGameCount,
+        totalCount: newTotalCount,
         isPremium: premiumUser.is_premium,
       }),
       {

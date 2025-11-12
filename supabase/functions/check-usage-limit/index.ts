@@ -85,14 +85,18 @@ serve(async (req) => {
       );
     }
 
+    // Calculate total count from all games
+    const totalCount = (premiumUser.jogo1_count || 0) + (premiumUser.jogo2_count || 0) + 
+                       (premiumUser.jogo3_count || 0) + (premiumUser.jogo4_count || 0);
+
     // Check if user has reached free limit
-    const canUse = premiumUser.usage_count < 3;
+    const canUse = totalCount < 3;
 
     return new Response(
       JSON.stringify({
         canUse,
         isPremium: false,
-        usageCount: premiumUser.usage_count,
+        usageCount: totalCount,
         freeLimit: 3,
         reason: canUse ? "FREE_TIER" : "PAYWALL",
       }),

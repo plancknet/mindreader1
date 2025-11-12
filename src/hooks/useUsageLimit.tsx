@@ -44,7 +44,7 @@ export const useUsageLimit = () => {
     }
   };
 
-  const incrementUsage = async () => {
+  const incrementUsage = async (game_id: number) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -52,9 +52,16 @@ export const useUsageLimit = () => {
         throw new Error('Usuário não autenticado');
       }
 
+      if (!game_id || ![1, 2, 3, 4].includes(game_id)) {
+        throw new Error('game_id inválido. Deve ser 1, 2, 3 ou 4');
+      }
+
       const { data, error: invokeError } = await supabase.functions.invoke('increment-usage', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+        },
+        body: {
+          game_id,
         },
       });
 

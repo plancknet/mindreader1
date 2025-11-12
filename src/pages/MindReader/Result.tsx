@@ -8,6 +8,7 @@ import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { toast } from 'sonner';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
+import { GAME_IDS } from '@/constants/games';
 
 const Result = () => {
   const [searchParams] = useSearchParams();
@@ -21,7 +22,7 @@ const Result = () => {
   useEffect(() => {
     const incrementCount = async () => {
       try {
-        await incrementUsage();
+        await incrementUsage(GAME_IDS.MIND_READER);
       } catch (error) {
         console.error('Error incrementing usage:', error);
         toast.error('Erro ao registrar revelação');

@@ -11,9 +11,13 @@ import { LogoutButton } from '@/components/LogoutButton';
 
 interface UserData {
   user_id: string;
-  usage_count: number;
   is_premium: boolean;
   created_at: string;
+  jogo1_count: number;
+  jogo2_count: number;
+  jogo3_count: number;
+  jogo4_count: number;
+  last_accessed_at: string | null;
   email?: string;
 }
 
@@ -23,8 +27,6 @@ export default function AdminPanel() {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingUserId, setEditingUserId] = useState<string | null>(null);
-  const [newUsageCount, setNewUsageCount] = useState<number>(0);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -42,7 +44,7 @@ export default function AdminPanel() {
       setIsLoading(true);
       const { data, error } = await supabase
         .from('premium_users')
-        .select('user_id, usage_count, is_premium, created_at')
+        .select('user_id, is_premium, created_at, jogo1_count, jogo2_count, jogo3_count, jogo4_count, last_accessed_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -77,52 +79,32 @@ export default function AdminPanel() {
     }
   }, [isAdmin]);
 
-  const handleUpdateUsageCount = async (userId: string) => {
+  const handleResetAllCounts = async (userId: string) => {
     try {
       const { error } = await supabase
         .from('premium_users')
-        .update({ usage_count: newUsageCount })
+        .update({ 
+          jogo1_count: 0,
+          jogo2_count: 0,
+          jogo3_count: 0,
+          jogo4_count: 0,
+          usage_count: 0
+        })
         .eq('user_id', userId);
 
       if (error) throw error;
 
       toast({
         title: 'Sucesso',
-        description: 'Contador atualizado com sucesso!',
-      });
-
-      setEditingUserId(null);
-      fetchUsers();
-    } catch (error: any) {
-      console.error('Error updating usage count:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível atualizar o contador.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleResetUsageCount = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('premium_users')
-        .update({ usage_count: 0 })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Sucesso',
-        description: 'Contador resetado com sucesso!',
+        description: 'Todos os contadores resetados com sucesso!',
       });
 
       fetchUsers();
     } catch (error: any) {
-      console.error('Error resetting usage count:', error);
+      console.error('Error resetting counts:', error);
       toast({
         title: 'Erro',
-        description: 'Não foi possível resetar o contador.',
+        description: 'Não foi possível resetar os contadores.',
         variant: 'destructive',
       });
     }
@@ -163,77 +145,60 @@ export default function AdminPanel() {
                 </p>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-2">Email</th>
-                        <th className="text-left p-2">Uso</th>
-                        <th className="text-left p-2">Premium</th>
-                        <th className="text-left p-2">Cadastro</th>
+                        <th className="text-left p-2">Data Cadastro</th>
+                        <th className="text-center p-2">Premium</th>
+                        <th className="text-center p-2">Jogo 1</th>
+                        <th className="text-center p-2">Jogo 2</th>
+                        <th className="text-center p-2">Jogo 3</th>
+                        <th className="text-center p-2">Jogo 4</th>
+                        <th className="text-center p-2">Total</th>
+                        <th className="text-left p-2">Último Acesso</th>
                         <th className="text-right p-2">Ações</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {users.map((user) => (
-                        <tr key={user.user_id} className="border-b hover:bg-muted/50">
-                          <td className="p-2 text-sm">{user.email}</td>
-                          <td className="p-2">
-                            {editingUserId === user.user_id ? (
-                              <div className="flex gap-2 items-center">
-                                <Input
-                                  type="number"
-                                  value={newUsageCount}
-                                  onChange={(e) => setNewUsageCount(parseInt(e.target.value) || 0)}
-                                  className="w-20"
-                                />
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleUpdateUsageCount(user.user_id)}
-                                >
-                                  Salvar
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => setEditingUserId(null)}
-                                >
-                                  Cancelar
-                                </Button>
-                              </div>
-                            ) : (
-                              <span
-                                className="cursor-pointer hover:text-primary"
-                                onClick={() => {
-                                  setEditingUserId(user.user_id);
-                                  setNewUsageCount(user.usage_count);
-                                }}
+                      {users.map((user) => {
+                        const totalCount = user.jogo1_count + user.jogo2_count + user.jogo3_count + user.jogo4_count;
+                        return (
+                          <tr key={user.user_id} className="border-b hover:bg-muted/50">
+                            <td className="p-2">{user.email}</td>
+                            <td className="p-2 text-muted-foreground">
+                              {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                            </td>
+                            <td className="p-2 text-center">
+                              {user.is_premium ? (
+                                <span className="text-primary font-semibold">✓</span>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </td>
+                            <td className="p-2 text-center font-mono">{user.jogo1_count}</td>
+                            <td className="p-2 text-center font-mono">{user.jogo2_count}</td>
+                            <td className="p-2 text-center font-mono">{user.jogo3_count}</td>
+                            <td className="p-2 text-center font-mono">{user.jogo4_count}</td>
+                            <td className="p-2 text-center font-mono font-bold">{totalCount}</td>
+                            <td className="p-2 text-muted-foreground">
+                              {user.last_accessed_at 
+                                ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR') 
+                                : 'Nunca'}
+                            </td>
+                            <td className="p-2 text-right">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleResetAllCounts(user.user_id)}
                               >
-                                {user.usage_count}
-                              </span>
-                            )}
-                          </td>
-                          <td className="p-2">
-                            {user.is_premium ? (
-                              <span className="text-primary font-semibold">✓ Sim</span>
-                            ) : (
-                              <span className="text-muted-foreground">Não</span>
-                            )}
-                          </td>
-                          <td className="p-2 text-sm text-muted-foreground">
-                            {new Date(user.created_at).toLocaleDateString('pt-BR')}
-                          </td>
-                          <td className="p-2 text-right">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleResetUsageCount(user.user_id)}
-                            >
-                              <RefreshCw className="w-4 h-4 mr-1" />
-                              Resetar
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
+                                <RefreshCw className="w-4 h-4 mr-1" />
+                                Resetar
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
