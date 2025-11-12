@@ -19,6 +19,11 @@ export type Database = {
           created_at: string
           id: string
           is_premium: boolean
+          jogo1_count: number
+          jogo2_count: number
+          jogo3_count: number
+          jogo4_count: number
+          last_accessed_at: string | null
           premium_type: string | null
           purchase_date: string | null
           stripe_customer_id: string | null
@@ -31,6 +36,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_premium?: boolean
+          jogo1_count?: number
+          jogo2_count?: number
+          jogo3_count?: number
+          jogo4_count?: number
+          last_accessed_at?: string | null
           premium_type?: string | null
           purchase_date?: string | null
           stripe_customer_id?: string | null
@@ -43,6 +53,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_premium?: boolean
+          jogo1_count?: number
+          jogo2_count?: number
+          jogo3_count?: number
+          jogo4_count?: number
+          last_accessed_at?: string | null
           premium_type?: string | null
           purchase_date?: string | null
           stripe_customer_id?: string | null
@@ -79,6 +94,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_total_count: {
+        Args: { user_row: Database["public"]["Tables"]["premium_users"]["Row"] }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
