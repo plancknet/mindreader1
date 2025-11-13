@@ -260,3 +260,25 @@ const MindReaderLanding: React.FC = () => {
                   IA já estarão automaticamente no seu plano.
                 </span>
               </div>
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/95 p-4">
+                <strong className="block text-slate-100">
+                  💬 Suporte direto
+                </strong>
+                <span className="text-slate-300">
+                  Acesso prioritário ao suporte e influência nas decisões de roadmap do produto.
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="mt-12 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+            <p>© {year} MindReader. Todos os direitos reservados.</p>
+          </footer>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default MindReaderLanding;
