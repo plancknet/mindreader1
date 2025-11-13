@@ -1,0 +1,120 @@
+                  <span>MindReader • Online</span>
+                  <span>🔊 🎤</span>
+                </div>
+
+                {/* Chat bubbles */}
+                <div className="flex flex-1 flex-col gap-2 text-[11px] text-slate-100">
+                  <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm border border-slate-600/80 bg-slate-950/90 px-3 py-1.5 text-slate-100">
+                    Tenho um amigo aqui duvidando que você lê mentes 👀
+                  </div>
+                  <div className="mr-auto max-w-[90%] rounded-2xl rounded-bl-sm bg-gradient-to-tr from-violet-500/70 to-sky-400/70 px-3 py-1.5 text-slate-50">
+                    Perfeito! Peça para ele pensar em um{" "}
+                    <span className="font-semibold">animal, fruta ou país</span>{" "}
+                    e não dizer em voz alta.
+                  </div>
+                  <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm border border-slate-600/80 bg-slate-950/90 px-3 py-1.5 text-slate-100">
+                    Ele já escolheu e eu não contei pra você 😈
+                  </div>
+                  <div className="mr-auto max-w-[90%] rounded-2xl rounded-bl-sm bg-gradient-to-tr from-violet-500/70 to-sky-400/70 px-3 py-1.5 text-slate-50">
+                    Eu sei. E mesmo assim… já tenho uma boa ideia do que ele
+                    pensou. Quer que eu revele agora? 🔮
+                  </div>
+                </div>
+
+                {/* Input */}
+                <div className="flex items-center justify-between rounded-full border border-slate-600/80 bg-slate-950/90 px-3 py-1.5 text-[11px] text-slate-500">
+                  <span>Escreva aqui o que seu amigo respondeu...</span>
+                  <span className="text-sm text-slate-300">➤</span>
+                </div>
+              </div>
+
+              {/* Tag LTD */}
+              <div className="absolute -right-3 top-10 rounded-full bg-violet-400 px-3 py-1 text-[10px] font-semibold text-slate-950 shadow-[0_14px_40px_rgba(129,140,248,0.8)]">
+                🔐 LTD Ativado
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <main className="space-y-8">
+          {/* Como funciona */}
+          <section className="rounded-3xl border border-slate-800 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
+            <h2 className="mb-2 text-lg font-semibold">
+              Como o MindReader funciona na prática
+            </h2>
+            <p className="mb-4 text-sm text-slate-400">
+              Em vez de ser “só mais um app”, o MindReader é uma experiência
+              guiada. Ele conduz a conversa com você e com o seu amigo, fazendo
+              perguntas estratégicas que parecem simples, mas carregam um toque
+              de ilusionismo digital.
+            </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/90 p-4 text-sm">
+                <div className="mb-2 flex h-6 w-6 items-center justify-center rounded-full bg-violet-500/20 text-[11px] font-semibold text-violet-300">
+                  1
+                </div>
+                <h3 className="mb-1 text-sm font-semibold">
+                  Escolha sua “vítima” 😈
+                </h3>
+                <p className="text-slate-400">
+                  Chame um amigo, alguém da família ou até seu público na live.
+                  Peça para a pessoa pensar em um animal, fruta ou país.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/90 p-4 text-sm">
+                <div className="mb-2 flex h-6 w-6 items-center justify-center rounded-full bg-violet-500/20 text-[11px] font-semibold text-violet-300">
+                  2
+                </div>
+                <h3 className="mb-1 text-sm font-semibold">
+                  Deixe o app conduzir
+                </h3>
+                <p className="text-slate-400">
+                  O MindReader faz perguntas leves e descontraídas. Por baixo
+                  dos panos, a IA combina lógica, padrões e ilusões para
+                  afunilar as respostas possíveis.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/90 p-4 text-sm">
+                <div className="mb-2 flex h-6 w-6 items-center justify-center rounded-full bg-violet-500/20 text-[11px] font-semibold text-violet-300">
+                  3
+                </div>
+                <h3 className="mb-1 text-sm font-semibold">Momento “UAU” 🤯</h3>
+                <p className="text-slate-400">
+                  No final, o app revela exatamente o que o seu amigo estava
+                  pensando. Resultado: risadas, surpresa e aquele clima de “como
+                  isso é possível?”.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* O que está incluído */}
+          <section className="rounded-3xl border border-slate-800 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
+            <h2 className="mb-2 text-lg font-semibold">
+              O que está incluído no seu Lifetime Deal
+            </h2>
+            <p className="mb-4 text-sm text-slate-400">
+              Como early adopter, você entra para um grupo seleto que terá
+              vantagens que não serão oferecidas quando o MindReader migrar para
+              o modelo de assinatura.
+            </p>
+
+            <div className="grid gap-3 text-sm md:grid-cols-3">
+              <div className="rounded-2xl border border-violet-400/70 bg-gradient-to-br from-violet-500/20 via-slate-950 to-slate-950 p-4">
+                <strong className="block text-slate-100">
+                  ✅ Acesso vitalício ao MindReader
+                </strong>
+                <span className="text-slate-300">
+                  Um pagamento único. Use o app hoje, daqui a 1 ano ou daqui a 5
+                  anos, sem preocupações com renovação.
+                </span>
+              </div>
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/95 p-4">
+                <strong className="block text-slate-100">
+                  🚀 Atualizações futuras inclusas
+                </strong>
+                <span className="text-slate-300">
+                  Novos modos de jogo, categorias, melhorias na experiência e na
+                  IA já estarão automaticamente no seu plano.
+                </span>
+              </div>

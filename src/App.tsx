@@ -28,6 +28,7 @@ import MyEmojis from "./pages/MyEmojis/Index";
 import MyEmojisInstructions from "./pages/MyEmojis/Instructions";
 import Welcome from "./pages/Welcome";
 import AdminPanel from "./pages/AdminPanel";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +133,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><PostLoginRedirect /></ProtectedRoute>} />
+            <Route path="/landing" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
