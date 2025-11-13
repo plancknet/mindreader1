@@ -244,7 +244,7 @@ const MindReaderLanding: React.FC = () => {
             <div className="grid gap-3 text-sm md:grid-cols-3">
               <div className="rounded-2xl border border-violet-400/70 bg-gradient-to-br from-violet-500/20 via-slate-950 to-slate-950 p-4">
                 <strong className="block text-slate-100">
-                  ✅ Acesso vitalício ao MindReader
+                  🌀 Acesso vitalício ao MindReader
                 </strong>
                 <span className="text-slate-300">
                   Um pagamento único. Use o app hoje, daqui a 1 ano ou daqui a 5
@@ -253,10 +253,33 @@ const MindReaderLanding: React.FC = () => {
               </div>
               <div className="rounded-2xl border border-slate-700 bg-slate-950/95 p-4">
                 <strong className="block text-slate-100">
-                  🚀 Atualizações futuras inclusas
+                  🛠️ Atualizações futuras inclusas
                 </strong>
                 <span className="text-slate-300">
                   Novos modos de jogo, categorias, melhorias na experiência e na
                   IA já estarão automaticamente no seu plano.
                 </span>
               </div>
+              <div className="rounded-2xl border border-slate-700 bg-slate-950/95 p-4">
+                <strong className="block text-slate-100">
+                  🤝 Comunidade e suporte prioritário
+                </strong>
+                <span className="text-slate-300">
+                  Entre para o grupo dos primeiros usuários e tenha prioridade
+                  para sugerir melhorias e receber ajuda.
+                </span>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <div className="mt-12 text-center text-xs text-slate-500/80">
+          © {year} MindReader. Todos os direitos reservados.
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MindReaderLanding;
+
