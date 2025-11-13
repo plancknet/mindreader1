@@ -106,7 +106,7 @@ const CompleteSignup = () => {
         description: 'Sua conta foi criada com sucesso.',
       });
 
-      navigate('/connect-mind');
+      navigate('/');
     } catch (error: any) {
       toast({
         title: 'Erro ao criar senha',

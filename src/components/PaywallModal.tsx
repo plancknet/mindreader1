@@ -67,7 +67,7 @@ export const PaywallModal = ({ isOpen, onClose, usageCount, freeLimit }: Paywall
             Limite Gratuito Atingido
           </DialogTitle>
           <DialogDescription className="text-center text-base">
-            Você usou suas {freeLimit} revelações gratuitas. Desbloqueie o MindReader Premium e continue jogando sem limites!
+            Você usou suas {freeLimit} revelações gratuitas. Desbloqueie o MindReader Premium e continue usando sem limites!
           </DialogDescription>
         </DialogHeader>
 

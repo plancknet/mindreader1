@@ -67,6 +67,25 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const PostLoginRedirect = () => {
+  const [targetPath, setTargetPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    setTargetPath(hasSeenWelcome ? '/game-selector' : '/welcome');
+  }, []);
+
+  if (!targetPath) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return <Navigate to={targetPath} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
@@ -75,7 +94,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/game-selector" replace />} />
+            <Route path="/" element={<ProtectedRoute><PostLoginRedirect /></ProtectedRoute>} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />

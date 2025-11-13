@@ -50,7 +50,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/game-selector`,
+          redirectTo: `${window.location.origin}/`,
         },
       });
 
@@ -211,7 +211,7 @@ const Auth = () => {
             email,
             password,
             options: {
-              emailRedirectTo: `${window.location.origin}/game-selector`,
+              emailRedirectTo: `${window.location.origin}/`,
             },
           })
         : await supabase.auth.signInWithPassword({ email, password });
@@ -245,21 +245,21 @@ const Auth = () => {
       icon: Sparkles,
       title: t('gameSelector.cards.mysteryWord.title'),
       color: 'from-orange-500 to-red-500',
-      message: 'Ele digita uma palavra qualquer e vc le a mente dele',
+      message: 'Ele DIGITA uma palavra qualquer e VOCÊ lê a mente dele',
     },
     {
       id: 'mind-reader',
       icon: Brain,
       title: t('gameSelector.cards.mindReader.title'),
       color: 'from-purple-500 to-pink-500',
-      message: 'Ele anota uma das palavras dos quadrantes e eu leio a mente dele',
+      message: 'Ele ANOTA uma das palavras dos quadrantes e EU leio a mente dele',
     },
     {
       id: 'mental-conversation',
       icon: MessageCircle,
       title: t('gameSelector.cards.mentalConversation.title'),
       color: 'from-blue-500 to-cyan-500',
-      message: 'Eu e vc conversamos e eu leio a mente dele',
+      message: 'Ele ANOTA, eu e vc conversamos e EU leio a mente dele',
     },
     {
       id: 'my-emojis',

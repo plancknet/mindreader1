@@ -17,8 +17,15 @@ const Welcome = () => {
 
   const gameLinks = [
     {
+      id: 'mystery-word',
+      title: 'Palavra Misteriosa',
+      icon: Sparkles,
+      instructionsPath: '/mystery-word/instructions',
+      color: 'from-orange-500 to-red-500',
+    },
+    {
       id: 'mind-reader',
-      title: 'Leitor de Mentes',
+      title: 'Quadrante Mágico',
       icon: Brain,
       instructionsPath: '/mind-reader/instructions',
       color: 'from-purple-500 to-pink-500',
@@ -30,14 +37,8 @@ const Welcome = () => {
       instructionsPath: '/mental-conversation/instructions',
       color: 'from-blue-500 to-cyan-500',
     },
-    {
-      id: 'mystery-word',
-      title: 'Palavra Misteriosa',
-      icon: Sparkles,
-      instructionsPath: '/mystery-word/instructions',
-      color: 'from-orange-500 to-red-500',
-    },
   ];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8 flex items-center justify-center">
@@ -50,12 +51,12 @@ const Welcome = () => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Agora você é o Leitor de Mentes
+            Agora nososs conseguiremos Ler de Mentes
           </h1>
           
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
             Bem-vindo! Explore cada jogo para descobrir seus poderes mentais. 
-            Comece aprendendo as instruções de cada modalidade:
+            IMPORTANTE: leia as instruções de cada modalidade e treine antes de apresentar aos seus amigos:
           </p>
         </div>
 
