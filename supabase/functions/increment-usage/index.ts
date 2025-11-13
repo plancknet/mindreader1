@@ -36,7 +36,7 @@ serve(async (req) => {
 
     // Get current premium status
     const { data: premiumUser, error: fetchError } = await supabaseClient
-      .from("premium_users")
+      .from("users")
       .select("*")
       .eq("user_id", user.id)
       .single();
@@ -51,7 +51,7 @@ serve(async (req) => {
     // If no record exists, create one with the appropriate game counter = 1
     if (!premiumUser) {
       const { data: newUser, error: createError } = await supabaseClient
-        .from("premium_users")
+        .from("users")
         .insert({
           user_id: user.id,
           is_premium: false,
@@ -85,7 +85,7 @@ serve(async (req) => {
                           premiumUser.jogo3_count + premiumUser.jogo4_count + 1;
 
     const { error: updateError } = await supabaseClient
-      .from("premium_users")
+      .from("users")
       .update({
         [gameCountField]: newGameCount,
         usage_count: premiumUser.usage_count + 1,

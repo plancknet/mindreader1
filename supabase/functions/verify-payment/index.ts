@@ -51,7 +51,7 @@ serve(async (req) => {
 
       // Atualizar ou criar registro premium
       const { error: upsertError } = await supabaseClient
-        .from("premium_users")
+        .from("users")
         .upsert({
           user_id: user.id,
           is_premium: true,

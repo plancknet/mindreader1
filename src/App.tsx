@@ -82,7 +82,7 @@ const PostLoginRedirect = () => {
         }
 
         const { data, error } = await supabase
-          .from('premium_users')
+          .from('users')
           .select('has_seen_welcome')
           .eq('user_id', user.id)
           .single();

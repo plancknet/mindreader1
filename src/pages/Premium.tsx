@@ -28,7 +28,7 @@ export default function Premium() {
       }
 
       const { data, error } = await supabase
-        .from('premium_users')
+        .from('users')
         .select('is_premium')
         .eq('user_id', user.id)
         .single();

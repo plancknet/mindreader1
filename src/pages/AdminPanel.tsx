@@ -43,24 +43,25 @@ export default function AdminPanel() {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('premium_users')
-        .select('user_id, is_premium, created_at, jogo1_count, jogo2_count, jogo3_count, jogo4_count, last_accessed_at')
+        .from('users')
+        .select('user_id, email, is_premium, created_at, jogo1_count, jogo2_count, jogo3_count, jogo4_count, last_accessed_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Fetch emails from auth.users metadata
-      const usersWithEmails = await Promise.all(
-        (data || []).map(async (user) => {
-          const { data: { user: authUser } } = await supabase.auth.admin.getUserById(user.user_id);
-          return {
-            ...user,
-            email: authUser?.email || 'N/A',
-          };
-        })
-      );
+      const formattedUsers = (data || []).map((user) => ({
+        user_id: user.user_id,
+        email: user.email || 'Email não disponível',
+        is_premium: user.is_premium,
+        created_at: user.created_at,
+        jogo1_count: user.jogo1_count,
+        jogo2_count: user.jogo2_count,
+        jogo3_count: user.jogo3_count,
+        jogo4_count: user.jogo4_count,
+        last_accessed_at: user.last_accessed_at,
+      }));
 
-      setUsers(usersWithEmails);
+      setUsers(formattedUsers);
     } catch (error: any) {
       console.error('Error fetching users:', error);
       toast({
@@ -82,7 +83,7 @@ export default function AdminPanel() {
   const handleResetAllCounts = async (userId: string) => {
     try {
       const { error } = await supabase
-        .from('premium_users')
+        .from('users')
         .update({ 
           jogo1_count: 0,
           jogo2_count: 0,

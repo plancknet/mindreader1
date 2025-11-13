@@ -14,63 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      premium_users: {
-        Row: {
-          created_at: string
-          has_seen_welcome: boolean | null
-          id: string
-          is_premium: boolean
-          jogo1_count: number
-          jogo2_count: number
-          jogo3_count: number
-          jogo4_count: number
-          last_accessed_at: string | null
-          premium_type: string | null
-          purchase_date: string | null
-          stripe_customer_id: string | null
-          stripe_session_id: string | null
-          updated_at: string
-          usage_count: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          has_seen_welcome?: boolean | null
-          id?: string
-          is_premium?: boolean
-          jogo1_count?: number
-          jogo2_count?: number
-          jogo3_count?: number
-          jogo4_count?: number
-          last_accessed_at?: string | null
-          premium_type?: string | null
-          purchase_date?: string | null
-          stripe_customer_id?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string
-          usage_count?: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          has_seen_welcome?: boolean | null
-          id?: string
-          is_premium?: boolean
-          jogo1_count?: number
-          jogo2_count?: number
-          jogo3_count?: number
-          jogo4_count?: number
-          last_accessed_at?: string | null
-          premium_type?: string | null
-          purchase_date?: string | null
-          stripe_customer_id?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string
-          usage_count?: number
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string
@@ -92,13 +35,73 @@ export type Database = {
         }
         Relationships: []
       }
+      users: {
+        Row: {
+          created_at: string
+          email: string | null
+          has_seen_welcome: boolean | null
+          id: string
+          is_premium: boolean
+          jogo1_count: number
+          jogo2_count: number
+          jogo3_count: number
+          jogo4_count: number
+          last_accessed_at: string | null
+          premium_type: string | null
+          purchase_date: string | null
+          stripe_customer_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          usage_count: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          has_seen_welcome?: boolean | null
+          id?: string
+          is_premium?: boolean
+          jogo1_count?: number
+          jogo2_count?: number
+          jogo3_count?: number
+          jogo4_count?: number
+          last_accessed_at?: string | null
+          premium_type?: string | null
+          purchase_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          usage_count?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          has_seen_welcome?: boolean | null
+          id?: string
+          is_premium?: boolean
+          jogo1_count?: number
+          jogo2_count?: number
+          jogo3_count?: number
+          jogo4_count?: number
+          last_accessed_at?: string | null
+          premium_type?: string | null
+          purchase_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          usage_count?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       get_total_count: {
-        Args: { user_row: Database["public"]["Tables"]["premium_users"]["Row"] }
+        Args: { user_row: Database["public"]["Tables"]["users"]["Row"] }
         Returns: number
       }
       has_role: {

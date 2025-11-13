@@ -35,7 +35,7 @@ serve(async (req) => {
 
     // Check database first for Stripe customer ID
     const { data: premiumUser } = await supabaseClient
-      .from('premium_users')
+      .from('users')
       .select('stripe_customer_id')
       .eq('user_id', user.id)
       .maybeSingle();
@@ -52,7 +52,7 @@ serve(async (req) => {
         
         // Store customer ID in database for future use
         await supabaseClient
-          .from('premium_users')
+          .from('users')
           .upsert({ 
             user_id: user.id, 
             stripe_customer_id: customerId 

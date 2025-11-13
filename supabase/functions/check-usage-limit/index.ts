@@ -30,7 +30,7 @@ serve(async (req) => {
 
     // Get or create premium user record
     const { data: premiumUser, error: fetchError } = await supabaseClient
-      .from("premium_users")
+      .from("users")
       .select("*")
       .eq("user_id", user.id)
       .single();
@@ -42,7 +42,7 @@ serve(async (req) => {
     // If no record exists, create one
     if (!premiumUser) {
       const { data: newUser, error: createError } = await supabaseClient
-        .from("premium_users")
+        .from("users")
         .insert({
           user_id: user.id,
           is_premium: false,

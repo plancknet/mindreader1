@@ -18,7 +18,7 @@ const Welcome = () => {
         if (!user) return;
 
         await supabase
-          .from('premium_users')
+          .from('users')
           .update({ has_seen_welcome: true })
           .eq('user_id', user.id);
       } catch (error) {
