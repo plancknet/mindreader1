@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import { Brain, MessageCircle, Sparkles, HelpCircle, Smile } from 'lucide-react'
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
 
 const GAME_CARDS = [
   {
@@ -50,6 +52,13 @@ const GameSelector = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const { usageData } = useUsageLimit();
+
+  useEffect(() => {
+    if (usageData && !usageData.canUse && !usageData.isPremium) {
+      navigate('/premium');
+    }
+  }, [usageData, navigate]);
 
   const games = GAME_CARDS.map((game) => {
     const baseKey = `gameSelector.cards.${game.translationKey}`;
