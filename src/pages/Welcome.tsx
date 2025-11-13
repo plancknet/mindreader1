@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Brain, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -11,8 +12,21 @@ const Welcome = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Marcar que o usuário já viu a página de boas-vindas
-    localStorage.setItem('hasSeenWelcome', 'true');
+    const markWelcomeSeen = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        await supabase
+          .from('premium_users')
+          .update({ has_seen_welcome: true })
+          .eq('user_id', user.id);
+      } catch (error) {
+        console.error('Error updating welcome status:', error);
+      }
+    };
+
+    markWelcomeSeen();
   }, []);
 
   const gameLinks = [

@@ -69,11 +69,48 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const PostLoginRedirect = () => {
   const [targetPath, setTargetPath] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    setTargetPath(hasSeenWelcome ? '/game-selector' : '/welcome');
+    const checkWelcomeStatus = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setTargetPath('/auth');
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('premium_users')
+          .select('has_seen_welcome')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching welcome status:', error);
+          setTargetPath('/welcome');
+        } else {
+          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+        }
+      } catch (error) {
+        console.error('Error checking welcome status:', error);
+        setTargetPath('/welcome');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkWelcomeStatus();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!targetPath) {
     return (
