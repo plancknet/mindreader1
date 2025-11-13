@@ -17,6 +17,7 @@ export type Database = {
       premium_users: {
         Row: {
           created_at: string
+          has_seen_welcome: boolean | null
           id: string
           is_premium: boolean
           jogo1_count: number
@@ -34,6 +35,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean
           jogo1_count?: number
@@ -51,6 +53,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean
           jogo1_count?: number
