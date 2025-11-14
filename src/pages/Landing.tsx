@@ -77,13 +77,13 @@ const MindReaderUltraLanding = () => {
       {/* VIDEO DEMO */}
       <div className="px-5 pb-6 text-center">
         <h3 className="font-semibold text-white/90 text-sm mb-3">
-          Assista o video para entender a oferta:
+          Assista o video para entender o MindReader:
         </h3>
 
         <div className="w-full max-w-md mx-auto rounded-lg overflow-hidden border border-white/10 shadow-lg">
           <div className="bg-slate-900 h-48 flex items-center justify-center">
             <button className="bg-white/10 p-4 rounded-full border border-white/20">
-              teste
+              play
             </button>
           </div>
         </div>
