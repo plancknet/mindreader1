@@ -1,7 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const MindReaderUltraLanding = () => {
-  const checkoutUrl = "https://seu-checkout-stripe-aqui.com";
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    setIsCheckoutLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Você precisa estar logado");
+        window.location.href = "/auth";
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast.error("Erro ao processar pagamento. Tente novamente.");
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
 
   return (
     <div className="w-full bg-black text-white font-sans">
@@ -93,39 +125,22 @@ const MindReaderUltraLanding = () => {
       <div className="px-5 pb-8 flex flex-col gap-3">
         {/* CTA Verde */}
         <button
-          onClick={() => window.open(checkoutUrl, "_blank")}
-          className="bg-green-500 font-bold py-3 rounded-lg text-lg shadow-md"
+          onClick={handleCheckout}
+          disabled={isCheckoutLoading}
+          className="bg-green-500 font-bold py-3 rounded-lg text-lg shadow-md disabled:opacity-70"
         >
-          CLIQUE PARA GARANTIR SUA VAGA
+          {isCheckoutLoading ? "PROCESSANDO..." : "CLIQUE AQUI PARA GARANTIR SEU ACESSO"}
         </button>
 
         {/* Botão amarelo */}
-        <button className="bg-yellow-400 text-black font-bold py-3 rounded-lg text-lg shadow-md">
-          TIRAR DÚVIDAS COM UM ESPECIALISTA
-        </button>
-
-        {/* Botão preto com borda */}
-        <button className="border border-yellow-400 py-3 rounded-lg text-lg font-bold text-yellow-400">
-          QUERO RECEBER UMA LIGAÇÃO
-        </button>
-      </div>
-
-      {/* PARCEIROS */}
-      <div className="px-5 pb-10">
-        <p className="text-center text-xs text-white/60 mb-3">
-          PARCEIROS OFICIAIS
-        </p>
-
-        <div className="flex justify-center gap-5 opacity-80">
-          {["hotmart", "manychat", "canva", "rd"].map((p) => (
-            <div
-              key={p}
-              className="h-6 w-16 bg-slate-800 rounded flex items-center justify-center text-[10px]"
-            >
-              {p.toUpperCase()}
-            </div>
-          ))}
-        </div>
+        <a
+          href="https://wa.me/5512992090614?text=MindReader"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-yellow-400 text-black font-bold py-3 rounded-lg text-lg shadow-md text-center"
+        >
+          TIRAR DÚVIDA COM UM ESPECIALISTA
+        </a>
       </div>
 
       {/* Footer simples */}
