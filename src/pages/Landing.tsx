@@ -22,7 +22,7 @@ const MindReaderUltraLanding = () => {
           </div>
 
           <div className="text-xs text-yellow-400 font-semibold uppercase border-l border-yellow-400 pl-2">
-            Lifetime Deal
+            vitalício
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@ const MindReaderUltraLanding = () => {
 
         <h1 className="text-2xl font-extrabold uppercase leading-tight mb-3">
           Inscrições abertas para o <br />
-          <span className="text-yellow-400">MindReader Lifetime Deal</span>
+          <span className="text-yellow-400">MindReader vitalício</span>
         </h1>
 
         <p className="text-yellow-400 font-semibold mb-2">

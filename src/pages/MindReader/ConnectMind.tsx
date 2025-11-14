@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Camera, Brain, BookOpen } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
-import { InstallPWA } from '@/components/InstallPWA';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -38,9 +37,8 @@ const ConnectMind = () => {
         </div>
         
         <div className="text-center space-y-2 md:space-y-4">
-          <div className="flex justify-center items-center gap-2 md:gap-4">
+          <div className="flex justify-center items-center">
             <Brain className="w-12 h-12 md:w-20 md:h-20 text-primary animate-pulse" />
-            <InstallPWA />
           </div>
           <h1 className="text-3xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             {t('connectMind.title')}
