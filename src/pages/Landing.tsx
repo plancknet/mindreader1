@@ -8,19 +8,24 @@ const MindReaderUltraLanding = () => {
   const handleCheckout = async () => {
     setIsCheckoutLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (!session) {
         toast.error("Você precisa estar logado");
         window.location.href = "/auth";
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
+      const { data, error } = await supabase.functions.invoke(
+        "create-checkout-session",
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
         },
-      });
+      );
 
       if (error) throw error;
 
@@ -84,26 +89,21 @@ const MindReaderUltraLanding = () => {
 
         <p className="text-[15px] leading-relaxed text-white/90 px-2">
           Acesso <span className="text-yellow-400 font-bold">vitalício</span>{" "}
-          ao aplicativo MindReader — jogue quantas vezes quiser, sem pagar
-          mensalidade.
+          ao aplicativo MindReader — jogue quantas vezes quiser, sem nunca mais pagar.
         </p>
 
         <p className="mt-3 text-white/90 px-2">
           E mais de{" "}
-          <span className="text-yellow-400 font-bold">R$ 3 mil em bônus</span>{" "}
-          incluindo modos especiais, novos desafios e todas as futuras
+          <span className="text-yellow-400 font-bold">Obtenha para sempre</span>{" "}
+          modos especiais, novos desafios e todas as futuras
           atualizações.
         </p>
 
         <p className="mt-3 text-white/90">
-          Incluso <span className="font-bold">20 modos</span>, 8 bônus extras e
-          todas as novidades futuras.
+          Incluso <span className="font-bold">Prioridade</span>na implementação
+          de suas sugestões para as próximas versões. <span className="font-bold">CUPONS</span>para 
+          você monetizar. 
         </p>
-
-        {/* Botão suporte */}
-        <button className="mt-5 bg-yellow-400 text-black font-bold rounded-full px-6 py-2 flex items-center gap-2 mx-auto">
-          <span>💬</span> FALE COM O SUPORTE!
-        </button>
       </div>
 
       {/* VÍDEO DEMO */}
@@ -129,7 +129,9 @@ const MindReaderUltraLanding = () => {
           disabled={isCheckoutLoading}
           className="bg-green-500 font-bold py-3 rounded-lg text-lg shadow-md disabled:opacity-70"
         >
-          {isCheckoutLoading ? "PROCESSANDO..." : "CLIQUE AQUI PARA GARANTIR SEU ACESSO"}
+          {isCheckoutLoading
+            ? "PROCESSANDO..."
+            : "CLIQUE AQUI PARA GARANTIR SEU ACESSO"}
         </button>
 
         {/* Botão amarelo */}
@@ -145,7 +147,7 @@ const MindReaderUltraLanding = () => {
 
       {/* Footer simples */}
       <div className="text-center text-[11px] text-white/40 pb-6">
-        © {new Date().getFullYear()} MindReader — Todos os direitos reservados.
+        © {new Date().getFullYear()} MindReader – Todos os direitos reservados.
       </div>
     </div>
   );
