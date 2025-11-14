@@ -7,12 +7,17 @@ import { Loader2, Sparkles, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Premium() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
+  const { language } = useTranslation();
+  const normalizedLanguage = language?.toLowerCase() ?? '';
+  const isPortuguese = normalizedLanguage.startsWith('pt');
+  const premiumPrice = isPortuguese ? 'R$ 14,99' : 'USD 3,00';
 
   useEffect(() => {
     checkPremiumStatus();
@@ -135,7 +140,7 @@ export default function Premium() {
         <CardContent className="space-y-6">
           <div className="bg-muted/50 rounded-lg p-6 text-center">
             <p className="text-sm text-muted-foreground mb-2">Pagamento único</p>
-            <p className="text-4xl font-bold">R$ 14,90 ou USD 3,00</p>
+            <p className="text-4xl font-bold">{premiumPrice}</p>
             <p className="text-sm text-muted-foreground mt-2">Acesso vitalício</p>
           </div>
 

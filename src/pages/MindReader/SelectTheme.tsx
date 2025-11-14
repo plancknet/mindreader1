@@ -49,9 +49,14 @@ const SelectTheme = () => {
       />
       
       <div className="max-w-4xl w-full space-y-8">
-        <div className="flex justify-end gap-2">
-          <LanguageSelector />
-          <LogoutButton />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Button variant="ghost" onClick={() => navigate('/select-theme')}>
+            {t('common.back')}
+          </Button>
+          <div className="flex gap-2">
+            <LanguageSelector />
+            <LogoutButton />
+          </div>
         </div>
 
         <div className="text-center space-y-4">
