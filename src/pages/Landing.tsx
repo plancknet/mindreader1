@@ -44,7 +44,7 @@ const MindReaderUltraLanding = () => {
     <div className="w-full bg-black text-white font-sans">
       {/* TOP BAR */}
       <div className="bg-red-600 text-center py-2 text-sm font-bold tracking-wide">
-        ÚLTIMOS DIAS
+        LANÇAMENTO OFICIAL
       </div>
 
       {/* HEADER LOGOS */}
@@ -89,7 +89,7 @@ const MindReaderUltraLanding = () => {
 
         <p className="text-[15px] leading-relaxed text-white/90 px-2">
           Acesso <span className="text-yellow-400 font-bold">vitalício</span>{" "}
-          ao aplicativo MindReader — jogue quantas vezes quiser, sem nunca mais pagar.
+          ao aplicativo MindReader — use quantas vezes quiser, sem nunca mais pagar.
         </p>
 
         <p className="mt-3 text-white/90 px-2">
@@ -100,8 +100,8 @@ const MindReaderUltraLanding = () => {
         </p>
 
         <p className="mt-3 text-white/90">
-          Incluso <span className="font-bold">Prioridade</span>na implementação
-          de suas sugestões para as próximas versões. <span className="font-bold">CUPONS</span>para 
+          Incluso <span className="font-bold">Prioridade</span> na implementação
+          de suas sugestões para as próximas versões. <span className="font-bold">CUPONS</span> para 
           você monetizar. 
         </p>
       </div>

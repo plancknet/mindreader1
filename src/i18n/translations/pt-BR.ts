@@ -92,8 +92,8 @@ export const ptBR = {
     tip2: 'E o principal. Seja DISCRETO, faça MOVIMENTOS SUAVES.',
   },
   mentalConversationInstructions: {
-    title: 'Instruções para o Jogo Conversa Mental',
-    subtitle: 'Siga os cartões para dominar o fluxo do jogo',
+    title: 'Instruções para o modo Conversa Mental',
+    subtitle: 'Siga os cartões para dominar o fluxo',
     step1Title: 'Categoria Escolhida',
     step1Text: 'A categoria escolhida será determinada pela quantidade de palavras da primeira interação. 1 palavra para a categoria "Animal", 2 palavras para a categoria "Fruta" e 3 palavras para a categoria "País".',
     step2Title: 'Indicação das letras da Palavra Misteriosa',
@@ -105,9 +105,9 @@ export const ptBR = {
   },
   mysteryWordInstructions: {
     title: 'Como Funciona a Palavra Misteriosa',
-    subtitle: 'Aprenda a jogar este jogo de telepatia',
+    subtitle: 'Aprenda a usar este modo de telepatia',
     step1Title: 'Atenção na Frase Inicial',
-    step1Text: 'O app exibirá uma frase inicial. Guarde atentamente a última palavra dessa frase, pois ela define todo o resto do jogo.',
+    step1Text: 'O app exibirá uma frase inicial. Guarde atentamente a última palavra dessa frase, pois ela define todo o resto.',
     step2Title: 'Contagem de Letras',
     step2Text: 'Conte quantas letras tem a ÚLTIMA palavra da frase inicial. Exemplo: se a última palavra for "Mistério", ela possui 8 letras.',
     step3Title: 'Posição da Palavra Misteriosa',
@@ -126,8 +126,8 @@ export const ptBR = {
     stoppedTitle: 'Li sua mente! ✨',
     stoppedSubtitle: 'E aí? Acertou?',
     menuButton: 'Voltar ao Menu',
-    playAgain: 'Jogar Novamente',
-    phrases: 'Bora começar!||Podemos começar o jogo de leitura de mente já?||Está pronto para o teste da mente? Estou ansioso. Me diga que sim.||Bora começar a leitura da sua mente logo?||Vamos iniciar o jogo psíquico agora?||Preparado para o truque mental mentes?||Podemos dar início à leitura. Vou revelar seu segredo.||Podemos abrir o portal do jogo da fantasia?||Vamos ativar o poder da telepatia?||Que tal começarmos o desafio da imaginação?'
+    playAgain: 'Usar Novamente',
+    phrases: 'Bora começar!||Podemos começar o modo de leitura de mente já?||Está pronto para o teste da mente? Estou ansioso. Me diga que sim.||Bora começar a leitura da sua mente logo?||Vamos iniciar o modo psíquico agora?||Preparado para o truque mental mentes?||Podemos dar início à leitura. Vou revelar seu segredo.||Podemos abrir o portal do modo da fantasia?||Vamos ativar o poder da telepatia?||Que tal começarmos o desafio da imaginação?'
   },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
@@ -141,7 +141,7 @@ export const ptBR = {
       singleResult: '🎯 Incrível! Estou captando uma energia muito forte...\n\n✨ A palavra em que seu amigo pensou é:\n\n🌟 **{word}** 🌟\n\nEstou certo? ✨',
       multipleOptions: 'Hmm... estou recebendo alguns sinais. Estas são as possibilidades que estou captando: {options}\n\nEstou no caminho certo?',
       noMatch: 'Ops! Parece que não consegui captar a palavra corretamente. Vamos tentar novamente? Digite "reiniciar" para começar de novo.',
-      finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nEu li a mente do seu amigo! A categoria era {category} e a palavra era {word}! 🧠✨\n\nQuer jogar novamente? Digite qualquer coisa para voltar ao menu!'
+      finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nEu li a mente do seu amigo! A categoria era {category} e a palavra era {word}! 🧠✨\n\nQuer usar novamente? Digite qualquer coisa para voltar ao menu!'
     },
     status: {
       processingAudio: 'Processando áudio...',
@@ -167,10 +167,10 @@ export const ptBR = {
   gameSelector: {
     heading: 'Leitores de Mente',
     subheading: 'Escolha uma experiência de leitura mental',
-    play: 'Jogar',
+    play: 'Iniciar',
     comingSoon: 'Em breve',
     underConstruction: 'Em construção',
-    modalTitle: 'Como Jogar',
+    modalTitle: 'Como?',
     cards: {
       mindReader: {
         title: 'Quadrante Mágico',
