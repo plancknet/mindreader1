@@ -83,7 +83,7 @@ const MindReaderUltraLanding = () => {
         <div className="w-full max-w-md mx-auto rounded-lg overflow-hidden border border-white/10 shadow-lg">
           <div className="bg-slate-900 h-48 flex items-center justify-center">
             <button className="bg-white/10 p-4 rounded-full border border-white/20">
-              >
+              teste
             </button>
           </div>
         </div>
