@@ -111,6 +111,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      now_sao_paulo: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
