@@ -106,6 +106,8 @@ export const ptBR = {
   mysteryWordInstructions: {
     title: 'Como Funciona a Palavra Misteriosa',
     subtitle: 'Aprenda a usar este modo de telepatia',
+    videoTitle: 'Veja o passo a passo em vídeo',
+    videoDescription: 'Assista ao tutorial otimizado para celular antes de começar a apresentação.',
     step1Title: 'Atenção na Frase Inicial',
     step1Text: 'O app exibirá uma frase inicial. Guarde atentamente a última palavra dessa frase, pois ela define todo o resto.',
     step2Title: 'Contagem de Letras',

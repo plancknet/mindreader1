@@ -109,6 +109,8 @@ export const zhCN = {
   mysteryWordInstructions: {
     title: '神秘词如何工作',
     subtitle: '学习玩这个心灵感应游戏',
+    videoTitle: '观看教学视频',
+    videoDescription: '开始之前请先观看这个针对手机优化的教程。',
     step1Title: '选择的类别',
     step1Text: '第一次互动中说出的词数决定类别：1 个词 = 动物，2 个词 = 水果，3 个词 = 国家。',
     step2Title: '揭示神秘字母',

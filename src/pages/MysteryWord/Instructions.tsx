@@ -42,6 +42,31 @@ const MysteryWordInstructions = () => {
           </p>
         </div>
 
+        <Card className="mb-12 border-primary/30 bg-background/80 backdrop-blur">
+          <div className="grid gap-6 md:grid-cols-2 items-center">
+            <div className="space-y-4">
+              <p className="text-primary font-semibold uppercase tracking-wider text-sm">
+                {t('mysteryWordInstructions.videoTitle')}
+              </p>
+              <p className="text-muted-foreground text-base">
+                {t('mysteryWordInstructions.videoDescription')}
+              </p>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20">
+              <video
+                key="palavra-demo"
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-full max-h-[420px] object-cover bg-black"
+              >
+                <source src="/videos/Palavra.mp4" type="video/mp4" />
+                {t('mysteryWordInstructions.videoTitle')}
+              </video>
+            </div>
+          </div>
+        </Card>
+
         {/* Instructions Steps */}
         <div className="space-y-6 mb-12">
           {[

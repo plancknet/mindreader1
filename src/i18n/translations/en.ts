@@ -109,6 +109,8 @@ export const en = {
   mysteryWordInstructions: {
     title: 'How Mystery Word Works',
     subtitle: 'Learn to play this telepathy game',
+    videoTitle: 'Watch the highlight video',
+    videoDescription: 'Review the mobile-friendly walkthrough before you start the routine.',
     step1Title: 'Chosen Category',
     step1Text: 'The number of words in the first interaction defines the category: 1 word = Animal, 2 words = Fruit, 3 words = Country.',
     step2Title: 'Revealing the Secret Letters',

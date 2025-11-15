@@ -109,6 +109,8 @@ export const es = {
   mysteryWordInstructions: {
     title: 'Cómo Funciona la Palabra Misteriosa',
     subtitle: 'Aprende a jugar este juego de telepatía',
+    videoTitle: 'Mira el video destacado',
+    videoDescription: 'Revisa el tutorial optimizado para celulares antes de comenzar.',
     step1Title: 'Categoría Elegida',
     step1Text: 'La cantidad de palabras en la primera interacción define la categoría: 1 palabra = Animal, 2 palabras = Fruta, 3 palabras = País.',
     step2Title: 'Revelando las letras secretas',

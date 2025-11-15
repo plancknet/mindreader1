@@ -109,6 +109,8 @@ export const fr = {
   mysteryWordInstructions: {
     title: 'Comment Fonctionne le Mot Mystère',
     subtitle: 'Apprenez à jouer à ce jeu de télépathie',
+    videoTitle: 'Regardez la vidéo mise en avant',
+    videoDescription: 'Consultez ce tutoriel optimisé pour mobile avant de démarrer la routine.',
     step1Title: 'Catégorie choisie',
     step1Text: 'Le nombre de mots lors de la première interaction définit la catégorie : 1 mot = Animal, 2 mots = Fruit, 3 mots = Pays.',
     step2Title: 'Révéler les lettres secrètes',
