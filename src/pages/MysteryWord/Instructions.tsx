@@ -52,17 +52,19 @@ const MysteryWordInstructions = () => {
                 {t('mysteryWordInstructions.videoDescription')}
               </p>
             </div>
-            <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20">
-              <video
-                key="palavra-demo"
-                controls
-                playsInline
-                preload="metadata"
-                className="w-full h-full max-h-[420px] object-cover bg-black"
-              >
-                <source src="/videos/Palavra.mp4" type="video/mp4" />
-                {t('mysteryWordInstructions.videoTitle')}
-              </video>
+            <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20 bg-black">
+              <div className="relative w-full aspect-[9/16]">
+                <video
+                  key="palavra-demo"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-contain"
+                >
+                  <source src="/videos/Palavra.mp4" type="video/mp4" />
+                  {t('mysteryWordInstructions.videoTitle')}
+                </video>
+              </div>
             </div>
           </div>
         </Card>
