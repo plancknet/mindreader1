@@ -61,32 +61,61 @@ const Instructions = () => {
           </p>
         </div>
 
-        <Card className="border-primary/30 bg-background/80 backdrop-blur">
-          <div className="grid gap-6 md:grid-cols-2 items-center">
-            <div className="space-y-4">
-              <p className="text-primary font-semibold uppercase tracking-wider text-sm">
-                {t('instructions.videoTitle')}
-              </p>
-              <p className="text-muted-foreground text-base">
-                {t('instructions.videoDescription')}
-              </p>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20 bg-black">
-              <div className="relative w-full aspect-[9/16]">
-                <video
-                  key="quadrante-demo"
-                  controls
-                  playsInline
-                  preload="metadata"
-                  className="absolute inset-0 w-full h-full object-contain"
-                >
-                  <source src="/videos/Quadrante.mp4" type="video/mp4" />
+        <div className="space-y-6">
+          <Card className="border-primary/30 bg-background/80 backdrop-blur">
+            <div className="grid gap-6 md:grid-cols-2 items-center">
+              <div className="space-y-4">
+                <p className="text-primary font-semibold uppercase tracking-wider text-sm">
                   {t('instructions.videoTitle')}
-                </video>
+                </p>
+                <p className="text-muted-foreground text-base">
+                  {t('instructions.videoDescription')}
+                </p>
+              </div>
+              <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20 bg-black">
+                <div className="relative w-full aspect-[9/16]">
+                  <video
+                    key="quadrante-demo"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-contain"
+                  >
+                    <source src="/videos/Quadrante.mp4" type="video/mp4" />
+                    {t('instructions.videoTitle')}
+                  </video>
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+
+          <Card className="border-primary/30 bg-background/80 backdrop-blur">
+            <div className="grid gap-6 md:grid-cols-2 items-center">
+              <div className="space-y-4">
+                <p className="text-primary font-semibold uppercase tracking-wider text-sm">
+                  {t('instructions.videoTitle')}
+                </p>
+                <p className="text-muted-foreground text-base">
+                  {t('instructions.videoDescription')}
+                </p>
+              </div>
+              <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20 bg-black">
+                <div className="relative w-full aspect-[9/16]">
+                  <video
+                    key="quadrante-demo-2"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-contain"
+                  >
+                    <source src="/videos/Quadrante2.mp4" type="video/mp4" />
+                    {t('instructions.videoTitle')}
+                  </video>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
 
         <div className="space-y-6">
           {steps.map((step, index) => (
