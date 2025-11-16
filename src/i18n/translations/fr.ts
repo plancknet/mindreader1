@@ -79,6 +79,8 @@ export const fr = {
   instructions: {
     title: 'Comment ça marche',
     subtitle: 'Comprendre le processus de détection mentale',
+    videoTitle: 'Regardez la vidéo Quadrante Magique',
+    videoDescription: 'Consultez le tutoriel optimisé pour mobile avant de jouer.',
     step1Title: 'Détection par mouvement de tête',
     step1Text: 'Nous pouvons identifier de quel côté vous avez légèrement tourné la tête.',
     step2Title: 'Choix mental',

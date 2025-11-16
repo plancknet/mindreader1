@@ -79,6 +79,8 @@ export const en = {
   instructions: {
     title: 'How It Works',
     subtitle: 'Understand the mental detection process',
+    videoTitle: 'Watch the Quadrante Mágico video',
+    videoDescription: 'Preview the mobile-friendly walkthrough before starting the game.',
     step1Title: 'Head Movement Detection',
     step1Text: 'We can identify which way you slightly turned your head.',
     step2Title: 'Mental Choice',

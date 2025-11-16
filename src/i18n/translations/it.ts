@@ -79,6 +79,8 @@ export const it = {
   instructions: {
     title: 'Come Funziona',
     subtitle: 'Comprendere il processo di rilevamento mentale',
+    videoTitle: 'Guarda il video del Quadrante Magico',
+    videoDescription: 'Controlla il tutorial ottimizzato per smartphone prima di giocare.',
     step1Title: 'Rilevamento tramite movimento della testa',
     step1Text: 'Possiamo identificare da che parte hai girato leggermente la testa.',
     step2Title: 'Scelta mentale',

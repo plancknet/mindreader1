@@ -79,6 +79,8 @@ export const ptBR = {
   instructions: {
     title: 'Como Funciona',
     subtitle: 'Entenda o processo de detecção mental',
+    videoTitle: 'Veja o vídeo do Quadrante Mágico',
+    videoDescription: 'Assista ao tutorial otimizado para celular e aprenda o passo a passo antes de jogar.',
     step1Title: 'Método de Detecção por Movimento de Cabeça',
     step1Text: 'Conseguimos identificar para qual lado você girou levemente a cabeça.',
     step2Title: 'Escolha Mental',

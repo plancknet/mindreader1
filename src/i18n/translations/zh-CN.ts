@@ -79,6 +79,8 @@ export const zhCN = {
   instructions: {
     title: '工作原理',
     subtitle: '了解心灵检测过程',
+    videoTitle: '观看魔法象限视频',
+    videoDescription: '开始游戏前先看一下这个针对手机优化的教程。',
     step1Title: '头部动作检测',
     step1Text: '我们可以识别出你稍微转头的方向。',
     step2Title: '心灵选择',
