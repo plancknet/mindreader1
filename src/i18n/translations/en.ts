@@ -94,6 +94,8 @@ export const en = {
   mentalConversationInstructions: {
     title: 'How Mental Conversation Works',
     subtitle: 'Learn to play this guessing game',
+    videoTitle: 'Watch the highlighted video',
+    videoDescription: 'Preview the mobile-friendly walkthrough before starting Mental Conversation.',
     step1Title: 'Think of a Word',
     step1Text: 'Think of a word and keep it secret. It can be any word you want.',
     step2Title: 'Chat with the AI',

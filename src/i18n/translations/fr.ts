@@ -94,6 +94,8 @@ export const fr = {
   mentalConversationInstructions: {
     title: 'Comment Fonctionne la Conversation Mentale',
     subtitle: 'Apprenez à jouer à ce jeu de devinettes',
+    videoTitle: 'Regardez la vidéo de démonstration',
+    videoDescription: 'Consultez le tutoriel optimisé pour mobile avant de lancer la Conversation Mentale.',
     step1Title: 'Pensez à un Mot',
     step1Text: 'Pensez à un mot et gardez-le secret. Cela peut être n\'importe quel mot que vous voulez.',
     step2Title: 'Discutez avec l\'IA',

@@ -94,6 +94,8 @@ export const zhCN = {
   mentalConversationInstructions: {
     title: '心灵对话如何工作',
     subtitle: '学习玩这个猜谜游戏',
+    videoTitle: '观看演示视频',
+    videoDescription: '开始心灵对话前先看一下这个针对手机优化的教程。',
     step1Title: '想一个词',
     step1Text: '想一个词并保密。可以是你想要的任何词。',
     step2Title: '与AI对话',

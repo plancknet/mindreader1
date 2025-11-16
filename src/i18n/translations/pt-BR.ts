@@ -94,6 +94,8 @@ export const ptBR = {
   mentalConversationInstructions: {
     title: 'Instruções para o modo Conversa Mental',
     subtitle: 'Siga os cartões para dominar o fluxo',
+    videoTitle: 'Assista ao vídeo demonstrativo',
+    videoDescription: 'Veja o passo a passo otimizado para celular antes de começar a Conversa Mental.',
     step1Title: 'Categoria Escolhida',
     step1Text: 'A categoria escolhida será determinada pela quantidade de palavras da primeira interação. 1 palavra para a categoria "Animal", 2 palavras para a categoria "Fruta" e 3 palavras para a categoria "País".',
     step2Title: 'Indicação das letras da Palavra Misteriosa',
