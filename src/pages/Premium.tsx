@@ -17,7 +17,7 @@ export default function Premium() {
   const { language } = useTranslation();
   const normalizedLanguage = language?.toLowerCase() ?? '';
   const isPortuguese = normalizedLanguage.startsWith('pt');
-  const premiumPrice = isPortuguese ? 'R$ 14,99' : 'USD 3,00';
+  const premiumPrice = isPortuguese ? 'R$ 29,99' : 'USD 5,99';
 
   useEffect(() => {
     checkPremiumStatus();
