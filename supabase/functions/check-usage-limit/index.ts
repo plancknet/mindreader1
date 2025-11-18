@@ -107,7 +107,7 @@ serve(async (req) => {
     );
   } catch (error: any) {
     console.error("Error checking usage limit:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "Failed to check usage limit. Please try again." }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
