@@ -140,7 +140,7 @@ export const ptBR = {
     chooseSubtitle: "Selecione qualquer carta do baralho",
     revealTitle: "Mix de Cartas",
     revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
-    chosenCard: "Carta escolhida:",
+    chosenCard: "",
     shuffleButton: "Embaralhar",
     magicTip: "Cada embaralhamento gera uma nova sequência que codifica sua carta de forma única!",
   },
