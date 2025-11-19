@@ -138,7 +138,7 @@ export const ptBR = {
   mixDeCartas: {
     chooseTitle: "Escolha uma Carta",
     chooseSubtitle: "Selecione qualquer carta do baralho",
-    revealTitle: "Revelação Secreta",
+    revealTitle: "Mix de Cartas",
     revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
     chosenCard: "Carta escolhida:",
     shuffleButton: "Embaralhar",
