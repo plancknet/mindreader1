@@ -3,13 +3,31 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Brain, MessageCircle, Sparkles, HelpCircle, Smile } from 'lucide-react';
+import {
+  Brain,
+  MessageCircle,
+  Sparkles,
+  HelpCircle,
+  Smile,
+  Shuffle,
+  type LucideIcon,
+} from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 
-const GAME_CARDS = [
+type GameCard = {
+  id: string;
+  translationKey: string;
+  icon: LucideIcon;
+  path: string;
+  instructionsPath?: string;
+  color: string;
+  badgeKey?: string;
+};
+
+const GAME_CARDS: GameCard[] = [
   {
     id: 'mystery-word',
     translationKey: 'mysteryWord',
@@ -29,6 +47,13 @@ const GAME_CARDS = [
     badgeKey: undefined,
   },
   {
+    id: 'mix-de-cartas',
+    translationKey: 'mixDeCartas',
+    icon: Shuffle,
+    path: '/mind-reader/mix-de-cartas',
+    color: 'from-emerald-500 to-lime-500',
+  },
+  {
     id: 'mental-conversation',
     translationKey: 'mentalConversation',
     icon: MessageCircle,
@@ -46,7 +71,7 @@ const GAME_CARDS = [
     color: 'from-yellow-400 to-lime-400',
     badgeKey: 'underConstruction',
   },
-] as const;
+];
 
 const GameSelector = () => {
   const navigate = useNavigate();
@@ -93,6 +118,7 @@ const GameSelector = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {games.map((game) => {
             const Icon = game.icon;
+            const instructionsPath = game.instructionsPath;
             return (
               <Card
                 key={game.id}
@@ -124,17 +150,19 @@ const GameSelector = () => {
                     <Button className="flex-1" onClick={() => navigate(game.path)}>
                       {t('gameSelector.play')}
                     </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(game.instructionsPath, { state: { from: location.pathname } });
-                      }}
-                      aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
-                    >
-                      <HelpCircle className="w-4 h-4" />
-                    </Button>
+                    {instructionsPath && (
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(instructionsPath, { state: { from: location.pathname } });
+                        }}
+                        aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
+                      >
+                        <HelpCircle className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>

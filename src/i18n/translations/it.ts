@@ -194,6 +194,10 @@ export const it = {
         title: 'Quadrante Magico',
         description: 'Leggi la mente tramite movimenti delicati della testa'
       },
+      mixDeCartas: {
+        title: 'Mix di Carte',
+        description: 'Codifica una carta segreta con un motivo di colori su sei carte'
+      },
       mentalConversation: {
         title: 'Conversazione Mentale',
         description: 'Conversa con un\'IA che prova a indovinare la tua parola'

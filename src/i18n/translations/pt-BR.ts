@@ -191,6 +191,10 @@ export const ptBR = {
         title: 'Quadrante Mágico',
         description: 'Leia a mente através de movimentos sutis da cabeça'
       },
+      mixDeCartas: {
+        title: 'Mix de Cartas',
+        description: 'Codifique uma carta secreta com um padrão de cores em seis cartas'
+      },
       mentalConversation: {
         title: 'Conversa Mental',
         description: 'Converse com uma IA que tenta adivinhar sua palavra'

@@ -194,6 +194,10 @@ export const fr = {
         title: 'Quadrant Magique',
         description: 'Lisez les pensées grâce à de subtils mouvements de tête'
       },
+      mixDeCartas: {
+        title: 'Mix de Cartes',
+        description: 'Encodez une carte secrète avec un motif de couleurs sur six cartes'
+      },
       mentalConversation: {
         title: 'Conversation Mentale',
         description: 'Discutez avec une IA qui tente de deviner votre mot'

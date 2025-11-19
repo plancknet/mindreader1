@@ -27,11 +27,6 @@ const suits = [
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-const suitOrder = suits.reduce<Record<string, number>>((acc, suit, index) => {
-  acc[suit.name] = index;
-  return acc;
-}, {});
-
 const fullDeck: DeckCard[] = suits.flatMap((suit) =>
   ranks.map((rank, index) => ({
     rank,
@@ -42,76 +37,86 @@ const fullDeck: DeckCard[] = suits.flatMap((suit) =>
   }))
 );
 
-const getCardKey = (rank: string, suit: string) => `${rank}-${suit}`;
-
 type ReadingMode = 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT';
 
-// Converte carta para índice (1-52)
+// Converte carta para indice (1-52)
 const getCardIndex = (suit: string, rank: string): number => {
   const suitIndex = suits.findIndex(s => s.name === suit);
   const rankIndex = ranks.indexOf(rank);
   return suitIndex * 13 + rankIndex + 1;
 };
 
-// Converte índice para binário de 6 bits
+// Converte indice para binario de 6 bits
 const decimalToBinary6 = (num: number): string => {
   return num.toString(2).padStart(6, '0');
 };
+
+const pickRandomItem = <T,>(items: T[]): T => {
+  if (!items.length) {
+    throw new Error('No items available for random selection');
+  }
+  const randomIndex = Math.floor(Math.random() * items.length);
+  return items[randomIndex];
+};
+
+const bitToColor = (bit: string): 'red' | 'black' => (bit === '1' ? 'red' : 'black');
 
 // Escolhe o sentido aleatoriamente
 const chooseModeRandomly = (): ReadingMode => {
   return Math.random() < 0.5 ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
 };
 
-// Gera sequência de 6 cartas
+// Gera sequencia de 6 cartas
 const generateSequence = (chosenSuit: string, chosenRank: string): PlayingCard[] => {
   const chosenIndex = getCardIndex(chosenSuit, chosenRank);
   const binaryBits = decimalToBinary6(chosenIndex).split('');
   const mode = chooseModeRandomly();
   const pattern = mode === 'LEFT_TO_RIGHT' ? binaryBits : [...binaryBits].reverse();
   const targetIndex = mode === 'LEFT_TO_RIGHT' ? 0 : pattern.length - 1;
-  const usedCards = new Set<string>([getCardKey(chosenRank, chosenSuit)]);
+  const patternColors = pattern.map(bitToColor);
+  const anchorColor = patternColors[targetIndex];
+
+  const otherColorNeeds: Record<'red' | 'black', number> = { red: 0, black: 0 };
+  patternColors.forEach((color, index) => {
+    if (index === targetIndex) return;
+    otherColorNeeds[color] += 1;
+  });
+
   const availableCards = fullDeck.filter(card => !(card.rank === chosenRank && card.suit === chosenSuit));
-
-  const pickCard = (color: string, minExclusive?: number): DeckCard => {
-    let candidates = availableCards.filter(
-      card => card.color === color && !usedCards.has(getCardKey(card.rank, card.suit))
-    );
-
-    if (typeof minExclusive === 'number') {
-      const filtered = candidates.filter(card => card.value > minExclusive);
-      if (filtered.length > 0) {
-        candidates = filtered;
-      }
-    }
-
-    candidates.sort((a, b) => {
-      if (a.value !== b.value) {
-        return a.value - b.value;
-      }
-      return suitOrder[a.suit] - suitOrder[b.suit];
-    });
-
-    const selectedCard = candidates[0];
-    if (!selectedCard) {
-      throw new Error('No available cards for the requested color pattern');
-    }
-
-    usedCards.add(getCardKey(selectedCard.rank, selectedCard.suit));
-    return selectedCard;
+  const cardsByColor: Record<'red' | 'black', DeckCard[]> = {
+    red: availableCards.filter(card => card.color === 'red'),
+    black: availableCards.filter(card => card.color === 'black'),
   };
 
-  const sequence: DeckCard[] = new Array(6);
-  const anchorColor = pattern[targetIndex] === '1' ? 'red' : 'black';
-  const anchorCard = pickCard(anchorColor);
+  const validAnchorCandidates = cardsByColor[anchorColor].filter(card => {
+    const higherRed = cardsByColor.red.filter(c => c.value > card.value).length;
+    const higherBlack = cardsByColor.black.filter(c => c.value > card.value).length;
+    return higherRed >= otherColorNeeds.red && higherBlack >= otherColorNeeds.black;
+  });
+
+  if (!validAnchorCandidates.length) {
+    throw new Error('Unable to find a valid anchor card for the requested pattern');
+  }
+
+  const anchorCard = pickRandomItem(validAnchorCandidates);
+  const pools: Record<'red' | 'black', DeckCard[]> = {
+    red: cardsByColor.red.filter(card => card.value > anchorCard.value),
+    black: cardsByColor.black.filter(card => card.value > anchorCard.value),
+  };
+
+  const sequence: DeckCard[] = new Array(pattern.length);
   sequence[targetIndex] = anchorCard;
-  const anchorValue = anchorCard.value;
 
   for (let i = 0; i < pattern.length; i++) {
     if (i === targetIndex) continue;
-    const requiredColor = pattern[i] === '1' ? 'red' : 'black';
-    const card = pickCard(requiredColor, anchorValue);
-    sequence[i] = card;
+    const color = patternColors[i];
+    const pool = pools[color];
+    if (!pool.length) {
+      throw new Error('Unable to complete the sequence with random cards');
+    }
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    const [selected] = pool.splice(randomIndex, 1);
+    sequence[i] = selected;
   }
 
   return sequence.map(({ value, ...card }) => card);

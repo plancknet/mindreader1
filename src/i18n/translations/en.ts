@@ -194,6 +194,10 @@ export const en = {
         title: 'Magic Quadrant',
         description: 'Read minds through subtle head movements'
       },
+      mixDeCartas: {
+        title: 'Card Mix',
+        description: 'Encode a hidden card using a six-card color pattern'
+      },
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
