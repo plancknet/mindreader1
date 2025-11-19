@@ -138,6 +138,15 @@ export const es = {
     playAgain: 'Jugar otra vez',
     phrases: '¡Vamos a empezar!||¿Listo para un juego de lectura mental?||¿Puedo empezar a leer tus pensamientos?||¿Activamos el poder de la telepatía?||¿Arrancamos el desafío psíquico?'
   },
+  mixDeCartas: {
+    chooseTitle: "Elige una Carta",
+    chooseSubtitle: "Selecciona cualquier carta de la baraja",
+    revealTitle: "Revelación Secreta",
+    revealSubtitle: "Haz clic en Barajar para generar nuevas cartas de revelación",
+    chosenCard: "Carta elegida:",
+    shuffleButton: "Barajar",
+    magicTip: "¡Cada barajada genera una nueva secuencia que codifica tu carta de forma única!",
+  },
   mentalConversation: {
     instructions: '1. Tu primera interacción revela la categoría elegida (1 palabra = Animal, 2 palabras = Fruta, 3 palabras = País).\n2. En las siguientes tres interacciones, la primera letra de la ÚLTIMA palabra indica la primera letra de la palabra de tu amigo. Repite esto 3 veces.\n3. Si con esas tres letras la app aún no acierta, mostrará una lista de posibilidades.\n4. Haz otra interacción con 1, 2 o 3 palabras para indicar si la respuesta correcta es la 1.ª, 2.ª o 3.ª opción.',
     title: 'Conversación Mental',

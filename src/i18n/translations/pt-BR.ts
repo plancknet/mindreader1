@@ -135,6 +135,15 @@ export const ptBR = {
     playAgain: 'Usar Novamente',
     phrases: 'Bora começar!||Podemos começar o modo de leitura de mente já?||Está pronto para o teste da mente? Estou ansioso. Me diga que sim.||Bora começar a leitura da sua mente logo?||Vamos iniciar o modo psíquico agora?||Preparado para o truque mental mentes?||Podemos dar início à leitura. Vou revelar seu segredo.||Podemos abrir o portal do modo da fantasia?||Vamos ativar o poder da telepatia?||Que tal começarmos o desafio da imaginação?'
   },
+  mixDeCartas: {
+    chooseTitle: "Escolha uma Carta",
+    chooseSubtitle: "Selecione qualquer carta do baralho",
+    revealTitle: "Revelação Secreta",
+    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
+    chosenCard: "Carta escolhida:",
+    shuffleButton: "Embaralhar",
+    magicTip: "Cada embaralhamento gera uma nova sequência que codifica sua carta de forma única!",
+  },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
     title: 'Conversa Mental',
