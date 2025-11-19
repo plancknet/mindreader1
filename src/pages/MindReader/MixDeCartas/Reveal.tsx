@@ -14,14 +14,37 @@ interface PlayingCard {
   color: string;
 }
 
+interface DeckCard extends PlayingCard {
+  value: number;
+}
+
 const suits = [
-  { name: 'spades', symbol: '♠', color: 'black' },
-  { name: 'hearts', symbol: '♥', color: 'red' },
-  { name: 'diamonds', symbol: '♦', color: 'red' },
-  { name: 'clubs', symbol: '♣', color: 'black' },
+  { name: 'spades', symbol: '\u2660', color: 'black' },
+  { name: 'hearts', symbol: '\u2665', color: 'red' },
+  { name: 'diamonds', symbol: '\u2666', color: 'red' },
+  { name: 'clubs', symbol: '\u2663', color: 'black' },
 ];
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+const suitOrder = suits.reduce<Record<string, number>>((acc, suit, index) => {
+  acc[suit.name] = index;
+  return acc;
+}, {});
+
+const fullDeck: DeckCard[] = suits.flatMap((suit) =>
+  ranks.map((rank, index) => ({
+    rank,
+    suit: suit.name,
+    suitSymbol: suit.symbol,
+    color: suit.color,
+    value: index + 1,
+  }))
+);
+
+const getCardKey = (rank: string, suit: string) => `${rank}-${suit}`;
+
+type ReadingMode = 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT';
 
 // Converte carta para índice (1-52)
 const getCardIndex = (suit: string, rank: string): number => {
@@ -35,76 +58,63 @@ const decimalToBinary6 = (num: number): string => {
   return num.toString(2).padStart(6, '0');
 };
 
-// Escolhe modo aleatoriamente
-const chooseModeRandomly = (): 'A' | 'B' => {
-  return Math.random() < 0.5 ? 'A' : 'B';
+// Escolhe o sentido aleatoriamente
+const chooseModeRandomly = (): ReadingMode => {
+  return Math.random() < 0.5 ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
 };
 
 // Gera sequência de 6 cartas
 const generateSequence = (chosenSuit: string, chosenRank: string): PlayingCard[] => {
   const chosenIndex = getCardIndex(chosenSuit, chosenRank);
-  let binary = decimalToBinary6(chosenIndex);
+  const binaryBits = decimalToBinary6(chosenIndex).split('');
   const mode = chooseModeRandomly();
-  
-  // Se modo B, inverter o binário
-  if (mode === 'B') {
-    binary = binary.split('').reverse().join('');
-  }
+  const pattern = mode === 'LEFT_TO_RIGHT' ? binaryBits : [...binaryBits].reverse();
+  const targetIndex = mode === 'LEFT_TO_RIGHT' ? 0 : pattern.length - 1;
+  const usedCards = new Set<string>([getCardKey(chosenRank, chosenSuit)]);
+  const availableCards = fullDeck.filter(card => !(card.rank === chosenRank && card.suit === chosenSuit));
 
-  const sequence: PlayingCard[] = [];
-  const usedCards = new Set<string>();
-  usedCards.add(`${chosenRank}${chosenSuit}`);
+  const pickCard = (color: string, minExclusive?: number): DeckCard => {
+    let candidates = availableCards.filter(
+      card => card.color === color && !usedCards.has(getCardKey(card.rank, card.suit))
+    );
 
-  // Gerar 6 cartas baseadas no padrão binário
-  for (let i = 0; i < 6; i++) {
-    const needsRed = binary[i] === '1';
-    let card: PlayingCard;
-    
-    do {
-      const availableSuits = suits.filter(s => 
-        (needsRed && s.color === 'red') || (!needsRed && s.color === 'black')
-      );
-      const randomSuit = availableSuits[Math.floor(Math.random() * availableSuits.length)];
-      const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
-      
-      card = {
-        rank: randomRank,
-        suit: randomSuit.name,
-        suitSymbol: randomSuit.symbol,
-        color: randomSuit.color,
-      };
-    } while (usedCards.has(`${card.rank}${card.suit}`));
-    
-    usedCards.add(`${card.rank}${card.suit}`);
-    sequence.push(card);
-  }
+    if (typeof minExclusive === 'number') {
+      const filtered = candidates.filter(card => card.value > minExclusive);
+      if (filtered.length > 0) {
+        candidates = filtered;
+      }
+    }
 
-  // Encontrar a menor carta (A=1, 2=2, ..., K=13)
-  const getCardValue = (card: PlayingCard): number => {
-    const rankIndex = ranks.indexOf(card.rank);
-    return rankIndex + 1;
+    candidates.sort((a, b) => {
+      if (a.value !== b.value) {
+        return a.value - b.value;
+      }
+      return suitOrder[a.suit] - suitOrder[b.suit];
+    });
+
+    const selectedCard = candidates[0];
+    if (!selectedCard) {
+      throw new Error('No available cards for the requested color pattern');
+    }
+
+    usedCards.add(getCardKey(selectedCard.rank, selectedCard.suit));
+    return selectedCard;
   };
 
-  let minIndex = 0;
-  let minValue = getCardValue(sequence[0]);
-  
-  for (let i = 1; i < sequence.length; i++) {
-    const value = getCardValue(sequence[i]);
-    if (value < minValue) {
-      minValue = value;
-      minIndex = i;
-    }
+  const sequence: DeckCard[] = new Array(6);
+  const anchorColor = pattern[targetIndex] === '1' ? 'red' : 'black';
+  const anchorCard = pickCard(anchorColor);
+  sequence[targetIndex] = anchorCard;
+  const anchorValue = anchorCard.value;
+
+  for (let i = 0; i < pattern.length; i++) {
+    if (i === targetIndex) continue;
+    const requiredColor = pattern[i] === '1' ? 'red' : 'black';
+    const card = pickCard(requiredColor, anchorValue);
+    sequence[i] = card;
   }
 
-  // Reorganizar para que a menor carta fique na posição correta
-  const targetPosition = mode === 'A' ? 0 : 5;
-  if (minIndex !== targetPosition) {
-    const temp = sequence[minIndex];
-    sequence[minIndex] = sequence[targetPosition];
-    sequence[targetPosition] = temp;
-  }
-
-  return sequence;
+  return sequence.map(({ value, ...card }) => card);
 };
 
 export const Reveal = () => {
