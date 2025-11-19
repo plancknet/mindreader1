@@ -138,11 +138,11 @@ export const ptBR = {
   mixDeCartas: {
     chooseTitle: "Escolha uma Carta",
     chooseSubtitle: "Selecione qualquer carta do baralho",
-    revealTitle: "Revelação Secreta",
-    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
-    chosenCard: "Carta escolhida:",
+    revealTitle: "Mix de Cartas",
+    revealSubtitle: "Clique em Embaralhar para gerar sequências",
+    chosenCard: "",
     shuffleButton: "Embaralhar",
-    magicTip: "Cada embaralhamento gera uma nova sequência que codifica sua carta de forma única!",
+    magicTip: "Cada embaralhamento gera uma nova sequência!",
   },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
@@ -193,7 +193,7 @@ export const ptBR = {
       },
       mixDeCartas: {
         title: 'Mix de Cartas',
-        description: 'Codifique uma carta secreta com um padrão de cores em seis cartas'
+        description: 'Descubra a carta escolhida por seu amigo'
       },
       mentalConversation: {
         title: 'Conversa Mental',

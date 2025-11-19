@@ -143,7 +143,7 @@ export const en = {
     chooseSubtitle: "Select any card from the deck",
     revealTitle: "Secret Revelation",
     revealSubtitle: "Click Shuffle to generate new revelation cards",
-    chosenCard: "Chosen card:",
+    chosenCard: "",
     shuffleButton: "Shuffle",
     magicTip: "Each shuffle generates a new sequence that uniquely encodes your card!",
   },
