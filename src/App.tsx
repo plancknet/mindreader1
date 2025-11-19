@@ -18,6 +18,8 @@ import ConnectMind from "./pages/MindReader/ConnectMind";
 import SelectTheme from "./pages/MindReader/SelectTheme";
 import StartPrompt from "./pages/MindReader/StartPrompt";
 import GamePlay from "./pages/MindReader/GamePlay";
+import { ChooseCard as MixDeCartasChoose } from "./pages/MindReader/MixDeCartas/ChooseCard";
+import { Reveal as MixDeCartasReveal } from "./pages/MindReader/MixDeCartas/Reveal";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
 import MysteryWord from "./pages/MysteryWord/Index";
@@ -149,6 +151,8 @@ const App = () => (
             {/* Mind Reader game routes */}
             <Route path="/connect-mind" element={<ProtectedRoute><ConnectMind /></ProtectedRoute>} />
             <Route path="/mind-reader/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
+            <Route path="/mind-reader/mix-de-cartas" element={<ProtectedRoute><MixDeCartasChoose /></ProtectedRoute>} />
+            <Route path="/mind-reader/mix-de-cartas/reveal" element={<ProtectedRoute><MixDeCartasReveal /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />

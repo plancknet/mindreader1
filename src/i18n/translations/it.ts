@@ -138,6 +138,15 @@ export const it = {
     playAgain: 'Gioca di nuovo',
     phrases: 'Cominciamo?||Pronto per un gioco di lettura mentale?||Posso iniziare a leggere i tuoi pensieri?||Attiviamo il potere della telepatia?||Che ne dici di iniziare la sfida psichica?'
   },
+  mixDeCartas: {
+    chooseTitle: "Scegli una Carta",
+    chooseSubtitle: "Seleziona qualsiasi carta del mazzo",
+    revealTitle: "Rivelazione Segreta",
+    revealSubtitle: "Clicca su Mescola per generare nuove carte di rivelazione",
+    chosenCard: "Carta scelta:",
+    shuffleButton: "Mescola",
+    magicTip: "Ogni mescolata genera una nuova sequenza che codifica la tua carta in modo unico!",
+  },
   mentalConversation: {
     instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell\'ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l\'app non indovina, mostrerà un elenco di possibilità.\n4. Fai un\'altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1a, 2a o 3a opzione.',
     title: 'Conversazione Mentale',
