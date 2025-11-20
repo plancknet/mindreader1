@@ -1,9 +1,8 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
-import { ArrowLeft, CheckCircle2, Shuffle, Smile, Sparkles } from 'lucide-react';
+import { HeaderControls } from '@/components/HeaderControls';
+import { CheckCircle2, Shuffle, Smile, Sparkles } from 'lucide-react';
 
 const steps = [
   {
@@ -50,26 +49,11 @@ const steps = [
 
 const MyEmojisInstructions = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const navigationState = (location.state ?? {}) as { from?: string };
-  const backTarget = navigationState.from ?? '/game-selector';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <LanguageSelector />
-          <LogoutButton />
-        </div>
-
-        <Button
-          variant="ghost"
-          onClick={() => navigate(backTarget)}
-          className="mb-6 hover:bg-primary/10"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
+        <HeaderControls className="mb-6" />
 
         <div className="text-center mb-10">
           <div className="flex justify-center mb-4">

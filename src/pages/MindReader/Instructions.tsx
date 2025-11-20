@@ -1,16 +1,12 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, Eye, ArrowLeft, ChevronRight } from 'lucide-react';
+import { Brain, Eye, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const Instructions = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const navigationState = (location.state ?? {}) as { from?: string };
-  const backTarget = navigationState.from ?? '/game-selector';
   const { t } = useTranslation();
 
   const steps = [
@@ -35,19 +31,7 @@ const Instructions = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        <div className="flex justify-end gap-2">
-          <LanguageSelector />
-          <LogoutButton />
-        </div>
-
-        <Button
-          variant="ghost"
-          onClick={() => navigate(backTarget)}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('common.back')}
-        </Button>
+        <HeaderControls className="justify-end" />
 
         <div className="text-center space-y-4">
           <div className="flex justify-center">

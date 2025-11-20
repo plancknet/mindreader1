@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const suits = [
@@ -29,9 +28,8 @@ export const ChooseCard = () => {
         <div className="absolute left-1/3 top-1/4 h-40 w-40 rotate-45 rounded-3xl border border-primary/10" />
       </div>
 
-      <div className="fixed top-4 right-4 z-20 flex items-center gap-2">
-        <LanguageSelector />
-        <LogoutButton />
+      <div className="fixed top-4 right-4 z-20">
+        <HeaderControls />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 pt-16 pb-10">

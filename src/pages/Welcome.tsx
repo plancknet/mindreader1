@@ -5,6 +5,7 @@ import { Brain, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -55,7 +56,10 @@ const Welcome = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8 flex items-center justify-center relative">
+      <div className="fixed top-4 right-4">
+        <HeaderControls />
+      </div>
       <div className="max-w-4xl w-full space-y-8">
         <div className="text-center space-y-6">
           <div className="flex justify-center">

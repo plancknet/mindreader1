@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Sparkles, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Premium() {
@@ -85,9 +84,8 @@ export default function Premium() {
   if (checkingStatus) {
     return (
       <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <LanguageSelector />
-          <LogoutButton />
+        <div className="fixed top-4 right-4 z-50">
+          <HeaderControls />
         </div>
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
@@ -97,9 +95,8 @@ export default function Premium() {
   if (isPremium) {
     return (
       <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <LanguageSelector />
-          <LogoutButton />
+        <div className="fixed top-4 right-4 z-50">
+          <HeaderControls />
         </div>
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
@@ -123,9 +120,8 @@ export default function Premium() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <LanguageSelector />
-        <LogoutButton />
+      <div className="fixed top-4 right-4 z-50">
+        <HeaderControls />
       </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">

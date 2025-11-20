@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Smile } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { LanguageSelector } from '@/components/LanguageSelector';
+import { HeaderControls } from '@/components/HeaderControls';
 import { z } from 'zod';
 
 const Auth = () => {
@@ -273,7 +273,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex flex-col p-4 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="flex justify-end mb-4">
-        <LanguageSelector />
+        <HeaderControls />
       </div>
 
       <div className="flex-1 flex items-center justify-center max-w-md mx-auto w-full">

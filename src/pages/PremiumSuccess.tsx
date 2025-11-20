@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 
 export default function PremiumSuccess() {
   const navigate = useNavigate();
@@ -64,9 +63,8 @@ export default function PremiumSuccess() {
   if (isVerifying) {
     return (
       <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <LanguageSelector />
-          <LogoutButton />
+        <div className="fixed top-4 right-4 z-50">
+          <HeaderControls />
         </div>
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center space-y-4">
@@ -80,9 +78,8 @@ export default function PremiumSuccess() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <LanguageSelector />
-        <LogoutButton />
+      <div className="fixed top-4 right-4 z-50">
+        <HeaderControls />
       </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">

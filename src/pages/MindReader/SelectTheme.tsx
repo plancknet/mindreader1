@@ -7,8 +7,7 @@ import { Brain, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { PaywallModal } from '@/components/PaywallModal';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const SelectTheme = () => {
   const navigate = useNavigate();
@@ -49,15 +48,7 @@ const SelectTheme = () => {
       />
       
       <div className="max-w-4xl w-full space-y-8">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Button variant="ghost" onClick={() => navigate('/select-theme')}>
-            {t('common.back')}
-          </Button>
-          <div className="flex gap-2">
-            <LanguageSelector />
-            <LogoutButton />
-          </div>
-        </div>
+        <HeaderControls className="justify-between" />
 
         <div className="text-center space-y-4">
           <div className="flex justify-center">

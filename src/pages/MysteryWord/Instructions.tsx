@@ -1,36 +1,18 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
-import { ArrowLeft, Brain, Type, Sparkles } from 'lucide-react';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { Brain, Type, Sparkles } from 'lucide-react';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const MysteryWordInstructions = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const navigationState = (location.state ?? {}) as { from?: string };
-  const backTarget = navigationState.from ?? '/game-selector';
   const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <LanguageSelector />
-          <LogoutButton />
-        </div>
-
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate(backTarget)}
-          className="mb-6 hover:bg-primary/10"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('common.back')}
-        </Button>
+        <HeaderControls className="mb-6" />
 
         {/* Title */}
         <div className="text-center mb-12">

@@ -12,8 +12,7 @@ import {
   Shuffle,
   type LucideIcon,
 } from 'lucide-react';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 
@@ -98,9 +97,8 @@ const GameSelector = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-6xl w-full space-y-8">
-        <div className="flex justify-end gap-2">
-          <LanguageSelector />
-          <LogoutButton />
+        <div className="flex justify-end">
+          <HeaderControls />
         </div>
 
         <div className="text-center space-y-4">

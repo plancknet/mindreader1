@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { useNavigate } from 'react-router-dom';
-import { Brain, ArrowLeft, Send } from 'lucide-react';
+import { Brain, Send } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -299,23 +298,11 @@ const MentalConversation = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-b border-border z-10 p-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/game-selector')}
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4">
+          <HeaderControls />
           <div className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-bold">{t('mentalConversation.title')}</h1>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <LanguageSelector />
-            <LogoutButton />
           </div>
         </div>
       </div>

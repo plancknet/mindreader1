@@ -6,8 +6,7 @@ import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { Brain } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { START_WORDS } from '@/i18n/languages';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -362,9 +361,8 @@ const GamePlay = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 relative">
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <LanguageSelector />
-        <LogoutButton />
+      <div className="fixed top-4 left-4 z-50">
+        <HeaderControls />
       </div>
       {/* Hidden camera */}
       <video

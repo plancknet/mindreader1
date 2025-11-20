@@ -6,8 +6,7 @@ import { Brain, RotateCcw, BookOpen } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { toast } from 'sonner';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { GAME_IDS } from '@/constants/games';
 
 const Result = () => {
@@ -35,10 +34,7 @@ const Result = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-8">
-        <div className="flex justify-end gap-2">
-          <LanguageSelector />
-          <LogoutButton />
-        </div>
+        <HeaderControls />
 
         <div className="text-center space-y-6">
           <div className="flex justify-center">

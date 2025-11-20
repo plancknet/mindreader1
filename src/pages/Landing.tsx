@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { HeaderControls } from '@/components/HeaderControls';
 
 const MindReaderUltraLanding = () => {
   const navigate = useNavigate();
@@ -9,7 +10,10 @@ const MindReaderUltraLanding = () => {
   };
 
   return (
-    <div className="w-full bg-black text-white font-sans">
+    <div className="w-full bg-black text-white font-sans relative">
+      <div className="fixed top-4 right-4 z-50">
+        <HeaderControls />
+      </div>
       {/* TOP BAR */}
       <div className="bg-red-600 text-center py-2 text-sm font-bold tracking-wide">
         ULTIMOS DIAS
@@ -119,6 +123,5 @@ const MindReaderUltraLanding = () => {
 };
 
 export default MindReaderUltraLanding;
-
 
 

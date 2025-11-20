@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { LogoutButton } from '@/components/LogoutButton';
+import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Shuffle, ArrowLeft } from 'lucide-react';
+import { Shuffle } from 'lucide-react';
 
 interface PlayingCard {
   rank: string;
@@ -158,19 +157,7 @@ export const Reveal = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <div className="fixed top-4 left-4 z-10">
-        <Button
-          variant="outline"
-          onClick={() => navigate('/mind-reader/mix-de-cartas')}
-          className="gap-2"
-        >
-          <ArrowLeft size={20} />
-          {t('common.back')}
-        </Button>
-      </div>
-
-      <div className="fixed top-4 right-4 flex items-center gap-2 z-10">
-        <LanguageSelector />
-        <LogoutButton />
+        <HeaderControls />
       </div>
 
       <div className="max-w-6xl mx-auto pt-20 pb-8">
