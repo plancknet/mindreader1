@@ -236,34 +236,30 @@ const MysteryWord = () => {
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
-                <div className="relative inline-block">
-                  <div className="relative flex overflow-hidden rounded-lg bg-gradient-to-r from-primary via-primary to-primary hover:from-primary/90 hover:via-primary/90 hover:to-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    <button
-                      onClick={() => handleContinueToInput('random-camera')}
-                      className="flex-1 px-6 py-4 text-transparent select-none"
-                      aria-label="Modo câmera"
-                    >
-                      .
-                    </button>
-                    <button
-                      onClick={() => handleContinueToInput('normal')}
-                      className="flex-1 px-6 py-4 text-transparent select-none"
-                      aria-label="Modo normal"
-                    >
-                      .
-                    </button>
-                    <button
-                      onClick={() => handleContinueToInput('custom-words')}
-                      className="flex-1 px-6 py-4 text-transparent select-none"
-                      aria-label="Modo palavras personalizadas"
-                    >
-                      .
-                    </button>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="flex items-center gap-2 text-primary-foreground text-xl font-medium">
-                      <Brain className="h-6 w-6" />
-                      <span>{t('mysteryWord.startButton')}</span>
+                <div className="relative inline-block w-full max-w-md">
+                  <div className="relative rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden">
+                    <div className="flex">
+                      <button
+                        onClick={() => handleContinueToInput('random-camera')}
+                        className="flex-1 h-16 opacity-0 cursor-pointer"
+                        aria-label="Modo câmera aleatória"
+                      />
+                      <button
+                        onClick={() => handleContinueToInput('normal')}
+                        className="flex-1 h-16 opacity-0 cursor-pointer"
+                        aria-label="Modo normal"
+                      />
+                      <button
+                        onClick={() => handleContinueToInput('custom-words')}
+                        className="flex-1 h-16 opacity-0 cursor-pointer"
+                        aria-label="Modo palavras personalizadas"
+                      />
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="flex items-center gap-2 text-primary-foreground text-xl font-medium">
+                        <Brain className="h-6 w-6" />
+                        <span>{t('mysteryWord.startButton')}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
