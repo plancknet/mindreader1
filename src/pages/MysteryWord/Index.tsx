@@ -29,6 +29,15 @@ const shuffleWords = (words: string[]): string[] => {
   return shuffled;
 };
 
+const getPositionFromPhrase = (phrase: string) => {
+  const parts = phrase.trim().split(/\s+/);
+  const lastWord = parts[parts.length - 1] || '';
+  const lettersOnly = lastWord.replace(/[^A-Za-z\u00C0-\u024F]/g, '');
+  return lettersOnly.length || 4;
+};
+
+const normalizeWord = (value: string) => value.trim().toLowerCase();
+
 const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
@@ -44,6 +53,7 @@ const MysteryWord = () => {
   const [customWords, setCustomWords] = useState<string[]>([]);
   const [currentCustomInput, setCurrentCustomInput] = useState('');
   const wordPoolRef = useRef<string[]>([]);
+  const customSequenceRef = useRef<string[]>([]);
   const cameraStreamRef = useRef<MediaStream | null>(null);
 
   const getPhraseList = useCallback(() => {
@@ -57,8 +67,9 @@ const MysteryWord = () => {
     const phrases = getPhraseList();
     if (phrases.length === 0) return;
     const randomIndex = Math.floor(Math.random() * phrases.length);
-    setSelectedPhrase(phrases[randomIndex]);
-    setSecretPosition(randomIndex + 1);
+    const phrase = phrases[randomIndex];
+    setSelectedPhrase(phrase);
+    setSecretPosition(getPositionFromPhrase(phrase));
   }, [getPhraseList]);
 
   const refreshWordPool = useCallback(() => {
@@ -93,24 +104,24 @@ const MysteryWord = () => {
     }
   };
 
-  const activateCamera = async () => {
+  const activateCamera = useCallback(async () => {
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      return;
+    }
+    if (cameraStreamRef.current) return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      cameraStreamRef.current = stream;
-      // Câmera ativada mas não exibida
-      toast.success('Câmera ativada');
+      cameraStreamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
     } catch (error) {
       console.error('Erro ao ativar câmera:', error);
-      toast.error('Não foi possível ativar a câmera');
     }
-  };
+  }, []);
 
-  const stopCamera = () => {
+  const stopCamera = useCallback(() => {
     if (cameraStreamRef.current) {
       cameraStreamRef.current.getTracks().forEach(track => track.stop());
       cameraStreamRef.current = null;
     }
-  };
+  }, []);
 
   const handleAddCustomWord = () => {
     const word = currentCustomInput.trim();
@@ -118,6 +129,12 @@ const MysteryWord = () => {
     
     if (customWords.length >= 10) {
       toast.error('Você já adicionou 10 palavras');
+      return;
+    }
+    const normalized = normalizeWord(word);
+    const alreadyExists = customWords.some(existing => normalizeWord(existing) === normalized);
+    if (alreadyExists) {
+      toast.error('Palavra repetida não permitida');
       return;
     }
     
@@ -132,19 +149,48 @@ const MysteryWord = () => {
   };
 
   const handleStartPlaying = () => {
-    if (!secretWord.trim()) return;
-    
-    if (gameMode === 'random-camera') {
-      activateCamera();
-    }
-    
+    const sanitizedSecret = secretWord.trim();
+    if (!sanitizedSecret) return;
+
     if (gameMode === 'custom-words') {
-      // Usar palavras customizadas ao invés do pool
-      wordPoolRef.current = [...customWords];
+      if (customWords.length < 10) {
+        toast.error('Adicione 10 palavras antes de continuar');
+        return;
+      }
+
+      const normalizedSecret = normalizeWord(sanitizedSecret);
+      const normalizedList = customWords.map(word => word.trim());
+      const hasSecret = normalizedList.some(word => normalizeWord(word) === normalizedSecret);
+
+      if (!hasSecret) {
+        toast.error('A palavra misteriosa deve ser uma das 10 palavras digitadas');
+        return;
+      }
+
+      const totalWords = normalizedList.length;
+      const clampedPosition = Math.min(Math.max(secretPosition, 1), totalWords);
+      setSecretPosition(clampedPosition);
+
+      const otherWords = normalizedList.filter(word => normalizeWord(word) !== normalizedSecret);
+      const randomizedOthers = shuffleWords(otherWords);
+      const sequence: string[] = [];
+      let otherIndex = 0;
+
+      for (let i = 0; i < totalWords; i++) {
+        if (i + 1 === clampedPosition) {
+          sequence.push(sanitizedSecret);
+        } else {
+          sequence.push(randomizedOthers[otherIndex++] || '');
+        }
+      }
+
+      customSequenceRef.current = sequence;
+      wordPoolRef.current = [];
     } else {
+      customSequenceRef.current = [];
       refreshWordPool();
     }
-    
+
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -168,6 +214,7 @@ const MysteryWord = () => {
     setCurrentCustomInput('');
     stopCamera();
     wordPoolRef.current = [];
+    customSequenceRef.current = [];
     getRandomPhrase();
   };
 
@@ -182,29 +229,39 @@ const MysteryWord = () => {
       const interval = setInterval(() => {
         setWordCount(prev => {
           const nextCount = prev + 1;
-          if (nextCount === secretPosition) {
-            setCurrentWord(secretWord);
+
+          if (gameMode === 'custom-words') {
+            const sequence = customSequenceRef.current;
+            setCurrentWord(sequence[nextCount - 1] || '');
           } else {
-            if (gameMode === 'custom-words' && wordPoolRef.current.length > 0) {
-              const word = wordPoolRef.current.shift() || '';
-              setCurrentWord(word);
+            if (nextCount === secretPosition) {
+              setCurrentWord(secretWord);
             } else {
               setCurrentWord(getNextUniqueWord());
             }
           }
+
+          if (gameMode === 'random-camera') {
+            if (nextCount === secretPosition) {
+              void activateCamera();
+            } else if (nextCount > secretPosition) {
+              stopCamera();
+            }
+          }
+
           return nextCount;
         });
       }, 3000);
 
       return () => clearInterval(interval);
     }
-  }, [isPlaying, secretPosition, secretWord, language, gameMode, getNextUniqueWord]);
+  }, [isPlaying, secretPosition, secretWord, getNextUniqueWord, gameMode, activateCamera, stopCamera]);
 
   useEffect(() => {
     return () => {
       stopCamera();
     };
-  }, []);
+  }, [stopCamera]);
 
 
   return (
@@ -258,7 +315,7 @@ const MysteryWord = () => {
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="flex items-center gap-2 text-primary-foreground text-xl font-medium">
                         <Brain className="h-6 w-6" />
-                        <span>{t('mysteryWord.startButton')}</span>
+                        <span className="whitespace-nowrap">{t('mysteryWord.startButton')}</span>
                       </div>
                     </div>
                   </div>
@@ -293,7 +350,7 @@ const MysteryWord = () => {
                     type="text"
                     value={currentCustomInput}
                     onChange={(e) => setCurrentCustomInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleAddCustomWord()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddCustomWord()}
                     placeholder="Digite uma palavra"
                     className="text-center text-xl py-6"
                     autoFocus
