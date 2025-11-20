@@ -10,6 +10,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
 import { toast } from 'sonner';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
@@ -42,6 +43,7 @@ const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { incrementUsage } = useUsageLimit();
+  const { isAdmin } = useIsAdmin();
   const [stage, setStage] = useState<'greeting' | 'input' | 'custom-input' | 'playing' | 'stopped'>('greeting');
   const [gameMode, setGameMode] = useState<'normal' | 'random-camera' | 'custom-words'>('normal');
   const [selectedPhrase, setSelectedPhrase] = useState('');
@@ -264,6 +266,8 @@ const MysteryWord = () => {
   }, [stopCamera]);
 
 
+  const adminLabel = t('common.admin');
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-8">
@@ -276,7 +280,17 @@ const MysteryWord = () => {
             <ArrowLeft className="w-4 h-4" />
             {t('common.back')}
           </Button>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            {isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/admin')}
+                className="text-sm font-medium"
+              >
+                {adminLabel === 'common.admin' ? 'Admin' : adminLabel}
+              </Button>
+            )}
             <LanguageSelector />
             <LogoutButton />
           </div>
