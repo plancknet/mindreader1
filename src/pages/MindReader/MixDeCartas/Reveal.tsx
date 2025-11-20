@@ -182,6 +182,12 @@ export const Reveal = () => {
             {t('mixDeCartas.revealSubtitle')}
           </p>
           
+          <div className="inline-block mb-6 p-4 bg-muted/50 rounded-lg">
+            <p className="text-sm text-muted-foreground mb-2"></p>
+            <div className={`text-5xl font-bold ${chosenSuitData?.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
+              {rank}{chosenSuitData?.symbol}
+            </div>
+          </div>
         </div>
 
         <div className={`grid grid-cols-3 md:grid-cols-6 gap-4 mb-8 transition-opacity duration-300 ${isShuffling ? 'opacity-0' : 'opacity-100'}`}>
