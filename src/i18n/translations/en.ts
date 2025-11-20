@@ -127,11 +127,6 @@ export const en = {
   mysteryWord: {
     title: 'Mystery Word',
     startButton: "Yes, let's begin!",
-    customWordsTitle: 'Enter 10 random words',
-    customWordsDescription: 'For this mode, we will use your words. Type 10 different words below.',
-    customWordsPlaceholder: 'Word {number}',
-    customWordsContinue: 'Continue',
-    customWordsReminder: 'Special mode enabled: your 10 words will be used during the reveal.',
     inputTitle: 'Type your mystery word',
     inputDescription: 'Secretly type a word.',
     inputPlaceholder: 'Your secret word...',
