@@ -70,22 +70,22 @@ serve(async (req) => {
       console.log("Stripe customer ID from database:", customerId);
     }
 
-    const priceId =
+    const standardPriceId = "price_1SUot7LLVxhpxlCu2FsPNWGA";
+    const influencerPriceId = "price_1SVfB2LLVxhpxlCueOnadLnl";
+    const influencerProductId = "prod_TSaLROGvGVAYDz";
+
+    const lineItems =
       planType === "INFLUENCER"
-        ? "price_1SVfB2LLVxhpxlCueOnadLnl"
-        : "price_1SUot7LLVxhpxlCu2FsPNWGA";
+        ? [{ price: influencerPriceId, quantity: 1 }]
+        : [{ price: standardPriceId, quantity: 1 }];
+
     const mode = planType === "INFLUENCER" ? "subscription" : "payment";
     const origin = req.headers.get("origin") ?? Deno.env.get("SITE_URL") ?? "";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       mode,
       success_url: `${origin}/premium/success?plan=${planType}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/premium?plan=${planType}`,
@@ -95,6 +95,7 @@ serve(async (req) => {
         app: "mindreader",
         type: planType === "INFLUENCER" ? "subscription" : "one_time",
         planType,
+        productId: planType === "INFLUENCER" ? influencerProductId : undefined,
       }
     });
 
