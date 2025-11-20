@@ -55,6 +55,8 @@ serve(async (req) => {
         .insert({
           user_id: user.id,
           is_premium: false,
+          subscription_tier: "FREE",
+          plan_confirmed: false,
           usage_count: 1,
           [`jogo${game_id}_count`]: 1,
           last_accessed_at: new Date().toISOString(),

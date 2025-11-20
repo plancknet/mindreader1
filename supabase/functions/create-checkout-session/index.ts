@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +18,14 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
+  const RequestSchema = z.object({
+    planType: z.enum(["STANDARD", "INFLUENCER"]),
+  });
+
   try {
+    const body = req.body ? await req.json() : {};
+    const { planType } = RequestSchema.parse(body);
+
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
@@ -62,24 +70,31 @@ serve(async (req) => {
       console.log("Stripe customer ID from database:", customerId);
     }
 
-    // Criar checkout session
+    const priceId =
+      planType === "INFLUENCER"
+        ? "price_1SVfB2LLVxhpxlCueOnadLnl"
+        : "price_1SUot7LLVxhpxlCu2FsPNWGA";
+    const mode = planType === "INFLUENCER" ? "subscription" : "payment";
+    const origin = req.headers.get("origin") ?? Deno.env.get("SITE_URL") ?? "";
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: "price_1SUot7LLVxhpxlCu2FsPNWGA",
+          price: priceId,
           quantity: 1,
         },
       ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/premium/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/premium`,
+      mode,
+      success_url: `${origin}/premium/success?plan=${planType}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/premium?plan=${planType}`,
       allow_promotion_codes: true,
       metadata: {
         userId: user.id,
         app: "mindreader",
-        type: "one_time"
+        type: planType === "INFLUENCER" ? "subscription" : "one_time",
+        planType,
       }
     });
 

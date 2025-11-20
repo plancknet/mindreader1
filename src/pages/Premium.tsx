@@ -1,31 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Sparkles, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Check, Infinity, Shield, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { HeaderControls } from '@/components/HeaderControls';
-import { useTranslation } from '@/hooks/useTranslation';
 
-export default function Premium() {
+type SubscriptionTier = 'FREE' | 'STANDARD' | 'INFLUENCER';
+
+interface UserProfile {
+  subscription_tier: SubscriptionTier | null;
+  plan_confirmed: boolean;
+}
+
+const PLAN_FEATURES = {
+  FREE: [
+    'Uso limitado a 3 vezes',
+    'Palavra Misteriosa - Modos 1, 2 e 3',
+    'Quadrante Mágico - Modos 1 e 2',
+  ],
+  STANDARD: [
+    'Uso vitalício ilimitado',
+    'Todos os modos da Palavra Misteriosa',
+    'Quadrante Mágico (Modos 1 e 2)',
+    'Conversa Mental (Nível 2)',
+    'Mix de Cartas (Nível 3)',
+    'Todas as atualizações futuras',
+    'Suporte Premium',
+  ],
+  INFLUENCER: [
+    'Todos os recursos do Vitalício',
+    'Cupons com 30% de desconto para seguidores',
+    'R$ 6,00 por cupom pago',
+    'Desenvolvimento de novas ideias',
+    'Recursos disponíveis enquanto for assinante',
+    'Grupo de WhatsApp dos iMindReaders',
+  ],
+};
+
+const Premium = () => {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [freeLoading, setFreeLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<'STANDARD' | 'INFLUENCER' | null>(null);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
-  const [checkingStatus, setCheckingStatus] = useState(true);
-  const { language } = useTranslation();
-  const normalizedLanguage = language?.toLowerCase() ?? '';
-  const isPortuguese = normalizedLanguage.startsWith('pt');
-  const premiumPrice = isPortuguese ? 'R$ 29,99' : 'USD 5,99';
 
-  useEffect(() => {
-    checkPremiumStatus();
-  }, []);
-
-  const checkPremiumStatus = async () => {
+  const fetchProfile = async () => {
     try {
+      setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         navigate('/auth');
         return;
@@ -33,27 +57,61 @@ export default function Premium() {
 
       const { data, error } = await supabase
         .from('users')
-        .select('is_premium')
+        .select('subscription_tier, plan_confirmed')
         .eq('user_id', user.id)
         .single();
 
-      if (!error && data?.is_premium) {
-        setIsPremium(true);
+      if (error) {
+        console.error('Erro ao carregar perfil', error);
+        toast.error('Não foi possível carregar suas informações.');
+        return;
       }
-    } catch (error) {
-      console.error('Error checking premium status:', error);
+
+      setProfile({
+        subscription_tier: (data?.subscription_tier as SubscriptionTier) ?? 'FREE',
+        plan_confirmed: !!data?.plan_confirmed,
+      });
     } finally {
-      setCheckingStatus(false);
+      setLoading(false);
     }
   };
 
-  const handleUpgrade = async () => {
-    setIsLoading(true);
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const handleFreePlan = async () => {
     try {
+      setFreeLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
+      const { error } = await supabase
+        .from('users')
+        .upsert({
+          user_id: user.id,
+          subscription_tier: 'FREE',
+          plan_confirmed: true,
+          is_premium: false,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' });
+
+      if (error) throw error;
+      toast.success('Modo Free ativado.');
+      navigate('/welcome');
+    } catch (error: any) {
+      console.error('Erro ao salvar plano Free', error);
+      toast.error('Não foi possível confirmar sua escolha.');
+    } finally {
+      setFreeLoading(false);
+    }
+  };
+
+  const startCheckout = async (planType: 'STANDARD' | 'INFLUENCER') => {
+    try {
+      setCheckoutLoading(planType);
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (!session) {
-        toast.error('Você precisa estar logado');
         navigate('/auth');
         return;
       }
@@ -62,142 +120,131 @@ export default function Premium() {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: { planType },
       });
 
       if (error) throw error;
-
       if (data?.url) {
         window.location.href = data.url;
       }
     } catch (error: any) {
-      console.error('Error creating checkout session:', error);
-      toast.error('Erro ao processar pagamento. Tente novamente.');
+      console.error('Erro ao iniciar checkout', error);
+      toast.error(error?.message || 'Não foi possível iniciar o pagamento.');
     } finally {
-      setIsLoading(false);
+      setCheckoutLoading(null);
     }
   };
 
-  const handleContinue = () => {
-    navigate('/connect-mind');
-  };
-
-  if (checkingStatus) {
+  if (loading) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="fixed top-4 right-4 z-50">
-          <HeaderControls />
-        </div>
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (isPremium) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="fixed top-4 right-4 z-50">
-          <HeaderControls />
-        </div>
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Sparkles className="h-8 w-8 text-primary" />
-            </div>
-            <CardTitle className="text-2xl">Você já é Premium! 🎉</CardTitle>
-            <CardDescription>
-              Aproveite todas as funcionalidades avançadas do MindReader
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={handleContinue} className="w-full" size="lg">
-              Continuar para o App
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-      <div className="fixed top-4 right-4 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8 flex items-center justify-center">
+      <div className="max-w-5xl w-full space-y-8">
         <HeaderControls />
+
+        <div className="text-center space-y-2">
+          <p className="text-sm uppercase tracking-[0.35em] text-primary">Escolha seu modo</p>
+          <h1 className="text-4xl md:text-5xl font-bold">Como você quer jogar hoje?</h1>
+          <p className="text-muted-foreground text-lg">
+            Selecione um dos planos abaixo para continuar usando o MindReader.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="border-primary/20 bg-background/70">
+            <CardHeader>
+              <div className="flex items-center gap-2 text-primary font-semibold">
+                <Shield className="w-5 h-5" />
+                Plano Free
+              </div>
+              <CardTitle className="text-3xl font-bold">R$ 0</CardTitle>
+              <p className="text-muted-foreground text-sm">Uso limitado a três execuções</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {PLAN_FEATURES.FREE.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-primary" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                variant="outline"
+                onClick={handleFreePlan}
+                disabled={freeLoading}
+                className="w-full"
+              >
+                {freeLoading ? 'Confirmando...' : 'Continuar no Free'}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-orange-300 bg-gradient-to-b from-orange-50 to-background shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-2 text-orange-500 font-semibold">
+                <Infinity className="w-5 h-5" />
+                Vitalício
+              </div>
+              <CardTitle className="text-3xl font-bold">R$ 29,90</CardTitle>
+              <p className="text-muted-foreground text-sm">Pagamento único</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {PLAN_FEATURES.STANDARD.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-orange-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={() => startCheckout('STANDARD')}
+                disabled={checkoutLoading === 'STANDARD'}
+                className="w-full bg-orange-500 hover:bg-orange-500/90"
+              >
+                {checkoutLoading === 'STANDARD' ? 'Redirecionando...' : 'Assinar Vitalício'}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-purple-300 bg-gradient-to-b from-purple-50 to-background shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-2 text-purple-500 font-semibold">
+                <Sparkles className="w-5 h-5" />
+                Influencer
+              </div>
+              <CardTitle className="text-3xl font-bold">R$ 29,90/mês</CardTitle>
+              <p className="text-muted-foreground text-sm">Tudo do Vitalício + monetização</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {PLAN_FEATURES.INFLUENCER.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-purple-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={() => startCheckout('INFLUENCER')}
+                disabled={checkoutLoading === 'INFLUENCER'}
+                className="w-full bg-purple-600 hover:bg-purple-600/90"
+              >
+                {checkoutLoading === 'INFLUENCER' ? 'Redirecionando...' : 'Assinar Influencer'}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <Sparkles className="h-8 w-8 text-primary" />
-          </div>
-          <CardTitle className="text-3xl font-bold">MindReader Premium</CardTitle>
-          <CardDescription className="text-lg mt-2">
-            Desbloqueie o modo avançado e veja o impossível
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="bg-muted/50 rounded-lg p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Pagamento único</p>
-            <p className="text-4xl font-bold">{premiumPrice}</p>
-            <p className="text-sm text-muted-foreground mt-2">Acesso vitalício</p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="mt-1">
-                <Check className="h-5 w-5 text-primary" />
-              </div>
-              <p className="text-sm">Modo avançado de leitura de mentes</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="mt-1">
-                <Check className="h-5 w-5 text-primary" />
-              </div>
-              <p className="text-sm">Acesso a todos os temas premium</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="mt-1">
-                <Check className="h-5 w-5 text-primary" />
-              </div>
-              <p className="text-sm">Suporte prioritário</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="mt-1">
-                <Check className="h-5 w-5 text-primary" />
-              </div>
-              <p className="text-sm">Atualizações gratuitas para sempre</p>
-            </div>
-          </div>
-
-          <Button
-            onClick={handleUpgrade}
-            disabled={isLoading}
-            className="w-full"
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Redirecionando para checkout...
-              </>
-            ) : (
-              'Desbloquear agora'
-            )}
-          </Button>
-
-          <div className="text-center space-y-2">
-            <p className="text-xs text-muted-foreground">
-              Pagamento seguro processado pela Stripe
-            </p>
-            <div className="flex justify-center gap-4 text-xs">
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                Política de Privacidade
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                Termos de Uso
-              </a>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
-}
+};
+
+export default Premium;

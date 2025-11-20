@@ -16,6 +16,8 @@ import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 
+type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
+
 type GameCard = {
   id: string;
   translationKey: string;
@@ -24,6 +26,7 @@ type GameCard = {
   instructionsPath?: string;
   color: string;
   badgeKey?: string;
+  minTier: Tier;
 };
 
 const GAME_CARDS: GameCard[] = [
@@ -35,6 +38,7 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/mystery-word/instructions',
     color: 'from-orange-500 to-red-500',
     badgeKey: undefined,
+    minTier: 'FREE',
   },
   {
     id: 'mind-reader',
@@ -44,6 +48,7 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/mind-reader/instructions',
     color: 'from-purple-500 to-pink-500',
     badgeKey: undefined,
+    minTier: 'FREE',
   },
   {
     id: 'mix-de-cartas',
@@ -51,6 +56,7 @@ const GAME_CARDS: GameCard[] = [
     icon: Shuffle,
     path: '/mind-reader/mix-de-cartas',
     color: 'from-emerald-500 to-lime-500',
+    minTier: 'STANDARD',
   },
   {
     id: 'mental-conversation',
@@ -60,6 +66,7 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/mental-conversation/instructions',
     color: 'from-blue-500 to-cyan-500',
     badgeKey: undefined,
+    minTier: 'STANDARD',
   },
   {
     id: 'my-emojis',
@@ -69,6 +76,7 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/my-emojis/instructions',
     color: 'from-yellow-400 to-lime-400',
     badgeKey: 'underConstruction',
+    minTier: 'STANDARD',
   },
 ];
 
@@ -77,6 +85,8 @@ const GameSelector = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const { usageData } = useUsageLimit();
+  const subscriptionTier: Tier = usageData?.subscriptionTier ?? 'FREE';
+  const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
 
   useEffect(() => {
     if (usageData && !usageData.canUse && !usageData.isPremium) {
@@ -117,10 +127,13 @@ const GameSelector = () => {
           {games.map((game) => {
             const Icon = game.icon;
             const instructionsPath = game.instructionsPath;
+            const enabled = tierRank[subscriptionTier] >= tierRank[game.minTier];
             return (
               <Card
                 key={game.id}
-                className="p-8 hover:scale-105 transition-all group relative overflow-hidden"
+                className={`p-8 transition-all group relative overflow-hidden ${
+                  enabled ? 'hover:scale-105' : 'opacity-60'
+                }`}
               >
                 {game.badge && (
                   <Badge className="absolute top-4 right-4 uppercase tracking-wide">
@@ -144,8 +157,17 @@ const GameSelector = () => {
                     {game.description}
                   </p>
 
+                  {!enabled && (
+                    <p className="text-xs text-center text-muted-foreground">
+                      Disponível no plano Vitalício ou Influencer.
+                    </p>
+                  )}
                   <div className="flex gap-2">
-                    <Button className="flex-1" onClick={() => navigate(game.path)}>
+                    <Button
+                      className="flex-1"
+                      disabled={!enabled}
+                      onClick={() => enabled && navigate(game.path)}
+                    >
                       {t('gameSelector.play')}
                     </Button>
                     {instructionsPath && (
@@ -166,6 +188,25 @@ const GameSelector = () => {
               </Card>
             );
           })}
+          {subscriptionTier === 'INFLUENCER' && (
+            <Card className="p-8 transition-all group relative overflow-hidden hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-5 group-hover:opacity-20" />
+              <div className="relative space-y-4">
+                <div className="flex justify-center">
+                  <div className="p-4 rounded-full bg-purple-500/20">
+                    <Sparkles className="w-12 h-12 text-purple-600" />
+                  </div>
+                </div>
+                <h2 className="text-2xl font-bold text-center">Painel Influencer</h2>
+                <p className="text-muted-foreground text-center text-sm">
+                  Acompanhe o desempenho dos seus cupons e o faturamento diário.
+                </p>
+                <Button className="w-full" onClick={() => navigate('/influencer/dashboard')}>
+                  Abrir painel
+                </Button>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </div>

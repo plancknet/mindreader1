@@ -32,6 +32,8 @@ import Welcome from "./pages/Welcome";
 import AdminPanel from "./pages/AdminPanel";
 import Landing from "./pages/Landing";
 import LandingSignup from "./pages/LandingSignup";
+import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
+import InfluencerDashboard from "./pages/InfluencerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -87,16 +89,27 @@ const PostLoginRedirect = () => {
 
         const { data, error } = await supabase
           .from('users')
-          .select('has_seen_welcome')
+          .select('has_seen_welcome, subscription_tier, plan_confirmed, coupon_generated')
           .eq('user_id', user.id)
           .single();
 
         if (error) {
-          console.error('Error fetching welcome status:', error);
-          setTargetPath('/welcome');
-        } else {
-          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+          console.error('Error fetching profile:', error);
+          setTargetPath('/premium');
+          return;
         }
+
+        if (!data?.plan_confirmed) {
+          setTargetPath('/premium');
+          return;
+        }
+
+        if (data?.subscription_tier === 'INFLUENCER' && !data?.coupon_generated) {
+          setTargetPath('/influencer/coupon');
+          return;
+        }
+
+        setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
       } catch (error) {
         console.error('Error checking welcome status:', error);
         setTargetPath('/welcome');
@@ -146,6 +159,8 @@ const App = () => (
             {/* Premium routes require authentication */}
             <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
             <Route path="/premium/success" element={<ProtectedRoute><PremiumSuccess /></ProtectedRoute>} />
+            <Route path="/influencer/coupon" element={<ProtectedRoute><InfluencerCouponSetup /></ProtectedRoute>} />
+            <Route path="/influencer/dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
             {/* Game selector */}
             <Route path="/game-selector" element={<ProtectedRoute><GameSelector /></ProtectedRoute>} />
             {/* Mind Reader game routes */}

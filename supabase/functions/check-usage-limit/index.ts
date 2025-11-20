@@ -46,6 +46,8 @@ serve(async (req) => {
         .insert({
           user_id: user.id,
           is_premium: false,
+          subscription_tier: "FREE",
+          plan_confirmed: false,
           usage_count: 0,
         })
         .select()
@@ -59,6 +61,9 @@ serve(async (req) => {
           isPremium: false,
           usageCount: 0,
           freeLimit: 3,
+          subscriptionTier: "FREE",
+          planConfirmed: false,
+          couponGenerated: false,
           reason: "NEW_USER",
         }),
         {
@@ -69,13 +74,16 @@ serve(async (req) => {
     }
 
     // Check if user is premium
-    if (premiumUser.is_premium) {
+    if (premiumUser.is_premium || premiumUser.subscription_tier === "STANDARD" || premiumUser.subscription_tier === "INFLUENCER") {
       return new Response(
         JSON.stringify({
           canUse: true,
           isPremium: true,
           usageCount: premiumUser.usage_count,
           freeLimit: 3,
+          subscriptionTier: premiumUser.subscription_tier ?? "STANDARD",
+          planConfirmed: premiumUser.plan_confirmed ?? true,
+          couponGenerated: premiumUser.coupon_generated ?? false,
           reason: "PREMIUM",
         }),
         {
@@ -98,6 +106,9 @@ serve(async (req) => {
         isPremium: false,
         usageCount: totalCount,
         freeLimit: 3,
+        subscriptionTier: premiumUser.subscription_tier ?? "FREE",
+        planConfirmed: premiumUser.plan_confirmed ?? false,
+        couponGenerated: premiumUser.coupon_generated ?? false,
         reason: canUse ? "FREE_TIER" : "PAYWALL",
       }),
       {

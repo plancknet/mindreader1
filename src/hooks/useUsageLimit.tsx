@@ -6,6 +6,9 @@ interface UsageLimitData {
   isPremium: boolean;
   usageCount: number;
   freeLimit: number;
+  subscriptionTier?: 'FREE' | 'STANDARD' | 'INFLUENCER';
+  planConfirmed?: boolean;
+  couponGenerated?: boolean;
   reason: string;
 }
 

@@ -30,9 +30,9 @@ serve(async (req) => {
 
     const PaymentSchema = z.object({
       sessionId: z.string()
-        .min(1, 'Session ID is required')
-        .regex(/^cs_[a-zA-Z0-9_]+$/, 'Invalid Stripe session ID format')
-        .max(255, 'Session ID too long')
+        .min(1, "Session ID is required")
+        .regex(/^cs_[a-zA-Z0-9_]+$/, "Invalid Stripe session ID format")
+        .max(255, "Session ID too long")
     });
 
     const body = await req.json();
@@ -49,19 +49,27 @@ serve(async (req) => {
     if (session.payment_status === "paid") {
       console.log("Payment confirmed for user:", user.id);
 
-      // Atualizar ou criar registro premium
+      const planType = (session.metadata?.planType as string) || "STANDARD";
+      const subscriptionTier = planType === "INFLUENCER" ? "INFLUENCER" : "STANDARD";
+
+      const updates: Record<string, unknown> = {
+        user_id: user.id,
+        is_premium: true,
+        subscription_tier: subscriptionTier,
+        plan_confirmed: true,
+        premium_type: planType === "INFLUENCER" ? "influencer" : "standard",
+        purchase_date: new Date().toISOString(),
+        stripe_customer_id: session.customer,
+        stripe_session_id: sessionId,
+        stripe_subscription_id: planType === "INFLUENCER" ? (session.subscription as string | null) : null,
+        coupon_generated: planType === "INFLUENCER" ? false : true,
+        updated_at: new Date().toISOString(),
+      };
+
       const { error: upsertError } = await supabaseClient
         .from("users")
-        .upsert({
-          user_id: user.id,
-          is_premium: true,
-          premium_type: "one_time",
-          purchase_date: new Date().toISOString(),
-          stripe_customer_id: session.customer,
-          stripe_session_id: sessionId,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: "user_id"
+        .upsert(updates, {
+          onConflict: "user_id",
         });
 
       if (upsertError) {
@@ -70,22 +78,12 @@ serve(async (req) => {
       }
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
+        JSON.stringify({
+          success: true,
           isPremium: true,
-          message: "Pagamento confirmado! Você agora é Premium 🎉"
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
-      );
-    } else {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          isPremium: false,
-          message: "Pagamento ainda não confirmado"
+          plan: subscriptionTier,
+          requiresCouponSetup: subscriptionTier === "INFLUENCER",
+          message: "Pagamento confirmado! Você agora é Premium 🎉",
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -93,6 +91,18 @@ serve(async (req) => {
         }
       );
     }
+
+    return new Response(
+      JSON.stringify({
+        success: false,
+        isPremium: false,
+        message: "Pagamento ainda não confirmado",
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
   } catch (error: any) {
     console.error("Error verifying payment:", error);
     return new Response(JSON.stringify({ error: "Payment verification failed. Please try again." }), {
