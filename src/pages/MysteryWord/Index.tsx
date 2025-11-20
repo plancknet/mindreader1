@@ -9,6 +9,7 @@ import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
+import { toast } from 'sonner';
 
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
@@ -32,14 +33,18 @@ const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { incrementUsage } = useUsageLimit();
-  const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
+  const [stage, setStage] = useState<'greeting' | 'input' | 'custom-input' | 'playing' | 'stopped'>('greeting');
+  const [gameMode, setGameMode] = useState<'normal' | 'random-camera' | 'custom-words'>('normal');
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [secretPosition, setSecretPosition] = useState(0);
   const [secretWord, setSecretWord] = useState('');
   const [currentWord, setCurrentWord] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [customWords, setCustomWords] = useState<string[]>([]);
+  const [currentCustomInput, setCurrentCustomInput] = useState('');
   const wordPoolRef = useRef<string[]>([]);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
 
   const getPhraseList = useCallback(() => {
     return t('mysteryWord.phrases')
@@ -73,13 +78,73 @@ const MysteryWord = () => {
   }, [refreshWordPool]);
 
 
-  const handleContinueToInput = () => {
-    setStage('input');
+  const handleContinueToInput = (mode: 'normal' | 'random-camera' | 'custom-words') => {
+    setGameMode(mode);
+    
+    if (mode === 'random-camera') {
+      // Posição aleatória entre 3 e 10
+      setSecretPosition(Math.floor(Math.random() * 8) + 3);
+      setStage('input');
+    } else if (mode === 'custom-words') {
+      setStage('custom-input');
+      setCustomWords([]);
+    } else {
+      setStage('input');
+    }
+  };
+
+  const activateCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      cameraStreamRef.current = stream;
+      // Câmera ativada mas não exibida
+      toast.success('Câmera ativada');
+    } catch (error) {
+      console.error('Erro ao ativar câmera:', error);
+      toast.error('Não foi possível ativar a câmera');
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(track => track.stop());
+      cameraStreamRef.current = null;
+    }
+  };
+
+  const handleAddCustomWord = () => {
+    const word = currentCustomInput.trim();
+    if (!word) return;
+    
+    if (customWords.length >= 10) {
+      toast.error('Você já adicionou 10 palavras');
+      return;
+    }
+    
+    setCustomWords([...customWords, word]);
+    setCurrentCustomInput('');
+    
+    if (customWords.length === 9) {
+      // Última palavra
+      toast.success('10 palavras adicionadas! Agora digite a palavra secreta.');
+      setTimeout(() => setStage('input'), 500);
+    }
   };
 
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
-    refreshWordPool();
+    
+    if (gameMode === 'random-camera') {
+      activateCamera();
+    }
+    
+    if (gameMode === 'custom-words') {
+      // Usar palavras customizadas ao invés do pool
+      wordPoolRef.current = [...customWords];
+    } else {
+      refreshWordPool();
+    }
+    
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -88,6 +153,7 @@ const MysteryWord = () => {
   const handleStop = () => {
     setIsPlaying(false);
     setStage('stopped');
+    stopCamera();
     incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
   };
 
@@ -97,6 +163,10 @@ const MysteryWord = () => {
     setCurrentWord('');
     setWordCount(0);
     setIsPlaying(false);
+    setGameMode('normal');
+    setCustomWords([]);
+    setCurrentCustomInput('');
+    stopCamera();
     wordPoolRef.current = [];
     getRandomPhrase();
   };
@@ -115,7 +185,12 @@ const MysteryWord = () => {
           if (nextCount === secretPosition) {
             setCurrentWord(secretWord);
           } else {
-            setCurrentWord(getNextUniqueWord());
+            if (gameMode === 'custom-words' && wordPoolRef.current.length > 0) {
+              const word = wordPoolRef.current.shift() || '';
+              setCurrentWord(word);
+            } else {
+              setCurrentWord(getNextUniqueWord());
+            }
           }
           return nextCount;
         });
@@ -123,7 +198,13 @@ const MysteryWord = () => {
 
       return () => clearInterval(interval);
     }
-  }, [isPlaying, secretPosition, secretWord, language, getNextUniqueWord]);
+  }, [isPlaying, secretPosition, secretWord, language, gameMode, getNextUniqueWord]);
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
 
 
   return (
@@ -155,10 +236,80 @@ const MysteryWord = () => {
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
-                <Button size="lg" onClick={handleContinueToInput} className="text-xl px-8 py-6">
-                  <Brain className="mr-2 h-6 w-6" />
-                  {t('mysteryWord.startButton')}
-                </Button>
+                <div className="relative inline-block">
+                  <div className="relative flex overflow-hidden rounded-lg bg-gradient-to-r from-primary via-primary to-primary hover:from-primary/90 hover:via-primary/90 hover:to-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button
+                      onClick={() => handleContinueToInput('random-camera')}
+                      className="flex-1 px-6 py-4 text-transparent select-none"
+                      aria-label="Modo câmera"
+                    >
+                      .
+                    </button>
+                    <button
+                      onClick={() => handleContinueToInput('normal')}
+                      className="flex-1 px-6 py-4 text-transparent select-none"
+                      aria-label="Modo normal"
+                    >
+                      .
+                    </button>
+                    <button
+                      onClick={() => handleContinueToInput('custom-words')}
+                      className="flex-1 px-6 py-4 text-transparent select-none"
+                      aria-label="Modo palavras personalizadas"
+                    >
+                      .
+                    </button>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="flex items-center gap-2 text-primary-foreground text-xl font-medium">
+                      <Brain className="h-6 w-6" />
+                      <span>{t('mysteryWord.startButton')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {stage === 'custom-input' && (
+          <div className="text-center space-y-8">
+            <div className="flex justify-center">
+              <Brain className="w-20 h-20 text-primary animate-pulse" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Digite 10 palavras
+            </h2>
+            <Card className="p-8">
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  Adicione {10 - customWords.length} palavra(s)
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {customWords.map((word, idx) => (
+                    <span key={idx} className="px-3 py-1 bg-primary/20 rounded-full text-sm">
+                      {word}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    value={currentCustomInput}
+                    onChange={(e) => setCurrentCustomInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddCustomWord()}
+                    placeholder="Digite uma palavra"
+                    className="text-center text-xl py-6"
+                    autoFocus
+                  />
+                  <Button 
+                    onClick={handleAddCustomWord}
+                    disabled={!currentCustomInput.trim() || customWords.length >= 10}
+                    className="px-6"
+                  >
+                    Adicionar
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>
