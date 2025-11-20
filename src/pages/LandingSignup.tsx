@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { HeaderControls } from '@/components/HeaderControls';
+import { z } from "zod";
 
 const LandingSignup = () => {
   const navigate = useNavigate();
@@ -60,9 +61,25 @@ const LandingSignup = () => {
       return;
     }
 
-    if (password.length < 8) {
-      toast.error("A senha deve ter pelo menos 8 caracteres");
-      return;
+    // Validate email and password with zod
+    const authSchema = z.object({
+      email: z.string().trim().email('Email inválido').max(255, 'Email muito longo'),
+      password: z.string()
+        .min(8, 'Senha deve ter no mínimo 8 caracteres')
+        .max(128, 'Senha muito longa')
+        .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
+        .regex(/[a-z]/, 'Senha deve conter letra minúscula')
+        .regex(/[0-9]/, 'Senha deve conter número'),
+    });
+
+    try {
+      authSchema.parse({ email, password });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast.error(firstError.message);
+        return;
+      }
     }
 
     setIsLoading(true);
