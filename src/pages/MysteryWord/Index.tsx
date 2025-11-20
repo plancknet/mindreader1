@@ -54,6 +54,7 @@ const MysteryWord = () => {
   const [customWords, setCustomWords] = useState<string[]>(Array(10).fill(''));
   const isCustomWordListValid = customWords.every(word => word.trim());
   const wordPoolRef = useRef<string[]>([]);
+  const wordSequenceRef = useRef<string[]>([]);
   const cameraStreamRef = useRef<MediaStream | null>(null);
   const cameraTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -167,7 +168,28 @@ const MysteryWord = () => {
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
     if (customWordsMode && !isCustomWordListValid) return;
+    
+    // Prepare word pool
     refreshWordPool();
+    
+    // Create word sequence with secret word in correct position
+    const sequence: string[] = [];
+    const totalWords = 15; // Total number of words to show
+    
+    for (let i = 0; i < totalWords; i++) {
+      if (i + 1 === secretPosition) {
+        // Insert secret word at the calculated position
+        sequence.push(secretWord.trim());
+      } else {
+        // Get next word from pool
+        if (wordPoolRef.current.length === 0) {
+          refreshWordPool();
+        }
+        sequence.push(wordPoolRef.current.shift() || '');
+      }
+    }
+    
+    wordSequenceRef.current = sequence;
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -191,6 +213,7 @@ const MysteryWord = () => {
     setCustomWords(Array(10).fill(''));
     stopCameraIndicator();
     wordPoolRef.current = [];
+    wordSequenceRef.current = [];
     getRandomPhrase();
   };
 
@@ -205,14 +228,18 @@ const MysteryWord = () => {
       const interval = setInterval(() => {
         setWordCount(prev => {
           const nextCount = prev + 1;
-          if (nextCount === secretPosition) {
-            setCurrentWord(secretWord);
-            if (alternateRevealEnabled) {
+          
+          // Get word from pre-generated sequence
+          if (nextCount <= wordSequenceRef.current.length) {
+            const word = wordSequenceRef.current[nextCount - 1];
+            setCurrentWord(word);
+            
+            // Trigger camera indicator when showing secret word
+            if (alternateRevealEnabled && nextCount === secretPosition) {
               void triggerCameraIndicator();
             }
-          } else {
-            setCurrentWord(getNextUniqueWord());
           }
+          
           return nextCount;
         });
       }, 3000);
@@ -222,7 +249,7 @@ const MysteryWord = () => {
         stopCameraIndicator();
       };
     }
-  }, [isPlaying, secretPosition, secretWord, getNextUniqueWord, alternateRevealEnabled, triggerCameraIndicator, stopCameraIndicator]);
+  }, [isPlaying, secretPosition, alternateRevealEnabled, triggerCameraIndicator, stopCameraIndicator]);
 
 
   return (
