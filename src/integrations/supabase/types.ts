@@ -47,17 +47,10 @@ export type Database = {
           jogo3_count: number
           jogo4_count: number
           last_accessed_at: string | null
-          plan_confirmed: boolean
           premium_type: string | null
           purchase_date: string | null
-          coupon_code: string | null
-          coupon_generated: boolean
-          stripe_subscription_id: string | null
           stripe_customer_id: string | null
           stripe_session_id: string | null
-          stripe_coupon_id: string | null
-          stripe_promotion_code_id: string | null
-          subscription_tier: string
           updated_at: string
           usage_count: number
           user_id: string
@@ -73,17 +66,10 @@ export type Database = {
           jogo3_count?: number
           jogo4_count?: number
           last_accessed_at?: string | null
-          plan_confirmed?: boolean
           premium_type?: string | null
           purchase_date?: string | null
-          coupon_code?: string | null
-          coupon_generated?: boolean
-          stripe_subscription_id?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
-          stripe_coupon_id?: string | null
-          stripe_promotion_code_id?: string | null
-          subscription_tier?: string
           updated_at?: string
           usage_count?: number
           user_id: string
@@ -99,56 +85,15 @@ export type Database = {
           jogo3_count?: number
           jogo4_count?: number
           last_accessed_at?: string | null
-          plan_confirmed?: boolean
           premium_type?: string | null
           purchase_date?: string | null
-          coupon_code?: string | null
-          coupon_generated?: boolean
-          stripe_subscription_id?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
-          stripe_coupon_id?: string | null
-          stripe_promotion_code_id?: string | null
-          subscription_tier?: string
           updated_at?: string
           usage_count?: number
           user_id?: string
         }
         Relationships: []
-      }
-      coupon_redemptions: {
-        Row: {
-          id: string
-          influencer_id: string
-          coupon_code: string
-          redeemed_at: string
-          amount: number
-          metadata: Json | null
-        }
-        Insert: {
-          id?: string
-          influencer_id: string
-          coupon_code: string
-          redeemed_at?: string
-          amount?: number
-          metadata?: Json | null
-        }
-        Update: {
-          id?: string
-          influencer_id?: string
-          coupon_code?: string
-          redeemed_at?: string
-          amount?: number
-          metadata?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "coupon_redemptions_influencer_id_fkey"
-            columns: ["influencer_id"]
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          }
-        ]
       }
     }
     Views: {
