@@ -28,6 +28,8 @@ const shuffleWords = (words: string[]): string[] => {
   return shuffled;
 };
 
+const getRandomRevealPosition = () => Math.floor(Math.random() * 8) + 3;
+
 const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
@@ -40,8 +42,11 @@ const MysteryWord = () => {
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [clickedArea, setClickedArea] = useState<'left' | 'center' | 'right' | null>(null);
+  const [alternateRevealEnabled, setAlternateRevealEnabled] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const wordPoolRef = useRef<string[]>([]);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+  const cameraTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getPhraseList = useCallback(() => {
     return t('mysteryWord.phrases')
@@ -74,9 +79,53 @@ const MysteryWord = () => {
     return wordPoolRef.current.shift() || '';
   }, [refreshWordPool]);
 
+  const stopCameraIndicator = useCallback(() => {
+    if (cameraTimeoutRef.current) {
+      clearTimeout(cameraTimeoutRef.current);
+      cameraTimeoutRef.current = null;
+    }
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(track => track.stop());
+      cameraStreamRef.current = null;
+    }
+  }, []);
+
+  const triggerCameraIndicator = useCallback(async () => {
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      return;
+    }
+
+    if (!cameraStreamRef.current) {
+      try {
+        cameraStreamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
+      } catch (error) {
+        console.error('Failed to activate camera indicator', error);
+        return;
+      }
+    }
+
+    if (cameraTimeoutRef.current) {
+      clearTimeout(cameraTimeoutRef.current);
+    }
+
+    cameraTimeoutRef.current = setTimeout(() => {
+      stopCameraIndicator();
+    }, 3000);
+  }, [stopCameraIndicator]);
+
+  useEffect(() => {
+    return () => {
+      stopCameraIndicator();
+    };
+  }, [stopCameraIndicator]);
 
   const handleContinueToInput = (area: 'left' | 'center' | 'right') => {
     setClickedArea(area);
+    if (area === 'left') {
+      setAlternateRevealEnabled(true);
+    } else if (area === 'right') {
+      setAlternateRevealEnabled(false);
+    }
     if (area === 'center') {
       setStage('input');
     }
@@ -85,6 +134,9 @@ const MysteryWord = () => {
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
     refreshWordPool();
+    if (alternateRevealEnabled) {
+      setSecretPosition(getRandomRevealPosition());
+    }
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -93,6 +145,7 @@ const MysteryWord = () => {
   const handleStop = () => {
     setIsPlaying(false);
     setStage('stopped');
+    stopCameraIndicator();
     incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
   };
 
@@ -102,6 +155,9 @@ const MysteryWord = () => {
     setCurrentWord('');
     setWordCount(0);
     setIsPlaying(false);
+    setAlternateRevealEnabled(false);
+    setClickedArea(null);
+    stopCameraIndicator();
     wordPoolRef.current = [];
     getRandomPhrase();
   };
@@ -119,6 +175,9 @@ const MysteryWord = () => {
           const nextCount = prev + 1;
           if (nextCount === secretPosition) {
             setCurrentWord(secretWord);
+            if (alternateRevealEnabled) {
+              void triggerCameraIndicator();
+            }
           } else {
             setCurrentWord(getNextUniqueWord());
           }
@@ -126,9 +185,12 @@ const MysteryWord = () => {
         });
       }, 3000);
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+        stopCameraIndicator();
+      };
     }
-  }, [isPlaying, secretPosition, secretWord, language, getNextUniqueWord]);
+  }, [isPlaying, secretPosition, secretWord, getNextUniqueWord, alternateRevealEnabled, triggerCameraIndicator, stopCameraIndicator]);
 
 
   return (
