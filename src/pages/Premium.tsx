@@ -6,12 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check, Infinity, Shield, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { HeaderControls } from '@/components/HeaderControls';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
 
 type SubscriptionTier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 
 interface UserProfile {
   subscription_tier: SubscriptionTier | null;
   plan_confirmed: boolean;
+  has_seen_welcome: boolean | null;
 }
 
 const PLAN_FEATURES = {
@@ -44,6 +46,7 @@ const Premium = () => {
   const [loading, setLoading] = useState(true);
   const [freeLoading, setFreeLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<'STANDARD' | 'INFLUENCER' | null>(null);
+  const { usageData, isLoading: usageLoading, checkUsageLimit } = useUsageLimit();
   const navigate = useNavigate();
 
   const fetchProfile = async () => {
@@ -57,7 +60,7 @@ const Premium = () => {
 
       const { data, error } = await supabase
         .from('users')
-        .select('subscription_tier, plan_confirmed')
+        .select('subscription_tier, plan_confirmed, has_seen_welcome')
         .eq('user_id', user.id)
         .single();
 
@@ -70,6 +73,7 @@ const Premium = () => {
       setProfile({
         subscription_tier: (data?.subscription_tier as SubscriptionTier) ?? 'FREE',
         plan_confirmed: !!data?.plan_confirmed,
+        has_seen_welcome: data?.has_seen_welcome ?? false,
       });
     } finally {
       setLoading(false);
@@ -86,6 +90,8 @@ const Premium = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
+      const firstAccess = !profile?.has_seen_welcome;
+
       const { error } = await supabase
         .from('users')
         .upsert({
@@ -98,7 +104,8 @@ const Premium = () => {
 
       if (error) throw error;
       toast.success('Modo Free ativado.');
-      navigate('/welcome');
+      await checkUsageLimit();
+      navigate(firstAccess ? '/welcome' : '/game-selector');
     } catch (error: any) {
       console.error('Erro ao salvar plano Free', error);
       toast.error('Não foi possível confirmar sua escolha.');
@@ -135,7 +142,7 @@ const Premium = () => {
     }
   };
 
-  if (loading) {
+  if (loading || usageLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -157,6 +164,7 @@ const Premium = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
+          {usageData && usageData.usageCount >= usageData.freeLimit ? null : (
           <Card className="border-primary/20 bg-background/70">
             <CardHeader>
               <div className="flex items-center gap-2 text-primary font-semibold">
@@ -185,8 +193,9 @@ const Premium = () => {
               </Button>
             </CardContent>
           </Card>
+          )}
 
-          <Card className="border-orange-300 bg-gradient-to-b from-orange-50 to-background shadow-lg">
+          <Card className="border-primary/20 bg-background/70 shadow-lg">
             <CardHeader>
               <div className="flex items-center gap-2 text-orange-500 font-semibold">
                 <Infinity className="w-5 h-5" />
@@ -214,7 +223,7 @@ const Premium = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-purple-300 bg-gradient-to-b from-purple-50 to-background shadow-lg">
+          <Card className="border-primary/20 bg-background/70 shadow-lg">
             <CardHeader>
               <div className="flex items-center gap-2 text-purple-500 font-semibold">
                 <Sparkles className="w-5 h-5" />
