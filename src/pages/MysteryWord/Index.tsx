@@ -39,6 +39,8 @@ const MysteryWord = () => {
   const [currentWord, setCurrentWord] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [clickedArea, setClickedArea] = useState<'left' | 'center' | 'right' | null>(null);
+  const [isPressed, setIsPressed] = useState(false);
   const wordPoolRef = useRef<string[]>([]);
 
   const getPhraseList = useCallback(() => {
@@ -73,8 +75,11 @@ const MysteryWord = () => {
   }, [refreshWordPool]);
 
 
-  const handleContinueToInput = () => {
-    setStage('input');
+  const handleContinueToInput = (area: 'left' | 'center' | 'right') => {
+    setClickedArea(area);
+    if (area === 'center') {
+      setStage('input');
+    }
   };
 
   const handleStartPlaying = () => {
@@ -155,10 +160,37 @@ const MysteryWord = () => {
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
-                <Button size="lg" onClick={handleContinueToInput} className="text-xl px-8 py-6">
-                  <Brain className="mr-2 h-6 w-6" />
-                  {t('mysteryWord.startButton')}
-                </Button>
+                
+                {clickedArea && clickedArea !== 'center' && (
+                  <div className="text-3xl font-bold text-primary animate-fade-in mb-4">
+                    {clickedArea === 'left' ? 'Esquerda' : 'Direita'}
+                  </div>
+                )}
+                
+                <div 
+                  className={`relative inline-block transition-transform duration-150 ${isPressed ? 'scale-95' : 'scale-100'}`}
+                  onMouseDown={() => setIsPressed(true)}
+                  onMouseUp={() => setIsPressed(false)}
+                  onMouseLeave={() => setIsPressed(false)}
+                >
+                  <div className="relative h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center text-xl font-medium cursor-pointer overflow-hidden">
+                    <Brain className="mr-2 h-6 w-6" />
+                    {t('mysteryWord.startButton')}
+                    
+                    <div 
+                      className="absolute inset-y-0 left-0 w-1/3 cursor-pointer z-10"
+                      onClick={() => handleContinueToInput('left')}
+                    />
+                    <div 
+                      className="absolute inset-y-0 left-1/3 w-1/3 cursor-pointer z-10"
+                      onClick={() => handleContinueToInput('center')}
+                    />
+                    <div 
+                      className="absolute inset-y-0 right-0 w-1/3 cursor-pointer z-10"
+                      onClick={() => handleContinueToInput('right')}
+                    />
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
