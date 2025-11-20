@@ -127,6 +127,11 @@ export const fr = {
   mysteryWord: {
     title: 'Mot Mystérieux',
     startButton: 'Oui, commençons !',
+    customWordsTitle: 'Saisissez 10 mots aléatoires',
+    customWordsDescription: 'Pour ce mode, nous utiliserons vos mots. Écrivez 10 mots différents ci-dessous.',
+    customWordsPlaceholder: 'Mot {number}',
+    customWordsContinue: 'Continuer',
+    customWordsReminder: 'Mode spécial activé : vos 10 mots seront utilisés dans la révélation.',
     inputTitle: 'Tapez votre mot mystérieux',
     inputDescription: 'Saisissez un mot en secret.',
     inputPlaceholder: 'Votre mot secret...',

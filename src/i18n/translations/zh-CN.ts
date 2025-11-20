@@ -124,9 +124,14 @@ export const zhCN = {
     step4Title: '最终选择',
     step4Text: '再发送一个包含 1、2 或 3 个词的回复，以指示答案是第 1、第 2 还是第 3 个选项。',
   },
-    mysteryWord: {
+  mysteryWord: {
     title: 'Mystery Word',
     startButton: "Yes, let's begin!",
+    customWordsTitle: 'Enter 10 random words',
+    customWordsDescription: 'For this mode, we will use your words. Type 10 different words below.',
+    customWordsPlaceholder: 'Word {number}',
+    customWordsContinue: 'Continue',
+    customWordsReminder: 'Special mode enabled: your 10 words will be used during the reveal.',
     inputTitle: 'Type your mystery word',
     inputDescription: 'Secretly type a word.',
     inputPlaceholder: 'Your secret word...',

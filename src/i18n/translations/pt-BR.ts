@@ -124,6 +124,11 @@ export const ptBR = {
   mysteryWord: {
     title: 'Palavra Misteriosa',
     startButton: 'Sim, vamos começar!',
+    customWordsTitle: 'Digite 10 palavras aleatórias',
+    customWordsDescription: 'Para este modo, usaremos as suas palavras. Escreva 10 palavras diferentes abaixo.',
+    customWordsPlaceholder: 'Palavra {number}',
+    customWordsContinue: 'Continuar',
+    customWordsReminder: 'Modo especial ativado: vamos usar as 10 palavras que você digitou.',
     inputTitle: 'Digite sua palavra misteriosa',
     inputDescription: 'Digite secretamente uma palavra.',
     inputPlaceholder: 'Sua palavra secreta...',

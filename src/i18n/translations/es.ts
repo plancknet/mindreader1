@@ -127,6 +127,11 @@ export const es = {
   mysteryWord: {
     title: 'Palabra Misteriosa',
     startButton: '¡Sí, empecemos!',
+    customWordsTitle: 'Escribe 10 palabras aleatorias',
+    customWordsDescription: 'En este modo usaremos tus palabras. Escribe 10 palabras diferentes abajo.',
+    customWordsPlaceholder: 'Palabra {number}',
+    customWordsContinue: 'Continuar',
+    customWordsReminder: 'Modo especial activado: usaremos las 10 palabras que escribiste.',
     inputTitle: 'Escribe tu palabra misteriosa',
     inputDescription: 'Escribe una palabra en secreto.',
     inputPlaceholder: 'Tu palabra secreta...',

@@ -34,7 +34,7 @@ const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { incrementUsage } = useUsageLimit();
-  const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
+  const [stage, setStage] = useState<'greeting' | 'customWords' | 'input' | 'playing' | 'stopped'>('greeting');
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [secretPosition, setSecretPosition] = useState(0);
   const [secretWord, setSecretWord] = useState('');
@@ -43,6 +43,9 @@ const MysteryWord = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [alternateRevealEnabled, setAlternateRevealEnabled] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [customWordsMode, setCustomWordsMode] = useState(false);
+  const [customWords, setCustomWords] = useState<string[]>(Array(10).fill(''));
+  const isCustomWordListValid = customWords.every(word => word.trim());
   const wordPoolRef = useRef<string[]>([]);
   const cameraStreamRef = useRef<MediaStream | null>(null);
   const cameraTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,13 +66,15 @@ const MysteryWord = () => {
   }, [getPhraseList]);
 
   const refreshWordPool = useCallback(() => {
-    const words = WORD_LISTS[language] || WORD_LISTS['en'];
+    const words = customWordsMode
+      ? customWords.filter(Boolean)
+      : WORD_LISTS[language] || WORD_LISTS['en'];
     const sanitizedSecret = secretWord.trim().toLowerCase();
     const filteredWords = sanitizedSecret
       ? words.filter(word => word.toLowerCase() !== sanitizedSecret)
       : [...words];
     wordPoolRef.current = shuffleWords(filteredWords);
-  }, [language, secretWord]);
+  }, [language, secretWord, customWordsMode, customWords]);
 
   const getNextUniqueWord = useCallback(() => {
     if (wordPoolRef.current.length === 0) {
@@ -119,17 +124,34 @@ const MysteryWord = () => {
   }, [stopCameraIndicator]);
 
   const handleContinueToInput = (area: 'left' | 'center' | 'right') => {
-    if (area === 'left' || area === 'right') {
-      setAlternateRevealEnabled(true);
-    }
+    setAlternateRevealEnabled(area === 'left' || area === 'right');
+    setCustomWordsMode(area === 'right');
 
-    if (area === 'center' || area === 'right') {
+    if (area === 'right') {
+      setStage('customWords');
+    } else if (area === 'center') {
+      setStage('input');
+    }
+  };
+
+  const handleCustomWordChange = (index: number, value: string) => {
+    setCustomWords((prev) => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
+  const handleSubmitCustomWords = () => {
+    if (isCustomWordListValid) {
+      setCustomWords((prev) => prev.map(word => word.trim()));
       setStage('input');
     }
   };
 
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
+    if (customWordsMode && !isCustomWordListValid) return;
     refreshWordPool();
     if (alternateRevealEnabled) {
       setSecretPosition(getRandomRevealPosition());
@@ -153,6 +175,8 @@ const MysteryWord = () => {
     setWordCount(0);
     setIsPlaying(false);
     setAlternateRevealEnabled(false);
+    setCustomWordsMode(false);
+    setCustomWords(Array(10).fill(''));
     stopCameraIndicator();
     wordPoolRef.current = [];
     getRandomPhrase();
@@ -248,6 +272,44 @@ const MysteryWord = () => {
           </div>
         )}
 
+        {stage === 'customWords' && (
+          <div className="text-center space-y-8">
+            <div className="flex justify-center">
+              <Brain className="w-20 h-20 text-primary animate-pulse" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold">
+              {t('mysteryWord.customWordsTitle')}
+            </h2>
+            <Card className="p-8">
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  {t('mysteryWord.customWordsDescription')}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {customWords.map((word, index) => (
+                    <Input
+                      key={index}
+                      type="text"
+                      value={word}
+                      onChange={(e) => handleCustomWordChange(index, e.target.value)}
+                      placeholder={t('mysteryWord.customWordsPlaceholder', { number: index + 1 })}
+                      className="text-center"
+                    />
+                  ))}
+                </div>
+                <Button
+                  size="lg"
+                  onClick={handleSubmitCustomWords}
+                  disabled={!isCustomWordListValid}
+                  className="text-xl px-8 py-6"
+                >
+                  {t('mysteryWord.customWordsContinue')}
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
+
         {stage === 'input' && (
           <div className="text-center space-y-8">
             <div className="flex justify-center">
@@ -261,6 +323,11 @@ const MysteryWord = () => {
                 <p className="text-muted-foreground">
                   {t('mysteryWord.inputDescription')}
                 </p>
+                {customWordsMode && (
+                  <p className="text-sm text-primary font-medium">
+                    {t('mysteryWord.customWordsReminder')}
+                  </p>
+                )}
                 <Input
                   type="text"
                   value={secretWord}
@@ -272,7 +339,7 @@ const MysteryWord = () => {
                 <Button 
                   size="lg" 
                   onClick={handleStartPlaying}
-                  disabled={!secretWord.trim()}
+                  disabled={!secretWord.trim() || (customWordsMode && !isCustomWordListValid)}
                   className="text-xl px-8 py-6"
                 >
                   {t('mysteryWord.startPresentation')}
