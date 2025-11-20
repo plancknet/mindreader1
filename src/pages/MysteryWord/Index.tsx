@@ -30,6 +30,13 @@ const shuffleWords = (words: string[]): string[] => {
 
 const getRandomRevealPosition = () => Math.floor(Math.random() * 8) + 3;
 
+const getPositionFromPhrase = (phrase: string) => {
+  const parts = phrase.trim().split(/\s+/);
+  const lastWord = parts[parts.length - 1] || '';
+  const lettersOnly = lastWord.replace(/[^A-Za-zÀ-ÖØ-öø-ÿĀ-ž\u0100-\u017F]/g, '');
+  return lettersOnly.length || getRandomRevealPosition();
+};
+
 const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
@@ -62,7 +69,7 @@ const MysteryWord = () => {
     if (phrases.length === 0) return;
     const randomIndex = Math.floor(Math.random() * phrases.length);
     setSelectedPhrase(phrases[randomIndex]);
-    setSecretPosition(randomIndex + 1);
+    setSecretPosition(getPositionFromPhrase(phrases[randomIndex]));
   }, [getPhraseList]);
 
   const refreshWordPool = useCallback(() => {
@@ -161,9 +168,6 @@ const MysteryWord = () => {
     if (!secretWord.trim()) return;
     if (customWordsMode && !isCustomWordListValid) return;
     refreshWordPool();
-    if (alternateRevealEnabled) {
-      setSecretPosition(getRandomRevealPosition());
-    }
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
