@@ -168,16 +168,19 @@ const MysteryWord = () => {
   const handleStartPlaying = () => {
     if (!secretWord.trim()) return;
     if (customWordsMode && !isCustomWordListValid) return;
+
+    const calculatedPosition = getPositionFromPhrase(selectedPhrase);
+    setSecretPosition(calculatedPosition);
     
     // Prepare word pool
     refreshWordPool();
     
     // Create word sequence with secret word in correct position
     const sequence: string[] = [];
-    const totalWords = 15; // Total number of words to show
+    const totalWords = Math.max(15, calculatedPosition + 2); // Ensure sequence is long enough
     
     for (let i = 0; i < totalWords; i++) {
-      if (i + 1 === secretPosition) {
+      if (i + 1 === calculatedPosition) {
         // Insert secret word at the calculated position
         sequence.push(secretWord.trim());
       } else {
