@@ -41,7 +41,6 @@ const MysteryWord = () => {
   const [currentWord, setCurrentWord] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [clickedArea, setClickedArea] = useState<'left' | 'center' | 'right' | null>(null);
   const [alternateRevealEnabled, setAlternateRevealEnabled] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const wordPoolRef = useRef<string[]>([]);
@@ -120,13 +119,11 @@ const MysteryWord = () => {
   }, [stopCameraIndicator]);
 
   const handleContinueToInput = (area: 'left' | 'center' | 'right') => {
-    setClickedArea(area);
-    if (area === 'left') {
+    if (area === 'left' || area === 'right') {
       setAlternateRevealEnabled(true);
-    } else if (area === 'right') {
-      setAlternateRevealEnabled(false);
     }
-    if (area === 'center') {
+
+    if (area === 'center' || area === 'right') {
       setStage('input');
     }
   };
@@ -156,7 +153,6 @@ const MysteryWord = () => {
     setWordCount(0);
     setIsPlaying(false);
     setAlternateRevealEnabled(false);
-    setClickedArea(null);
     stopCameraIndicator();
     wordPoolRef.current = [];
     getRandomPhrase();
@@ -222,12 +218,6 @@ const MysteryWord = () => {
             <Card className="p-8">
               <div className="space-y-6">
                 <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
-                
-                {clickedArea && clickedArea !== 'center' && (
-                  <div className="text-3xl font-bold text-primary animate-fade-in mb-4">
-                    {clickedArea === 'left' ? 'Esquerda' : 'Direita'}
-                  </div>
-                )}
                 
                 <div 
                   className={`relative inline-block transition-transform duration-150 ${isPressed ? 'scale-95' : 'scale-100'}`}
