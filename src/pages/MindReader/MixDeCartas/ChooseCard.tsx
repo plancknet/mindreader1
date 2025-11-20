@@ -61,19 +61,19 @@ export const ChooseCard = () => {
                   aria-label={`${rank} ${suit.name}`}
                 >
                   <div className="flex w-full items-center justify-between text-[0.6rem] text-muted-foreground">
-                    <span></span>
-                    <span></span>
+                    <span>★</span>
+                    <span>☆</span>
                   </div>
                   <div
                     className={`text-xl font-bold sm:text-2xl ${
-                      suit.color === 'red' ? 'text-red-500' : 'text-slate-900'
+                      suit.color === 'red' ? 'text-red-500' : 'text-foreground'
                     }`}
                   >
                     {rank}
                   </div>
                   <div
                     className={`text-2xl sm:text-3xl ${
-                      suit.color === 'red' ? 'text-red-500' : 'text-slate-900'
+                      suit.color === 'red' ? 'text-red-500' : 'text-foreground'
                     }`}
                   >
                     {suit.symbol}
