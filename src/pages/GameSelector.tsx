@@ -95,7 +95,7 @@ const GameSelector = () => {
     }
   }, [usageData, navigate]);
 
-  const games = GAME_CARDS.map((game) => {
+  const games = GAME_CARDS.filter((game) => game.id !== 'my-emojis').map((game) => {
     const baseKey = `gameSelector.cards.${game.translationKey}`;
     return {
       ...game,
