@@ -86,6 +86,7 @@ const GameSelector = () => {
   const { t } = useTranslation();
   const { usageData } = useUsageLimit();
   const subscriptionTier: Tier = usageData?.subscriptionTier ?? 'FREE';
+  const subscriptionStatus = usageData?.subscriptionStatus ?? 'inactive';
   const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
 
   useEffect(() => {
@@ -127,7 +128,9 @@ const GameSelector = () => {
           {games.map((game) => {
             const Icon = game.icon;
             const instructionsPath = game.instructionsPath;
-            const enabled = tierRank[subscriptionTier] >= tierRank[game.minTier];
+            const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier];
+            const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
+            const enabled = meetsTier && statusAllowed;
             return (
               <Card
                 key={game.id}
@@ -188,7 +191,7 @@ const GameSelector = () => {
               </Card>
             );
           })}
-          {subscriptionTier === 'INFLUENCER' && (
+          {subscriptionTier === 'INFLUENCER' && subscriptionStatus === 'active' && (
             <Card className="p-8 transition-all group relative overflow-hidden hover:scale-105">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-5 group-hover:opacity-20" />
               <div className="relative space-y-4">

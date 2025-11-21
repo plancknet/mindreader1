@@ -81,8 +81,19 @@ serve(async (req) => {
       stripe_session_id: sessionId,
       stripe_subscription_id: normalizedPlan === "INFLUENCER" ? (session.subscription as string | null) : null,
       coupon_generated: normalizedPlan === "INFLUENCER" ? false : true,
+      subscription_status: "active",
       updated_at: new Date().toISOString(),
     };
+
+    if (normalizedPlan === "INFLUENCER" && typeof session.subscription === "string") {
+      const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+      updates.subscription_status = subscription.status ?? "active";
+      updates.current_period_end = subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000).toISOString()
+        : null;
+    } else {
+      updates.current_period_end = null;
+    }
 
     const { error: upsertError } = await supabaseClient
       .from("users")

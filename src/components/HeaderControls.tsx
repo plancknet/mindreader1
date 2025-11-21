@@ -16,10 +16,10 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
-  const { tier } = useSubscriptionTier();
+  const { tier, status } = useSubscriptionTier();
 
   const adminLabel = t('common.admin');
-  const showCoupons = isAdmin || tier === 'INFLUENCER';
+  const showCoupons = isAdmin || (tier === 'INFLUENCER' && status === 'active');
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>

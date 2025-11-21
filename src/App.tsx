@@ -89,7 +89,7 @@ const PostLoginRedirect = () => {
 
         const { data, error } = await supabase
           .from('users')
-          .select('has_seen_welcome, is_premium, premium_type')
+          .select('has_seen_welcome, subscription_tier, subscription_status, plan_confirmed, coupon_generated')
           .eq('user_id', user.id)
           .single();
 
@@ -99,15 +99,33 @@ const PostLoginRedirect = () => {
           return;
         }
 
-        // Se não é premium, vai para premium
-        if (!data?.is_premium) {
-          setTargetPath('/premium');
+        const tier = (data?.subscription_tier as 'FREE' | 'STANDARD' | 'INFLUENCER' | null) ?? 'FREE';
+        const status = data?.subscription_status ?? 'inactive';
+        const planConfirmed = Boolean(data?.plan_confirmed);
+
+        if (tier === 'STANDARD') {
+          if (!planConfirmed) {
+            setTargetPath('/premium');
+            return;
+          }
+          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
           return;
         }
 
-        // Se é influencer, não precisa verificar coupon (essa funcionalidade foi removida)
-        
-        setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+        if (tier === 'INFLUENCER') {
+          if (!planConfirmed || status !== 'active') {
+            setTargetPath('/premium');
+            return;
+          }
+          if (!data?.coupon_generated) {
+            setTargetPath('/influencer/coupon');
+            return;
+          }
+          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+          return;
+        }
+
+        setTargetPath('/premium');
       } catch (error) {
         console.error('Error checking welcome status:', error);
         setTargetPath('/welcome');

@@ -66,6 +66,7 @@ serve(async (req) => {
           is_premium: false,
           subscription_tier: "FREE",
           plan_confirmed: false,
+          subscription_status: "inactive",
           usage_count: 0,
         })
         .select()
@@ -80,6 +81,7 @@ serve(async (req) => {
           usageCount: 0,
           freeLimit: 3,
           subscriptionTier: "FREE",
+          subscriptionStatus: "inactive",
           planConfirmed: false,
           couponGenerated: false,
           reason: "NEW_USER",
@@ -100,6 +102,7 @@ serve(async (req) => {
           usageCount: premiumUser.usage_count,
           freeLimit: 3,
           subscriptionTier: premiumUser.subscription_tier ?? "STANDARD",
+          subscriptionStatus: premiumUser.subscription_status ?? "active",
           planConfirmed: premiumUser.plan_confirmed ?? true,
           couponGenerated: premiumUser.coupon_generated ?? false,
           reason: "PREMIUM",
@@ -125,6 +128,7 @@ serve(async (req) => {
         usageCount: totalCount,
         freeLimit: 3,
         subscriptionTier: premiumUser.subscription_tier ?? "FREE",
+        subscriptionStatus: premiumUser.subscription_status ?? "inactive",
         planConfirmed: premiumUser.plan_confirmed ?? false,
         couponGenerated: premiumUser.coupon_generated ?? false,
         reason: canUse ? "FREE_TIER" : "PAYWALL",

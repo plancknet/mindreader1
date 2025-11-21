@@ -42,17 +42,28 @@ export type Database = {
           has_seen_welcome: boolean | null
           id: string
           is_premium: boolean
+          subscription_tier: string | null
+          subscription_status: string | null
+          plan_confirmed: boolean | null
+          premium_type: string | null
+          purchase_date: string | null
+          coupon_code: string | null
+          coupon_generated: boolean | null
           jogo1_count: number
           jogo2_count: number
           jogo3_count: number
           jogo4_count: number
+          usage_count: number
           last_accessed_at: string | null
-          premium_type: string | null
-          purchase_date: string | null
+          current_period_end: string | null
+          last_subscription_check: string | null
           stripe_customer_id: string | null
           stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          stripe_coupon_id: string | null
+          stripe_promotion_code_id: string | null
+          stripe_latest_invoice_id: string | null
           updated_at: string
-          usage_count: number
           user_id: string
         }
         Insert: {
@@ -61,17 +72,28 @@ export type Database = {
           has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean
+          subscription_tier?: string | null
+          subscription_status?: string | null
+          plan_confirmed?: boolean | null
+          premium_type?: string | null
+          purchase_date?: string | null
+          coupon_code?: string | null
+          coupon_generated?: boolean | null
           jogo1_count?: number
           jogo2_count?: number
           jogo3_count?: number
           jogo4_count?: number
+          usage_count?: number
           last_accessed_at?: string | null
-          premium_type?: string | null
-          purchase_date?: string | null
+          current_period_end?: string | null
+          last_subscription_check?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          stripe_latest_invoice_id?: string | null
           updated_at?: string
-          usage_count?: number
           user_id: string
         }
         Update: {
@@ -80,20 +102,96 @@ export type Database = {
           has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean
+          subscription_tier?: string | null
+          subscription_status?: string | null
+          plan_confirmed?: boolean | null
+          premium_type?: string | null
+          purchase_date?: string | null
+          coupon_code?: string | null
+          coupon_generated?: boolean | null
           jogo1_count?: number
           jogo2_count?: number
           jogo3_count?: number
           jogo4_count?: number
+          usage_count?: number
           last_accessed_at?: string | null
-          premium_type?: string | null
-          purchase_date?: string | null
+          current_period_end?: string | null
+          last_subscription_check?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          stripe_latest_invoice_id?: string | null
           updated_at?: string
-          usage_count?: number
           user_id?: string
         }
         Relationships: []
+      }
+      coupon_redemptions: {
+        Row: {
+          id: string
+          influencer_id: string
+          coupon_code: string
+          redeemed_at: string
+          amount: number
+          metadata: Json | null
+        }
+        Insert: {
+          id?: string
+          influencer_id: string
+          coupon_code: string
+          redeemed_at?: string
+          amount?: number
+          metadata?: Json | null
+        }
+        Update: {
+          id?: string
+          influencer_id?: string
+          coupon_code?: string
+          redeemed_at?: string
+          amount?: number
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_influencer_id_fkey"
+            columns: ["influencer_id"]
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
+      }
+      stripe_subscription_events: {
+        Row: {
+          id: string
+          user_id: string | null
+          event_type: string
+          payload: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          event_type: string
+          payload: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          event_type?: string
+          payload?: Json
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_subscription_events_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
       }
     }
     Views: {

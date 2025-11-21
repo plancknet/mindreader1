@@ -29,21 +29,38 @@ const InfluencerDashboard = () => {
 
         const { data: profile, error: profileError } = await supabase
           .from('users')
-          .select('is_premium, premium_type')
+          .select('subscription_tier, subscription_status, coupon_generated, coupon_code')
           .eq('user_id', user.id)
           .single();
 
-        if (profileError || !profile || profile.premium_type !== 'influencer') {
+        if (profileError || !profile || profile.subscription_tier !== 'INFLUENCER') {
           toast.error('Somente influenciadores podem acessar esta página.');
           navigate('/game-selector');
           return;
         }
 
-        // Funcionalidade de cupons foi removida
-        toast.info('Funcionalidade de cupons em manutenção.');
-        navigate('/game-selector');
+        if (profile.subscription_status !== 'active') {
+          toast.error('Sua assinatura Influencer está inativa.');
+          navigate('/premium');
+          return;
+        }
+
+        setCouponCode(profile.coupon_code ?? null);
+
+        const { data: redemptionData, error: redemptionError } = await supabase
+          .from('coupon_redemptions')
+          .select('redeemed_at, amount')
+          .order('redeemed_at', { ascending: false });
+
+        if (redemptionError) {
+          throw redemptionError;
+        }
+
+        setRedemptions(redemptionData || []);
       } catch (error) {
         console.error('Erro ao carregar dados do influencer', error);
+        toast.error('Não foi possível carregar o painel.');
+        navigate('/game-selector');
       } finally {
         setLoading(false);
       }

@@ -7,6 +7,7 @@ interface UsageLimitData {
   usageCount: number;
   freeLimit: number;
   subscriptionTier?: 'FREE' | 'STANDARD' | 'INFLUENCER';
+  subscriptionStatus?: string;
   planConfirmed?: boolean;
   couponGenerated?: boolean;
   reason: string;
