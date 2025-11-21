@@ -17,14 +17,32 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-
-    if (!user) {
-      throw new Error("Usuário não autenticado");
+    const authHeader = req.headers.get("Authorization");
+    
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Usuário não autenticado" }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        }
+      );
     }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError || !data.user) {
+      return new Response(
+        JSON.stringify({ error: "Sessão inválida ou expirada" }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        }
+      );
+    }
+
+    const user = data.user;
 
     console.log("Checking usage limit for user:", user.id);
 
