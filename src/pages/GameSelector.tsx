@@ -191,7 +191,7 @@ const GameSelector = () => {
               </Card>
             );
           })}
-
+        </div>
       </div>
     </div>
   );
