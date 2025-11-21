@@ -37,7 +37,10 @@ export type Database = {
       }
       users: {
         Row: {
+          coupon_code: string | null
+          coupon_generated: boolean
           created_at: string
+          current_period_end: string | null
           email: string | null
           has_seen_welcome: boolean | null
           id: string
@@ -47,16 +50,25 @@ export type Database = {
           jogo3_count: number
           jogo4_count: number
           last_accessed_at: string | null
+          last_subscription_check: string | null
+          plan_confirmed: boolean
           premium_type: string | null
           purchase_date: string | null
           stripe_customer_id: string | null
+          stripe_latest_invoice_id: string | null
           stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string
+          subscription_tier: string
           updated_at: string
           usage_count: number
           user_id: string
         }
         Insert: {
+          coupon_code?: string | null
+          coupon_generated?: boolean
           created_at?: string
+          current_period_end?: string | null
           email?: string | null
           has_seen_welcome?: boolean | null
           id?: string
@@ -66,16 +78,25 @@ export type Database = {
           jogo3_count?: number
           jogo4_count?: number
           last_accessed_at?: string | null
+          last_subscription_check?: string | null
+          plan_confirmed?: boolean
           premium_type?: string | null
           purchase_date?: string | null
           stripe_customer_id?: string | null
+          stripe_latest_invoice_id?: string | null
           stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string
+          subscription_tier?: string
           updated_at?: string
           usage_count?: number
           user_id: string
         }
         Update: {
+          coupon_code?: string | null
+          coupon_generated?: boolean
           created_at?: string
+          current_period_end?: string | null
           email?: string | null
           has_seen_welcome?: boolean | null
           id?: string
@@ -85,10 +106,16 @@ export type Database = {
           jogo3_count?: number
           jogo4_count?: number
           last_accessed_at?: string | null
+          last_subscription_check?: string | null
+          plan_confirmed?: boolean
           premium_type?: string | null
           purchase_date?: string | null
           stripe_customer_id?: string | null
+          stripe_latest_invoice_id?: string | null
           stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string
+          subscription_tier?: string
           updated_at?: string
           usage_count?: number
           user_id?: string
