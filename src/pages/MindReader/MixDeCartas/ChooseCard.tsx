@@ -57,25 +57,25 @@ export const ChooseCard = () => {
                   className={`group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] flex-col items-center justify-between rounded-2xl border p-2 text-center shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:border-primary/40 hover:shadow-primary/30 sm:max-w-[68px] ${
                     suit.color === 'red'
                       ? 'border-rose-200 bg-gradient-to-br from-white to-rose-50'
-                      : 'border-slate-300 bg-gradient-to-br from-white to-slate-100'
+                      : 'border-slate-400 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300'
                   }`}
                   onClick={() => handleCardSelect(suit.name, rank)}
                   aria-label={`${rank} ${suit.name}`}
                 >
-                  <div className="flex w-full items-center justify-between text-[0.6rem] text-muted-foreground">
-                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-400'}>♦</span>
-                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-400'}>♣</span>
+                  <div className="flex w-full items-center justify-between text-[0.6rem]">
+                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600 drop-shadow-[0_0_2px_rgba(0,0,0,0.6)]'}>♦</span>
+                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600 drop-shadow-[0_0_2px_rgba(0,0,0,0.6)]'}>♣</span>
                   </div>
                   <div
                     className={`text-xl font-bold sm:text-2xl ${
-                      suit.color === 'red' ? 'text-red-600' : 'text-gray-800'
+                      suit.color === 'red' ? 'text-red-600' : 'text-gray-900 drop-shadow-[0_0_2px_rgba(0,0,0,0.45)]'
                     }`}
                   >
                     {rank}
                   </div>
                   <div
                     className={`text-2xl sm:text-3xl ${
-                      suit.color === 'red' ? 'text-red-600' : 'text-gray-800'
+                      suit.color === 'red' ? 'text-red-600' : 'text-gray-900 drop-shadow-[0_0_2px_rgba(0,0,0,0.45)]'
                     }`}
                   >
                     {suit.symbol}
