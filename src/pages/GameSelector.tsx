@@ -191,26 +191,7 @@ const GameSelector = () => {
               </Card>
             );
           })}
-          {subscriptionTier === 'INFLUENCER' && subscriptionStatus === 'active' && (
-            <Card className="p-8 transition-all group relative overflow-hidden hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-5 group-hover:opacity-20" />
-              <div className="relative space-y-4">
-                <div className="flex justify-center">
-                  <div className="p-4 rounded-full bg-purple-500/20">
-                    <Sparkles className="w-12 h-12 text-purple-600" />
-                  </div>
-                </div>
-                <h2 className="text-2xl font-bold text-center">Painel Influencer</h2>
-                <p className="text-muted-foreground text-center text-sm">
-                  Acompanhe o desempenho dos seus cupons e o faturamento diário.
-                </p>
-                <Button className="w-full" onClick={() => navigate('/influencer/dashboard')}>
-                  Abrir painel
-                </Button>
-              </div>
-            </Card>
-          )}
-        </div>
+
       </div>
     </div>
   );
