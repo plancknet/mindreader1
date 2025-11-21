@@ -23,7 +23,17 @@ serve(async (req) => {
   });
 
   try {
-    const body = req.body ? await req.json() : {};
+    let body = {};
+    try {
+      const text = await req.text();
+      if (text && text.trim()) {
+        body = JSON.parse(text);
+      }
+    } catch (jsonError) {
+      console.error("JSON parse error:", jsonError);
+      throw new Error("Invalid JSON in request body");
+    }
+    
     const { planType } = RequestSchema.parse(body);
 
     const authHeader = req.headers.get("Authorization")!;
