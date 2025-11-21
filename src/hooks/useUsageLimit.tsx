@@ -22,9 +22,23 @@ export const useUsageLimit = () => {
       setIsLoading(true);
       setError(null);
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (!session) {
+      if (sessionError || !session) {
+        // Session expired or invalid, try to refresh
+        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError || !refreshedSession) {
+          setError('Sessão expirada. Por favor, faça login novamente.');
+          setIsLoading(false);
+          // Redirect to auth page
+          window.location.href = '/auth';
+          return;
+        }
+      }
+
+      const currentSession = await supabase.auth.getSession();
+      if (!currentSession.data.session) {
         setError('Usuário não autenticado');
         setIsLoading(false);
         return;
@@ -32,11 +46,19 @@ export const useUsageLimit = () => {
 
       const { data, error: invokeError } = await supabase.functions.invoke('check-usage-limit', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${currentSession.data.session.access_token}`,
         },
       });
 
-      if (invokeError) throw invokeError;
+      if (invokeError) {
+        // Handle 401 errors specifically
+        if (invokeError.message?.includes('401') || invokeError.message?.includes('Sessão')) {
+          setError('Sessão expirada. Por favor, faça login novamente.');
+          window.location.href = '/auth';
+          return;
+        }
+        throw invokeError;
+      }
 
       setUsageData(data);
     } catch (err: any) {
