@@ -8,6 +8,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type PlanType = "STANDARD" | "INFLUENCER";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -46,37 +48,12 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status === "paid") {
-      console.log("Payment confirmed for user:", user.id);
-
-      const planType = (session.metadata?.planType as string) || "STANDARD";
-
-      const updates: Record<string, unknown> = {
-        user_id: user.id,
-        is_premium: true,
-        premium_type: "one_time",
-        purchase_date: new Date().toISOString(),
-        stripe_customer_id: session.customer,
-        stripe_session_id: sessionId,
-        updated_at: new Date().toISOString(),
-      };
-
-      const { error: upsertError } = await supabaseClient
-        .from("users")
-        .upsert(updates, {
-          onConflict: "user_id",
-        });
-
-      if (upsertError) {
-        console.error("Error updating premium status:", upsertError);
-        throw upsertError;
-      }
-
+    if (session.payment_status !== "paid") {
       return new Response(
         JSON.stringify({
-          success: true,
-          isPremium: true,
-          message: "Pagamento confirmado! Você agora é Premium 🎉",
+          success: false,
+          isPremium: false,
+          message: "Pagamento ainda não confirmado",
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -85,11 +62,46 @@ serve(async (req) => {
       );
     }
 
+    console.log("Payment confirmed for user:", user.id);
+
+    let planType = (session.metadata?.planType as PlanType | undefined) ?? undefined;
+    if (!planType) {
+      planType = session.mode === "subscription" || session.subscription ? "INFLUENCER" : "STANDARD";
+    }
+    const normalizedPlan: PlanType = planType === "INFLUENCER" ? "INFLUENCER" : "STANDARD";
+
+    const updates: Record<string, unknown> = {
+      user_id: user.id,
+      is_premium: true,
+      subscription_tier: normalizedPlan,
+      premium_type: normalizedPlan === "INFLUENCER" ? "influencer" : "standard",
+      plan_confirmed: true,
+      purchase_date: new Date().toISOString(),
+      stripe_customer_id: session.customer,
+      stripe_session_id: sessionId,
+      stripe_subscription_id: normalizedPlan === "INFLUENCER" ? (session.subscription as string | null) : null,
+      coupon_generated: normalizedPlan === "INFLUENCER" ? false : true,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error: upsertError } = await supabaseClient
+      .from("users")
+      .upsert(updates, {
+        onConflict: "user_id",
+      });
+
+    if (upsertError) {
+      console.error("Error updating premium status:", upsertError);
+      throw upsertError;
+    }
+
     return new Response(
       JSON.stringify({
-        success: false,
-        isPremium: false,
-        message: "Pagamento ainda não confirmado",
+        success: true,
+        isPremium: true,
+        plan: normalizedPlan,
+        requiresCouponSetup: normalizedPlan === "INFLUENCER",
+        message: "Pagamento confirmado! Você agora é Premium 🎉",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

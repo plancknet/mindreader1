@@ -5,6 +5,7 @@ import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useSubscriptionTier } from '@/hooks/useSubscriptionTier';
 import { cn } from '@/lib/utils';
 
 interface HeaderControlsProps {
@@ -15,8 +16,10 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
+  const { tier } = useSubscriptionTier();
 
   const adminLabel = t('common.admin');
+  const showCoupons = isAdmin || tier === 'INFLUENCER';
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
@@ -36,6 +39,16 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
           className="font-medium"
         >
           {adminLabel === 'common.admin' ? 'Admin' : adminLabel}
+        </Button>
+      )}
+      {showCoupons && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate('/influencer/coupon')}
+          className="font-medium"
+        >
+          Cupons
         </Button>
       )}
       <LanguageSelector />
