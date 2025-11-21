@@ -19,8 +19,7 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
   const { tier, status } = useSubscriptionTier();
 
   const adminLabel = t('common.admin');
-  const influencerActive = tier === 'INFLUENCER' && status === 'active';
-  const showCoupons = isAdmin || influencerActive;
+  const showCoupons = isAdmin || (tier === 'INFLUENCER' && status === 'active');
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
@@ -50,16 +49,6 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
           className="font-medium"
         >
           Cupons
-        </Button>
-      )}
-      {influencerActive && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate('/influencer/dashboard')}
-          className="font-medium"
-        >
-          Painel Influencer
         </Button>
       )}
       <LanguageSelector />

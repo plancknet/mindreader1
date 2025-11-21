@@ -1,44 +1,42 @@
-import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-import Stripe from 'https://esm.sh/stripe@18.5.0';
-import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
+import { serve } from \"https://deno.land/std@0.190.0/http/server.ts\";
+import { createClient } from \"https://esm.sh/@supabase/supabase-js@2.57.2\";
+import Stripe from \"https://esm.sh/stripe@18.5.0\";
+import { z } from \"https://deno.land/x/zod@v3.22.4/mod.ts\";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  \"Access-Control-Allow-Origin\": \"*\",
+  \"Access-Control-Allow-Headers\": \"authorization, x-client-info, apikey, content-type\",
 };
 
 const CodeSchema = z.object({
-  code: z
-    .string()
-    .min(3, 'O codigo deve ter pelo menos 3 caracteres')
-    .max(12, 'O codigo deve ter no maximo 12 caracteres')
-    .regex(/^[A-Z0-9]+$/, 'Use apenas letras maiusculas e numeros'),
+  code: z.string()
+    .min(3, \"O código deve ter pelo menos 3 caracteres\")
+    .max(12, \"O código deve ter no máximo 12 caracteres\")
+    .regex(/^[A-Z0-9]+$/, \"Use apenas letras maiúsculas e números\"),
 });
 
-const BASE_COUPON_ID = Deno.env.get('STRIPE_BASE_COUPON_ID') ?? 'NJtcfBmv';
-
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === \"OPTIONS\") {
     return new Response(null, { headers: corsHeaders });
   }
 
   const supabaseClient = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    Deno.env.get(\"SUPABASE_URL\") ?? \"\",
+    Deno.env.get(\"SUPABASE_SERVICE_ROLE_KEY\") ?? \"\"
   );
 
   try {
-    const authHeader = req.headers.get('Authorization');
+    const authHeader = req.headers.get(\"Authorization\");
     if (!authHeader) {
-      throw new Error('Usuario nao autenticado');
+      throw new Error(\"Usuário não autenticado\");
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: authData } = await supabaseClient.auth.getUser(token);
-    const user = authData.user;
+    const token = authHeader.replace(\"Bearer \", \"");
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+
     if (!user) {
-      throw new Error('Usuario nao autenticado');
+      throw new Error(\"Usuário não autenticado\");
     }
 
     const body = await req.json();
@@ -51,19 +49,19 @@ serve(async (req) => {
       .single();
 
     if (profileError || !profile) {
-      throw new Error('Perfil de usuario nao encontrado');
+      throw new Error(\"Perfil de usuário não encontrado\");
     }
 
     if (profile.subscription_tier !== 'INFLUENCER') {
-      throw new Error('Somente influenciadores ativos podem criar cupons');
+      throw new Error(\"Somente influenciadores ativos podem criar cupons\");
     }
 
     if (profile.subscription_status !== 'active') {
-      throw new Error('Sua assinatura Influencer precisa estar ativa');
+      throw new Error(\"Sua assinatura Influencer está inativa\");
     }
 
     if (profile.coupon_generated) {
-      throw new Error('Este influenciador ja possui um cupom gerado');
+      throw new Error(\"Cupom já foi criado para este influenciador\");
     }
 
     const { data: duplicate } = await supabaseClient
@@ -73,32 +71,31 @@ serve(async (req) => {
       .maybeSingle();
 
     if (duplicate) {
-      throw new Error('Este codigo ja esta em uso por outro influenciador');
+      throw new Error(\"Este código já está em uso por outro influenciador\");
     }
 
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-      apiVersion: '2025-08-27.basil',
+    const stripe = new Stripe(Deno.env.get(\"STRIPE_SECRET_KEY\") || \"\", {
+      apiVersion: \"2025-08-27.basil\",
     });
 
-    // Reuse the base coupon and only create promotion codes.
-    let promotionCode = null;
-    const existingCodes = await stripe.promotionCodes.list({ code, limit: 1 });
-    if (existingCodes.data.length > 0) {
-      promotionCode = existingCodes.data[0];
-    } else {
-      promotionCode = await stripe.promotionCodes.create({
-        coupon: BASE_COUPON_ID,
-        code,
-        active: true,
-      });
-    }
+    const coupon = await stripe.coupons.create({
+      percent_off: 30,
+      duration: 'forever',
+      name: Influencer ,
+    });
+
+    const promotionCode = await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code,
+      active: true,
+    });
 
     const { error: updateError } = await supabaseClient
       .from('users')
       .update({
         coupon_code: code,
         coupon_generated: true,
-        stripe_coupon_id: BASE_COUPON_ID,
+        stripe_coupon_id: coupon.id,
         stripe_promotion_code_id: promotionCode.id,
         updated_at: new Date().toISOString(),
       })
@@ -115,9 +112,9 @@ serve(async (req) => {
         promotionCodeId: promotionCode.id,
       }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
         status: 200,
-      },
+      }
     );
   } catch (error: any) {
     console.error('Error creating influencer coupon:', error);
@@ -126,9 +123,9 @@ serve(async (req) => {
         error: error.message ?? 'Falha ao criar cupom. Tente novamente.',
       }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
         status: 400,
-      },
+      }
     );
   }
 });
