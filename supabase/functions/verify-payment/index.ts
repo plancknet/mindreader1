@@ -50,19 +50,14 @@ serve(async (req) => {
       console.log("Payment confirmed for user:", user.id);
 
       const planType = (session.metadata?.planType as string) || "STANDARD";
-      const subscriptionTier = planType === "INFLUENCER" ? "INFLUENCER" : "STANDARD";
 
       const updates: Record<string, unknown> = {
         user_id: user.id,
         is_premium: true,
-        subscription_tier: subscriptionTier,
-        plan_confirmed: true,
-        premium_type: planType === "INFLUENCER" ? "influencer" : "standard",
+        premium_type: "one_time",
         purchase_date: new Date().toISOString(),
         stripe_customer_id: session.customer,
         stripe_session_id: sessionId,
-        stripe_subscription_id: planType === "INFLUENCER" ? (session.subscription as string | null) : null,
-        coupon_generated: planType === "INFLUENCER" ? false : true,
         updated_at: new Date().toISOString(),
       };
 
@@ -81,8 +76,6 @@ serve(async (req) => {
         JSON.stringify({
           success: true,
           isPremium: true,
-          plan: subscriptionTier,
-          requiresCouponSetup: subscriptionTier === "INFLUENCER",
           message: "Pagamento confirmado! Você agora é Premium 🎉",
         }),
         {
