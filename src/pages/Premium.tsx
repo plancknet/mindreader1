@@ -96,7 +96,7 @@ const Premium = () => {
           user_id: user.id,
           email: user.email,
           is_premium: false,
-          premium_type: 'free',
+          premium_type: null,
           has_seen_welcome: true,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
