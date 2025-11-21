@@ -25,7 +25,7 @@ const InfluencerCouponSetup = () => {
         }
         const { data, error } = await supabase
           .from('users')
-          .select('subscription_tier, coupon_generated, coupon_code')
+          .select('is_premium, premium_type')
           .eq('user_id', user.id)
           .single();
 
@@ -33,16 +33,15 @@ const InfluencerCouponSetup = () => {
           throw error;
         }
 
-        if (data.subscription_tier !== 'INFLUENCER') {
+        if (data.premium_type !== 'influencer') {
           navigate('/game-selector');
           return;
         }
 
-        if (data.coupon_generated && data.coupon_code) {
-          setExistingCode(data.coupon_code);
-        } else {
-          setEligible(true);
-        }
+        // Funcionalidade de cupom foi removida, redireciona para dashboard
+        setEligible(false);
+        toast.info('Funcionalidade de cupons em manutenção.');
+        navigate('/game-selector');
       } catch (error) {
         console.error('Erro ao carregar perfil', error);
         navigate('/game-selector');

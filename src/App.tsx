@@ -89,7 +89,7 @@ const PostLoginRedirect = () => {
 
         const { data, error } = await supabase
           .from('users')
-          .select('has_seen_welcome, subscription_tier, plan_confirmed, coupon_generated')
+          .select('has_seen_welcome, is_premium, premium_type')
           .eq('user_id', user.id)
           .single();
 
@@ -99,16 +99,14 @@ const PostLoginRedirect = () => {
           return;
         }
 
-        if (!data?.plan_confirmed) {
+        // Se não é premium, vai para premium
+        if (!data?.is_premium) {
           setTargetPath('/premium');
           return;
         }
 
-        if (data?.subscription_tier === 'INFLUENCER' && !data?.coupon_generated) {
-          setTargetPath('/influencer/coupon');
-          return;
-        }
-
+        // Se é influencer, não precisa verificar coupon (essa funcionalidade foi removida)
+        
         setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
       } catch (error) {
         console.error('Error checking welcome status:', error);
