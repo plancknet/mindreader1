@@ -8,12 +8,10 @@ import { toast } from 'sonner';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 
-type SubscriptionTier = 'FREE' | 'STANDARD' | 'INFLUENCER';
-
 interface UserProfile {
-  subscription_tier: SubscriptionTier | null;
-  plan_confirmed: boolean;
+  is_premium: boolean;
   has_seen_welcome: boolean | null;
+  premium_type: string | null;
 }
 
 const PLAN_FEATURES = {
@@ -60,7 +58,7 @@ const Premium = () => {
 
       const { data, error } = await supabase
         .from('users')
-        .select('subscription_tier, plan_confirmed, has_seen_welcome')
+        .select('is_premium, has_seen_welcome, premium_type')
         .eq('user_id', user.id)
         .single();
 
@@ -71,9 +69,9 @@ const Premium = () => {
       }
 
       setProfile({
-        subscription_tier: (data?.subscription_tier as SubscriptionTier) ?? 'FREE',
-        plan_confirmed: !!data?.plan_confirmed,
+        is_premium: !!data?.is_premium,
         has_seen_welcome: data?.has_seen_welcome ?? false,
+        premium_type: data?.premium_type ?? null,
       });
     } finally {
       setLoading(false);
@@ -96,9 +94,8 @@ const Premium = () => {
         .from('users')
         .upsert({
           user_id: user.id,
-          subscription_tier: 'FREE',
-          plan_confirmed: true,
           is_premium: false,
+          premium_type: 'free',
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
 
