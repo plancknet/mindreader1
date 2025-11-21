@@ -189,11 +189,11 @@ export const ptBR = {
     cards: {
       mindReader: {
         title: 'Quadrante Mágico',
-        description: 'Leia a mente através de movimentos sutis da cabeça'
+        description: 'Em qual quadrante está a palavra escolhida?'
       },
       mixDeCartas: {
         title: 'Mix de Cartas',
-        description: 'Codifique uma carta secreta com um padrão de cores em seis cartas'
+        description: 'Qual a carta escolhida pelo seu amigo?'
       },
       mentalConversation: {
         title: 'Conversa Mental',
