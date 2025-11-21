@@ -164,7 +164,6 @@ const Premium = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {usageData && usageData.usageCount >= usageData.freeLimit ? null : (
           <Card className="border-primary/20 bg-background/70">
             <CardHeader>
               <div className="flex items-center gap-2 text-primary font-semibold">
@@ -186,14 +185,17 @@ const Premium = () => {
               <Button
                 variant="outline"
                 onClick={handleFreePlan}
-                disabled={freeLoading}
+                disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false)}
                 className="w-full"
               >
-                {freeLoading ? 'Confirmando...' : 'Continuar no Free'}
+                {usageData && usageData.usageCount >= usageData.freeLimit
+                  ? 'Limite atingido'
+                  : freeLoading
+                    ? 'Confirmando...'
+                    : 'Continuar no Free'}
               </Button>
             </CardContent>
           </Card>
-          )}
 
           <Card className="border-primary/20 bg-background/70 shadow-lg">
             <CardHeader>
