@@ -7,16 +7,11 @@ import { Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { HeaderControls } from '@/components/HeaderControls';
 
-type PlanType = 'STANDARD' | 'INFLUENCER';
-
 const PremiumSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [plan, setPlan] = useState<PlanType>('STANDARD');
-  const [requiresCoupon, setRequiresCoupon] = useState(false);
   const sessionId = searchParams.get('session_id');
-  const urlPlan = (searchParams.get('plan') as PlanType) || 'STANDARD';
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -45,8 +40,6 @@ const PremiumSuccess = () => {
         }
 
         if (data?.success) {
-          setPlan((data.plan as PlanType) || urlPlan);
-          setRequiresCoupon(Boolean(data.requiresCouponSetup));
           setStatus('success');
         } else {
           setStatus('error');
@@ -59,14 +52,10 @@ const PremiumSuccess = () => {
     };
 
     verifyPayment();
-  }, [sessionId, urlPlan, navigate]);
+  }, [sessionId, navigate]);
 
   const handleContinue = () => {
-    if (requiresCoupon) {
-      navigate('/influencer/coupon');
-    } else {
-      navigate('/welcome');
-    }
+    navigate('/welcome');
   };
 
   if (status === 'loading') {
@@ -92,16 +81,14 @@ const PremiumSuccess = () => {
           </CardTitle>
           <p className="text-muted-foreground">
             {status === 'success'
-              ? plan === 'INFLUENCER'
-                ? 'Bem-vindo ao modo Influencer! Falta apenas criar seu cupom.'
-                : 'Seu acesso vitalício foi ativado com sucesso.'
+              ? 'Seu acesso premium foi ativado com sucesso.'
               : 'Não foi possível confirmar seu pagamento. Tente novamente.'}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
           {status === 'success' ? (
             <Button className="w-full" onClick={handleContinue}>
-              {requiresCoupon ? 'Configurar meu cupom' : 'Ir para o MindReader'}
+              Ir para o MindReader
             </Button>
           ) : (
             <Button className="w-full" variant="outline" onClick={() => navigate('/premium')}>
