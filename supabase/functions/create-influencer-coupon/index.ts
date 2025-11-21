@@ -78,14 +78,11 @@ serve(async (req) => {
       apiVersion: \"2025-08-27.basil\",
     });
 
-    const coupon = await stripe.coupons.create({
-      percent_off: 30,
-      duration: 'forever',
-      name: Influencer ,
-    });
+    // Reuse the master "Cupom iMindReader" coupon for every influencer
+    const baseCouponId = "NJtcfBmv";
 
     const promotionCode = await stripe.promotionCodes.create({
-      coupon: coupon.id,
+      coupon: baseCouponId,
       code,
       active: true,
     });
@@ -95,7 +92,7 @@ serve(async (req) => {
       .update({
         coupon_code: code,
         coupon_generated: true,
-        stripe_coupon_id: coupon.id,
+        stripe_coupon_id: baseCouponId,
         stripe_promotion_code_id: promotionCode.id,
         updated_at: new Date().toISOString(),
       })
