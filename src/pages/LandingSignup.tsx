@@ -34,6 +34,9 @@ const LandingSignup = () => {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: {
+          planType: "STANDARD"
+        }
       },
     );
 
