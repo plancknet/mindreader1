@@ -94,18 +94,24 @@ const Premium = () => {
         .from('users')
         .upsert({
           user_id: user.id,
+          email: user.email,
           is_premium: false,
           premium_type: 'free',
+          has_seen_welcome: true,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro detalhado:', error);
+        throw error;
+      }
+      
       toast.success('Modo Free ativado.');
       await checkUsageLimit();
       navigate(firstAccess ? '/welcome' : '/game-selector');
     } catch (error: any) {
       console.error('Erro ao salvar plano Free', error);
-      toast.error('Não foi possível confirmar sua escolha.');
+      toast.error(error?.message || 'Não foi possível confirmar sua escolha.');
     } finally {
       setFreeLoading(false);
     }
