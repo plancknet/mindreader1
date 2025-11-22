@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupon_redemptions: {
+        Row: {
+          amount: number
+          coupon_code: string
+          created_at: string
+          id: string
+          influencer_id: string
+          redeemed_at: string
+        }
+        Insert: {
+          amount?: number
+          coupon_code: string
+          created_at?: string
+          id?: string
+          influencer_id: string
+          redeemed_at?: string
+        }
+        Update: {
+          amount?: number
+          coupon_code?: string
+          created_at?: string
+          id?: string
+          influencer_id?: string
+          redeemed_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
