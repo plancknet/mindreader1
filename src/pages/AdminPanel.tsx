@@ -11,6 +11,8 @@ import { Loader2, Crown, RefreshCw, Save, Undo } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface UserData {
   user_id: string;
@@ -41,6 +43,21 @@ interface CouponStats {
   total_revenue: number;
   last_redeemed_at: string | null;
 }
+
+const registrationChartConfig = {
+  FREE: {
+    label: 'Free',
+    color: 'hsl(var(--muted-foreground))',
+  },
+  STANDARD: {
+    label: 'Standard',
+    color: 'hsl(var(--primary))',
+  },
+  INFLUENCER: {
+    label: 'Influencer',
+    color: 'hsl(var(--secondary))',
+  },
+};
 
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
@@ -75,6 +92,7 @@ export default function AdminPanel() {
   const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [registrationSeries, setRegistrationSeries] = useState<Array<{ date: string; FREE: number; STANDARD: number; INFLUENCER: number }>>([]);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -132,6 +150,34 @@ export default function AdminPanel() {
     }));
 
     setUsers(formattedUsers);
+    setRegistrationSeries(generateRegistrationSeries(formattedUsers));
+  };
+
+  const generateRegistrationSeries = (userList: UserData[]) => {
+    const dailyMap = new Map<string, { FREE: number; STANDARD: number; INFLUENCER: number }>();
+    userList.forEach((user) => {
+      const dateKey = new Date(user.created_at).toISOString().split('T')[0];
+      if (!dailyMap.has(dateKey)) {
+        dailyMap.set(dateKey, { FREE: 0, STANDARD: 0, INFLUENCER: 0 });
+      }
+      const bucket = dailyMap.get(dateKey)!;
+      bucket[user.subscription_tier] = (bucket[user.subscription_tier] ?? 0) + 1;
+    });
+
+    const sortedDates = Array.from(dailyMap.keys()).sort();
+    const cumulative = { FREE: 0, STANDARD: 0, INFLUENCER: 0 };
+    return sortedDates.map((date) => {
+      const current = dailyMap.get(date)!;
+      cumulative.FREE += current.FREE ?? 0;
+      cumulative.STANDARD += current.STANDARD ?? 0;
+      cumulative.INFLUENCER += current.INFLUENCER ?? 0;
+      return {
+        date,
+        FREE: cumulative.FREE,
+        STANDARD: cumulative.STANDARD,
+        INFLUENCER: cumulative.INFLUENCER,
+      };
+    });
   };
 
   const fetchCouponData = async () => {
@@ -498,6 +544,61 @@ export default function AdminPanel() {
           </div>
           <HeaderControls />
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Evolução de usuários por assinatura</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {registrationSeries.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Ainda não há dados suficientes para exibir o gráfico.
+              </p>
+            ) : (
+              <ChartContainer config={registrationChartConfig} className="h-80">
+                <LineChart data={registrationSeries} margin={{ left: 12, right: 12 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(value) =>
+                      new Date(value).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' })
+                    }
+                    tickLine={false}
+                    axisLine={false}
+                    minTickGap={16}
+                  />
+                  <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line
+                    type="monotone"
+                    dataKey="FREE"
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Free"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="STANDARD"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Standard"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="INFLUENCER"
+                    stroke="hsl(var(--secondary))"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Influencer"
+                  />
+                </LineChart>
+              </ChartContainer>
+            )}
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
