@@ -1,41 +1,41 @@
-import { serve } from \"https://deno.land/std@0.190.0/http/server.ts\";
-import Stripe from \"https://esm.sh/stripe@18.5.0\";
-import { createClient } from \"https://esm.sh/@supabase/supabase-js@2.57.2\";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
-  \"Access-Control-Allow-Origin\": \"*\",
-  \"Access-Control-Allow-Headers\": \"authorization, x-client-info, apikey, content-type, stripe-signature\",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, stripe-signature",
 };
 
-const stripe = new Stripe(Deno.env.get(\"STRIPE_SECRET_KEY\") || \"\", {
-  apiVersion: \"2025-08-27.basil\",
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+  apiVersion: "2025-08-27.basil",
 });
 
-const webhookSecret = Deno.env.get(\"STRIPE_WEBHOOK_SECRET\") || \"\";
+const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
 
 serve(async (req) => {
-  if (req.method === \"OPTIONS\") {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   const supabaseClient = createClient(
-    Deno.env.get(\"SUPABASE_URL\") ?? \"\",
-    Deno.env.get(\"SUPABASE_SERVICE_ROLE_KEY\") ?? \"\"
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   );
 
   let event: Stripe.Event;
 
   try {
-    const signature = req.headers.get(\"Stripe-Signature\");
+    const signature = req.headers.get("Stripe-Signature");
     if (!signature || !webhookSecret) {
-      throw new Error(\"Missing Stripe signature or webhook secret\");
+      throw new Error("Missing Stripe signature or webhook secret");
     }
     const payload = await req.text();
     event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
   } catch (err) {
-    console.error(\"Error verifying webhook signature\", err);
-    return new Response(JSON.stringify({ error: \"Invalid signature\" }), {
-      headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
+    console.error("Error verifying webhook signature", err);
+    return new Response(JSON.stringify({ error: "Invalid signature" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });
   }
@@ -66,24 +66,24 @@ serve(async (req) => {
       .insert({
         user_id: eventUserId,
         event_type: event.type,
-        payload: event as Record<string, unknown>,
+        payload: event as any,
       });
 
     return new Response(JSON.stringify({ received: true }), {
-      headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (err) {
     console.error('Error handling webhook', err);
     return new Response(JSON.stringify({ error: 'Webhook handler error' }), {
-      headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
   }
 });
 
 async function handleSubscriptionEvent(
-  supabaseClient: ReturnType<typeof createClient>,
+  supabaseClient: any,
   subscription: Stripe.Subscription,
   eventType: string,
 ): Promise<string | null> {
@@ -96,7 +96,7 @@ async function handleSubscriptionEvent(
 
   const userId = await findUserId(supabaseClient, subscriptionId, customerId);
 
-  const updates: Record<string, unknown> = {
+  const updates: any = {
     stripe_customer_id: customerId,
     stripe_subscription_id: subscriptionId,
     subscription_status: status,
@@ -138,17 +138,17 @@ async function handleSubscriptionEvent(
 }
 
 async function handleInvoiceEvent(
-  supabaseClient: ReturnType<typeof createClient>,
+  supabaseClient: any,
   invoice: Stripe.Invoice,
 ): Promise<string | null> {
   const subscriptionId = invoice.subscription as string | null;
   const customerId = invoice.customer as string | null;
-  if (!customerId) return;
+  if (!customerId) return null;
 
   const status = invoice.paid ? 'active' : 'past_due';
   const userId = await findUserId(supabaseClient, subscriptionId ?? undefined, customerId);
 
-  const updates: Record<string, unknown> = {
+  const updates: any = {
     stripe_latest_invoice_id: invoice.id,
     subscription_status: status,
     last_subscription_check: new Date().toISOString(),
@@ -174,7 +174,7 @@ async function handleInvoiceEvent(
 }
 
 async function findUserId(
-  supabaseClient: ReturnType<typeof createClient>,
+  supabaseClient: any,
   subscriptionId: string | undefined,
   customerId: string | undefined,
 ): Promise<string | null> {
