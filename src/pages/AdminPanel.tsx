@@ -166,20 +166,14 @@ export default function AdminPanel() {
       bucket[user.subscription_tier] = (bucket[user.subscription_tier] ?? 0) + 1;
     });
 
-    const sortedDates = Array.from(dailyMap.keys()).sort();
-    const cumulative = { FREE: 0, STANDARD: 0, INFLUENCER: 0 };
-    return sortedDates.map((date) => {
-      const current = dailyMap.get(date)!;
-      cumulative.FREE += current.FREE ?? 0;
-      cumulative.STANDARD += current.STANDARD ?? 0;
-      cumulative.INFLUENCER += current.INFLUENCER ?? 0;
-      return {
+    return Array.from(dailyMap.keys())
+      .sort()
+      .map((date) => ({
         date,
-        FREE: cumulative.FREE,
-        STANDARD: cumulative.STANDARD,
-        INFLUENCER: cumulative.INFLUENCER,
-      };
-    });
+        FREE: dailyMap.get(date)?.FREE ?? 0,
+        STANDARD: dailyMap.get(date)?.STANDARD ?? 0,
+        INFLUENCER: dailyMap.get(date)?.INFLUENCER ?? 0,
+      }));
   };
 
   const fetchCouponData = async () => {
