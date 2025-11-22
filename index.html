@@ -12,10 +12,27 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Leitor de Mente</title>
     <meta name="description" content="Aplicativo para Ler a Mente do Usuário">
     <meta name="author" content="Lovable" />
-
+    <script>
+      (function forceFreshAssets() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => registration.unregister());
+          });
+        }
+        if (window.caches?.keys) {
+          caches.keys().then((keys) => {
+            keys.forEach((key) => caches.delete(key));
+          });
+        }
+      })();
+    </script>
+  
     
     
     <meta property="og:type" content="website" />
