@@ -12,6 +12,9 @@ interface UserProfile {
   is_premium: boolean;
   has_seen_welcome: boolean | null;
   premium_type: string | null;
+  subscription_tier: 'FREE' | 'STANDARD' | 'INFLUENCER';
+  subscription_status: string;
+  plan_confirmed: boolean;
 }
 
 const PLAN_FEATURES = {
@@ -58,7 +61,7 @@ const Premium = () => {
 
       const { data, error } = await supabase
         .from('users')
-        .select('is_premium, has_seen_welcome, premium_type')
+        .select('is_premium, has_seen_welcome, premium_type, subscription_tier, subscription_status, plan_confirmed')
         .eq('user_id', user.id)
         .single();
 
@@ -72,6 +75,9 @@ const Premium = () => {
         is_premium: !!data?.is_premium,
         has_seen_welcome: data?.has_seen_welcome ?? false,
         premium_type: data?.premium_type ?? null,
+        subscription_tier: (data?.subscription_tier as 'FREE' | 'STANDARD' | 'INFLUENCER') ?? 'FREE',
+        subscription_status: data?.subscription_status ?? 'inactive',
+        plan_confirmed: data?.plan_confirmed ?? false,
       });
     } finally {
       setLoading(false);
@@ -167,11 +173,14 @@ const Premium = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <Card className="border-primary/20 bg-background/70">
+          <Card className={`border-primary/20 bg-background/70 ${profile?.subscription_tier === 'FREE' ? 'ring-2 ring-primary' : ''}`}>
             <CardHeader>
               <div className="flex items-center gap-2 text-primary font-semibold">
                 <Shield className="w-5 h-5" />
                 Plano Free
+                {profile?.subscription_tier === 'FREE' && (
+                  <span className="ml-auto text-xs bg-primary/10 text-primary px-2 py-1 rounded">Seu plano</span>
+                )}
               </div>
               <CardTitle className="text-3xl font-bold">R$ 0</CardTitle>
               <p className="text-muted-foreground text-sm">Uso limitado a três execuções</p>
@@ -188,23 +197,28 @@ const Premium = () => {
               <Button
                 variant="outline"
                 onClick={handleFreePlan}
-                disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false)}
+                disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false) || profile?.subscription_tier === 'FREE'}
                 className="w-full"
               >
-                {usageData && usageData.usageCount >= usageData.freeLimit
-                  ? 'Limite atingido'
-                  : freeLoading
-                    ? 'Confirmando...'
-                    : 'Continuar no Free'}
+                {profile?.subscription_tier === 'FREE'
+                  ? 'Plano atual'
+                  : usageData && usageData.usageCount >= usageData.freeLimit
+                    ? 'Limite atingido'
+                    : freeLoading
+                      ? 'Confirmando...'
+                      : 'Continuar no Free'}
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-background/70 shadow-lg">
+          <Card className={`border-primary/20 bg-background/70 shadow-lg ${profile?.subscription_tier === 'STANDARD' ? 'ring-2 ring-orange-500' : ''}`}>
             <CardHeader>
               <div className="flex items-center gap-2 text-orange-500 font-semibold">
                 <Infinity className="w-5 h-5" />
                 Vitalício
+                {profile?.subscription_tier === 'STANDARD' && (
+                  <span className="ml-auto text-xs bg-orange-500/10 text-orange-500 px-2 py-1 rounded">Seu plano</span>
+                )}
               </div>
               <CardTitle className="text-3xl font-bold">R$ 29,90</CardTitle>
               <p className="text-muted-foreground text-sm">Pagamento único</p>
@@ -220,22 +234,33 @@ const Premium = () => {
               </ul>
               <Button
                 onClick={() => startCheckout('STANDARD')}
-                disabled={checkoutLoading === 'STANDARD'}
+                disabled={checkoutLoading === 'STANDARD' || profile?.subscription_tier === 'STANDARD'}
                 className="w-full bg-orange-500 hover:bg-orange-500/90"
               >
-                {checkoutLoading === 'STANDARD' ? 'Redirecionando...' : 'Assinar Vitalício'}
+                {profile?.subscription_tier === 'STANDARD'
+                  ? 'Plano atual'
+                  : checkoutLoading === 'STANDARD' 
+                    ? 'Redirecionando...' 
+                    : 'Assinar Vitalício'}
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-background/70 shadow-lg">
+          <Card className={`border-primary/20 bg-background/70 shadow-lg ${profile?.subscription_tier === 'INFLUENCER' ? 'ring-2 ring-purple-500' : ''}`}>
             <CardHeader>
               <div className="flex items-center gap-2 text-purple-500 font-semibold">
                 <Sparkles className="w-5 h-5" />
                 Influencer
+                {profile?.subscription_tier === 'INFLUENCER' && (
+                  <span className="ml-auto text-xs bg-purple-500/10 text-purple-500 px-2 py-1 rounded">Seu plano</span>
+                )}
               </div>
               <CardTitle className="text-3xl font-bold">R$ 29,90/mês</CardTitle>
-              <p className="text-muted-foreground text-sm">Tudo do Vitalício + monetização</p>
+              <p className="text-muted-foreground text-sm">
+                {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'past_due'
+                  ? 'Pagamento pendente'
+                  : 'Tudo do Vitalício + monetização'}
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -246,13 +271,27 @@ const Premium = () => {
                   </li>
                 ))}
               </ul>
-              <Button
-                onClick={() => startCheckout('INFLUENCER')}
-                disabled={checkoutLoading === 'INFLUENCER'}
-                className="w-full bg-purple-600 hover:bg-purple-600/90"
-              >
-                {checkoutLoading === 'INFLUENCER' ? 'Redirecionando...' : 'Assinar Influencer'}
-              </Button>
+              {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'past_due' ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => toast.info('Por favor, atualize seu método de pagamento na Stripe')}
+                  className="w-full"
+                >
+                  Atualizar pagamento
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => startCheckout('INFLUENCER')}
+                  disabled={checkoutLoading === 'INFLUENCER' || (profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active')}
+                  className="w-full bg-purple-600 hover:bg-purple-600/90"
+                >
+                  {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active'
+                    ? 'Plano atual'
+                    : checkoutLoading === 'INFLUENCER' 
+                      ? 'Redirecionando...' 
+                      : 'Assinar Influencer'}
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>

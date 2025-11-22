@@ -47,16 +47,9 @@ const InfluencerDashboard = () => {
 
         setCouponCode(profile.coupon_code ?? null);
 
-        const { data: redemptionData, error: redemptionError } = await supabase
-          .from('coupon_redemptions')
-          .select('redeemed_at, amount')
-          .order('redeemed_at', { ascending: false });
-
-        if (redemptionError) {
-          throw redemptionError;
-        }
-
-        setRedemptions(redemptionData || []);
+        // TODO: Implementar tabela coupon_redemptions quando houver integração com Stripe
+        // Por enquanto, apenas simulamos dados vazios
+        setRedemptions([]);
       } catch (error) {
         console.error('Erro ao carregar dados do influencer', error);
         toast.error('Não foi possível carregar o painel.');

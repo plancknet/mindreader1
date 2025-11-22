@@ -1,127 +1,117 @@
-import { serve } from \"https://deno.land/std@0.190.0/http/server.ts\";
-import { createClient } from \"https://esm.sh/@supabase/supabase-js@2.57.2\";
-import Stripe from \"https://esm.sh/stripe@18.5.0\";
-import { z } from \"https://deno.land/x/zod@v3.22.4/mod.ts\";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
-  \"Access-Control-Allow-Origin\": \"*\",
-  \"Access-Control-Allow-Headers\": \"authorization, x-client-info, apikey, content-type\",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 const CodeSchema = z.object({
   code: z.string()
-    .min(3, \"O cÛdigo deve ter pelo menos 3 caracteres\")
-    .max(12, \"O cÛdigo deve ter no m·ximo 12 caracteres\")
-    .regex(/^[A-Z0-9]+$/, \"Use apenas letras mai˙sculas e n˙meros\"),
+    .min(3, "O c√≥digo deve ter pelo menos 3 caracteres")
+    .max(12, "O c√≥digo deve ter no m√°ximo 12 caracteres")
+    .regex(/^[A-Z0-9]+$/, "Use apenas letras mai√∫sculas e n√∫meros"),
 });
 
 serve(async (req) => {
-  if (req.method === \"OPTIONS\") {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   const supabaseClient = createClient(
-    Deno.env.get(\"SUPABASE_URL\") ?? \"\",
-    Deno.env.get(\"SUPABASE_SERVICE_ROLE_KEY\") ?? \"\"
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   );
 
   try {
-    const authHeader = req.headers.get(\"Authorization\");
-    if (!authHeader) {
-      throw new Error(\"Usu·rio n„o autenticado\");
-    }
-
-    const token = authHeader.replace(\"Bearer \", \"");
+    const authHeader = req.headers.get("Authorization")!;
+    const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
 
     if (!user) {
-      throw new Error(\"Usu·rio n„o autenticado\");
+      throw new Error("Usu√°rio n√£o autenticado");
     }
 
     const body = await req.json();
     const { code } = CodeSchema.parse(body);
 
-    const { data: profile, error: profileError } = await supabaseClient
-      .from('users')
-      .select('subscription_tier, subscription_status, coupon_generated, coupon_code')
-      .eq('user_id', user.id)
+    console.log("Criando cupom para usu√°rio:", user.id, "c√≥digo:", code);
+
+    const { data: userData, error: userError } = await supabaseClient
+      .from("users")
+      .select("subscription_tier, subscription_status, coupon_generated")
+      .eq("user_id", user.id)
       .single();
 
-    if (profileError || !profile) {
-      throw new Error(\"Perfil de usu·rio n„o encontrado\");
+    if (userError || !userData) {
+      throw new Error("Usu√°rio n√£o encontrado");
     }
 
-    if (profile.subscription_tier !== 'INFLUENCER') {
-      throw new Error(\"Somente influenciadores ativos podem criar cupons\");
+    if (userData.subscription_tier !== "INFLUENCER") {
+      throw new Error("Somente influenciadores podem criar cupons");
     }
 
-    if (profile.subscription_status !== 'active') {
-      throw new Error(\"Sua assinatura Influencer est· inativa\");
+    if (userData.subscription_status !== "active") {
+      throw new Error("Assinatura n√£o est√° ativa");
     }
 
-    if (profile.coupon_generated) {
-      throw new Error(\"Cupom j· foi criado para este influenciador\");
+    if (userData.coupon_generated) {
+      throw new Error("Voc√™ j√° possui um cupom ativo");
     }
 
-    const { data: duplicate } = await supabaseClient
-      .from('users')
-      .select('user_id')
-      .eq('coupon_code', code)
-      .maybeSingle();
-
-    if (duplicate) {
-      throw new Error(\"Este cÛdigo j· est· em uso por outro influenciador\");
-    }
-
-    const stripe = new Stripe(Deno.env.get(\"STRIPE_SECRET_KEY\") || \"\", {
-      apiVersion: \"2025-08-27.basil\",
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
     });
 
-    // Reuse the master "Cupom iMindReader" coupon for every influencer
-    const baseCouponId = "NJtcfBmv";
-
-    const promotionCode = await stripe.promotionCodes.create({
-      coupon: baseCouponId,
-      code,
+    const promoCode = await stripe.promotionCodes.create({
+      coupon: "NJtcfBmv",
+      code: code,
       active: true,
+      metadata: {
+        user_id: user.id,
+        user_email: user.email || "",
+      },
     });
+
+    console.log("Cupom criado na Stripe:", promoCode.id);
 
     const { error: updateError } = await supabaseClient
-      .from('users')
+      .from("users")
       .update({
         coupon_code: code,
         coupon_generated: true,
-        stripe_coupon_id: baseCouponId,
-        stripe_promotion_code_id: promotionCode.id,
         updated_at: new Date().toISOString(),
       })
-      .eq('user_id', user.id);
+      .eq("user_id", user.id);
 
     if (updateError) {
+      console.error("Erro ao atualizar usu√°rio:", updateError);
       throw updateError;
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        code,
-        promotionCodeId: promotionCode.id,
+        code: code,
+        stripe_promotion_code_id: promoCode.id,
       }),
       {
-        headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       }
     );
   } catch (error: any) {
-    console.error('Error creating influencer coupon:', error);
+    console.error("Erro ao criar cupom:", error);
     return new Response(
       JSON.stringify({
-        error: error.message ?? 'Falha ao criar cupom. Tente novamente.',
+        error: error.message || "Erro ao criar cupom",
       }),
       {
-        headers: { ...corsHeaders, \"Content-Type\": \"application/json\" },
-        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
       }
     );
   }
