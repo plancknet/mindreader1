@@ -123,37 +123,82 @@ export default function AdminPanel() {
 
     const { data: redemptions, error: redemptionsError } = await supabase
       .from('coupon_redemptions' as any)
-      .select('coupon_code, redeemed_at, amount');
+      .select('coupon_code, redeemed_at, amount, influencer_id');
 
     if (redemptionsError) throw redemptionsError;
 
-    const redemptionMap = (redemptions || []).reduce<Record<string, { total: number; revenue: number; last: string | null }>>(
-      (acc, redemption) => {
-        const code = redemption.coupon_code as string;
-        if (!code) return acc;
-
-        const existing = acc[code] ?? { total: 0, revenue: 0, last: null };
-        const redeemedAt = redemption.redeemed_at as string;
-        const revenue = Number(redemption.amount) || 6;
-
-        acc[code] = {
-          total: existing.total + 1,
-          revenue: existing.revenue + revenue,
-          last:
-            existing.last && new Date(existing.last) > new Date(redeemedAt)
-              ? existing.last
-              : redeemedAt,
-        };
-
-        return acc;
-      },
-      {}
+    const userMap = new Map(
+      (influencerCoupons || []).map((coupon) => [
+        coupon.user_id,
+        {
+          email: coupon.email ?? 'Email não disponível',
+          coupon_code: coupon.coupon_code,
+          coupon_generated: Boolean(coupon.coupon_generated),
+          subscription_status: coupon.subscription_status ?? 'inactive',
+        },
+      ]),
     );
 
-    const stats: CouponStats[] = (influencerCoupons || []).map((coupon) => {
+    const redemptionInfluencerIds = Array.from(
+      new Set((redemptions || []).map((item) => item.influencer_id).filter(Boolean) as string[]),
+    ).filter((id) => !userMap.has(id));
+
+    if (redemptionInfluencerIds.length > 0) {
+      const { data: extraUsers, error: extraError } = await supabase
+        .from('users')
+        .select('user_id, email, coupon_code, coupon_generated, subscription_status')
+        .in('user_id', redemptionInfluencerIds);
+
+      if (extraError) throw extraError;
+      extraUsers?.forEach((user) => {
+        userMap.set(user.user_id, {
+          email: user.email ?? 'Email não disponível',
+          coupon_code: user.coupon_code,
+          coupon_generated: Boolean(user.coupon_generated),
+          subscription_status: user.subscription_status ?? 'inactive',
+        });
+      });
+    }
+
+    const redemptionMap = (redemptions || []).reduce<
+      Record<string, { total: number; revenue: number; last: string | null; influencer_id: string | null }>
+    >((acc, redemption) => {
+      const code = redemption.coupon_code as string;
+      if (!code) return acc;
+      const existing = acc[code] ?? {
+        total: 0,
+        revenue: 0,
+        last: null,
+        influencer_id: redemption.influencer_id ?? null,
+      };
+      const redeemedAt = redemption.redeemed_at as string;
+      const revenue = Number(redemption.amount) || 6;
+      existing.total += 1;
+      existing.revenue += revenue;
+      if (!existing.last || new Date(redeemedAt) > new Date(existing.last)) {
+        existing.last = redeemedAt;
+      }
+      if (!existing.influencer_id && redemption.influencer_id) {
+        existing.influencer_id = redemption.influencer_id;
+      }
+      acc[code] = existing;
+      return acc;
+    }, {});
+
+    const statsMap = new Map<string, CouponStats>();
+
+    (influencerCoupons || []).forEach((coupon) => {
       const code = coupon.coupon_code as string;
-      const summary = redemptionMap[code] ?? { total: 0, revenue: 0, last: null };
-      return {
+      if (!code) {
+        return;
+      }
+      const summary = redemptionMap[code] ?? {
+        total: 0,
+        revenue: 0,
+        last: null,
+        influencer_id: coupon.user_id,
+      };
+      statsMap.set(code, {
         coupon_code: code,
         influencer_id: coupon.user_id,
         influencer_email: coupon.email ?? 'Email não disponível',
@@ -162,11 +207,27 @@ export default function AdminPanel() {
         total_redemptions: summary.total,
         total_revenue: summary.revenue,
         last_redeemed_at: summary.last,
-      };
+      });
+      delete redemptionMap[code];
     });
 
+    Object.entries(redemptionMap).forEach(([code, summary]) => {
+      const userInfo = summary.influencer_id ? userMap.get(summary.influencer_id) : undefined;
+      statsMap.set(code, {
+        coupon_code: code,
+        influencer_id: summary.influencer_id ?? 'unknown',
+        influencer_email: userInfo?.email ?? 'Email não disponível',
+        coupon_generated: userInfo?.coupon_generated ?? false,
+        subscription_status: userInfo?.subscription_status ?? 'desconhecido',
+        total_redemptions: summary.total,
+        total_revenue: summary.revenue,
+        last_redeemed_at: summary.last,
+      });
+    });
+
+    const stats = Array.from(statsMap.values()).sort((a, b) => a.coupon_code.localeCompare(b.coupon_code));
     setCouponStats(stats);
-    setCouponCodes(stats.map((item) => item.coupon_code).sort());
+    setCouponCodes(stats.map((item) => item.coupon_code));
   };
 
   const fetchAdminData = async () => {
