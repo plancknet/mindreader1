@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 interface Redemption {
   redeemed_at: string;
@@ -16,10 +17,14 @@ const InfluencerDashboard = () => {
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isInfluencer, setIsInfluencer] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin, isLoading: adminLoading } = useIsAdmin();
 
   useEffect(() => {
     const loadData = async () => {
+      if (adminLoading) return;
+
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
@@ -33,18 +38,22 @@ const InfluencerDashboard = () => {
           .eq('user_id', user.id)
           .single();
 
-        if (profileError || !profile || profile.subscription_tier !== 'INFLUENCER') {
+        if (profileError || !profile) {
+          toast.error('Erro ao carregar dados do usuário.');
+          navigate('/game-selector');
+          return;
+        }
+
+        const userIsInfluencer = profile.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active';
+
+        // Allow access for both admins and active influencers
+        if (!isAdmin && !userIsInfluencer) {
           toast.error('Somente influenciadores podem acessar esta página.');
           navigate('/game-selector');
           return;
         }
 
-        if (profile.subscription_status !== 'active') {
-          toast.error('Sua assinatura Influencer está inativa.');
-          navigate('/premium');
-          return;
-        }
-
+        setIsInfluencer(userIsInfluencer);
         setCouponCode(profile.coupon_code ?? null);
 
         // TODO: Implementar tabela coupon_redemptions quando houver integração com Stripe
@@ -60,7 +69,7 @@ const InfluencerDashboard = () => {
     };
 
     loadData();
-  }, [navigate]);
+  }, [navigate, isAdmin, adminLoading]);
 
   const revenueSummary = useMemo(() => {
     const daily: Record<string, number> = {};
@@ -83,7 +92,7 @@ const InfluencerDashboard = () => {
     };
   }, [redemptions]);
 
-  if (loading) {
+  if (loading || adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -98,30 +107,41 @@ const InfluencerDashboard = () => {
 
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
-            <p className="text-sm text-muted-foreground uppercase tracking-[0.3em]">Influencer</p>
-            <h1 className="text-3xl font-bold">Painel de cupons</h1>
+            <p className="text-sm text-muted-foreground uppercase tracking-[0.3em]">
+              {isAdmin ? 'Admin' : 'Influencer'}
+            </p>
+            <h1 className="text-3xl font-bold">
+              {isAdmin ? 'Painel Administrativo - Cupons' : 'Painel de cupons'}
+            </h1>
           </div>
-          <Button variant="outline" onClick={() => navigate('/influencer/coupon')}>
-            Atualizar cupom
-          </Button>
+          {!isAdmin && (
+            <Button variant="outline" onClick={() => navigate('/influencer/coupon')}>
+              Atualizar cupom
+            </Button>
+          )}
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Cupom ativo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold tracking-[0.4em]">{couponCode}</p>
-            </CardContent>
-          </Card>
+          {!isAdmin && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-muted-foreground">Cupom ativo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold tracking-[0.4em]">{couponCode}</p>
+              </CardContent>
+            </Card>
+          )}
           <Card>
             <CardHeader>
               <CardTitle className="text-sm text-muted-foreground">Resgates totais</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">{revenueSummary.total}</p>
-              <p className="text-sm text-muted-foreground">R$ {(revenueSummary.total * 6).toFixed(2)} já disponíveis</p>
+              <p className="text-sm text-muted-foreground">
+                R$ {(revenueSummary.total * 6).toFixed(2)} já disponíveis
+                {isAdmin && ' (Todos os influenciadores)'}
+              </p>
             </CardContent>
           </Card>
           <Card>
