@@ -4,10 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Crown, RefreshCw } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface UserData {
   user_id: string;
@@ -21,12 +22,24 @@ interface UserData {
   email?: string;
 }
 
+interface CouponRedemption {
+  id: string;
+  influencer_id: string;
+  influencer_email: string;
+  coupon_code: string;
+  redeemed_at: string;
+  amount: number;
+}
+
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [users, setUsers] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [couponRedemptions, setCouponRedemptions] = useState<CouponRedemption[]>([]);
+  const [couponCodes, setCouponCodes] = useState<string[]>([]);
+  const [selectedCoupon, setSelectedCoupon] = useState<string>('ALL');
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -39,9 +52,8 @@ export default function AdminPanel() {
     }
   }, [isAdmin, adminLoading, navigate, toast]);
 
-  const fetchUsers = async () => {
+  const fetchUsersData = async () => {
     try {
-      setIsLoading(true);
       const { data, error } = await supabase
         .from('users')
         .select('user_id, email, is_premium, created_at, jogo1_count, jogo2_count, jogo3_count, jogo4_count, last_accessed_at')
@@ -69,6 +81,50 @@ export default function AdminPanel() {
         description: 'Não foi possível carregar os dados dos usuários.',
         variant: 'destructive',
       });
+    }
+  };
+
+  const fetchCouponData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('coupon_redemptions')
+        .select(`
+          id,
+          coupon_code,
+          redeemed_at,
+          amount,
+          influencer_id,
+          users:users!coupon_redemptions_influencer_id_fkey(email)
+        `)
+        .order('redeemed_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formatted = (data || []).map((item) => ({
+        id: item.id,
+        coupon_code: item.coupon_code,
+        redeemed_at: item.redeemed_at,
+        amount: Number(item.amount) || 6,
+        influencer_id: item.influencer_id,
+        influencer_email: (item as any)?.users?.email ?? 'Email não disponível',
+      }));
+
+      setCouponRedemptions(formatted);
+      setCouponCodes(Array.from(new Set(formatted.map((item) => item.coupon_code))).sort());
+    } catch (error: any) {
+      console.error('Error fetching coupon redemptions:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível carregar os dados de cupons.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const fetchAdminData = async () => {
+    try {
+      setIsLoading(true);
+      await Promise.all([fetchUsersData(), fetchCouponData()]);
     } finally {
       setIsLoading(false);
     }
@@ -76,9 +132,15 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (isAdmin) {
-      fetchUsers();
+      fetchAdminData();
     }
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (selectedCoupon !== 'ALL' && !couponCodes.includes(selectedCoupon)) {
+      setSelectedCoupon('ALL');
+    }
+  }, [couponCodes, selectedCoupon]);
 
   const handleResetAllCounts = async (userId: string) => {
     try {
@@ -100,7 +162,7 @@ export default function AdminPanel() {
         description: 'Todos os contadores resetados com sucesso!',
       });
 
-      fetchUsers();
+      await fetchUsersData();
     } catch (error: any) {
       console.error('Error resetting counts:', error);
       toast({
@@ -110,6 +172,20 @@ export default function AdminPanel() {
       });
     }
   };
+
+  const filteredRedemptions =
+    selectedCoupon === 'ALL'
+      ? couponRedemptions
+      : couponRedemptions.filter((entry) => entry.coupon_code === selectedCoupon);
+
+  const totalRevenue = filteredRedemptions.reduce((sum, entry) => sum + entry.amount, 0);
+
+  const redemptionSummary =
+    filteredRedemptions.length === 0
+      ? 'Nenhum resgate encontrado para o filtro atual.'
+      : selectedCoupon === 'ALL'
+        ? `Total de resgates: ${filteredRedemptions.length} (R$ ${totalRevenue.toFixed(2)})`
+        : `Resgates do cupom ${selectedCoupon}: ${filteredRedemptions.length} (R$ ${totalRevenue.toFixed(2)})`;
 
   if (adminLoading || isLoading) {
     return (
@@ -205,6 +281,79 @@ export default function AdminPanel() {
                 </div>
               )}
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <CardTitle>Cupons resgatados</CardTitle>
+              <p className="text-sm text-muted-foreground">Visualize todos os códigos promocionais e seus resgates.</p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:items-center">
+              <Label htmlFor="coupon-filter" className="text-sm text-muted-foreground">
+                Filtrar por código
+              </Label>
+              <Select value={selectedCoupon} onValueChange={setSelectedCoupon}>
+                <SelectTrigger id="coupon-filter" className="w-[220px]">
+                  <SelectValue placeholder="Selecione um cupom" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Todos os cupons</SelectItem>
+                  {couponCodes.map((code) => (
+                    <SelectItem key={code} value={code}>
+                      {code}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {couponRedemptions.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                Nenhum resgate registrado até o momento.
+              </p>
+            ) : (
+              <>
+                <div className="text-sm text-muted-foreground mb-4 text-right">{redemptionSummary}</div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">Cupom</th>
+                        <th className="text-left p-2">Influencer</th>
+                        <th className="text-left p-2">Data</th>
+                        <th className="text-left p-2">Horário</th>
+                        <th className="text-right p-2">Valor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRedemptions.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="p-4 text-center text-muted-foreground">
+                            Nenhum resgate encontrado para o filtro selecionado.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredRedemptions.map((entry) => {
+                          const redeemedDate = new Date(entry.redeemed_at);
+                          return (
+                            <tr key={entry.id} className="border-b hover:bg-muted/50">
+                              <td className="p-2 font-mono text-xs">{entry.coupon_code}</td>
+                              <td className="p-2">{entry.influencer_email}</td>
+                              <td className="p-2">{redeemedDate.toLocaleDateString('pt-BR')}</td>
+                              <td className="p-2">{redeemedDate.toLocaleTimeString('pt-BR')}</td>
+                              <td className="p-2 text-right font-semibold">R$ {entry.amount.toFixed(2)}</td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
