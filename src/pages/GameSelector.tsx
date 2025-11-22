@@ -10,8 +10,8 @@ import {
   HelpCircle,
   Smile,
   Shuffle,
-  Clover,
   type LucideIcon,
+  type LucideProps,
 } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -29,6 +29,24 @@ type GameCard = {
   badgeKey?: string;
   minTier: Tier;
 };
+
+const CardIcon: LucideIcon = ({ className, ...props }: LucideProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    role="img"
+    aria-hidden="true"
+    className={className}
+    {...props}
+  >
+    <rect x="5" y="3" width="14" height="18" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <rect x="8" y="6" width="8" height="12" rx="1.2" ry="1.2" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
+    <path
+      d="M12 10.5c-.8-1.4-3-1.1-3 0 0 1.6 3 3.5 3 3.5s3-1.9 3-3.5c0-1.1-2.2-1.4-3 0z"
+      fill="currentColor"
+      opacity="0.65"
+    />
+  </svg>
+);
 
 const GAME_CARDS: GameCard[] = [
   {
@@ -62,7 +80,7 @@ const GAME_CARDS: GameCard[] = [
   {
     id: 'carta-mental',
     translationKey: 'cartaMental',
-    icon: Clover,
+    icon: CardIcon,
     path: '/carta-mental',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
     minTier: 'STANDARD',

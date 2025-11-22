@@ -158,7 +158,7 @@ export const ptBR = {
     revealedTitle: 'Carta selecionada',
     revealedDescription: '{rank} de {suit}',
     noSuitSelected: 'Toque em um dos lados do bot?o ?Revelar carta? para mostrar o naipe.',
-    reset: 'Limpar sele??o',
+    reset: 'Limpar seleção',
     suits: {
       spades: 'Espadas',
       hearts: 'Copas',
