@@ -158,6 +158,11 @@ const GameSelector = () => {
             const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier];
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
             const enabled = meetsTier && statusAllowed;
+            const isCartaMental = game.id === 'carta-mental';
+            const iconWrapperClass = isCartaMental
+              ? 'p-4 rounded-2xl bg-white/80 shadow-[0_12px_35px_rgba(56,189,248,0.35)] border border-primary/30'
+              : `p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`;
+            const iconColorClass = isCartaMental ? 'text-sky-600' : 'text-primary';
             return (
               <Card
                 key={game.id}
@@ -176,8 +181,8 @@ const GameSelector = () => {
 
                 <div className="relative space-y-4">
                   <div className="flex justify-center">
-                    <div className={`p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
-                      <Icon className="w-12 h-12 text-primary" />
+                    <div className={iconWrapperClass}>
+                      <Icon className={`w-12 h-12 ${iconColorClass}`} />
                     </div>
                   </div>
 

@@ -215,11 +215,11 @@ export const ptBR = {
       },
       mixDeCartas: {
         title: 'Mix de Cartas',
-        description: 'Qual a carta escolhida pelo seu amigo?'
+        description: 'Conecte a sua mente e descubra a carta'
       },
       cartaMental: {
         title: 'Carta Mental',
-        description: 'Use o verso secreto para revelar o valor e o naipe'
+        description: 'Conecte a mente do seu amigo e descubra a carta'
       },
       mentalConversation: {
         title: 'Conversa Mental',
