@@ -86,8 +86,8 @@ export default function AdminPanel() {
 
   const fetchCouponData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('coupon_redemptions' as any)
+      const { data, error }: any = await (supabase as any)
+        .from('coupon_redemptions')
         .select(`
           id,
           coupon_code,
@@ -100,7 +100,7 @@ export default function AdminPanel() {
 
       if (error) throw error;
 
-      const formatted = ((data as any) || []).map((item: any) => ({
+      const formatted = (data || []).map((item: any) => ({
         id: item.id,
         coupon_code: item.coupon_code,
         redeemed_at: item.redeemed_at,
@@ -110,7 +110,8 @@ export default function AdminPanel() {
       }));
 
       setCouponRedemptions(formatted);
-      const codes = Array.from(new Set(formatted.map((item: any) => item.coupon_code as string))).sort() as string[];
+      const uniqueCodes = new Set<string>(formatted.map((item: any) => String(item.coupon_code)));
+      const codes = Array.from(uniqueCodes).sort();
       setCouponCodes(codes);
     } catch (error: any) {
       console.error('Error fetching coupon redemptions:', error);
