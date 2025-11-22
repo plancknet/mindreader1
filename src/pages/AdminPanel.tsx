@@ -1,34 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Crown, RefreshCw } from 'lucide-react';
+import { Loader2, Crown, RefreshCw, Save, Undo } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface UserData {
   user_id: string;
+  email: string;
   is_premium: boolean;
+  subscription_tier: 'FREE' | 'STANDARD' | 'INFLUENCER';
+  subscription_status: string;
+  plan_confirmed: boolean;
+  coupon_code: string | null;
+  coupon_generated: boolean;
+  premium_type: string | null;
   created_at: string;
+  usage_count: number;
   jogo1_count: number;
   jogo2_count: number;
   jogo3_count: number;
   jogo4_count: number;
   last_accessed_at: string | null;
-  email?: string;
 }
 
-interface CouponRedemption {
-  id: string;
+interface CouponStats {
+  coupon_code: string;
   influencer_id: string;
   influencer_email: string;
-  coupon_code: string;
-  redeemed_at: string;
-  amount: number;
+  coupon_generated: boolean;
+  subscription_status: string;
+  total_redemptions: number;
+  total_revenue: number;
+  last_redeemed_at: string | null;
 }
 
 export default function AdminPanel() {
@@ -36,114 +47,139 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [users, setUsers] = useState<UserData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [couponRedemptions, setCouponRedemptions] = useState<CouponRedemption[]>([]);
+  const [couponStats, setCouponStats] = useState<CouponStats[]>([]);
   const [couponCodes, setCouponCodes] = useState<string[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<string>('ALL');
+  const [emailFilter, setEmailFilter] = useState('');
+  const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
+  const [savingUserId, setSavingUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
       navigate('/game-selector');
       toast({
-        title: 'Acesso Negado',
+        title: 'Acesso negado',
         description: 'Você não tem permissão para acessar esta página.',
         variant: 'destructive',
       });
     }
-  }, [isAdmin, adminLoading, navigate, toast]);
+  }, [adminLoading, isAdmin, navigate, toast]);
 
   const fetchUsersData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('user_id, email, is_premium, created_at, jogo1_count, jogo2_count, jogo3_count, jogo4_count, last_accessed_at')
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('users')
+      .select(`
+        user_id,
+        email,
+        is_premium,
+        subscription_tier,
+        subscription_status,
+        plan_confirmed,
+        coupon_code,
+        coupon_generated,
+        premium_type,
+        created_at,
+        usage_count,
+        jogo1_count,
+        jogo2_count,
+        jogo3_count,
+        jogo4_count,
+        last_accessed_at
+      `)
+      .order('created_at', { ascending: false });
 
-      if (error) throw error;
+    if (error) throw error;
 
-      const formattedUsers = (data || []).map((user) => ({
-        user_id: user.user_id,
-        email: user.email || 'Email não disponível',
-        is_premium: user.is_premium,
-        created_at: user.created_at,
-        jogo1_count: user.jogo1_count,
-        jogo2_count: user.jogo2_count,
-        jogo3_count: user.jogo3_count,
-        jogo4_count: user.jogo4_count,
-        last_accessed_at: user.last_accessed_at,
-      }));
+    const formattedUsers: UserData[] = (data || []).map((user) => ({
+      user_id: user.user_id,
+      email: user.email ?? 'Email não disponível',
+      is_premium: Boolean(user.is_premium),
+      subscription_tier: (user.subscription_tier as UserData['subscription_tier']) ?? 'FREE',
+      subscription_status: user.subscription_status ?? 'inactive',
+      plan_confirmed: Boolean(user.plan_confirmed),
+      coupon_code: user.coupon_code,
+      coupon_generated: Boolean(user.coupon_generated),
+      premium_type: user.premium_type ?? null,
+      created_at: user.created_at,
+      usage_count: user.usage_count ?? 0,
+      jogo1_count: user.jogo1_count ?? 0,
+      jogo2_count: user.jogo2_count ?? 0,
+      jogo3_count: user.jogo3_count ?? 0,
+      jogo4_count: user.jogo4_count ?? 0,
+      last_accessed_at: user.last_accessed_at,
+    }));
 
-      setUsers(formattedUsers);
-    } catch (error: any) {
-      console.error('Error fetching users:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível carregar os dados dos usuários.',
-        variant: 'destructive',
-      });
-    }
+    setUsers(formattedUsers);
   };
 
   const fetchCouponData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('coupon_redemptions' as any)
-        .select('id, coupon_code, redeemed_at, amount, influencer_id')
-        .order('redeemed_at', { ascending: false });
+    const { data: influencerCoupons, error: influencerError } = await supabase
+      .from('users')
+      .select('user_id, email, coupon_code, coupon_generated, subscription_status')
+      .not('coupon_code', 'is', null);
 
-      if (error) throw error;
+    if (influencerError) throw influencerError;
 
-      const redemptions = ((data as any) || []) as {
-        id: string;
-        coupon_code: string;
-        redeemed_at: string;
-        amount: number;
-        influencer_id: string;
-      }[];
+    const { data: redemptions, error: redemptionsError } = await supabase
+      .from('coupon_redemptions' as any)
+      .select('coupon_code, redeemed_at, amount');
 
-      const influencerIds = Array.from(new Set(redemptions.map((item) => item.influencer_id).filter(Boolean)));
+    if (redemptionsError) throw redemptionsError;
 
-      let influencerEmails: Record<string, string> = {};
-      if (influencerIds.length > 0) {
-        const { data: influencersData, error: influencersError } = await supabase
-          .from('users')
-          .select('user_id, email')
-          .in('user_id', influencerIds);
+    const redemptionMap = (redemptions || []).reduce<Record<string, { total: number; revenue: number; last: string | null }>>(
+      (acc, redemption) => {
+        const code = redemption.coupon_code as string;
+        if (!code) return acc;
 
-        if (influencersError) throw influencersError;
+        const existing = acc[code] ?? { total: 0, revenue: 0, last: null };
+        const redeemedAt = redemption.redeemed_at as string;
+        const revenue = Number(redemption.amount) || 6;
 
-        influencerEmails = (influencersData || []).reduce<Record<string, string>>((acc, influencer) => {
-          acc[influencer.user_id] = influencer.email || 'Email não disponível';
-          return acc;
-        }, {});
-      }
+        acc[code] = {
+          total: existing.total + 1,
+          revenue: existing.revenue + revenue,
+          last:
+            existing.last && new Date(existing.last) > new Date(redeemedAt)
+              ? existing.last
+              : redeemedAt,
+        };
 
-      const formatted = redemptions.map((item) => ({
-        id: item.id,
-        coupon_code: item.coupon_code,
-        redeemed_at: item.redeemed_at,
-        amount: Number(item.amount) || 6,
-        influencer_id: item.influencer_id,
-        influencer_email: influencerEmails[item.influencer_id] ?? 'Email não disponível',
-      }));
+        return acc;
+      },
+      {}
+    );
 
-      setCouponRedemptions(formatted);
-      const codes = Array.from(new Set(formatted.map((item) => item.coupon_code))).sort();
-      setCouponCodes(codes);
-    } catch (error: any) {
-      console.error('Error fetching coupon redemptions:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível carregar os dados de cupons.',
-        variant: 'destructive',
-      });
-    }
+    const stats: CouponStats[] = (influencerCoupons || []).map((coupon) => {
+      const code = coupon.coupon_code as string;
+      const summary = redemptionMap[code] ?? { total: 0, revenue: 0, last: null };
+      return {
+        coupon_code: code,
+        influencer_id: coupon.user_id,
+        influencer_email: coupon.email ?? 'Email não disponível',
+        coupon_generated: Boolean(coupon.coupon_generated),
+        subscription_status: coupon.subscription_status ?? 'inactive',
+        total_redemptions: summary.total,
+        total_revenue: summary.revenue,
+        last_redeemed_at: summary.last,
+      };
+    });
+
+    setCouponStats(stats);
+    setCouponCodes(stats.map((item) => item.coupon_code).sort());
   };
 
   const fetchAdminData = async () => {
     try {
       setIsLoading(true);
       await Promise.all([fetchUsersData(), fetchCouponData()]);
+    } catch (error) {
+      console.error('Erro ao carregar painel do admin', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível carregar alguns dados do painel.',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -165,12 +201,12 @@ export default function AdminPanel() {
     try {
       const { error } = await supabase
         .from('users')
-        .update({ 
+        .update({
           jogo1_count: 0,
           jogo2_count: 0,
           jogo3_count: 0,
           jogo4_count: 0,
-          usage_count: 0
+          usage_count: 0,
         })
         .eq('user_id', userId);
 
@@ -178,33 +214,103 @@ export default function AdminPanel() {
 
       toast({
         title: 'Sucesso',
-        description: 'Todos os contadores resetados com sucesso!',
+        description: 'Todos os contadores foram resetados.',
       });
 
       await fetchUsersData();
-    } catch (error: any) {
-      console.error('Error resetting counts:', error);
+    } catch (error) {
+      console.error('Erro ao resetar contadores', error);
       toast({
         title: 'Erro',
-        description: 'Não foi possível resetar os contadores.',
+        description: 'Não foi possível resetar os contadores deste usuário.',
         variant: 'destructive',
       });
     }
   };
 
-  const filteredRedemptions =
+  const filteredCouponStats =
     selectedCoupon === 'ALL'
-      ? couponRedemptions
-      : couponRedemptions.filter((entry) => entry.coupon_code === selectedCoupon);
+      ? couponStats
+      : couponStats.filter((item) => item.coupon_code === selectedCoupon);
 
-  const totalRevenue = filteredRedemptions.reduce((sum, entry) => sum + entry.amount, 0);
+  const couponSummary = useMemo(() => {
+    if (filteredCouponStats.length === 0) {
+      return 'Nenhum cupom encontrado para o filtro atual.';
+    }
+    const totalRedemptions = filteredCouponStats.reduce((sum, entry) => sum + entry.total_redemptions, 0);
+    const totalRevenue = filteredCouponStats.reduce((sum, entry) => sum + entry.total_revenue, 0);
+    return `Total de resgates: ${totalRedemptions} (R$ ${totalRevenue.toFixed(2)})`;
+  }, [filteredCouponStats]);
 
-  const redemptionSummary =
-    filteredRedemptions.length === 0
-      ? 'Nenhum resgate encontrado para o filtro atual.'
-      : selectedCoupon === 'ALL'
-        ? `Total de resgates: ${filteredRedemptions.length} (R$ ${totalRevenue.toFixed(2)})`
-        : `Resgates do cupom ${selectedCoupon}: ${filteredRedemptions.length} (R$ ${totalRevenue.toFixed(2)})`;
+  const filteredUsers = useMemo(() => {
+    if (!emailFilter) return users;
+    return users.filter((user) => user.email.toLowerCase().includes(emailFilter.toLowerCase()));
+  }, [users, emailFilter]);
+
+  const handleUserFieldChange = <K extends keyof UserData>(userId: string, field: K, value: UserData[K]) => {
+    setEditedUsers((prev) => ({
+      ...prev,
+      [userId]: {
+        ...prev[userId],
+        [field]: value,
+      },
+    }));
+  };
+
+  const getUserValue = <K extends keyof UserData>(user: UserData, field: K): UserData[K] => {
+    return (editedUsers[user.user_id]?.[field] as UserData[K]) ?? user[field];
+  };
+
+  const handleSaveUser = async (userId: string) => {
+    const updates = editedUsers[userId];
+    if (!updates || Object.keys(updates).length === 0) {
+      toast({
+        title: 'Nada para salvar',
+        description: 'Nenhuma alteração foi realizada.',
+      });
+      return;
+    }
+
+    try {
+      setSavingUserId(userId);
+      const { error } = await supabase
+        .from('users')
+        .update(updates)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      setUsers((prev) =>
+        prev.map((user) => (user.user_id === userId ? { ...user, ...updates } : user))
+      );
+
+      setEditedUsers((prev) => {
+        const { [userId]: removed, ...rest } = prev;
+        return rest;
+      });
+
+      toast({
+        title: 'Dados atualizados',
+        description: 'As informações do usuário foram salvas com sucesso.',
+      });
+    } catch (error) {
+      console.error('Erro ao salvar usuário', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível atualizar o usuário.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSavingUserId(null);
+    }
+  };
+
+  const handleResetUserChanges = (userId: string) => {
+    setEditedUsers((prev) => {
+      const { [userId]: removed, ...rest } = prev;
+      return rest;
+    });
+  };
 
   if (adminLoading || isLoading) {
     return (
@@ -230,84 +336,12 @@ export default function AdminPanel() {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Controle de Uso - Todos os Usuários</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {users.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">
-                  Nenhum usuário encontrado.
-                </p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2">Email</th>
-                        <th className="text-left p-2">Data Cadastro</th>
-                        <th className="text-center p-2">Premium</th>
-                        <th className="text-center p-2">Jogo 1</th>
-                        <th className="text-center p-2">Jogo 2</th>
-                        <th className="text-center p-2">Jogo 3</th>
-                        <th className="text-center p-2">Jogo 4</th>
-                        <th className="text-center p-2">Total</th>
-                        <th className="text-left p-2">Último Acesso</th>
-                        <th className="text-right p-2">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {users.map((user) => {
-                        const totalCount = user.jogo1_count + user.jogo2_count + user.jogo3_count + user.jogo4_count;
-                        return (
-                          <tr key={user.user_id} className="border-b hover:bg-muted/50">
-                            <td className="p-2">{user.email}</td>
-                            <td className="p-2 text-muted-foreground">
-                              {new Date(user.created_at).toLocaleDateString('pt-BR')}
-                            </td>
-                            <td className="p-2 text-center">
-                              {user.is_premium ? (
-                                <span className="text-primary font-semibold">✓</span>
-                              ) : (
-                                <span className="text-muted-foreground">-</span>
-                              )}
-                            </td>
-                            <td className="p-2 text-center font-mono">{user.jogo1_count}</td>
-                            <td className="p-2 text-center font-mono">{user.jogo2_count}</td>
-                            <td className="p-2 text-center font-mono">{user.jogo3_count}</td>
-                            <td className="p-2 text-center font-mono">{user.jogo4_count}</td>
-                            <td className="p-2 text-center font-mono font-bold">{totalCount}</td>
-                            <td className="p-2 text-muted-foreground">
-                              {user.last_accessed_at 
-                                ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR') 
-                                : 'Nunca'}
-                            </td>
-                            <td className="p-2 text-right">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleResetAllCounts(user.user_id)}
-                              >
-                                <RefreshCw className="w-4 h-4 mr-1" />
-                                Resetar
-                              </Button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
           <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle>Cupons resgatados</CardTitle>
-              <p className="text-sm text-muted-foreground">Visualize todos os códigos promocionais e seus resgates.</p>
+              <CardTitle>Cupons promocionais</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Todos os códigos cadastrados, mesmo sem resgates.
+              </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:items-center">
               <Label htmlFor="coupon-filter" className="text-sm text-muted-foreground">
@@ -329,49 +363,278 @@ export default function AdminPanel() {
             </div>
           </CardHeader>
           <CardContent>
-            {couponRedemptions.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
-                Nenhum resgate registrado até o momento.
+            {couponStats.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">
+                Nenhum cupom cadastrado até o momento.
               </p>
             ) : (
               <>
-                <div className="text-sm text-muted-foreground mb-4 text-right">{redemptionSummary}</div>
+                <div className="text-sm text-muted-foreground mb-4 text-right">{couponSummary}</div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-2">Cupom</th>
+                        <th className="text-left p-2">Código</th>
                         <th className="text-left p-2">Influencer</th>
-                        <th className="text-left p-2">Data</th>
-                        <th className="text-left p-2">Horário</th>
-                        <th className="text-right p-2">Valor</th>
+                        <th className="text-center p-2">Status</th>
+                        <th className="text-center p-2">Resgates</th>
+                        <th className="text-center p-2">Receita</th>
+                        <th className="text-left p-2">Último resgate</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredRedemptions.length === 0 ? (
-                        <tr>
-                          <td colSpan={5} className="p-4 text-center text-muted-foreground">
-                            Nenhum resgate encontrado para o filtro selecionado.
+                      {filteredCouponStats.map((coupon) => (
+                        <tr key={coupon.coupon_code} className="border-b hover:bg-muted/50">
+                          <td className="p-2 font-mono text-xs">{coupon.coupon_code}</td>
+                          <td className="p-2">{coupon.influencer_email}</td>
+                          <td className="p-2 text-center">
+                            {coupon.coupon_generated ? 'Ativo' : 'Pendente'} / {coupon.subscription_status}
+                          </td>
+                          <td className="p-2 text-center font-semibold">{coupon.total_redemptions}</td>
+                          <td className="p-2 text-center font-semibold">
+                            R$ {coupon.total_revenue.toFixed(2)}
+                          </td>
+                          <td className="p-2">
+                            {coupon.last_redeemed_at
+                              ? `${new Date(coupon.last_redeemed_at).toLocaleDateString('pt-BR')} ${new Date(
+                                  coupon.last_redeemed_at
+                                ).toLocaleTimeString('pt-BR')}`
+                              : 'Sem resgates'}
                           </td>
                         </tr>
-                      ) : (
-                        filteredRedemptions.map((entry) => {
-                          const redeemedDate = new Date(entry.redeemed_at);
-                          return (
-                            <tr key={entry.id} className="border-b hover:bg-muted/50">
-                              <td className="p-2 font-mono text-xs">{entry.coupon_code}</td>
-                              <td className="p-2">{entry.influencer_email}</td>
-                              <td className="p-2">{redeemedDate.toLocaleDateString('pt-BR')}</td>
-                              <td className="p-2">{redeemedDate.toLocaleTimeString('pt-BR')}</td>
-                              <td className="p-2 text-right font-semibold">R$ {entry.amount.toFixed(2)}</td>
-                            </tr>
-                          );
-                        })
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <CardTitle>Usuários (edição completa)</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Ajuste qualquer coluna e aplique filtros por email.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email-filter" className="text-sm text-muted-foreground">
+                  Filtrar por email
+                </Label>
+                <Input
+                  id="email-filter"
+                  placeholder="Buscar..."
+                  value={emailFilter}
+                  onChange={(event) => setEmailFilter(event.target.value)}
+                />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {filteredUsers.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">
+                Nenhum usuário encontrado para o filtro aplicado.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm align-top">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-2">Email</th>
+                      <th className="text-left p-2">Plano</th>
+                      <th className="text-left p-2">Status</th>
+                      <th className="text-center p-2">Confirmado</th>
+                      <th className="text-left p-2">Cupom</th>
+                      <th className="text-center p-2">Cupom gerado</th>
+                      <th className="text-center p-2">Premium</th>
+                      <th className="text-left p-2">Premium type</th>
+                      <th className="text-center p-2">Uso total</th>
+                      <th className="text-center p-2">Jogo 1</th>
+                      <th className="text-center p-2">Jogo 2</th>
+                      <th className="text-center p-2">Jogo 3</th>
+                      <th className="text-center p-2">Jogo 4</th>
+                      <th className="text-left p-2">Último acesso</th>
+                      <th className="text-left p-2">Cadastro</th>
+                      <th className="text-right p-2">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((user) => {
+                      const totalCount =
+                        Number(getUserValue(user, 'jogo1_count')) +
+                        Number(getUserValue(user, 'jogo2_count')) +
+                        Number(getUserValue(user, 'jogo3_count')) +
+                        Number(getUserValue(user, 'jogo4_count'));
+
+                      return (
+                        <tr key={user.user_id} className="border-b hover:bg-muted/50">
+                          <td className="p-2 min-w-[220px]">
+                            <Input
+                              value={getUserValue(user, 'email')}
+                              onChange={(event) => handleUserFieldChange(user.user_id, 'email', event.target.value)}
+                            />
+                          </td>
+                          <td className="p-2 min-w-[150px]">
+                            <Select
+                              value={getUserValue(user, 'subscription_tier')}
+                              onValueChange={(value) =>
+                                handleUserFieldChange(user.user_id, 'subscription_tier', value as UserData['subscription_tier'])
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="FREE">FREE</SelectItem>
+                                <SelectItem value="STANDARD">STANDARD</SelectItem>
+                                <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-2 min-w-[150px]">
+                            <Select
+                              value={getUserValue(user, 'subscription_status')}
+                              onValueChange={(value) => handleUserFieldChange(user.user_id, 'subscription_status', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="active">active</SelectItem>
+                                <SelectItem value="inactive">inactive</SelectItem>
+                                <SelectItem value="past_due">past_due</SelectItem>
+                                <SelectItem value="canceled">canceled</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-2 text-center">
+                            <Checkbox
+                              checked={Boolean(getUserValue(user, 'plan_confirmed'))}
+                              onCheckedChange={(checked) =>
+                                handleUserFieldChange(user.user_id, 'plan_confirmed', Boolean(checked))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 min-w-[160px]">
+                            <Input
+                              value={getUserValue(user, 'coupon_code') ?? ''}
+                              onChange={(event) => handleUserFieldChange(user.user_id, 'coupon_code', event.target.value)}
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Checkbox
+                              checked={Boolean(getUserValue(user, 'coupon_generated'))}
+                              onCheckedChange={(checked) =>
+                                handleUserFieldChange(user.user_id, 'coupon_generated', Boolean(checked))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Checkbox
+                              checked={Boolean(getUserValue(user, 'is_premium'))}
+                              onCheckedChange={(checked) =>
+                                handleUserFieldChange(user.user_id, 'is_premium', Boolean(checked))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 min-w-[140px]">
+                            <Input
+                              value={getUserValue(user, 'premium_type') ?? ''}
+                              onChange={(event) => handleUserFieldChange(user.user_id, 'premium_type', event.target.value)}
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Input
+                              type="number"
+                              value={getUserValue(user, 'usage_count')}
+                              onChange={(event) =>
+                                handleUserFieldChange(user.user_id, 'usage_count', Number(event.target.value))
+                              }
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">Total: {totalCount}</p>
+                          </td>
+                          <td className="p-2 text-center">
+                            <Input
+                              type="number"
+                              value={getUserValue(user, 'jogo1_count')}
+                              onChange={(event) =>
+                                handleUserFieldChange(user.user_id, 'jogo1_count', Number(event.target.value))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Input
+                              type="number"
+                              value={getUserValue(user, 'jogo2_count')}
+                              onChange={(event) =>
+                                handleUserFieldChange(user.user_id, 'jogo2_count', Number(event.target.value))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Input
+                              type="number"
+                              value={getUserValue(user, 'jogo3_count')}
+                              onChange={(event) =>
+                                handleUserFieldChange(user.user_id, 'jogo3_count', Number(event.target.value))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <Input
+                              type="number"
+                              value={getUserValue(user, 'jogo4_count')}
+                              onChange={(event) =>
+                                handleUserFieldChange(user.user_id, 'jogo4_count', Number(event.target.value))
+                              }
+                            />
+                          </td>
+                          <td className="p-2 text-muted-foreground">
+                            {user.last_accessed_at
+                              ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR')
+                              : 'Nunca'}
+                          </td>
+                          <td className="p-2 text-muted-foreground">
+                            {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                          </td>
+                          <td className="p-2 text-right space-y-2">
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleSaveUser(user.user_id)}
+                                disabled={savingUserId === user.user_id}
+                              >
+                                <Save className="w-4 h-4 mr-1" />
+                                {savingUserId === user.user_id ? 'Salvando...' : 'Salvar'}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleResetUserChanges(user.user_id)}
+                                disabled={!editedUsers[user.user_id]}
+                              >
+                                <Undo className="w-4 h-4 mr-1" />
+                                Desfazer
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleResetAllCounts(user.user_id)}
+                              >
+                                <RefreshCw className="w-4 h-4 mr-1" />
+                                Reset contadores
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </CardContent>
         </Card>
