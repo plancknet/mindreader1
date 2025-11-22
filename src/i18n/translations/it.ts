@@ -147,6 +147,28 @@ export const it = {
     shuffleButton: "Mescola",
     magicTip: "Ogni mescolata genera una nuova sequenza che codifica la tua carta in modo unico!",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: 'Usa il dorso personalizzato MindReader per comunicare in segreto la carta scelta dal tuo amico.',
+    gridInstruction: 'Tocca una delle 12 posizioni invisibili. Ogni tocco rappresenta le carte dal 2 al K.',
+    aceHint: 'Se non tocchi nulla, indichi che la carta pensata era un Asso.',
+    suitsInstruction: 'Premi uno dei quattro segmenti invisibili del pulsante ?Rivela carta? per impostare il seme.',
+    revealButton: 'Rivela carta',
+    revealButtonAria: 'Rivela la carta scegliendo il seme {suit}',
+    rankButtonAria: 'Seleziona il valore {rank}',
+    selectedRank: 'Valore selezionato: {rank}',
+    noRank: 'Nessun valore selezionato (si assume Asso)',
+    revealedTitle: 'Carta svelata',
+    revealedDescription: '{rank} di {suit}',
+    noSuitSelected: 'Tocca un lato del pulsante ?Rivela carta? per mostrare il seme.',
+    reset: 'Azzera selezione',
+    suits: {
+      spades: 'Picche',
+      hearts: 'Cuori',
+      diamonds: 'Quadri',
+      clubs: 'Fiori',
+    },
+  },
   mentalConversation: {
     instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell\'ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l\'app non indovina, mostrerà un elenco di possibilità.\n4. Fai un\'altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1a, 2a o 3a opzione.',
     title: 'Conversazione Mentale',
@@ -197,6 +219,10 @@ export const it = {
       mixDeCartas: {
         title: 'Mix di Carte',
         description: 'Codifica una carta segreta con un motivo di colori su sei carte'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: 'Usa il dorso segreto per rivelare valore e seme'
       },
       mentalConversation: {
         title: 'Conversazione Mentale',

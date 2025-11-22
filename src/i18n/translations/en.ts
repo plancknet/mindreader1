@@ -147,6 +147,28 @@ export const en = {
     shuffleButton: "Shuffle",
     magicTip: "Each shuffle generates a new sequence that uniquely encodes your card!",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: 'Use the MindReader-branded back to silently transmit the card your friend picked.',
+    gridInstruction: 'Tap one of the 12 invisible positions. Each tap represents cards from 2 to K.',
+    aceHint: 'Leave the grid untouched to signal that the thought-of card was an Ace.',
+    suitsInstruction: 'Use the ?Reveal card? bar and press one of its four invisible segments to choose the suit.',
+    revealButton: 'Reveal card',
+    revealButtonAria: 'Reveal card by choosing the {suit} suit',
+    rankButtonAria: 'Select value {rank}',
+    selectedRank: 'Selected value: {rank}',
+    noRank: 'No value selected (assuming Ace)',
+    revealedTitle: 'Selected card',
+    revealedDescription: '{rank} of {suit}',
+    noSuitSelected: 'Tap one side of the ?Reveal card? bar to show the suit.',
+    reset: 'Clear selection',
+    suits: {
+      spades: 'Spades',
+      hearts: 'Hearts',
+      diamonds: 'Diamonds',
+      clubs: 'Clubs',
+    },
+  },
   mentalConversation: {
     instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
     title: 'Mental Conversation',
@@ -197,6 +219,10 @@ export const en = {
       mixDeCartas: {
         title: 'Card Mix',
         description: 'Encode a hidden card using a six-card color pattern'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: 'Use the secret back to reveal both value and suit'
       },
       mentalConversation: {
         title: 'Mental Conversation',

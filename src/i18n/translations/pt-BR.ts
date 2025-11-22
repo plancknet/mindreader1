@@ -144,6 +144,28 @@ export const ptBR = {
     shuffleButton: "Embaralhar",
     magicTip: "",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: 'Use o verso personalizado do MindReader para transmitir mentalmente a carta escolhida pelo seu amigo.',
+    gridInstruction: 'Toque discretamente em uma das 12 posi??es invis?veis. Cada toque representa as cartas de 2 a K.',
+    aceHint: 'Se nenhum toque for realizado, voc? indica que a carta pensada foi um ?s.',
+    suitsInstruction: 'Use o bot?o ?Revelar carta? e pressione um dos quatro quadrantes para indicar o naipe desejado.',
+    revealButton: 'Revelar carta',
+    revealButtonAria: 'Revelar carta escolhendo o naipe {suit}',
+    rankButtonAria: 'Selecionar o valor {rank}',
+    selectedRank: 'Valor selecionado: {rank}',
+    noRank: 'Nenhum valor selecionado (assumindo ?s)',
+    revealedTitle: 'Carta selecionada',
+    revealedDescription: '{rank} de {suit}',
+    noSuitSelected: 'Toque em um dos lados do bot?o ?Revelar carta? para mostrar o naipe.',
+    reset: 'Limpar sele??o',
+    suits: {
+      spades: 'Espadas',
+      hearts: 'Copas',
+      diamonds: 'Ouros',
+      clubs: 'Paus',
+    },
+  },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
     title: 'Conversa Mental',
@@ -194,6 +216,10 @@ export const ptBR = {
       mixDeCartas: {
         title: 'Mix de Cartas',
         description: 'Qual a carta escolhida pelo seu amigo?'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: 'Use o verso secreto para revelar o valor e o naipe'
       },
       mentalConversation: {
         title: 'Conversa Mental',

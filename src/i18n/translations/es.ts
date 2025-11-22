@@ -147,6 +147,28 @@ export const es = {
     shuffleButton: "Barajar",
     magicTip: "¡Cada barajada genera una nueva secuencia que codifica tu carta de forma única!",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: 'Usa el reverso personalizado de MindReader para transmitir en secreto la carta pensada por tu amigo.',
+    gridInstruction: 'Toca una de las 12 posiciones invisibles. Cada toque representa las cartas del 2 al K.',
+    aceHint: 'Si no tocas nada, estar?s indicando que la carta elegida fue un As.',
+    suitsInstruction: 'Pulsa uno de los cuatro segmentos invisibles del bot?n ?Revelar carta? para definir el palo.',
+    revealButton: 'Revelar carta',
+    revealButtonAria: 'Revelar la carta eligiendo el palo {suit}',
+    rankButtonAria: 'Seleccionar el valor {rank}',
+    selectedRank: 'Valor seleccionado: {rank}',
+    noRank: 'Sin valor seleccionado (asumiendo As)',
+    revealedTitle: 'Carta revelada',
+    revealedDescription: '{rank} de {suit}',
+    noSuitSelected: 'Toca uno de los lados del bot?n ?Revelar carta? para mostrar el palo.',
+    reset: 'Limpiar selecci?n',
+    suits: {
+      spades: 'Espadas',
+      hearts: 'Corazones',
+      diamonds: 'Diamantes',
+      clubs: 'Tr?boles',
+    },
+  },
   mentalConversation: {
     instructions: '1. Tu primera interacción revela la categoría elegida (1 palabra = Animal, 2 palabras = Fruta, 3 palabras = País).\n2. En las siguientes tres interacciones, la primera letra de la ÚLTIMA palabra indica la primera letra de la palabra de tu amigo. Repite esto 3 veces.\n3. Si con esas tres letras la app aún no acierta, mostrará una lista de posibilidades.\n4. Haz otra interacción con 1, 2 o 3 palabras para indicar si la respuesta correcta es la 1.ª, 2.ª o 3.ª opción.',
     title: 'Conversación Mental',
@@ -197,6 +219,10 @@ export const es = {
       mixDeCartas: {
         title: 'Mix de Cartas',
         description: 'Codifica una carta secreta con un patrón de colores de seis cartas'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: 'Usa el reverso secreto para revelar valor y palo'
       },
       mentalConversation: {
         title: 'Conversación Mental',

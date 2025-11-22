@@ -10,6 +10,7 @@ import {
   HelpCircle,
   Smile,
   Shuffle,
+  Clover,
   type LucideIcon,
 } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
@@ -56,6 +57,14 @@ const GAME_CARDS: GameCard[] = [
     icon: Shuffle,
     path: '/mind-reader/mix-de-cartas',
     color: 'from-emerald-500 to-lime-500',
+    minTier: 'STANDARD',
+  },
+  {
+    id: 'carta-mental',
+    translationKey: 'cartaMental',
+    icon: Clover,
+    path: '/carta-mental',
+    color: 'from-sky-500 via-blue-500 to-indigo-600',
     minTier: 'STANDARD',
   },
   {

@@ -147,6 +147,28 @@ export const zhCN = {
     shuffleButton: "洗牌",
     magicTip: "每次洗牌都会生成一个独特的序列来编码您的牌！",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: '?? MindReader ?????????????????????????',
+    gridInstruction: '?? 12 ?????????????? 2 ? K ????',
+    aceHint: '????????????????? A?',
+    suitsInstruction: '???????????????????????????',
+    revealButton: '????',
+    revealButtonAria: '?? {suit} ???????',
+    rankButtonAria: '?????? {rank}',
+    selectedRank: '??????{rank}',
+    noRank: '????????? A?',
+    revealedTitle: '?????',
+    revealedDescription: '{suit} {rank}',
+    noSuitSelected: '????????????????????',
+    reset: '????',
+    suits: {
+      spades: '??',
+      hearts: '??',
+      diamonds: '??',
+      clubs: '??',
+    },
+  },
   mentalConversation: {
     instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
     title: 'Mental Conversation',
@@ -197,6 +219,10 @@ export const zhCN = {
       mixDeCartas: {
         title: 'Card Mix',
         description: 'Encode a hidden card via a six-card color pattern'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: '用秘密牌背揭示纸牌的数值与花色'
       },
       mentalConversation: {
         title: 'Mental Conversation',

@@ -147,6 +147,28 @@ export const fr = {
     shuffleButton: "Mélanger",
     magicTip: "Chaque mélange génère une nouvelle séquence qui code votre carte de manière unique!",
   },
+  cartaMental: {
+    title: 'Carta Mental',
+    subtitle: 'Utilisez le dos personnalis? MindReader pour transmettre en secret la carte choisie par votre ami.',
+    gridInstruction: 'Touchez discr?tement l?une des 12 zones invisibles. Chaque zone repr?sente les cartes de 2 ? K.',
+    aceHint: 'Sans toucher le verso, vous indiquez que la carte pens?e est un As.',
+    suitsInstruction: 'Appuyez sur l?un des quatre segments invisibles du bouton ?R?v?ler la carte? pour choisir la couleur.',
+    revealButton: 'R?v?ler la carte',
+    revealButtonAria: 'R?v?ler la carte en choisissant la couleur {suit}',
+    rankButtonAria: 'S?lectionner la valeur {rank}',
+    selectedRank: 'Valeur s?lectionn?e : {rank}',
+    noRank: 'Aucune valeur s?lectionn?e (nous supposerons As)',
+    revealedTitle: 'Carte r?v?l?e',
+    revealedDescription: '{rank} de {suit}',
+    noSuitSelected: 'Touchez un c?t? du bouton ?R?v?ler la carte? pour afficher la couleur.',
+    reset: 'Effacer la s?lection',
+    suits: {
+      spades: 'Piques',
+      hearts: 'C?urs',
+      diamonds: 'Carreaux',
+      clubs: 'Tr?fles',
+    },
+  },
   mentalConversation: {
     instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot de votre ami. Répétez cela 3 fois.\n3. Si l\'app ne trouve rien après trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une interaction supplémentaire avec 1, 2 ou 3 mots pour indiquer si la bonne réponse est la 1re, la 2e ou la 3e option.',
     title: 'Conversation Mentale',
@@ -197,6 +219,10 @@ export const fr = {
       mixDeCartas: {
         title: 'Mix de Cartes',
         description: 'Encodez une carte secrète avec un motif de couleurs sur six cartes'
+      },
+      cartaMental: {
+        title: 'Carta Mental',
+        description: 'Utilisez le dos secret pour révéler valeur et couleur'
       },
       mentalConversation: {
         title: 'Conversation Mentale',
