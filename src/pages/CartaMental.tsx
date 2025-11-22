@@ -80,7 +80,7 @@ const CartaMental = () => {
             <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl">
               <div className="absolute inset-0 flex items-center justify-center opacity-80">
                 <img
-                  src="/icons/icon-72x72.png"
+                  src="/icons/icon-144x144.png"
                   alt="MindReader"
                   className="h-24 w-24 rotate-6 select-none opacity-60"
                   draggable={false}
