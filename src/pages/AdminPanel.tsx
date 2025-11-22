@@ -88,29 +88,47 @@ export default function AdminPanel() {
     try {
       const { data, error } = await supabase
         .from('coupon_redemptions' as any)
-        .select(`
-          id,
-          coupon_code,
-          redeemed_at,
-          amount,
-          influencer_id,
-          users:users!coupon_redemptions_influencer_id_fkey(email)
-        `)
+        .select('id, coupon_code, redeemed_at, amount, influencer_id')
         .order('redeemed_at', { ascending: false });
 
       if (error) throw error;
 
-      const formatted = ((data as any) || []).map((item: any) => ({
+      const redemptions = ((data as any) || []) as {
+        id: string;
+        coupon_code: string;
+        redeemed_at: string;
+        amount: number;
+        influencer_id: string;
+      }[];
+
+      const influencerIds = Array.from(new Set(redemptions.map((item) => item.influencer_id).filter(Boolean)));
+
+      let influencerEmails: Record<string, string> = {};
+      if (influencerIds.length > 0) {
+        const { data: influencersData, error: influencersError } = await supabase
+          .from('users')
+          .select('user_id, email')
+          .in('user_id', influencerIds);
+
+        if (influencersError) throw influencersError;
+
+        influencerEmails = (influencersData || []).reduce<Record<string, string>>((acc, influencer) => {
+          acc[influencer.user_id] = influencer.email || 'Email não disponível';
+          return acc;
+        }, {});
+      }
+
+      const formatted = redemptions.map((item) => ({
         id: item.id,
         coupon_code: item.coupon_code,
         redeemed_at: item.redeemed_at,
         amount: Number(item.amount) || 6,
         influencer_id: item.influencer_id,
-        influencer_email: item?.users?.email ?? 'Email não disponível',
+        influencer_email: influencerEmails[item.influencer_id] ?? 'Email não disponível',
       }));
 
       setCouponRedemptions(formatted);
-      const codes = Array.from(new Set(formatted.map((item: any) => item.coupon_code as string))).sort() as string[];
+      const codes = Array.from(new Set(formatted.map((item) => item.coupon_code))).sort();
       setCouponCodes(codes);
     } catch (error: any) {
       console.error('Error fetching coupon redemptions:', error);
