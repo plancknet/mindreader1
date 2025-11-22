@@ -87,7 +87,7 @@ export default function AdminPanel() {
   const fetchCouponData = async () => {
     try {
       const { data, error } = await supabase
-        .from('coupon_redemptions')
+        .from('coupon_redemptions' as any)
         .select(`
           id,
           coupon_code,
@@ -100,17 +100,18 @@ export default function AdminPanel() {
 
       if (error) throw error;
 
-      const formatted = (data || []).map((item) => ({
+      const formatted = ((data as any) || []).map((item: any) => ({
         id: item.id,
         coupon_code: item.coupon_code,
         redeemed_at: item.redeemed_at,
         amount: Number(item.amount) || 6,
         influencer_id: item.influencer_id,
-        influencer_email: (item as any)?.users?.email ?? 'Email não disponível',
+        influencer_email: item?.users?.email ?? 'Email não disponível',
       }));
 
       setCouponRedemptions(formatted);
-      setCouponCodes(Array.from(new Set(formatted.map((item) => item.coupon_code))).sort());
+      const codes = Array.from(new Set(formatted.map((item: any) => item.coupon_code as string))).sort() as string[];
+      setCouponCodes(codes);
     } catch (error: any) {
       console.error('Error fetching coupon redemptions:', error);
       toast({
