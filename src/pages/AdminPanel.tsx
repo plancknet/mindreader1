@@ -50,7 +50,28 @@ export default function AdminPanel() {
   const [couponStats, setCouponStats] = useState<CouponStats[]>([]);
   const [couponCodes, setCouponCodes] = useState<string[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<string>('ALL');
-  const [emailFilter, setEmailFilter] = useState('');
+  const [couponFilters, setCouponFilters] = useState({
+    code: '',
+    influencer: '',
+    status: 'ALL',
+  });
+  const [userFilters, setUserFilters] = useState({
+    email: '',
+    tier: 'ALL',
+    status: 'ALL',
+    confirmed: 'ALL',
+    couponCode: '',
+    couponGenerated: 'ALL',
+    premium: 'ALL',
+    premiumType: '',
+    usage: '',
+    jogo1: '',
+    jogo2: '',
+    jogo3: '',
+    jogo4: '',
+    lastAccess: '',
+    createdAt: '',
+  });
   const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -289,10 +310,20 @@ export default function AdminPanel() {
     }
   };
 
-  const filteredCouponStats =
-    selectedCoupon === 'ALL'
-      ? couponStats
-      : couponStats.filter((item) => item.coupon_code === selectedCoupon);
+  const filteredCouponStats = useMemo(() => {
+    const base =
+      selectedCoupon === 'ALL'
+        ? couponStats
+        : couponStats.filter((item) => item.coupon_code === selectedCoupon);
+
+    return base.filter((coupon) => {
+      const matchCode = coupon.coupon_code.toLowerCase().includes(couponFilters.code.toLowerCase());
+      const matchInfluencer = coupon.influencer_email.toLowerCase().includes(couponFilters.influencer.toLowerCase());
+      const matchStatus =
+        couponFilters.status === 'ALL' || coupon.subscription_status === couponFilters.status;
+      return matchCode && matchInfluencer && matchStatus;
+    });
+  }, [couponStats, selectedCoupon, couponFilters]);
 
   const couponSummary = useMemo(() => {
     if (filteredCouponStats.length === 0) {
@@ -304,9 +335,81 @@ export default function AdminPanel() {
   }, [filteredCouponStats]);
 
   const filteredUsers = useMemo(() => {
-    if (!emailFilter) return users;
-    return users.filter((user) => user.email.toLowerCase().includes(emailFilter.toLowerCase()));
-  }, [users, emailFilter]);
+    const matchBool = (filterValue: string, actual: boolean) => {
+      if (filterValue === 'ALL') return true;
+      if (filterValue === 'YES') return actual;
+      return !actual;
+    };
+
+    const matchNumber = (filterValue: string, actual: number) => {
+      if (!filterValue) return true;
+      return actual.toString().includes(filterValue);
+    };
+
+    return users.filter((user) => {
+      if (userFilters.email && !user.email.toLowerCase().includes(userFilters.email.toLowerCase())) {
+        return false;
+      }
+      if (userFilters.tier !== 'ALL' && user.subscription_tier !== userFilters.tier) {
+        return false;
+      }
+      if (userFilters.status !== 'ALL' && user.subscription_status !== userFilters.status) {
+        return false;
+      }
+      if (!matchBool(userFilters.confirmed, Boolean(user.plan_confirmed))) {
+        return false;
+      }
+      if (
+        userFilters.couponCode &&
+        !(user.coupon_code ?? '').toLowerCase().includes(userFilters.couponCode.toLowerCase())
+      ) {
+        return false;
+      }
+      if (!matchBool(userFilters.couponGenerated, Boolean(user.coupon_generated))) {
+        return false;
+      }
+      if (!matchBool(userFilters.premium, Boolean(user.is_premium))) {
+        return false;
+      }
+      if (
+        userFilters.premiumType &&
+        !(user.premium_type ?? '').toLowerCase().includes(userFilters.premiumType.toLowerCase())
+      ) {
+        return false;
+      }
+      if (!matchNumber(userFilters.usage, user.usage_count)) {
+        return false;
+      }
+      if (!matchNumber(userFilters.jogo1, user.jogo1_count)) {
+        return false;
+      }
+      if (!matchNumber(userFilters.jogo2, user.jogo2_count)) {
+        return false;
+      }
+      if (!matchNumber(userFilters.jogo3, user.jogo3_count)) {
+        return false;
+      }
+      if (!matchNumber(userFilters.jogo4, user.jogo4_count)) {
+        return false;
+      }
+
+      const lastAccess = user.last_accessed_at
+        ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR')
+        : '';
+      if (userFilters.lastAccess && !lastAccess.includes(userFilters.lastAccess)) {
+        return false;
+      }
+
+      const createdAt = user.created_at
+        ? new Date(user.created_at).toLocaleDateString('pt-BR')
+        : '';
+      if (userFilters.createdAt && !createdAt.includes(userFilters.createdAt)) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [users, userFilters]);
 
   const handleUserFieldChange = <K extends keyof UserData>(userId: string, field: K, value: UserData[K]) => {
     setEditedUsers((prev) => ({
@@ -435,9 +538,54 @@ export default function AdminPanel() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-2">Código</th>
-                        <th className="text-left p-2">Influencer</th>
-                        <th className="text-center p-2">Status</th>
+                        <th className="text-left p-2">
+                          <div className="flex flex-col gap-1">
+                            <span>Código</span>
+                            <Input
+                              value={couponFilters.code}
+                              onChange={(event) =>
+                                setCouponFilters((prev) => ({ ...prev, code: event.target.value }))
+                              }
+                              placeholder="Filtrar..."
+                              className="h-8"
+                            />
+                          </div>
+                        </th>
+                        <th className="text-left p-2">
+                          <div className="flex flex-col gap-1">
+                            <span>Influencer</span>
+                            <Input
+                              value={couponFilters.influencer}
+                              onChange={(event) =>
+                                setCouponFilters((prev) => ({ ...prev, influencer: event.target.value }))
+                              }
+                              placeholder="Filtrar..."
+                              className="h-8"
+                            />
+                          </div>
+                        </th>
+                        <th className="text-center p-2">
+                          <div className="flex flex-col gap-1">
+                            <span>Status</span>
+                            <Select
+                              value={couponFilters.status}
+                              onValueChange={(value) =>
+                                setCouponFilters((prev) => ({ ...prev, status: value }))
+                              }
+                            >
+                              <SelectTrigger className="h-8">
+                                <SelectValue placeholder="Todos" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="ALL">Todos</SelectItem>
+                                <SelectItem value="active">active</SelectItem>
+                                <SelectItem value="inactive">inactive</SelectItem>
+                                <SelectItem value="past_due">past_due</SelectItem>
+                                <SelectItem value="canceled">canceled</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </th>
                         <th className="text-center p-2">Resgates</th>
                         <th className="text-center p-2">Receita</th>
                         <th className="text-left p-2">Último resgate</th>
@@ -474,25 +622,7 @@ export default function AdminPanel() {
 
         <Card>
           <CardHeader>
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <CardTitle>Usuários (edição completa)</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Ajuste qualquer coluna e aplique filtros por email.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="email-filter" className="text-sm text-muted-foreground">
-                  Filtrar por email
-                </Label>
-                <Input
-                  id="email-filter"
-                  placeholder="Buscar..."
-                  value={emailFilter}
-                  onChange={(event) => setEmailFilter(event.target.value)}
-                />
-              </div>
-            </div>
+            <CardTitle>Usuários (edição completa)</CardTitle>
           </CardHeader>
           <CardContent>
             {filteredUsers.length === 0 ? (
@@ -504,21 +634,239 @@ export default function AdminPanel() {
                 <table className="w-full text-sm align-top">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2">Email</th>
-                      <th className="text-left p-2">Plano</th>
-                      <th className="text-left p-2">Status</th>
-                      <th className="text-center p-2">Confirmado</th>
-                      <th className="text-left p-2">Cupom</th>
-                      <th className="text-center p-2">Cupom gerado</th>
-                      <th className="text-center p-2">Premium</th>
-                      <th className="text-left p-2">Premium type</th>
-                      <th className="text-center p-2">Uso total</th>
-                      <th className="text-center p-2">Jogo 1</th>
-                      <th className="text-center p-2">Jogo 2</th>
-                      <th className="text-center p-2">Jogo 3</th>
-                      <th className="text-center p-2">Jogo 4</th>
-                      <th className="text-left p-2">Último acesso</th>
-                      <th className="text-left p-2">Cadastro</th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Email</span>
+                          <Input
+                            value={userFilters.email}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, email: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Plano</span>
+                          <Select
+                            value={userFilters.tier}
+                            onValueChange={(value) =>
+                              setUserFilters((prev) => ({ ...prev, tier: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="FREE">FREE</SelectItem>
+                              <SelectItem value="STANDARD">STANDARD</SelectItem>
+                              <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Status</span>
+                          <Select
+                            value={userFilters.status}
+                            onValueChange={(value) =>
+                              setUserFilters((prev) => ({ ...prev, status: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="active">active</SelectItem>
+                              <SelectItem value="inactive">inactive</SelectItem>
+                              <SelectItem value="past_due">past_due</SelectItem>
+                              <SelectItem value="canceled">canceled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Confirmado</span>
+                          <Select
+                            value={userFilters.confirmed}
+                            onValueChange={(value) =>
+                              setUserFilters((prev) => ({ ...prev, confirmed: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="YES">Sim</SelectItem>
+                              <SelectItem value="NO">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Cupom</span>
+                          <Input
+                            value={userFilters.couponCode}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, couponCode: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Cupom gerado</span>
+                          <Select
+                            value={userFilters.couponGenerated}
+                            onValueChange={(value) =>
+                              setUserFilters((prev) => ({ ...prev, couponGenerated: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="YES">Sim</SelectItem>
+                              <SelectItem value="NO">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Premium</span>
+                          <Select
+                            value={userFilters.premium}
+                            onValueChange={(value) =>
+                              setUserFilters((prev) => ({ ...prev, premium: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="YES">Sim</SelectItem>
+                              <SelectItem value="NO">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Premium type</span>
+                          <Input
+                            value={userFilters.premiumType}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, premiumType: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Uso total</span>
+                          <Input
+                            value={userFilters.usage}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, usage: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Jogo 1</span>
+                          <Input
+                            value={userFilters.jogo1}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, jogo1: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Jogo 2</span>
+                          <Input
+                            value={userFilters.jogo2}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, jogo2: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Jogo 3</span>
+                          <Input
+                            value={userFilters.jogo3}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, jogo3: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-center p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Jogo 4</span>
+                          <Input
+                            value={userFilters.jogo4}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, jogo4: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Último acesso</span>
+                          <Input
+                            value={userFilters.lastAccess}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, lastAccess: event.target.value }))
+                            }
+                            placeholder="dd/mm"
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
+                      <th className="text-left p-2">
+                        <div className="flex flex-col gap-1">
+                          <span>Cadastro</span>
+                          <Input
+                            value={userFilters.createdAt}
+                            onChange={(event) =>
+                              setUserFilters((prev) => ({ ...prev, createdAt: event.target.value }))
+                            }
+                            placeholder="dd/mm"
+                            className="h-8"
+                          />
+                        </div>
+                      </th>
                       <th className="text-right p-2">Ações</th>
                     </tr>
                   </thead>
