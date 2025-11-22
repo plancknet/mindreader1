@@ -109,7 +109,19 @@ const PostLoginRedirect = () => {
             setTargetPath('/premium');
             return;
           }
-          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+          if (!data?.has_seen_welcome) {
+            setTargetPath('/welcome');
+            return;
+          }
+          const hasCameraPermission = await navigator.mediaDevices
+            ?.getUserMedia({ video: true })
+            .then(() => true)
+            .catch(() => false);
+          if (!hasCameraPermission) {
+            setTargetPath('/connect-mind');
+            return;
+          }
+          setTargetPath('/game-selector');
           return;
         }
 
@@ -122,7 +134,19 @@ const PostLoginRedirect = () => {
             setTargetPath('/influencer/coupon');
             return;
           }
-          setTargetPath(data?.has_seen_welcome ? '/game-selector' : '/welcome');
+          if (!data?.has_seen_welcome) {
+            setTargetPath('/welcome');
+            return;
+          }
+          const hasCameraPermission = await navigator.mediaDevices
+            ?.getUserMedia({ video: true })
+            .then(() => true)
+            .catch(() => false);
+          if (!hasCameraPermission) {
+            setTargetPath('/connect-mind');
+            return;
+          }
+          setTargetPath('/game-selector');
           return;
         }
 

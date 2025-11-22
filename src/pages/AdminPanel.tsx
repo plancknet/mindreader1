@@ -88,6 +88,8 @@ export default function AdminPanel() {
     jogo4: '',
     lastAccess: '',
     createdAt: '',
+    createdAtStart: '',
+    createdAtEnd: '',
   });
   const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
@@ -446,11 +448,21 @@ export default function AdminPanel() {
         return false;
       }
 
-      const createdAt = user.created_at
-        ? new Date(user.created_at).toLocaleDateString('pt-BR')
-        : '';
-      if (userFilters.createdAt && !createdAt.includes(userFilters.createdAt)) {
+      const createdAtDate = user.created_at ? new Date(user.created_at) : null;
+      if (userFilters.createdAt && (!createdAtDate || !createdAtDate.toLocaleDateString('pt-BR').includes(userFilters.createdAt))) {
         return false;
+      }
+      if (userFilters.createdAtStart) {
+        const startDate = new Date(userFilters.createdAtStart);
+        if (!createdAtDate || createdAtDate < startDate) {
+          return false;
+        }
+      }
+      if (userFilters.createdAtEnd) {
+        const endDate = new Date(userFilters.createdAtEnd);
+        if (!createdAtDate || createdAtDate > endDate) {
+          return false;
+        }
       }
 
       return true;
@@ -958,14 +970,34 @@ export default function AdminPanel() {
                       <th className="text-left p-2">
                         <div className="flex flex-col gap-1">
                           <span>Cadastro</span>
-                          <Input
-                            value={userFilters.createdAt}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, createdAt: event.target.value }))
-                            }
-                            placeholder="dd/mm"
-                            className="h-8"
-                          />
+                          <div className="grid grid-cols-1 gap-1">
+                            <Input
+                              value={userFilters.createdAt}
+                              onChange={(event) =>
+                                setUserFilters((prev) => ({ ...prev, createdAt: event.target.value }))
+                              }
+                              placeholder="dd/mm"
+                              className="h-8"
+                            />
+                            <div className="flex gap-1">
+                              <Input
+                                type="date"
+                                value={userFilters.createdAtStart}
+                                onChange={(event) =>
+                                  setUserFilters((prev) => ({ ...prev, createdAtStart: event.target.value }))
+                                }
+                                className="h-8"
+                              />
+                              <Input
+                                type="date"
+                                value={userFilters.createdAtEnd}
+                                onChange={(event) =>
+                                  setUserFilters((prev) => ({ ...prev, createdAtEnd: event.target.value }))
+                                }
+                                className="h-8"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </th>
                       <th className="text-right p-2">Ações</th>
