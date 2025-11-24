@@ -95,6 +95,8 @@ export default function AdminPanel() {
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [registrationSeries, setRegistrationSeries] = useState<Array<{ date: string; FREE: number; STANDARD: number; INFLUENCER: number }>>([]);
+  const [todayCount, setTodayCount] = useState(0);
+  const [isMobileChart, setIsMobileChart] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -106,6 +108,15 @@ export default function AdminPanel() {
       });
     }
   }, [adminLoading, isAdmin, navigate, toast]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileChart(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchUsersData = async () => {
     const { data, error } = await supabase
@@ -153,6 +164,11 @@ export default function AdminPanel() {
 
     setUsers(formattedUsers);
     setRegistrationSeries(generateRegistrationSeries(formattedUsers));
+    const todayKey = new Date().toISOString().split('T')[0];
+    const todays = formattedUsers.filter(
+      (user) => new Date(user.created_at).toISOString().split('T')[0] === todayKey,
+    );
+    setTodayCount(todays.length);
   };
 
   const generateRegistrationSeries = (userList: UserData[]) => {
@@ -551,6 +567,20 @@ export default function AdminPanel() {
           <HeaderControls />
         </div>
 
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Novos usuários hoje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold">{todayCount}</p>
+              <p className="text-xs text-muted-foreground">
+                Registros concluídos nas últimas 24h
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle>Evolução de usuários por assinatura</CardTitle>
@@ -561,8 +591,11 @@ export default function AdminPanel() {
                 Ainda não há dados suficientes para exibir o gráfico.
               </p>
             ) : (
-              <ChartContainer config={registrationChartConfig} className="h-80">
-                <LineChart data={registrationSeries} margin={{ left: 12, right: 12 }}>
+              <ChartContainer config={registrationChartConfig} className="h-64 sm:h-80">
+                <LineChart
+                  data={registrationSeries}
+                  margin={{ left: 0, right: 0, top: 8, bottom: isMobileChart ? 24 : 8 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                   <XAxis
                     dataKey="date"
@@ -572,10 +605,26 @@ export default function AdminPanel() {
                     tickLine={false}
                     axisLine={false}
                     minTickGap={16}
+                    tick={{ fontSize: isMobileChart ? 9 : 11 }}
+                    angle={isMobileChart ? -35 : 0}
+                    textAnchor={isMobileChart ? 'end' : 'middle'}
+                    height={isMobileChart ? 50 : undefined}
                   />
-                  <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                    tick={{ fontSize: isMobileChart ? 9 : 11 }}
+                    width={isMobileChart ? 30 : 40}
+                  />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
+                  <ChartLegend
+                    content={<ChartLegendContent />}
+                    wrapperStyle={{
+                      justifyContent: 'center',
+                    }}
+                    verticalAlign={isMobileChart ? 'bottom' : 'top'}
+                  />
                   <Line
                     type="monotone"
                     dataKey="FREE"
