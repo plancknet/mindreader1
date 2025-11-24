@@ -277,8 +277,9 @@ const PapoReto = () => {
         if (filtered.length === 1) {
           const revealedWord = filtered[0].toUpperCase();
           setTimeout(() => {
-            addAiMessage(t('mentalConversation.messages.singleResult', { word: revealedWord }));
+            addAiMessage(revealedWord);
             setStep('revealing');
+            incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
           }, 1500);
         } else if (filtered.length > 1) {
           const lettersText = newLetters.join('').toUpperCase();
@@ -296,19 +297,15 @@ const PapoReto = () => {
       if (responseWordCount > 0 && responseWordCount <= possibleWords.length) {
         const selectedWord = possibleWords[responseWordCount - 1];
         const revealedWord = selectedWord.toUpperCase();
-        const categoryName = getCategoryName(category);
         setTimeout(() => {
-          addAiMessage(t('mentalConversation.messages.finalReveal', {
-            word: revealedWord,
-            category: categoryName
-          }));
+          addAiMessage(revealedWord);
           setStep('revealing');
+          incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
         }, 1500);
       }
     }
 
     if (step === 'revealing') {
-      incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
       navigate('/game-selector');
     }
   };
@@ -367,26 +364,17 @@ const PapoReto = () => {
                       </div>
                       {showGrid && (
                         <div className="absolute inset-0 z-20 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4 pointer-events-auto">
-                          {LETTER_GRID.map((letter) => {
-                            const isSelected = pendingGridLetter?.toUpperCase() === letter;
-                            return (
-                              <button
-                                key={letter}
-                                type="button"
-                                className={cn(
-                                  'rounded-xl border text-white font-semibold text-lg shadow-[0_10px_20px_rgba(59,130,246,0.25)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70',
-                                  isSelected
-                                    ? 'border-white/80 bg-primary text-white'
-                                    : 'border-primary/40 bg-white/10 hover:bg-white/20'
-                                )}
-                                onClick={() => handleLetterGridPress(letter)}
-                                aria-label={t('papoReto.letterButtonAria', { letter })}
-                                aria-pressed={isSelected}
-                              >
-                                {letter}
-                              </button>
-                            );
-                          })}
+                          {LETTER_GRID.map((letter) => (
+                            <button
+                              key={letter}
+                              type="button"
+                              className="rounded-xl bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                              onClick={() => handleLetterGridPress(letter)}
+                              aria-label={t('papoReto.letterButtonAria', { letter })}
+                            >
+                              <span className="sr-only">{letter}</span>
+                            </button>
+                          ))}
                         </div>
                       )}
                     </div>
