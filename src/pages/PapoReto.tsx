@@ -349,7 +349,7 @@ const PapoReto = () => {
                 className={`flex ${isAi ? 'justify-start' : 'justify-end'}`}
               >
                 {isAi ? (
-                  <div className="relative w-full max-w-sm">
+                  <div className="relative w-full max-w-[19rem] sm:max-w-[20rem]">
                     <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
                       <div className="absolute inset-0 flex items-center justify-center opacity-80">
                         <img
@@ -366,7 +366,7 @@ const PapoReto = () => {
                         </p>
                       </div>
                       {showGrid && (
-                        <div className="absolute inset-0 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4">
+                        <div className="absolute inset-0 z-20 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4 pointer-events-auto">
                           {LETTER_GRID.map((letter) => {
                             const isSelected = pendingGridLetter?.toUpperCase() === letter;
                             return (
