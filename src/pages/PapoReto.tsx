@@ -346,37 +346,41 @@ const PapoReto = () => {
                 className={`flex ${isAi ? 'justify-start' : 'justify-end'}`}
               >
                 {isAi ? (
-                  <div className="relative w-full max-w-[19rem] sm:max-w-[20rem]">
-                    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
-                      <div className="absolute inset-0 flex items-center justify-center opacity-80">
-                        <img
-                          src="/icons/icon-144x144.png"
-                          alt="MindReader"
-                          className="h-20 w-20 rotate-6 select-none opacity-70"
-                          draggable={false}
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%)]" />
-                      <div className="relative z-10 flex h-full items-center justify-center p-6 text-center">
-                        <p className="text-lg font-semibold text-white whitespace-pre-line drop-shadow-xl">
-                          {message.text}
-                        </p>
-                      </div>
-                      {showGrid && (
-                        <div className="absolute inset-0 z-20 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4 pointer-events-auto">
-                          {LETTER_GRID.map((letter) => (
-                            <button
-                              key={letter}
-                              type="button"
-                              className="rounded-xl bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                              onClick={() => handleLetterGridPress(letter)}
-                              aria-label={t('papoReto.letterButtonAria', { letter })}
-                            >
-                              <span className="sr-only">{letter}</span>
-                            </button>
-                          ))}
+                  <div className="flex w-full justify-center">
+                    <div className="flex w-full justify-center items-center min-h-[22rem]">
+                      <div className="relative w-full max-w-[17rem] sm:max-w-[18rem]">
+                        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
+                          <div className="absolute inset-0 flex items-center justify-center opacity-80">
+                            <img
+                              src="/icons/icon-144x144.png"
+                              alt="MindReader"
+                              className="h-20 w-20 rotate-6 select-none opacity-70"
+                              draggable={false}
+                            />
+                          </div>
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%)]" />
+                          <div className="relative z-10 flex h-full items-center justify-center p-6 text-center">
+                            <p className="text-lg font-semibold text-white whitespace-pre-line drop-shadow-xl">
+                              {message.text}
+                            </p>
+                          </div>
+                          {showGrid && (
+                            <div className="absolute inset-0 z-20 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4 pointer-events-auto">
+                              {LETTER_GRID.map((letter) => (
+                                <button
+                                  key={letter}
+                                  type="button"
+                                  className="rounded-xl bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                                  onClick={() => handleLetterGridPress(letter)}
+                                  aria-label={t('papoReto.letterButtonAria', { letter })}
+                                >
+                                  <span className="sr-only">{letter}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                 ) : (
