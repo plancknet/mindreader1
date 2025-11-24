@@ -335,7 +335,7 @@ const PapoReto = () => {
       </div>
       
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto pt-20 pb-24 px-4">
+      <div className="flex-1 overflow-y-auto pt-20 pb-4 px-4">
         <div className="max-w-4xl mx-auto flex flex-col justify-end min-h-full space-y-4">
           {messages.map((message, index) => {
             const isAi = message.sender === 'ai';
@@ -401,7 +401,7 @@ const PapoReto = () => {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border p-4">
+      <div className="bg-background/90 border-t border-border p-4">
         <div className="max-w-4xl mx-auto flex gap-2">
           <Input
             value={input}
