@@ -22,7 +22,7 @@ type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 type GameCard = {
   id: string;
   translationKey: string;
-  icon: LucideIcon;
+  icon: React.ComponentType<LucideProps>;
   path: string;
   instructionsPath?: string;
   color: string;
@@ -30,7 +30,7 @@ type GameCard = {
   minTier: Tier;
 };
 
-const CardIcon: LucideIcon = ({ className, ...props }: LucideProps) => (
+const CardIcon = ({ className, ...props }: LucideProps) => (
   <svg
     viewBox="0 0 24 24"
     role="img"
