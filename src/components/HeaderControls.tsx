@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 
 interface HeaderControlsProps {
   className?: string;
+  showBackButton?: boolean;
 }
 
-export const HeaderControls = ({ className }: HeaderControlsProps) => {
+export const HeaderControls = ({ className, showBackButton = true }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
@@ -23,14 +24,16 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      <Button
-        variant="ghost"
-        className="gap-2"
-        onClick={() => navigate('/game-selector')}
-      >
-        <ArrowLeft className="w-4 h-4" />
-        {t('common.back')}
-      </Button>
+      {showBackButton && (
+        <Button
+          variant="ghost"
+          className="gap-2"
+          onClick={() => navigate('/game-selector')}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {t('common.back')}
+        </Button>
+      )}
       {isAdmin && (
         <Button
           variant="outline"
