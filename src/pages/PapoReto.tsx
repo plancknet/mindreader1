@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
+import { cn } from '@/lib/utils';
 
 type Category = 'animal' | 'fruit' | 'country' | null;
 type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
@@ -366,17 +367,26 @@ const PapoReto = () => {
                       </div>
                       {showGrid && (
                         <div className="absolute inset-0 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4">
-                          {LETTER_GRID.map((letter) => (
-                            <button
-                              key={letter}
-                              type="button"
-                              className="rounded-xl border border-primary/40 bg-white/10 text-white font-semibold text-lg shadow-[0_10px_20px_rgba(59,130,246,0.25)] hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 transition"
-                              onClick={() => handleLetterGridPress(letter)}
-                              aria-label={t('papoReto.letterButtonAria', { letter })}
-                            >
-                              {letter}
-                            </button>
-                          ))}
+                          {LETTER_GRID.map((letter) => {
+                            const isSelected = pendingGridLetter?.toUpperCase() === letter;
+                            return (
+                              <button
+                                key={letter}
+                                type="button"
+                                className={cn(
+                                  'rounded-xl border text-white font-semibold text-lg shadow-[0_10px_20px_rgba(59,130,246,0.25)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70',
+                                  isSelected
+                                    ? 'border-white/80 bg-primary text-white'
+                                    : 'border-primary/40 bg-white/10 hover:bg-white/20'
+                                )}
+                                onClick={() => handleLetterGridPress(letter)}
+                                aria-label={t('papoReto.letterButtonAria', { letter })}
+                                aria-pressed={isSelected}
+                              >
+                                {letter}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
