@@ -60,6 +60,14 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'FREE',
   },
   {
+    id: 'suas-palavras',
+    translationKey: 'suasPalavras',
+    icon: Sparkles,
+    path: '/suas-palavras',
+    color: 'from-rose-400 via-pink-500 to-purple-600',
+    minTier: 'STANDARD',
+  },
+  {
     id: 'mind-reader',
     translationKey: 'mindReader',
     icon: Brain,
@@ -83,14 +91,6 @@ const GAME_CARDS: GameCard[] = [
     icon: CardIcon,
     path: '/carta-mental',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
-    minTier: 'STANDARD',
-  },
-  {
-    id: 'suas-palavras',
-    translationKey: 'suasPalavras',
-    icon: Sparkles,
-    path: '/suas-palavras',
-    color: 'from-rose-400 via-pink-500 to-purple-600',
     minTier: 'STANDARD',
   },
   {

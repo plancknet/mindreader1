@@ -8,7 +8,6 @@ import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
-import { toast } from 'sonner';
 
 const WORD_LISTS: Record<string, string[]> = {
   'pt-BR': ['casa', 'amor', 'vida', 'tempo', 'água', 'terra', 'fogo', 'luz', 'paz', 'sonho', 'alma', 'sol', 'lua', 'mar', 'céu', 'flor', 'árvore', 'chuva', 'vento', 'noite'],
@@ -41,18 +40,15 @@ const MysteryWord = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { incrementUsage } = useUsageLimit();
-  const [stage, setStage] = useState<'greeting' | 'input' | 'custom-input' | 'playing' | 'stopped'>('greeting');
-  const [gameMode, setGameMode] = useState<'normal' | 'random-camera' | 'custom-words'>('normal');
+  const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
+  const [gameMode, setGameMode] = useState<'normal' | 'random-camera'>('normal');
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [secretPosition, setSecretPosition] = useState(0);
   const [secretWord, setSecretWord] = useState('');
   const [currentWord, setCurrentWord] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [customWords, setCustomWords] = useState<string[]>([]);
-  const [currentCustomInput, setCurrentCustomInput] = useState('');
   const wordPoolRef = useRef<string[]>([]);
-  const customSequenceRef = useRef<string[]>([]);
   const cameraStreamRef = useRef<MediaStream | null>(null);
 
   const getPhraseList = useCallback(() => {
@@ -88,16 +84,13 @@ const MysteryWord = () => {
   }, [refreshWordPool]);
 
 
-  const handleContinueToInput = (mode: 'normal' | 'random-camera' | 'custom-words') => {
+  const handleContinueToInput = (mode: 'normal' | 'random-camera') => {
     setGameMode(mode);
     
     if (mode === 'random-camera') {
       // Posição aleatória entre 3 e 10
       setSecretPosition(Math.floor(Math.random() * 8) + 3);
       setStage('input');
-    } else if (mode === 'custom-words') {
-      setStage('custom-input');
-      setCustomWords([]);
     } else {
       setStage('input');
     }
@@ -122,73 +115,11 @@ const MysteryWord = () => {
     }
   }, []);
 
-  const handleAddCustomWord = () => {
-    const word = currentCustomInput.trim();
-    if (!word) return;
-    
-    if (customWords.length >= 10) {
-      toast.error('Você já adicionou 10 palavras');
-      return;
-    }
-    const normalized = normalizeWord(word);
-    const alreadyExists = customWords.some(existing => normalizeWord(existing) === normalized);
-    if (alreadyExists) {
-      toast.error('Palavra repetida não permitida');
-      return;
-    }
-    
-    setCustomWords([...customWords, word]);
-    setCurrentCustomInput('');
-    
-    if (customWords.length === 9) {
-      // Última palavra
-      toast.success('10 palavras adicionadas! Agora digite a palavra secreta.');
-      setTimeout(() => setStage('input'), 500);
-    }
-  };
-
   const handleStartPlaying = () => {
     const sanitizedSecret = secretWord.trim();
     if (!sanitizedSecret) return;
 
-    if (gameMode === 'custom-words') {
-      if (customWords.length < 10) {
-        toast.error('Adicione 10 palavras antes de continuar');
-        return;
-      }
-
-      const normalizedSecret = normalizeWord(sanitizedSecret);
-      const normalizedList = customWords.map(word => word.trim());
-      const hasSecret = normalizedList.some(word => normalizeWord(word) === normalizedSecret);
-
-      if (!hasSecret) {
-        toast.error('A palavra misteriosa deve ser uma das 10 palavras digitadas');
-        return;
-      }
-
-      const totalWords = normalizedList.length;
-      const clampedPosition = Math.min(Math.max(secretPosition, 1), totalWords);
-      setSecretPosition(clampedPosition);
-
-      const otherWords = normalizedList.filter(word => normalizeWord(word) !== normalizedSecret);
-      const randomizedOthers = shuffleWords(otherWords);
-      const sequence: string[] = [];
-      let otherIndex = 0;
-
-      for (let i = 0; i < totalWords; i++) {
-        if (i + 1 === clampedPosition) {
-          sequence.push(sanitizedSecret);
-        } else {
-          sequence.push(randomizedOthers[otherIndex++] || '');
-        }
-      }
-
-      customSequenceRef.current = sequence;
-      wordPoolRef.current = [];
-    } else {
-      customSequenceRef.current = [];
-      refreshWordPool();
-    }
+    refreshWordPool();
 
     setStage('playing');
     setIsPlaying(true);
@@ -209,11 +140,8 @@ const MysteryWord = () => {
     setWordCount(0);
     setIsPlaying(false);
     setGameMode('normal');
-    setCustomWords([]);
-    setCurrentCustomInput('');
     stopCamera();
     wordPoolRef.current = [];
-    customSequenceRef.current = [];
     getRandomPhrase();
   };
 
@@ -229,15 +157,10 @@ const MysteryWord = () => {
         setWordCount(prev => {
           const nextCount = prev + 1;
 
-          if (gameMode === 'custom-words') {
-            const sequence = customSequenceRef.current;
-            setCurrentWord(sequence[nextCount - 1] || '');
+          if (nextCount === secretPosition) {
+            setCurrentWord(secretWord);
           } else {
-            if (nextCount === secretPosition) {
-              setCurrentWord(secretWord);
-            } else {
-              setCurrentWord(getNextUniqueWord());
-            }
+            setCurrentWord(getNextUniqueWord());
           }
 
           if (gameMode === 'random-camera') {
@@ -292,16 +215,15 @@ const MysteryWord = () => {
                         className="flex-1 h-16 opacity-0 cursor-pointer"
                         aria-label="Modo normal"
                       />
-                      <button
-                        onClick={() => handleContinueToInput('custom-words')}
-                        className="flex-1 h-16 opacity-0 cursor-pointer"
-                        aria-label="Modo palavras personalizadas"
-                      />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="flex items-center gap-2 text-primary-foreground text-xl font-medium">
-                        <Brain className="h-6 w-6" />
-                        <span className="whitespace-nowrap">{t('mysteryWord.startButton')}</span>
+                      <div className="flex items-center gap-6 text-primary-foreground text-xl font-medium">
+                        <span>Câmera</span>
+                        <div className="flex items-center gap-2">
+                          <Brain className="h-6 w-6" />
+                          <span className="whitespace-nowrap">{t('mysteryWord.startButton')}</span>
+                        </div>
+                        <span>Frase</span>
                       </div>
                     </div>
                   </div>
@@ -311,48 +233,6 @@ const MysteryWord = () => {
           </div>
         )}
 
-        {stage === 'custom-input' && (
-          <div className="text-center space-y-8">
-            <div className="flex justify-center">
-              <Brain className="w-20 h-20 text-primary animate-pulse" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Digite 10 palavras
-            </h2>
-            <Card className="p-8">
-              <div className="space-y-6">
-                <p className="text-muted-foreground">
-                  Adicione {10 - customWords.length} palavra(s)
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {customWords.map((word, idx) => (
-                    <span key={idx} className="px-3 py-1 bg-primary/20 rounded-full text-sm">
-                      {word}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    value={currentCustomInput}
-                    onChange={(e) => setCurrentCustomInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddCustomWord()}
-                    placeholder="Digite uma palavra"
-                    className="text-center text-xl py-6"
-                    autoFocus
-                  />
-                  <Button 
-                    onClick={handleAddCustomWord}
-                    disabled={!currentCustomInput.trim() || customWords.length >= 10}
-                    className="px-6"
-                  >
-                    Adicionar
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )}
 
         {stage === 'input' && (
           <div className="text-center space-y-8">
