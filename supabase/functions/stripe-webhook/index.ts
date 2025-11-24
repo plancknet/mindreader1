@@ -207,6 +207,7 @@ async function handleCheckoutCompleted(
 
       // Get promotion code from session metadata or discount codes
       let promotionCode: string | null = null;
+      let promotionCodeId: string | null = null;
 
       if (fullSession.metadata?.coupon_code) {
         promotionCode = fullSession.metadata.coupon_code;
@@ -226,9 +227,11 @@ async function handleCheckoutCompleted(
 
       if (!promotionCode) {
         for (const discount of discountCandidates) {
-          promotionCode = await extractPromotionCodeFromDiscount(discount);
-          if (promotionCode) {
-            console.log('[Webhook] Promotion code from discount array:', promotionCode);
+          const details = await extractPromotionDetailsFromDiscount(discount);
+          if (details?.code) {
+            promotionCode = promotionCode ?? details.code;
+            promotionCodeId = promotionCodeId ?? details.id ?? null;
+            console.log('[Webhook] Promotion code from discount array:', promotionCode, promotionCodeId);
             break;
           }
         }
@@ -243,7 +246,13 @@ async function handleCheckoutCompleted(
           
           // Record redemption
           const amount = session.amount_total ? session.amount_total / 100 : 6.00;
-          await recordCouponRedemption(supabaseClient, influencerId, promotionCode, amount);
+          await recordCouponRedemption(
+            supabaseClient,
+            influencerId,
+            promotionCode,
+            promotionCodeId,
+            amount,
+          );
           
           console.log('[Webhook] Recorded coupon redemption successfully');
         } else {
@@ -260,18 +269,20 @@ async function handleCheckoutCompleted(
   return userId;
 }
 
-async function extractPromotionCodeFromDiscount(discount: any): Promise<string | null> {
+async function extractPromotionDetailsFromDiscount(
+  discount: any,
+): Promise<{ code: string | null; id: string | null } | null> {
   if (!discount) return null;
   if (discount.promotion_code) {
     try {
       const promo = await stripe.promotionCodes.retrieve(discount.promotion_code as string);
-      return promo.code ?? null;
+      return { code: promo.code ?? null, id: promo.id ?? discount.promotion_code };
     } catch (error) {
       console.error('[Webhook] Error retrieving promotion code:', error);
     }
   }
   if (discount.coupon?.name) {
-    return discount.coupon.name;
+    return { code: discount.coupon.name, id: null };
   }
   return null;
 }
@@ -300,15 +311,17 @@ async function recordCouponRedemption(
   supabaseClient: any,
   influencerId: string,
   couponCode: string,
+  promotionCodeId: string | null,
   amount: number = 6.00
 ): Promise<void> {
-  console.log('[Webhook] Recording redemption:', { influencerId, couponCode, amount });
+  console.log('[Webhook] Recording redemption:', { influencerId, couponCode, promotionCodeId, amount });
   
   const { error } = await supabaseClient
     .from('coupon_redemptions')
     .insert({
       influencer_id: influencerId,
       coupon_code: couponCode.toUpperCase(),
+      stripe_promotion_code_id: promotionCodeId ?? null,
       amount: amount,
       redeemed_at: new Date().toISOString()
     });
