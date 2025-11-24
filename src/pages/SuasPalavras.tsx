@@ -220,8 +220,8 @@ const SuasPalavras = () => {
                     />
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none gap-4 text-primary-foreground font-semibold text-lg">
-                    <span>Câmera</span>
-                    <span>Frase</span>
+                    <span>Revelar</span>
+                    <span>a Palavra</span>
                   </div>
                 </div>
               </div>
