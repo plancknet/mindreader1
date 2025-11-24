@@ -59,6 +59,8 @@ const registrationChartConfig = {
   },
 };
 
+const normalizeCouponCode = (code?: string | null) => (code?.trim().toUpperCase() ?? '');
+
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
@@ -223,7 +225,7 @@ export default function AdminPanel() {
         coupon.user_id,
         {
           email: coupon.email ?? 'Email não disponível',
-          coupon_code: coupon.coupon_code,
+          coupon_code: normalizeCouponCode(coupon.coupon_code),
           coupon_generated: Boolean(coupon.coupon_generated),
           subscription_status: coupon.subscription_status ?? 'inactive',
         },
@@ -244,7 +246,7 @@ export default function AdminPanel() {
       extraUsers?.forEach((user) => {
         userMap.set(user.user_id, {
           email: user.email ?? 'Email não disponível',
-          coupon_code: user.coupon_code,
+          coupon_code: normalizeCouponCode(user.coupon_code),
           coupon_generated: Boolean(user.coupon_generated),
           subscription_status: user.subscription_status ?? 'inactive',
         });
@@ -254,7 +256,7 @@ export default function AdminPanel() {
     const redemptionMap = (redemptions || []).reduce<
       Record<string, { total: number; revenue: number; last: string | null; influencer_id: string | null }>
     >((acc, redemption) => {
-      const code = redemption.coupon_code as string;
+      const code = normalizeCouponCode(redemption.coupon_code as string);
       if (!code) return acc;
       const existing = acc[code] ?? {
         total: 0,
@@ -279,7 +281,7 @@ export default function AdminPanel() {
     const statsMap = new Map<string, CouponStats>();
 
     (influencerCoupons || []).forEach((coupon) => {
-      const code = coupon.coupon_code as string;
+      const code = normalizeCouponCode(coupon.coupon_code as string);
       if (!code) {
         return;
       }
