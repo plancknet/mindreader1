@@ -218,7 +218,7 @@ const MysteryWord = () => {
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="flex items-center gap-6 text-primary-foreground text-xl font-medium">
-                        <span></span>
+                        <span>Câmera</span>
                         <div className="flex items-center gap-2">
                           <Brain className="h-6 w-6" />
                           <span className="whitespace-nowrap">{t('mysteryWord.startButton')}</span>

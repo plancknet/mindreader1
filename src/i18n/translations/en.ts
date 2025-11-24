@@ -232,10 +232,6 @@ export const en = {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
       },
-      papoReto: {
-        title: 'Papo Reto',
-        description: 'Answer inside a secret card and signal letters invisibly'
-      },
       mysteryWord: {
         title: 'Mystery Word',
         description: 'Secretly reveal your word to the audience'

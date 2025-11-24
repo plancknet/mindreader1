@@ -229,10 +229,6 @@ export const ptBR = {
         title: 'Conversa Mental',
         description: 'Converse com uma IA que tenta adivinhar sua palavra'
       },
-      papoReto: {
-        title: 'Papo Reto',
-        description: 'Perguntas em carta com sinais secretos para revelar a palavra'
-      },
       mysteryWord: {
         title: 'Palavra Misteriosa',
         description: 'Revele secretamente sua palavra para o público'

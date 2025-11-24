@@ -232,10 +232,6 @@ export const it = {
         title: 'Conversazione Mentale',
         description: 'Conversa con un\'IA che prova a indovinare la tua parola'
       },
-      papoReto: {
-        title: 'Papo Reto',
-        description: 'Rispondi dentro una carta e indica le lettere in modo invisibile'
-      },
       mysteryWord: {
         title: 'Parola Misteriosa',
         description: 'Rivela in segreto la tua parola al pubblico'

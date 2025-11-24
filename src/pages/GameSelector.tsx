@@ -104,14 +104,6 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'STANDARD',
   },
   {
-    id: 'papo-reto',
-    translationKey: 'papoReto',
-    icon: MessageCircle,
-    path: '/papo-reto',
-    color: 'from-slate-900 via-slate-800 to-slate-900',
-    minTier: 'STANDARD',
-  },
-  {
     id: 'my-emojis',
     translationKey: 'myEmojis',
     icon: Smile,
@@ -152,7 +144,7 @@ const GameSelector = () => {
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-6xl w-full space-y-8">
         <div className="flex justify-end">
-          <HeaderControls showBackButton={false} />
+          <HeaderControls />
         </div>
 
         <div className="text-center space-y-4">
