@@ -216,7 +216,9 @@ export default function AdminPanel() {
 
     const { data: redemptions, error: redemptionsError } = await supabase
       .from('coupon_redemptions' as any)
-      .select('coupon_code, redeemed_at, amount, influencer_id');
+      .select('coupon_code, redeemed_at, amount, influencer_id') as any;
+
+    console.log('[AdminPanel] Raw redemptions from DB:', redemptions);
 
     if (redemptionsError) throw redemptionsError;
 
@@ -233,7 +235,7 @@ export default function AdminPanel() {
     );
 
     const redemptionInfluencerIds = Array.from(
-      new Set((redemptions || []).map((item) => item.influencer_id).filter(Boolean) as string[]),
+      new Set((redemptions || []).map((item: any) => item.influencer_id).filter(Boolean) as string[]),
     ).filter((id) => !userMap.has(id));
 
     if (redemptionInfluencerIds.length > 0) {
@@ -253,38 +255,47 @@ export default function AdminPanel() {
       });
     }
 
-    const redemptionMap = (redemptions || []).reduce<
-      Record<string, { total: number; revenue: number; last: string | null; influencer_id: string | null }>
-    >((acc, redemption) => {
-      const code = normalizeCouponCode(redemption.coupon_code as string);
-      if (!code) return acc;
-      const existing = acc[code] ?? {
-        total: 0,
-        revenue: 0,
-        last: null,
-        influencer_id: redemption.influencer_id ?? null,
-      };
-      const redeemedAt = redemption.redeemed_at as string;
-      const revenue = Number(redemption.amount) || 6;
-      existing.total += 1;
-      existing.revenue += revenue;
-      if (!existing.last || new Date(redeemedAt) > new Date(existing.last)) {
-        existing.last = redeemedAt;
-      }
-      if (!existing.influencer_id && redemption.influencer_id) {
-        existing.influencer_id = redemption.influencer_id;
-      }
-      acc[code] = existing;
-      return acc;
-    }, {});
+    const redemptionMap = (redemptions || []).reduce(
+      (acc: Record<string, { total: number; revenue: number; last: string | null; influencer_id: string | null }>, redemption: any) => {
+        const rawCode = redemption.coupon_code as string;
+        const code = normalizeCouponCode(rawCode);
+        
+        console.log('[AdminPanel] Processing redemption:', { rawCode, normalizedCode: code, redemption });
+        
+        if (!code) return acc;
+        const existing = acc[code] ?? {
+          total: 0,
+          revenue: 0,
+          last: null,
+          influencer_id: redemption.influencer_id ?? null,
+        };
+        const redeemedAt = redemption.redeemed_at as string;
+        const revenue = Number(redemption.amount) || 6;
+        existing.total += 1;
+        existing.revenue += revenue;
+        if (!existing.last || new Date(redeemedAt) > new Date(existing.last)) {
+          existing.last = redeemedAt;
+        }
+        if (!existing.influencer_id && redemption.influencer_id) {
+          existing.influencer_id = redemption.influencer_id;
+        }
+        acc[code] = existing;
+        return acc;
+      },
+      {}
+    );
+    
+    console.log('[AdminPanel] Final redemption map:', redemptionMap);
 
     const statsMap = new Map<string, CouponStats>();
 
-    (influencerCoupons || []).forEach((coupon) => {
-      const code = normalizeCouponCode(coupon.coupon_code as string);
+    (influencerCoupons || []).forEach((coupon: any) => {
+      const code = normalizeCouponCode(coupon.coupon_code);
       if (!code) {
         return;
       }
+      
+      console.log('[AdminPanel] Processing coupon stats:', { code, redemptionData: redemptionMap[code] });
       const summary = redemptionMap[code] ?? {
         total: 0,
         revenue: 0,
@@ -304,7 +315,7 @@ export default function AdminPanel() {
       delete redemptionMap[code];
     });
 
-    Object.entries(redemptionMap).forEach(([code, summary]) => {
+    Object.entries(redemptionMap).forEach(([code, summary]: [string, any]) => {
       const userInfo = summary.influencer_id ? userMap.get(summary.influencer_id) : undefined;
       statsMap.set(code, {
         coupon_code: code,
@@ -324,7 +335,7 @@ export default function AdminPanel() {
 
     const todayKey = new Date().toISOString().split('T')[0];
     const couponRedemptionsToday = (redemptions || []).filter(
-      (entry) => new Date(entry.redeemed_at).toISOString().split('T')[0] === todayKey,
+      (entry: any) => new Date(entry.redeemed_at).toISOString().split('T')[0] === todayKey,
     ).length;
     setTodayStats((prev) => ({ ...prev, couponRedemptions: couponRedemptionsToday }));
   };
