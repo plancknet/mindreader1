@@ -44,6 +44,11 @@ serve(async (req) => {
     let eventUserId: string | null = null;
 
     switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        eventUserId = await handleCheckoutCompleted(supabaseClient, session);
+        break;
+      }
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
@@ -171,6 +176,122 @@ async function handleInvoiceEvent(
   }
 
   return userId;
+}
+
+async function handleCheckoutCompleted(
+  supabaseClient: any,
+  session: Stripe.Checkout.Session,
+): Promise<string | null> {
+  console.log('[Webhook] Processing checkout.session.completed', { sessionId: session.id });
+
+  const customerId = session.customer as string | null;
+  if (!customerId) {
+    console.log('[Webhook] No customer ID in session');
+    return null;
+  }
+
+  const userId = await findUserId(supabaseClient, undefined, customerId);
+
+  // Check if a discount was applied (promotion code used)
+  if (session.total_details?.amount_discount && session.total_details.amount_discount > 0) {
+    console.log('[Webhook] Discount detected in session', {
+      amountDiscount: session.total_details.amount_discount,
+      sessionId: session.id
+    });
+
+    // Fetch the full session with line items to get discount details
+    try {
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items', 'total_details.breakdown']
+      });
+
+      // Get promotion code from session metadata or discount codes
+      let promotionCode: string | null = null;
+
+      if (fullSession.metadata?.coupon_code) {
+        promotionCode = fullSession.metadata.coupon_code;
+        console.log('[Webhook] Promotion code from metadata:', promotionCode);
+      }
+
+      if (!promotionCode && fullSession.discount) {
+        const discount = fullSession.discount as any;
+        if (discount.promotion_code) {
+          const promoCode = await stripe.promotionCodes.retrieve(discount.promotion_code as string);
+          promotionCode = promoCode.code;
+          console.log('[Webhook] Promotion code from discount:', promotionCode);
+        } else if (discount.coupon?.name) {
+          promotionCode = discount.coupon.name;
+          console.log('[Webhook] Promotion code from coupon name:', promotionCode);
+        }
+      }
+
+      if (promotionCode) {
+        // Find influencer by coupon code
+        const influencerId = await findInfluencerByCouponCode(supabaseClient, promotionCode);
+        
+        if (influencerId) {
+          console.log('[Webhook] Found influencer for code:', { promotionCode, influencerId });
+          
+          // Record redemption
+          const amount = session.amount_total ? session.amount_total / 100 : 6.00;
+          await recordCouponRedemption(supabaseClient, influencerId, promotionCode, amount);
+          
+          console.log('[Webhook] Recorded coupon redemption successfully');
+        } else {
+          console.log('[Webhook] No influencer found for coupon code:', promotionCode);
+        }
+      } else {
+        console.log('[Webhook] Could not extract promotion code from session');
+      }
+    } catch (error) {
+      console.error('[Webhook] Error processing coupon redemption:', error);
+    }
+  }
+
+  return userId;
+}
+
+async function findInfluencerByCouponCode(
+  supabaseClient: any,
+  couponCode: string
+): Promise<string | null> {
+  console.log('[Webhook] Looking up influencer for coupon:', couponCode);
+  
+  const { data, error } = await supabaseClient
+    .from('users')
+    .select('user_id')
+    .eq('coupon_code', couponCode.toUpperCase())
+    .maybeSingle();
+  
+  if (error) {
+    console.error('[Webhook] Error finding influencer:', error);
+    return null;
+  }
+  
+  return data?.user_id ?? null;
+}
+
+async function recordCouponRedemption(
+  supabaseClient: any,
+  influencerId: string,
+  couponCode: string,
+  amount: number = 6.00
+): Promise<void> {
+  console.log('[Webhook] Recording redemption:', { influencerId, couponCode, amount });
+  
+  const { error } = await supabaseClient
+    .from('coupon_redemptions')
+    .insert({
+      influencer_id: influencerId,
+      coupon_code: couponCode.toUpperCase(),
+      amount: amount,
+      redeemed_at: new Date().toISOString()
+    });
+  
+  if (error) {
+    console.error('[Webhook] Error recording redemption:', error);
+    throw error;
+  }
 }
 
 async function findUserId(
