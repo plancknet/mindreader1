@@ -207,6 +207,10 @@ export const it = {
   papoReto: {
     letterButtonAria: 'Seleziona la lettera {letter}',
     selectedLetter: 'Lettera {letter} selezionata.',
+    toast: {
+      selectLetterTitle: 'Seleziona una lettera',
+      selectLetterDescription: 'Tocca discretamente la carta per inviare la prossima lettera.',
+    },
   },
   gameSelector: {
     heading: 'Lettori di Mente',

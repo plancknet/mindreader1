@@ -249,13 +249,15 @@ const PapoReto = () => {
     }
 
     if (step === 'collecting') {
-      const fallbackLetter = getLastWordFirstLetter(userInput);
-      const normalizedLetter = (pendingGridLetter ?? fallbackLetter).toLowerCase();
-
-      if (!normalizedLetter) {
+      if (!pendingGridLetter) {
+        toast({
+          title: t('papoReto.toast.selectLetterTitle'),
+          description: t('papoReto.toast.selectLetterDescription'),
+        });
         return;
       }
 
+      const normalizedLetter = pendingGridLetter.toLowerCase();
       setPendingGridLetter(null);
       const newLetters = [...letters, normalizedLetter];
       setLetters(newLetters);
@@ -363,7 +365,7 @@ const PapoReto = () => {
                         </p>
                       </div>
                       {showGrid && (
-                        <div className="absolute inset-4 grid grid-cols-4 grid-rows-5 gap-2">
+                        <div className="absolute inset-0 grid grid-cols-4 grid-rows-5 gap-2 px-3 py-4">
                           {LETTER_GRID.map((letter) => (
                             <button
                               key={letter}

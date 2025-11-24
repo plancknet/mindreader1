@@ -19,7 +19,7 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
   const { tier, status } = useSubscriptionTier();
 
   const adminLabel = t('common.admin');
-  const showCoupons = isAdmin || (tier === 'INFLUENCER' && status === 'active');
+  const showCoupons = !isAdmin && tier === 'INFLUENCER' && status === 'active';
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>

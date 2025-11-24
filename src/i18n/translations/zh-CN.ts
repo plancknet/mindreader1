@@ -207,6 +207,10 @@ export const zhCN = {
   papoReto: {
     letterButtonAria: '选择字母 {letter}',
     selectedLetter: '已选择字母 {letter}。',
+    toast: {
+      selectLetterTitle: '请选择字母',
+      selectLetterDescription: '在卡牌上轻触隐藏网格来发送下一位字母。',
+    },
   },
   gameSelector: {
     heading: 'Mind Readers',
