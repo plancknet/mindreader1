@@ -232,6 +232,10 @@ export const zhCN = {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
       },
+      papoReto: {
+        title: 'Papo Reto',
+        description: '在秘密牌面中回答并通过隐形点击传递字母'
+      },
       mysteryWord: {
         title: 'Mystery Word',
         description: 'Secretly reveal your word to the audience'
