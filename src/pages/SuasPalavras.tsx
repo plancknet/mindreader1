@@ -45,6 +45,7 @@ const SuasPalavras = () => {
   const [currentWord, setCurrentWord] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasTriggeredCamera, setHasTriggeredCamera] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cameraStreamRef = useRef<MediaStream | null>(null);
@@ -143,6 +144,7 @@ const SuasPalavras = () => {
     setIsPlaying(true);
     setCurrentIndex(0);
     setCurrentWord('');
+    setHasTriggeredCamera(false);
   };
 
   const handleStop = useCallback(() => {
@@ -153,27 +155,26 @@ const SuasPalavras = () => {
   }, [incrementUsage, stopCamera]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || sequence.length === 0) return;
     timerRef.current = setInterval(() => {
       setCurrentIndex((prev) => {
-        const next = prev + 1;
-        if (next <= sequence.length) {
-          const word = sequence[next - 1];
-          setCurrentWord(word.toUpperCase());
-          if (mode === 'camera') {
-            if (next === secretRevealIndex) {
-              void activateCamera();
-            } else if (next > secretRevealIndex) {
-              stopCamera();
-            }
+        const length = sequence.length;
+        if (length === 0) {
+          handleStop();
+          return 0;
+        }
+        const nextIndex = (prev % length) + 1;
+        const word = sequence[nextIndex - 1];
+        setCurrentWord(word.toUpperCase());
+        if (mode === 'camera') {
+          if (!hasTriggeredCamera && nextIndex === secretRevealIndex) {
+            setHasTriggeredCamera(true);
+            void activateCamera();
+          } else if (hasTriggeredCamera && nextIndex !== secretRevealIndex) {
+            stopCamera();
           }
-          return next;
         }
-        handleStop();
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-        }
-        return prev;
+        return nextIndex;
       });
     }, 3000);
     return () => {
@@ -181,7 +182,7 @@ const SuasPalavras = () => {
         clearInterval(timerRef.current);
       }
     };
-  }, [isPlaying, sequence, secretRevealIndex, mode, activateCamera, stopCamera, handleStop]);
+  }, [isPlaying, sequence, secretRevealIndex, mode, activateCamera, stopCamera, handleStop, hasTriggeredCamera]);
 
   const handleReset = () => {
     setStage('greeting');
@@ -190,6 +191,7 @@ const SuasPalavras = () => {
     setCurrentWord('');
     setCurrentIndex(0);
     setIsPlaying(false);
+    setHasTriggeredCamera(false);
     stopCamera();
   };
 
@@ -280,7 +282,7 @@ const SuasPalavras = () => {
             <h2 className="text-3xl font-bold">Palavra Revelada</h2>
             <Card className="p-10 bg-gradient-to-br from-primary/10 to-secondary/10">
               <div className="text-6xl font-extrabold tracking-wide text-primary">
-                {(words[0] || '').trim().toUpperCase()}
+                E ai, acertou?
               </div>
             </Card>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
