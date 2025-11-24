@@ -204,6 +204,10 @@ export const en = {
       country: 'COUNTRY'
     }
   },
+  papoReto: {
+    letterButtonAria: 'Select letter {letter}',
+    selectedLetter: 'Letter {letter} selected.',
+  },
   gameSelector: {
     heading: 'Mind Readers',
     subheading: 'Choose a mind-reading experience',
@@ -231,6 +235,10 @@ export const en = {
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
+      },
+      papoReto: {
+        title: 'Papo Reto',
+        description: 'Use the card prompts to reveal the chosen word.'
       },
       mysteryWord: {
         title: 'Mystery Word',

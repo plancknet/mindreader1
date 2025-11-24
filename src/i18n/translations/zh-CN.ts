@@ -204,6 +204,10 @@ export const zhCN = {
       country: 'COUNTRY'
     }
   },
+  papoReto: {
+    letterButtonAria: '选择字母 {letter}',
+    selectedLetter: '已选择字母 {letter}。',
+  },
   gameSelector: {
     heading: 'Mind Readers',
     subheading: 'Choose a mind-reading experience',
@@ -231,6 +235,10 @@ export const zhCN = {
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
+      },
+      papoReto: {
+        title: 'Papo Reto',
+        description: '通过卡片上的问题来揭示所想的单词。'
       },
       mysteryWord: {
         title: 'Mystery Word',

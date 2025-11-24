@@ -116,7 +116,7 @@ const PapoReto = () => {
   }, [messages]);
 
   const addAiMessage = (text: string) => {
-    setMessages(prev => [...prev, { text, sender: 'ai' }]);
+    setMessages([{ text, sender: 'ai' }]);
 
     if (!TTS_ENABLED || !text.trim()) {
       return;
@@ -170,7 +170,7 @@ const PapoReto = () => {
   };
 
   const addUserMessage = (text: string) => {
-    setMessages(prev => [...prev, { text, sender: 'user' }]);
+    setMessages([{ text, sender: 'user' }]);
   };
 
   const countWords = (text: string): number => {
@@ -358,7 +358,7 @@ const PapoReto = () => {
                       </div>
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%)]" />
                       <div className="relative z-10 flex h-full items-center justify-center p-6 text-center">
-                        <p className="text-base font-semibold text-white whitespace-pre-line drop-shadow-xl">
+                        <p className="text-lg font-semibold text-white whitespace-pre-line drop-shadow-xl">
                           {message.text}
                         </p>
                       </div>

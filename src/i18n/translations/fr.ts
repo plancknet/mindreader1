@@ -204,6 +204,10 @@ export const fr = {
       country: 'PAYS'
     }
   },
+  papoReto: {
+    letterButtonAria: 'Sélectionner la lettre {letter}',
+    selectedLetter: 'Lettre {letter} sélectionnée.',
+  },
   gameSelector: {
     heading: 'Lecteurs d\'esprit',
     subheading: 'Choisissez une expérience de lecture mentale',
@@ -231,6 +235,10 @@ export const fr = {
       mentalConversation: {
         title: 'Conversation Mentale',
         description: 'Discutez avec une IA qui tente de deviner votre mot'
+      },
+      papoReto: {
+        title: 'Papo Reto',
+        description: 'Utilisez les questions sur la carte pour révéler le mot choisi.'
       },
       mysteryWord: {
         title: 'Mot Mystérieux',
