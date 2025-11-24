@@ -213,15 +213,24 @@ async function handleCheckoutCompleted(
         console.log('[Webhook] Promotion code from metadata:', promotionCode);
       }
 
-      if (!promotionCode && fullSession.discount) {
-        const discount = fullSession.discount as any;
-        if (discount.promotion_code) {
-          const promoCode = await stripe.promotionCodes.retrieve(discount.promotion_code as string);
-          promotionCode = promoCode.code;
-          console.log('[Webhook] Promotion code from discount:', promotionCode);
-        } else if (discount.coupon?.name) {
-          promotionCode = discount.coupon.name;
-          console.log('[Webhook] Promotion code from coupon name:', promotionCode);
+      const discountCandidates: any[] = [];
+      if (Array.isArray((session as any).discounts)) {
+        discountCandidates.push(...(session as any).discounts);
+      }
+      if (Array.isArray((fullSession as any).discounts)) {
+        discountCandidates.push(...(fullSession as any).discounts);
+      }
+      if (fullSession.discount) {
+        discountCandidates.push(fullSession.discount as any);
+      }
+
+      if (!promotionCode) {
+        for (const discount of discountCandidates) {
+          promotionCode = await extractPromotionCodeFromDiscount(discount);
+          if (promotionCode) {
+            console.log('[Webhook] Promotion code from discount array:', promotionCode);
+            break;
+          }
         }
       }
 
@@ -249,6 +258,22 @@ async function handleCheckoutCompleted(
   }
 
   return userId;
+}
+
+async function extractPromotionCodeFromDiscount(discount: any): Promise<string | null> {
+  if (!discount) return null;
+  if (discount.promotion_code) {
+    try {
+      const promo = await stripe.promotionCodes.retrieve(discount.promotion_code as string);
+      return promo.code ?? null;
+    } catch (error) {
+      console.error('[Webhook] Error retrieving promotion code:', error);
+    }
+  }
+  if (discount.coupon?.name) {
+    return discount.coupon.name;
+  }
+  return null;
 }
 
 async function findInfluencerByCouponCode(
