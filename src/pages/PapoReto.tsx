@@ -336,7 +336,7 @@ const PapoReto = () => {
       
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto pt-20 pb-24 px-4">
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-4xl mx-auto flex flex-col justify-end min-h-full space-y-4">
           {messages.map((message, index) => {
             const isAi = message.sender === 'ai';
             const showGrid = isAi && index === lastAiMessageIndex && letterGridActive;
@@ -347,7 +347,7 @@ const PapoReto = () => {
               >
                 {isAi ? (
                   <div className="flex w-full justify-center">
-                    <div className="flex w-full justify-center items-center min-h-[22rem]">
+                    <div className="flex w-full justify-center items-end min-h-[22rem]">
                       <div className="relative w-full max-w-[17rem] sm:max-w-[18rem]">
                         <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
                           <div className="absolute inset-0 flex items-center justify-center opacity-80">
