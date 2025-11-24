@@ -95,7 +95,12 @@ export default function AdminPanel() {
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [registrationSeries, setRegistrationSeries] = useState<Array<{ date: string; FREE: number; STANDARD: number; INFLUENCER: number }>>([]);
-  const [todayCount, setTodayCount] = useState(0);
+  const [todayStats, setTodayStats] = useState({
+    users: 0,
+    standard: 0,
+    influencer: 0,
+    couponRedemptions: 0,
+  });
   const [isMobileChart, setIsMobileChart] = useState(false);
 
   useEffect(() => {
@@ -168,7 +173,14 @@ export default function AdminPanel() {
     const todays = formattedUsers.filter(
       (user) => new Date(user.created_at).toISOString().split('T')[0] === todayKey,
     );
-    setTodayCount(todays.length);
+    const standardToday = todays.filter((user) => user.subscription_tier === 'STANDARD').length;
+    const influencerToday = todays.filter((user) => user.subscription_tier === 'INFLUENCER').length;
+    setTodayStats((prev) => ({
+      ...prev,
+      users: todays.length,
+      standard: standardToday,
+      influencer: influencerToday,
+    }));
   };
 
   const generateRegistrationSeries = (userList: UserData[]) => {
@@ -307,6 +319,12 @@ export default function AdminPanel() {
     const stats = Array.from(statsMap.values()).sort((a, b) => a.coupon_code.localeCompare(b.coupon_code));
     setCouponStats(stats);
     setCouponCodes(stats.map((item) => item.coupon_code));
+
+    const todayKey = new Date().toISOString().split('T')[0];
+    const couponRedemptionsToday = (redemptions || []).filter(
+      (entry) => new Date(entry.redeemed_at).toISOString().split('T')[0] === todayKey,
+    ).length;
+    setTodayStats((prev) => ({ ...prev, couponRedemptions: couponRedemptionsToday }));
   };
 
   const fetchAdminData = async () => {
@@ -567,16 +585,43 @@ export default function AdminPanel() {
           <HeaderControls />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-muted-foreground">Novos usuários hoje</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">{todayCount}</p>
+              <p className="text-4xl font-bold">{todayStats.users}</p>
               <p className="text-xs text-muted-foreground">
                 Registros concluídos nas últimas 24h
               </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Planos Standard hoje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-orange-500">{todayStats.standard}</p>
+              <p className="text-xs text-muted-foreground">Assinaturas vitalícias confirmadas</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Planos Influencer hoje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-purple-500">{todayStats.influencer}</p>
+              <p className="text-xs text-muted-foreground">Novas assinaturas mensais ativas</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Cupons resgatados hoje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-emerald-600">{todayStats.couponRedemptions}</p>
+              <p className="text-xs text-muted-foreground">Total de redemptions nas últimas 24h</p>
             </CardContent>
           </Card>
         </div>
