@@ -74,6 +74,9 @@ const COUNTRIES = [
 ];
 
 const TTS_ENABLED = false; // Temporarily disabled
+const LETTER_GRID = Array.from({ length: 20 }, (_, index) =>
+  String.fromCharCode(65 + index)
+);
 
 const PapoReto = () => {
   const navigate = useNavigate();
@@ -85,6 +88,7 @@ const PapoReto = () => {
   const [step, setStep] = useState<GameStep>('initial');
   const [category, setCategory] = useState<Category>(null);
   const [letters, setLetters] = useState<string[]>([]);
+  const [pendingGridLetter, setPendingGridLetter] = useState<string | null>(null);
   const [possibleWords, setPossibleWords] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -213,6 +217,11 @@ const PapoReto = () => {
     return t(`mentalConversation.categories.${cat}`);
   };
 
+  const handleLetterGridPress = (letter: string) => {
+    if (step !== 'collecting' || letters.length >= 3) return;
+    setPendingGridLetter(letter.toLowerCase());
+  };
+
   const handleSubmit = () => {
     if (!input.trim()) return;
 
@@ -240,8 +249,15 @@ const PapoReto = () => {
     }
 
     if (step === 'collecting') {
-      const letter = getLastWordFirstLetter(userInput);
-      const newLetters = [...letters, letter];
+      const fallbackLetter = getLastWordFirstLetter(userInput);
+      const normalizedLetter = (pendingGridLetter ?? fallbackLetter).toLowerCase();
+
+      if (!normalizedLetter) {
+        return;
+      }
+
+      setPendingGridLetter(null);
+      const newLetters = [...letters, normalizedLetter];
       setLetters(newLetters);
 
       if (newLetters.length < 3) {
@@ -289,10 +305,21 @@ const PapoReto = () => {
     }
 
     if (step === 'revealing') {
-      incrementUsage(GAME_IDS.MENTAL_CONVERSATION).catch(console.error);
+      incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
       navigate('/game-selector');
     }
   };
+
+  const lastAiMessageIndex = (() => {
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      if (messages[i].sender === 'ai') {
+        return i;
+      }
+    }
+    return -1;
+  })();
+
+  const letterGridActive = step === 'collecting' && letters.length < 3;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -310,28 +337,59 @@ const PapoReto = () => {
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto pt-20 pb-24 px-4">
         <div className="max-w-4xl mx-auto space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <Card
-                className={`max-w-[80%] p-4 ${
-                  message.sender === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : message.text.includes('🔮') || message.text.includes('🌟')
-                    ? 'bg-card animate-pulse border-2 border-primary shadow-lg shadow-primary/50'
-                    : 'bg-card'
-                }`}
+          {messages.map((message, index) => {
+            const isAi = message.sender === 'ai';
+            const showGrid = isAi && index === lastAiMessageIndex && letterGridActive;
+            return (
+              <div
+                key={index}
+                className={`flex ${isAi ? 'justify-start' : 'justify-end'}`}
               >
-                <p className={`whitespace-pre-wrap ${
-                  message.text.includes('🔮') || message.text.includes('🌟')
-                    ? 'text-center text-lg font-bold'
-                    : ''
-                }`}>{message.text}</p>
-              </Card>
-            </div>
-          ))}
+                {isAi ? (
+                  <div className="relative w-full max-w-sm">
+                    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-80">
+                        <img
+                          src="/icons/icon-144x144.png"
+                          alt="MindReader"
+                          className="h-20 w-20 rotate-6 select-none opacity-70"
+                          draggable={false}
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%)]" />
+                      <div className="relative z-10 flex h-full items-center justify-center p-6 text-center">
+                        <p className="text-base font-semibold text-white whitespace-pre-line drop-shadow-xl">
+                          {message.text}
+                        </p>
+                      </div>
+                      {showGrid && (
+                        <div className="absolute inset-4 grid grid-cols-4 grid-rows-5 gap-2">
+                          {LETTER_GRID.map((letter) => (
+                            <button
+                              key={letter}
+                              type="button"
+                              className="rounded-xl bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                              onClick={() => handleLetterGridPress(letter)}
+                              aria-label={t('papoReto.letterButtonAria', { letter })}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <Card className="max-w-[80%] bg-primary text-primary-foreground p-4">
+                    <p className="whitespace-pre-wrap">{message.text}</p>
+                  </Card>
+                )}
+              </div>
+            );
+          })}
+          {letterGridActive && pendingGridLetter && (
+            <span className="sr-only" aria-live="polite">
+              {t('papoReto.selectedLetter', { letter: pendingGridLetter.toUpperCase() })}
+            </span>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </div>

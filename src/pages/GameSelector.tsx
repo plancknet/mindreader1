@@ -104,6 +104,14 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'STANDARD',
   },
   {
+    id: 'papo-reto',
+    translationKey: 'papoReto',
+    icon: MessageCircle,
+    path: '/papo-reto',
+    color: 'from-fuchsia-500 via-purple-500 to-blue-500',
+    minTier: 'STANDARD',
+  },
+  {
     id: 'my-emojis',
     translationKey: 'myEmojis',
     icon: Smile,
