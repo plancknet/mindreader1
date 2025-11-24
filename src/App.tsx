@@ -35,6 +35,7 @@ import LandingSignup from "./pages/LandingSignup";
 import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import CartaMental from "./pages/CartaMental";
+import SuasPalavras from "./pages/SuasPalavras";
 
 const queryClient = new QueryClient();
 
@@ -210,6 +211,7 @@ const App = () => (
             <Route path="/mind-reader/mix-de-cartas" element={<ProtectedRoute><MixDeCartasChoose /></ProtectedRoute>} />
             <Route path="/mind-reader/mix-de-cartas/reveal" element={<ProtectedRoute><MixDeCartasReveal /></ProtectedRoute>} />
             <Route path="/carta-mental" element={<ProtectedRoute><CartaMental /></ProtectedRoute>} />
+            <Route path="/suas-palavras" element={<ProtectedRoute><SuasPalavras /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />

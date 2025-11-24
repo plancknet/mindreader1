@@ -224,6 +224,10 @@ export const it = {
         title: 'Carta Mental',
         description: 'Usa il dorso segreto per rivelare valore e seme'
       },
+      suasPalavras: {
+        title: 'Le Tue Parole',
+        description: 'Inserisci cinque parole personali per rivelare il segreto'
+      },
       mentalConversation: {
         title: 'Conversazione Mentale',
         description: 'Conversa con un\'IA che prova a indovinare la tua parola'

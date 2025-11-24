@@ -86,6 +86,14 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'STANDARD',
   },
   {
+    id: 'suas-palavras',
+    translationKey: 'suasPalavras',
+    icon: Sparkles,
+    path: '/suas-palavras',
+    color: 'from-rose-400 via-pink-500 to-purple-600',
+    minTier: 'STANDARD',
+  },
+  {
     id: 'mental-conversation',
     translationKey: 'mentalConversation',
     icon: MessageCircle,

@@ -224,6 +224,10 @@ export const es = {
         title: 'Carta Mental',
         description: 'Usa el reverso secreto para revelar valor y palo'
       },
+      suasPalavras: {
+        title: 'Tus Palabras',
+        description: 'Introduce cinco palabras propias para revelar el secreto'
+      },
       mentalConversation: {
         title: 'Conversación Mental',
         description: 'Conversa con una IA que intenta adivinar tu palabra'

@@ -221,6 +221,10 @@ export const ptBR = {
         title: 'Carta Mental',
         description: 'Conecte a mente do seu amigo e descubra a carta'
       },
+      suasPalavras: {
+        title: 'Suas Palavras',
+        description: 'Use cinco palavras pessoais para revelar o segredo'
+      },
       mentalConversation: {
         title: 'Conversa Mental',
         description: 'Converse com uma IA que tenta adivinhar sua palavra'

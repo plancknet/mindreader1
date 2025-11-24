@@ -224,6 +224,10 @@ export const fr = {
         title: 'Carta Mental',
         description: 'Utilisez le dos secret pour révéler valeur et couleur'
       },
+      suasPalavras: {
+        title: 'Vos Mots',
+        description: 'Saisissez cinq mots personnels pour révéler le secret'
+      },
       mentalConversation: {
         title: 'Conversation Mentale',
         description: 'Discutez avec une IA qui tente de deviner votre mot'

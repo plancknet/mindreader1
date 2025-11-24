@@ -224,6 +224,10 @@ export const zhCN = {
         title: 'Carta Mental',
         description: '用秘密牌背揭示纸牌的数值与花色'
       },
+      suasPalavras: {
+        title: 'Suas Palavras',
+        description: '输入五个私人的单词来揭示秘密'
+      },
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'

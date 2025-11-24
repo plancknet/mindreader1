@@ -224,6 +224,10 @@ export const en = {
         title: 'Carta Mental',
         description: 'Use the secret back to reveal both value and suit'
       },
+      suasPalavras: {
+        title: 'Your Words',
+        description: 'Enter five personal words to reveal the secret'
+      },
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'
