@@ -246,69 +246,40 @@ const PapoReto = () => {
     return -1;
   })();
   const letterGridActive = step === 'collecting' && letters.length < 3;
-  return <div className="min-h-screen bg-background flex flex-col">
+  return <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-b border-border z-10 p-4">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-background/80 backdrop-blur-sm border-b border-border z-10 p-3 md:p-4 shrink-0">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2 md:gap-4">
           <HeaderControls />
           <div className="flex items-center gap-2">
-            <Brain className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-bold">{t('gameSelector.cards.papoReto.title')}</h1>
+            <Brain className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+            <h1 className="text-lg md:text-xl font-bold">{t('gameSelector.cards.papoReto.title')}</h1>
           </div>
         </div>
       </div>
       
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto pt-20 pb-4 px-4">
-        <div className="max-w-4xl mx-auto flex flex-col justify-end min-h-full space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-3 md:py-4">
+        <div className="max-w-4xl mx-auto flex flex-col justify-end min-h-full space-y-3 md:space-y-4">
           {messages.map((message, index) => {
           const isAi = message.sender === 'ai';
           const showGrid = isAi && index === lastAiMessageIndex && letterGridActive;
           return <div key={index} className={`flex ${isAi ? 'justify-start' : 'justify-end'}`}>
                 {isAi ? <div className="flex w-full justify-center">
-                    <div className="flex flex-col w-full items-center gap-8">
-                      <div className="text-xs font-semibold uppercase tracking-[0.95em] text-primary text-center">
+                    <div className="flex flex-col w-full items-center gap-3 md:gap-6">
+                      <div className="text-[0.5rem] md:text-xs font-semibold uppercase tracking-[0.5em] md:tracking-[0.95em] text-primary text-center px-4">
                         
-
-
-
-
-
-RESPONDA A PERGUNTA DE FORMA DIRETA, 
-
-
+RESPONDA A PERGUNTA DE FORMA DIRETA, 
 SEM COMENTÁRIOS EXTRAS.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                       </div>
-                      <div className="relative w-full max-w-[17rem] sm:max-w-[18rem]">
-                        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
+                      <div className="relative w-full max-w-[14rem] sm:max-w-[16rem] md:max-w-[18rem]">
+                        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[24px] md:rounded-[32px] border-[4px] md:border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_15px_35px_rgba(59,130,246,0.25)] md:shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
                           <div className="absolute inset-0 flex items-center justify-center opacity-80">
-                            <img src="/icons/icon-144x144.png" alt="MindReader" className="h-20 w-20 rotate-6 select-none opacity-70" draggable={false} />
+                            <img src="/icons/icon-144x144.png" alt="MindReader" className="h-16 w-16 md:h-20 md:w-20 rotate-6 select-none opacity-70" draggable={false} />
                           </div>
                           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%)]" />
-                          <div className="relative z-10 flex h-full items-center justify-center p-6 text-center">
-                            <p className="text-lg font-semibold text-white whitespace-pre-line drop-shadow-xl">
+                          <div className="relative z-10 flex h-full items-center justify-center p-4 md:p-6 text-center">
+                            <p className="text-base md:text-lg font-semibold text-white whitespace-pre-line drop-shadow-xl">
                               {message.text}
                             </p>
                           </div>
@@ -337,7 +308,7 @@ SEM COMENTÁRIOS EXTRAS.
       </div>
 
       {/* Input */}
-      <div className="bg-background/90 border-t border-border p-4">
+      <div className="bg-background/90 border-t border-border p-3 md:p-4 shrink-0">
         <div className="max-w-4xl mx-auto flex gap-2">
           <Input value={input} onChange={e => setInput(e.target.value)} onKeyPress={e => e.key === 'Enter' && handleSubmit()} placeholder={t('mentalConversation.input.placeholder')} className="flex-1" />
           <Button onClick={handleSubmit} size="icon" disabled={!input.trim()}>
