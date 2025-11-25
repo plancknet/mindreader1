@@ -277,7 +277,9 @@ const PapoReto = () => {
         if (filtered.length === 1) {
           const revealedWord = filtered[0].toUpperCase();
           setTimeout(() => {
-            addAiMessage(revealedWord);
+            addAiMessage(
+              `✨✨✨\n\n${revealedWord}\n\n✨✨✨`
+            );
             setStep('revealing');
             incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
           }, 1500);
@@ -298,7 +300,9 @@ const PapoReto = () => {
         const selectedWord = possibleWords[responseWordCount - 1];
         const revealedWord = selectedWord.toUpperCase();
         setTimeout(() => {
-          addAiMessage(revealedWord);
+          addAiMessage(
+            `✨✨✨\n\n${revealedWord}\n\n✨✨✨`
+          );
           setStep('revealing');
           incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
         }, 1500);
@@ -347,7 +351,10 @@ const PapoReto = () => {
               >
                 {isAi ? (
                   <div className="flex w-full justify-center">
-                    <div className="flex w-full justify-center items-end min-h-[22rem]">
+                    <div className="flex w-full justify-center items-end min-h-[26rem] relative">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+                        Responda a pergunta de forma direta, sem comentários extras.
+                      </div>
                       <div className="relative w-full max-w-[17rem] sm:max-w-[18rem]">
                         <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_20px_45px_rgba(59,130,246,0.25)]">
                           <div className="absolute inset-0 flex items-center justify-center opacity-80">
