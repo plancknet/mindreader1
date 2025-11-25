@@ -14,6 +14,7 @@ type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
 interface Message {
   text: string;
   sender: 'ai' | 'user';
+  variant?: 'question' | 'reveal';
 }
 const ANIMALS = ['aguti', 'aie-aie', 'alce', 'anta', 'antílope', 'babuíno', 'baleia', 'bicho-preguiça', 'bisão', 'boi', 'burro', 'búfalo', 'cabra', 'cachorro', 'camelo', 'canguru', 'capivara', 'capuchinho', 'caracal', 'cavalo', 'chimpanzé', 'chinchila', 'coelho', 'cutia', 'delfim', 'doninha', 'dromedário', 'elefante', 'esquilo', 'foca', 'gato', 'gazela', 'gerbil', 'girafa', 'gnu', 'golfinho', 'gorila', 'guepardo', 'hamster', 'hiena', 'hipopótamo', 'jaguar', 'jaguarundi', 'koala', 'leopardo', 'leão', 'leão-marinho', 'lobo', 'lobo-guará', 'lontra', 'lêmure', 'macaco', 'macaco-aranha', 'macaco-prego', 'mandril', 'mangusto', 'morcego', 'morsa', 'mula', 'musaranho', 'narval', 'okapi', 'onça', 'orca', 'ornitorrinco', 'ouriço', 'ovelha', 'paca', 'panda', 'porco', 'porquinho-da-índia', 'preguiça', 'pônei', 'raposa', 'rato', 'rena', 'rinoceronte', 'sagui', 'suricato', 'tamanduá', 'tarsier', 'tatu', 'texugo', 'tigre', 'topo', 'urso', 'urso-negro', 'urso-pardo', 'urso-polar', 'vaca', 'veado', 'zebra'];
 const FRUITS = ['abacate', 'abacaxi', 'acerola', 'ameixa', 'amora', 'araçá', 'ata', 'atemoia', 'banana', 'biribá', 'buriti', 'cabeluda', 'cagaita', 'caju', 'cajá', 'cambuci', 'caqui', 'carambola', 'cereja', 'cupuaçu', 'damasco', 'durian', 'figo', 'framboesa', 'fruta-do-conde', 'goiaba', 'graviola', 'groselha', 'grumixama', 'ingá', 'jabuticaba', 'jaca', 'jambo', 'jenipapo', 'kiwi', 'laranja', 'lichia', 'limão', 'manga', 'mangaba', 'mangostão', 'maracujá', 'maçã', 'melancia', 'melão', 'mirtilo', 'morango', 'murici', 'nectarina', 'noni', 'pequi', 'pera', 'physalis', 'pinha', 'pitaia', 'pitanga', 'pitomba', 'pupunha', 'pêssego', 'rambutã', 'romã', 'sapota', 'sapoti', 'seriguela', 'tamarillo', 'tamarindo', 'tangerina', 'taperebá', 'umbu', 'uva'];
@@ -60,10 +61,11 @@ const PapoReto = () => {
       behavior: 'smooth'
     });
   }, [messages]);
-  const addAiMessage = (text: string) => {
+  const addAiMessage = (text: string, variant?: Message['variant']) => {
     setMessages([{
       text,
-      sender: 'ai'
+      sender: 'ai',
+      variant
     }]);
     if (!TTS_ENABLED || !text.trim()) {
       return;
@@ -174,7 +176,7 @@ const PapoReto = () => {
       if (wordCount === 1) detectedCategory = 'animal';else if (wordCount === 2) detectedCategory = 'fruit';else if (wordCount === 3) detectedCategory = 'country';
       setCategory(detectedCategory);
       setStep('collecting');
-      addAiMessage(t('mentalConversation.messages.startCollecting'));
+      addAiMessage(t('mentalConversation.messages.startCollecting'), 'question');
       return;
     }
     if (step === 'collecting') {
@@ -192,7 +194,7 @@ const PapoReto = () => {
       if (newLetters.length < 3) {
         // Perguntas para coletar letras
         const questionKey = followUpQuestionKeys[newLetters.length - 1];
-        addAiMessage(t(questionKey));
+        addAiMessage(t(questionKey), 'question');
       } else {
         // Temos 3 letras, filtrar palavras
         const wordList = getWordList(category);
@@ -202,7 +204,7 @@ const PapoReto = () => {
         if (filtered.length === 1) {
           const revealedWord = filtered[0].toUpperCase();
           setTimeout(() => {
-            addAiMessage(`✨✨✨\n\n${revealedWord}\n\n✨✨✨`);
+            addAiMessage(`✨✨✨\n\n${revealedWord}\n\n✨✨✨`, 'reveal');
             setStep('revealing');
             incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
           }, 1500);
@@ -225,7 +227,7 @@ const PapoReto = () => {
         const selectedWord = possibleWords[responseWordCount - 1];
         const revealedWord = selectedWord.toUpperCase();
         setTimeout(() => {
-          addAiMessage(`✨✨✨\n\n${revealedWord}\n\n✨✨✨`);
+          addAiMessage(`✨✨✨\n\n${revealedWord}\n\n✨✨✨`, 'reveal');
           setStep('revealing');
           incrementUsage(GAME_IDS.PAPO_RETO).catch(console.error);
         }, 1500);
@@ -242,6 +244,11 @@ const PapoReto = () => {
     ? messages[messages.length - 1] 
     : null;
   const showGrid = Boolean(lastAiMessage);
+  const messageFontClass = lastAiMessage?.variant === 'reveal'
+    ? 'text-4xl md:text-6xl'
+    : lastAiMessage?.variant === 'question'
+      ? 'text-2xl md:text-3xl'
+      : 'text-lg md:text-xl';
   
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
@@ -279,7 +286,7 @@ const PapoReto = () => {
               </div>
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_50%)]" />
               <div className="relative z-10 flex h-full items-center justify-center p-8 text-center">
-                <p className="text-lg md:text-xl font-semibold text-white whitespace-pre-line drop-shadow-xl">
+                <p className={`font-semibold text-white whitespace-pre-line drop-shadow-xl ${messageFontClass}`}>
                   {lastAiMessage.text}
                 </p>
               </div>
