@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 type SuitId = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q'];
 
 const suits: Array<{ id: SuitId; symbol: string; tone: 'red' | 'black' }> = [
   { id: 'spades', symbol: '♠', tone: 'black' },
@@ -21,7 +21,7 @@ const CartaMental = () => {
   const [selectedSuit, setSelectedSuit] = useState<SuitId | null>(null);
   const [stage, setStage] = useState<'setup' | 'revealed'>('setup');
 
-  const effectiveRank = selectedRank ?? 'A';
+  const effectiveRank = selectedRank ?? 'K';
   const selectedSuitData = suits.find((suit) => suit.id === selectedSuit);
 
   const suitLabels = useMemo(
