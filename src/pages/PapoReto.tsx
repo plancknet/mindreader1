@@ -294,10 +294,10 @@ const PapoReto = () => {
                     <button
                       key={letter}
                       type="button"
-                      className={`rounded-xl border border-white/10 bg-transparent transition-colors ${
+                      className={`rounded-xl border border-white/5 bg-transparent focus-visible:outline-none ${
                         letterGridActive
-                          ? 'hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70'
-                          : 'opacity-60'
+                          ? ''
+                          : 'opacity-50'
                       }`}
                       onClick={() => handleLetterGridPress(letter)}
                       aria-label={t('papoReto.letterButtonAria', { letter })}
