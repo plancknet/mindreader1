@@ -241,7 +241,7 @@ const PapoReto = () => {
   const lastAiMessage = messages.length > 0 && messages[messages.length - 1].sender === 'ai' 
     ? messages[messages.length - 1] 
     : null;
-  const showGrid = lastAiMessage && letterGridActive;
+  const showGrid = Boolean(lastAiMessage);
   
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
@@ -284,14 +284,25 @@ const PapoReto = () => {
                 </p>
               </div>
               {showGrid && (
-                <div className="absolute inset-4 z-20 grid grid-cols-4 grid-rows-5 gap-3 pointer-events-auto">
+                <div
+                  className={`absolute inset-4 z-20 grid grid-cols-4 grid-rows-5 gap-3 transition-opacity ${
+                    letterGridActive ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-40'
+                  }`}
+                  aria-hidden={!letterGridActive}
+                >
                   {LETTER_GRID.map(letter => (
                     <button
                       key={letter}
                       type="button"
-                      className="rounded-xl border border-white/10 bg-transparent transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                      className={`rounded-xl border border-white/10 bg-transparent transition-colors ${
+                        letterGridActive
+                          ? 'hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70'
+                          : 'opacity-60'
+                      }`}
                       onClick={() => handleLetterGridPress(letter)}
                       aria-label={t('papoReto.letterButtonAria', { letter })}
+                      disabled={!letterGridActive}
+                      tabIndex={letterGridActive ? 0 : -1}
                     >
                       <span className="sr-only">{letter}</span>
                     </button>
