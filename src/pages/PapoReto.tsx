@@ -351,8 +351,8 @@ const PapoReto = () => {
               >
                 {isAi ? (
                   <div className="flex w-full justify-center">
-                    <div className="flex w-full justify-center items-end min-h-[26rem] relative">
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+                    <div className="flex flex-col w-full items-center gap-8">
+                      <div className="text-xs font-semibold uppercase tracking-[0.35em] text-primary text-center">
                         Responda a pergunta de forma direta, sem comentários extras.
                       </div>
                       <div className="relative w-full max-w-[17rem] sm:max-w-[18rem]">
