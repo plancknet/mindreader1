@@ -248,6 +248,10 @@ export const zhCN = {
         title: 'Mystery Word',
         description: 'Secretly reveal your word to the audience'
       },
+      euJaSabia: {
+        title: '我早就知道',
+        description: '先记录对方的数字再配合视频揭晓'
+      },
       myEmojis: {
         title: '我的表情符号',
         description: '猜出每个表情符号属于谁'

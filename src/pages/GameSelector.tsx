@@ -10,6 +10,7 @@ import {
   HelpCircle,
   Smile,
   Shuffle,
+  Play,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
@@ -109,6 +110,14 @@ const GAME_CARDS: GameCard[] = [
     icon: MessageCircle,
     path: '/papo-reto',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
+    minTier: 'STANDARD',
+  },
+  {
+    id: 'eu-ja-sabia',
+    translationKey: 'euJaSabia',
+    icon: Play,
+    path: '/eu-ja-sabia',
+    color: 'from-amber-500 via-orange-500 to-red-500',
     minTier: 'STANDARD',
   },
   {

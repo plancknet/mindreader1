@@ -248,6 +248,10 @@ export const en = {
         title: 'Mystery Word',
         description: 'Secretly reveal your word to the audience'
       },
+      euJaSabia: {
+        title: 'I Already Knew',
+        description: 'Capture the chosen number before revealing it with the video'
+      },
       myEmojis: {
         title: 'My Emojis',
         description: 'Figure out whose emoji belongs to whom'

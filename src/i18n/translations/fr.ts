@@ -248,6 +248,10 @@ export const fr = {
         title: 'Mot Mystérieux',
         description: 'Révélez secrètement votre mot au public'
       },
+      euJaSabia: {
+        title: 'Je Le Savais',
+        description: 'Enregistrez le nombre choisi avant de le révéler avec la vidéo'
+      },
       myEmojis: {
         title: 'Mes Emojis',
         description: 'À qui appartient chaque emoji ?'

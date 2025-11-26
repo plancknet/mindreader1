@@ -248,6 +248,10 @@ export const es = {
         title: 'Palabra Misteriosa',
         description: 'Revela tu palabra en secreto al público'
       },
+      euJaSabia: {
+        title: 'Ya Lo Sabia',
+        description: 'Registra el numero pensado antes de revelarlo con el video'
+      },
       myEmojis: {
         title: 'Mis Emojis',
         description: '¿De quién es cada emoji?'

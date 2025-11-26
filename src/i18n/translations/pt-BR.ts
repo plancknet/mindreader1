@@ -245,6 +245,10 @@ export const ptBR = {
         title: 'Palavra Misteriosa',
         description: 'Revele secretamente sua palavra para o público'
       },
+      euJaSabia: {
+        title: 'Eu Ja Sabia',
+        description: 'Registre o numero pensado e revele durante o video'
+      },
       myEmojis: {
         title: 'Meus Emojis',
         description: 'De quem é qual Emoji'
