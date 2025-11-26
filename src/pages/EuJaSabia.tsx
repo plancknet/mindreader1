@@ -18,6 +18,7 @@ const fileToDataUrl = (file: File) =>
 
 const EuJaSabia = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const uploadSectionRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [tensSelection, setTensSelection] = useState<number | null>(null);
   const [unitsSelection, setUnitsSelection] = useState<number | null>(null);
@@ -208,8 +209,12 @@ const EuJaSabia = () => {
   const currentVideoStatus = loadingVideo
     ? 'Carregando...'
     : customVideoSrc
-      ? 'Vídeo personalizado carregado'
-      : 'Usando vídeo base do app';
+      ? 'Usando o seu vídeo personalizado'
+      : 'Vídeo base padrão em uso';
+
+  const scrollToUploadSection = () => {
+    uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-8">
@@ -222,44 +227,8 @@ const EuJaSabia = () => {
         <HeaderControls />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-6 pt-12">
+      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-10 pt-12">
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
-          <div className="space-y-2 rounded-2xl border border-primary/15 bg-background/70 p-4 text-sm text-muted-foreground">
-            <p className="font-semibold text-primary uppercase tracking-[0.35em] text-xs">
-              Instruções para gravar o vídeo
-            </p>
-            <p>
-              Coloque o celular na posição vertical (em pé), utilizando a câmera frontal, a uma altura de XX cm. A folha em branco deverá estar na mesma altura (XX cm) a uma distância de YY cm. Vista-se de preto. O formato deverá ser MP4.
-            </p>
-          </div>
-
-          <div className="space-y-3 rounded-2xl border border-primary/15 bg-background/70 p-4">
-            <div>
-              <p className="font-semibold text-primary">Envie o seu vídeo personalizado</p>
-              <p className="text-sm text-muted-foreground">
-                Formato obrigatório MP4 e tamanho máximo de 2 MB (2048 KB). Caso não envie, utilizaremos o vídeo base
-                padrão localizado em <code className="text-xs text-primary">/public/videos/eujasabia_base.mp4</code>.
-              </p>
-              <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">Status: {currentVideoStatus}</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <label
-                className={`inline-flex cursor-pointer items-center justify-center rounded-full border border-primary/40 px-6 py-2 text-sm font-semibold transition hover:bg-primary/10 ${
-                  isUploading || !userId ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <input
-                  type="file"
-                  accept="video/mp4"
-                  className="sr-only"
-                  onChange={handleVideoUpload}
-                  disabled={isUploading || !userId}
-                />
-                {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
-              </label>
-            </div>
-          </div>
-
           <div className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl">
             <video
               ref={videoRef}
@@ -314,6 +283,9 @@ const EuJaSabia = () => {
             <p className="mt-2 text-xs text-muted-foreground">
               Dezena: {tensSelection ?? '–'} • Unidade: {unitsSelection ?? '–'}
             </p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Status do vídeo: <span className="font-semibold text-primary">{currentVideoStatus}</span>
+            </p>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -323,6 +295,48 @@ const EuJaSabia = () => {
             <Button variant="outline" className="flex-1" onClick={handleReset}>
               Reiniciar
             </Button>
+          </div>
+
+          <Button variant="secondary" className="w-full" onClick={scrollToUploadSection}>
+            Personalizar vídeo
+          </Button>
+        </div>
+
+        <div
+          ref={uploadSectionRef}
+          className="space-y-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-2xl shadow-primary/15"
+        >
+          <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold">Área de personalização</p>
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <p>
+              Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
+              Caso ainda não tenha feito upload, continuaremos usando o vídeo base localizado em
+              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.
+            </p>
+            <p>
+              Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
+              uma folha em branco na mesma altura, posicionada a YY&nbsp;cm. Vista-se de preto e salve em MP4.
+            </p>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Status atual: {currentVideoStatus}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <label
+              className={`inline-flex cursor-pointer items-center justify-center rounded-full border border-primary/40 px-6 py-2 text-sm font-semibold transition hover:bg-primary/10 ${
+                isUploading || !userId ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              <input
+                type="file"
+                accept="video/mp4"
+                className="sr-only"
+                onChange={handleVideoUpload}
+                disabled={isUploading || !userId}
+              />
+              {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
+            </label>
           </div>
         </div>
       </div>
