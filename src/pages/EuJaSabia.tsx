@@ -90,21 +90,8 @@ const EuJaSabia = () => {
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-6 pt-12">
-        <div className="rounded-3xl border border-primary/20 bg-background/80 p-4 text-center shadow-2xl shadow-primary/20 backdrop-blur">
-          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary">
-            Eu já sabia
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Peça para alguém pensar em um número de 0 a 99 e falar em voz alta. Use os toques para registrar o segredo antes de iniciar.
-          </p>
-        </div>
-
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
-          <div className="space-y-2 text-center text-sm text-muted-foreground">
-            <p>O primeiro toque representa a dezena e o segundo a unidade.</p>
-            <p>Os botões seguem a ordem de 1 a 12, equivalendo às posições invisíveis ao redor da carta. Pense neles como um relógio mental em que 1 indica 0, 2 indica 1 e assim sucessivamente até 10 indicar 9.</p>
-          </div>
-
+          
           <div className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl">
             <video
               ref={videoRef}
@@ -117,7 +104,6 @@ const EuJaSabia = () => {
 
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
-                Toque 2 vezes nas posições invisíveis para registrar o número
               </p>
             </div>
 
@@ -150,14 +136,6 @@ const EuJaSabia = () => {
                 </div>
               </div>
             )}
-          </div>
-
-          <div className="rounded-2xl border border-primary/10 bg-background/60 p-4 text-center text-sm">
-            <p className="font-semibold text-primary">Número selecionado</p>
-            <p className="text-3xl font-black tracking-widest text-white mt-2">{formattedNumber}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Toque uma vez para definir a dezena ({tensSelection ?? '–'}) e outra para a unidade ({unitsSelection ?? '–'}).
-            </p>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
