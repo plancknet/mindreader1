@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
-const MAX_VIDEO_SIZE_BYTES = 2048 * 1024; // 2048 KB
+const MAX_VIDEO_SIZE_BYTES = 6 * 1024 * 1024; // 6 MB
 const ACCEPTED_VIDEO_TYPE = 'video/mp4';
 const DEFAULT_MASK_POSITION = { x: 48, y: 62 };
 const DEFAULT_MASK_COLOR = '#000000';
@@ -220,7 +220,7 @@ const EuJaSabia = () => {
     if (file.size > MAX_VIDEO_SIZE_BYTES) {
       toast({
         title: 'Vídeo muito grande',
-        description: 'O arquivo precisa ter no máximo 2 MB.',
+        description: 'O arquivo precisa ter no máximo 6 MB.',
       });
       return;
     }
@@ -448,7 +448,7 @@ const EuJaSabia = () => {
             <p>
               Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
               Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão localizado em
-              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.
+              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>. Formato obrigatório MP4 e tamanho máximo de 6 MB (6144 KB).
             </p>
             <p>
               Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
