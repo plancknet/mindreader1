@@ -62,27 +62,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_videos: {
-        Row: {
-          created_at: string
-          id: string
-          user_id: string
-          video_data: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          user_id: string
-          video_data: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          user_id?: string
-          video_data?: string
-        }
-        Relationships: []
-      }
       users: {
         Row: {
           coupon_code: string | null
