@@ -68,24 +68,18 @@ export type Database = {
           id: string
           user_id: string
           video_data: string
-          mask_offset_x: number | null
-          mask_offset_y: number | null
         }
         Insert: {
           created_at?: string
           id?: string
           user_id: string
           video_data: string
-          mask_offset_x?: number | null
-          mask_offset_y?: number | null
         }
         Update: {
           created_at?: string
           id?: string
           user_id?: string
           video_data?: string
-          mask_offset_x?: number | null
-          mask_offset_y?: number | null
         }
         Relationships: []
       }
