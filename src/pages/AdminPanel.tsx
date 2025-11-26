@@ -7,12 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Crown, RefreshCw, Save, Undo } from 'lucide-react';
+import { Loader2, Crown, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface UserData {
   user_id: string;
@@ -92,8 +93,19 @@ export default function AdminPanel() {
     createdAt: '',
     createdAtStart: '',
     createdAtEnd: '',
+    lastAccessStart: '',
+    lastAccessEnd: '',
   });
-  const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
+  const [userSort, setUserSort] = useState<{ column: keyof UserData; direction: 'asc' | 'desc' }>({
+    column: 'created_at',
+    direction: 'desc',
+  });
+  const [couponSort, setCouponSort] = useState<{ column: keyof CouponStats; direction: 'asc' | 'desc' }>({
+    column: 'coupon_code',
+    direction: 'asc',
+  });
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [editingUserData, setEditingUserData] = useState<Partial<UserData> | null>(null);
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [registrationSeries, setRegistrationSeries] = useState<Array<{ date: string; FREE: number; STANDARD: number; INFLUENCER: number }>>([]);
@@ -368,6 +380,39 @@ export default function AdminPanel() {
     }
   }, [couponCodes, selectedCoupon]);
 
+  const toggleUserSort = (column: keyof UserData) => {
+    setUserSort((prev) => {
+      if (prev.column === column) {
+        return {
+          column,
+          direction: prev.direction === 'asc' ? 'desc' : 'asc',
+        };
+      }
+      return { column, direction: 'asc' };
+    });
+  };
+
+  const toggleCouponSort = (column: keyof CouponStats) => {
+    setCouponSort((prev) => {
+      if (prev.column === column) {
+        return {
+          column,
+          direction: prev.direction === 'asc' ? 'desc' : 'asc',
+        };
+      }
+      return { column, direction: 'asc' };
+    });
+  };
+
+  const renderSortIcon = (active: boolean, direction: 'asc' | 'desc') => {
+    if (!active) return <ArrowUpDown className="w-3.5 h-3.5 text-muted-foreground" />;
+    return direction === 'asc' ? (
+      <ArrowUp className="w-3.5 h-3.5 text-primary" />
+    ) : (
+      <ArrowDown className="w-3.5 h-3.5 text-primary" />
+    );
+  };
+
   const handleResetAllCounts = async (userId: string) => {
     try {
       const { error } = await supabase
@@ -405,14 +450,27 @@ export default function AdminPanel() {
         ? couponStats
         : couponStats.filter((item) => item.coupon_code === selectedCoupon);
 
-    return base.filter((coupon) => {
+    const filtered = base.filter((coupon) => {
       const matchCode = coupon.coupon_code.toLowerCase().includes(couponFilters.code.toLowerCase());
       const matchInfluencer = coupon.influencer_email.toLowerCase().includes(couponFilters.influencer.toLowerCase());
       const matchStatus =
         couponFilters.status === 'ALL' || coupon.subscription_status === couponFilters.status;
       return matchCode && matchInfluencer && matchStatus;
     });
-  }, [couponStats, selectedCoupon, couponFilters]);
+
+    return [...filtered].sort((a, b) => {
+      const { column, direction } = couponSort;
+      const aValue = a[column];
+      const bValue = b[column];
+      let result = 0;
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        result = aValue - bValue;
+      } else {
+        result = String(aValue ?? '').localeCompare(String(bValue ?? ''));
+      }
+      return direction === 'asc' ? result : -result;
+    });
+  }, [couponStats, selectedCoupon, couponFilters, couponSort]);
 
   const couponSummary = useMemo(() => {
     if (filteredCouponStats.length === 0) {
@@ -485,8 +543,21 @@ export default function AdminPanel() {
       const lastAccess = user.last_accessed_at
         ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR')
         : '';
+      const lastAccessDate = user.last_accessed_at ? new Date(user.last_accessed_at) : null;
       if (userFilters.lastAccess && !lastAccess.includes(userFilters.lastAccess)) {
         return false;
+      }
+      if (userFilters.lastAccessStart) {
+        const start = new Date(userFilters.lastAccessStart);
+        if (!lastAccessDate || lastAccessDate < start) {
+          return false;
+        }
+      }
+      if (userFilters.lastAccessEnd) {
+        const end = new Date(userFilters.lastAccessEnd);
+        if (!lastAccessDate || lastAccessDate > end) {
+          return false;
+        }
       }
 
       const createdAtDate = user.created_at ? new Date(user.created_at) : null;
@@ -509,6 +580,37 @@ export default function AdminPanel() {
       return true;
     });
   }, [users, userFilters]);
+
+  const sortedUsers = useMemo(() => {
+    const sortable = [...filteredUsers];
+    return sortable.sort((a, b) => {
+      const { column, direction } = userSort;
+      const aValue = a[column];
+      const bValue = b[column];
+      let result = 0;
+
+      const isDateColumn = column === 'created_at' || column === 'last_accessed_at';
+      const isNumberColumn =
+        typeof aValue === 'number' ||
+        typeof bValue === 'number' ||
+        column.endsWith('_count') ||
+        column === 'usage_count';
+
+      if (isDateColumn) {
+        const aTime = aValue ? new Date(String(aValue)).getTime() : 0;
+        const bTime = bValue ? new Date(String(bValue)).getTime() : 0;
+        result = aTime - bTime;
+      } else if (isNumberColumn) {
+        result = Number(aValue ?? 0) - Number(bValue ?? 0);
+      } else if (typeof aValue === 'boolean' || typeof bValue === 'boolean') {
+        result = Number(Boolean(aValue)) - Number(Boolean(bValue));
+      } else {
+        result = String(aValue ?? '').localeCompare(String(bValue ?? ''));
+      }
+
+      return direction === 'asc' ? result : -result;
+    });
+  }, [filteredUsers, userSort]);
 
   const handleUserFieldChange = <K extends keyof UserData>(userId: string, field: K, value: UserData[K]) => {
     setEditedUsers((prev) => ({
@@ -1105,7 +1207,7 @@ export default function AdminPanel() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUsers.map((user) => {
+                    {sortedUsers.map((user) => {
                       const totalCount =
                         Number(getUserValue(user, 'jogo1_count')) +
                         Number(getUserValue(user, 'jogo2_count')) +

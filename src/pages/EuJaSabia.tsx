@@ -499,14 +499,14 @@ const EuJaSabia = () => {
               disabled={!customVideoSrc}
               onClick={() => setIsEditingMask((prev) => !prev)}
             >
-              {isEditingMask ? 'Encerrar edição da máscara' : 'Editar posição da máscara'}
+              {isEditingMask ? 'Encerrar edição da máscara' : 'Editar Posição da Máscara'}
             </Button>
             <Button
               type="button"
               onClick={handleSaveMaskPosition}
               disabled={!customVideoSrc || isSavingMask}
             >
-              {isSavingMask ? 'Salvando...' : 'Salvar posição'}
+              {isSavingMask ? 'Salvando...' : 'Salvar Máscara'}
             </Button>
           </div>
         </div>
