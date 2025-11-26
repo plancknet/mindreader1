@@ -137,8 +137,12 @@ const EuJaSabia = () => {
             </div>
 
             {maskText && videoStarted && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 px-6 text-center text-white backdrop-blur-sm">
-                <p className="text-2xl font-bold drop-shadow-lg">{maskText}</p>
+              <div className="pointer-events-none absolute inset-3 z-20 grid grid-cols-3 grid-rows-4">
+                <div className="col-start-2 row-start-3 flex items-center justify-center">
+                  <span className="rounded-xl bg-black/70 px-3 py-2 text-base font-semibold text-white shadow-lg">
+                    {maskText}
+                  </span>
+                </div>
               </div>
             )}
           </div>
