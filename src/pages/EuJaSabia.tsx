@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
 const MAX_VIDEO_SIZE_BYTES = 2048 * 1024; // 2048 KB
 const ACCEPTED_VIDEO_TYPE = 'video/mp4';
+const DEFAULT_MASK_POSITION = { x: 48, y: 62 };
 
 const fileToDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -18,6 +19,7 @@ const fileToDataUrl = (file: File) =>
 
 const EuJaSabia = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   const uploadSectionRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [tensSelection, setTensSelection] = useState<number | null>(null);
@@ -28,6 +30,10 @@ const EuJaSabia = () => {
   const [customVideoSrc, setCustomVideoSrc] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
+  const [maskPosition, setMaskPosition] = useState(DEFAULT_MASK_POSITION);
+  const [isEditingMask, setIsEditingMask] = useState(false);
+  const [isSavingMask, setIsSavingMask] = useState(false);
+  const [isDraggingMask, setIsDraggingMask] = useState(false);
 
   const selectedNumber = useMemo(() => {
     if (tensSelection === null || unitsSelection === null) return null;
@@ -56,6 +62,7 @@ const EuJaSabia = () => {
     if (!userId) {
       setCustomVideoSrc(null);
       setLoadingVideo(false);
+      setMaskPosition(DEFAULT_MASK_POSITION);
       return;
     }
 
@@ -64,7 +71,7 @@ const EuJaSabia = () => {
       setLoadingVideo(true);
       const { data, error } = await supabase
         .from('user_videos')
-        .select('video_data')
+        .select('video_data, mask_offset_x, mask_offset_y')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -78,6 +85,15 @@ const EuJaSabia = () => {
         });
       }
 
+      if (data?.mask_offset_x != null && data?.mask_offset_y != null) {
+        setMaskPosition({
+          x: data.mask_offset_x,
+          y: data.mask_offset_y,
+        });
+      } else {
+        setMaskPosition(DEFAULT_MASK_POSITION);
+      }
+
       setCustomVideoSrc(data?.video_data ?? null);
       setLoadingVideo(false);
     };
@@ -87,6 +103,42 @@ const EuJaSabia = () => {
       isMounted = false;
     };
   }, [userId, toast]);
+
+  const updateMaskPositionFromPointer = (clientX: number, clientY: number) => {
+    const container = videoContainerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    const xPercent = ((clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((clientY - rect.top) / rect.height) * 100;
+    setMaskPosition({
+      x: Math.min(100, Math.max(0, xPercent)),
+      y: Math.min(100, Math.max(0, yPercent)),
+    });
+  };
+
+  const handleMaskPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isEditingMask || !customVideoSrc) return;
+    event.preventDefault();
+    updateMaskPositionFromPointer(event.clientX, event.clientY);
+    setIsDraggingMask(true);
+  };
+
+  useEffect(() => {
+    if (!isDraggingMask) return;
+    const handlePointerMove = (event: PointerEvent) => {
+      updateMaskPositionFromPointer(event.clientX, event.clientY);
+    };
+    const handlePointerUp = () => {
+      setIsDraggingMask(false);
+    };
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [isDraggingMask]);
 
   const handleGridClick = (value: number) => {
     if (videoStarted) return;
@@ -177,7 +229,12 @@ const EuJaSabia = () => {
       const { error } = await supabase
         .from('user_videos')
         .upsert(
-          { user_id: userId, video_data: base64Video },
+          {
+            user_id: userId,
+            video_data: base64Video,
+            mask_offset_x: maskPosition.x,
+            mask_offset_y: maskPosition.y,
+          },
           { onConflict: 'user_id' }
         );
 
@@ -206,14 +263,65 @@ const EuJaSabia = () => {
     }
   };
 
+  useEffect(() => {
+    if (!customVideoSrc) {
+      setIsEditingMask(false);
+      setIsDraggingMask(false);
+    }
+  }, [customVideoSrc]);
+
   const currentVideoStatus = loadingVideo
     ? 'Carregando...'
     : customVideoSrc
       ? 'Usando o seu vídeo personalizado'
       : 'Vídeo base padrão em uso';
+  const shouldShowMask = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
+  const maskDisplayText = maskText ?? '--';
 
   const scrollToUploadSection = () => {
     uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleSaveMaskPosition = async () => {
+    if (!userId) {
+      toast({
+        title: 'Sessão expirada',
+        description: 'Entre novamente para salvar os ajustes.',
+      });
+      return;
+    }
+    if (!customVideoSrc) {
+      toast({
+        title: 'Vídeo base em uso',
+        description: 'Faça upload de um vídeo personalizado antes de ajustar a máscara.',
+      });
+      return;
+    }
+    setIsSavingMask(true);
+    try {
+      const { error } = await supabase
+        .from('user_videos')
+        .update({
+          mask_offset_x: maskPosition.x,
+          mask_offset_y: maskPosition.y,
+        })
+        .eq('user_id', userId);
+      if (error) throw error;
+      toast({
+        title: 'Posição salva',
+        description: 'Os próximos vídeos usarão essa posição da máscara.',
+      });
+    } catch (error) {
+      console.error('Erro ao salvar posição da máscara:', error);
+      toast({
+        title: 'Não foi possível salvar',
+        description: 'Tente novamente em instantes.',
+      });
+    } finally {
+      setIsSavingMask(false);
+      setIsEditingMask(false);
+      setIsDraggingMask(false);
+    }
   };
 
   return (
@@ -229,7 +337,13 @@ const EuJaSabia = () => {
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-10 pt-12">
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
-          <div className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl">
+          <div className="text-center text-sm text-muted-foreground">
+            <p>O primeiro toque indica a dezena e o segundo a unidade. O grid segue 1 2 3 / 4 5 6 / 7 8 9 / 0 0 0.</p>
+          </div>
+          <div
+            ref={videoContainerRef}
+            className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl"
+          >
             <video
               ref={videoRef}
               key={activeVideoSrc}
@@ -239,6 +353,15 @@ const EuJaSabia = () => {
               controls={false}
               onEnded={handleVideoEnded}
             />
+
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+                Toque 2 vezes nas posições invisíveis para registrar o número (dezena + unidade)
+              </p>
+              {isEditingMask && customVideoSrc && (
+                <p className="mt-2 text-[0.65rem] text-white/70">Arraste o texto para reposicionar a máscara</p>
+              )}
+            </div>
 
             <div className="absolute inset-3 z-10 grid grid-cols-3 grid-rows-4 gap-3 text-white pointer-events-auto">
               {GRID_NUMBERS.map((value, index) => (
@@ -255,16 +378,29 @@ const EuJaSabia = () => {
               ))}
             </div>
 
-            {maskText && (
-              <div className="pointer-events-none absolute inset-3 z-20 grid grid-cols-3 grid-rows-4">
-                <div className="col-start-2 row-start-3 flex items-center justify-center text-center relative left-[-17px] top-[24px]">
+            {shouldShowMask && (
+              <div
+                className={`absolute inset-0 z-30 ${isEditingMask && customVideoSrc ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                onPointerDown={handleMaskPointerDown}
+              >
+                <div
+                  className={`absolute flex max-w-[70%] -translate-x-1/2 -translate-y-1/2 select-none text-center ${
+                    isEditingMask && customVideoSrc ? 'cursor-grab active:cursor-grabbing' : ''
+                  }`}
+                  style={{
+                    left: `${maskPosition.x}%`,
+                    top: `${maskPosition.y}%`,
+                  }}
+                >
                   <div
                     className="rounded-xl bg-transparent px-3 py-2 text-black/70"
                     style={{ fontFamily: '"Indie Flower", "Brush Script MT", cursive' }}
                   >
                     <p className="h-2" aria-hidden="true" />
                     <p className="text-[0.72rem] font-semibold leading-tight">Eu já sabia:</p>
-                    <p className="text-[1.2rem] font-black leading-tight tracking-widest">{maskText}</p>
+                    <p className="text-[1.2rem] font-black leading-tight tracking-widest whitespace-pre-line">
+                      {maskDisplayText}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -293,7 +429,8 @@ const EuJaSabia = () => {
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
               Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
-              Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão
+              Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão localizado em
+              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.
             </p>
             <p>
               Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
@@ -319,6 +456,21 @@ const EuJaSabia = () => {
               />
               {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
             </label>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!customVideoSrc}
+              onClick={() => setIsEditingMask((prev) => !prev)}
+            >
+              {isEditingMask ? 'Encerrar edição da máscara' : 'Editar posição da máscara'}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveMaskPosition}
+              disabled={!customVideoSrc || isSavingMask}
+            >
+              {isSavingMask ? 'Salvando...' : 'Salvar posição'}
+            </Button>
           </div>
         </div>
       </div>
