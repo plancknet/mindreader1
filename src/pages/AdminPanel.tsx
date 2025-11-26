@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Crown, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Loader2, Crown, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown, Save, Undo } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -107,6 +107,7 @@ export default function AdminPanel() {
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editingUserData, setEditingUserData] = useState<Partial<UserData> | null>(null);
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
+  const [editedUsers, setEditedUsers] = useState<Record<string, Partial<UserData>>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [registrationSeries, setRegistrationSeries] = useState<Array<{ date: string; FREE: number; STANDARD: number; INFLUENCER: number }>>([]);
   const [todayStats, setTodayStats] = useState({
