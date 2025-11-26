@@ -209,58 +209,6 @@ export const ptBR = {
       selectLetterDescription: 'Toque discretamente na carta para enviar a próxima letra.',
     },
   },
-  euJaSabia: {
-    badge: 'Modo novo',
-    digitalDouble: 'Edicao automatica',
-    title: 'Eu ja sabia',
-    subtitle: 'Use o video personalizado para revelar o numero que voce combinou antes da apresentacao.',
-    input: {
-      title: 'Entrada do participante',
-      description: 'Peca para a pessoa pensar em um numero de 0 a 9 e digite aqui para disparar o video correto.',
-      label: 'Numero escolhido (0 a 9)',
-      helper: 'Este valor define qual edicao do video sera reproduzida.',
-      errorEmpty: 'Digite um numero antes de iniciar.',
-      errorRange: 'Use apenas valores entre 0 e 9.',
-    },
-    quickPickLabel: 'Atalhos',
-    buttons: {
-      start: 'Iniciar video',
-      generatorGuide: 'Ver guia do gerador',
-    },
-    detection: {
-      title: 'Deteccao da folha',
-      description: 'A folha em branco do video base e detectada automaticamente para posicionar o numero manuscrito.',
-      status: {
-        loading: 'Analisando metadata...',
-        ready: 'Folha detectada',
-        missing: 'Assets pendentes',
-      },
-      generatedAt: 'Gerado em {date}',
-      frameSize: 'Resolucao do video',
-      sheetArea: 'Area da folha',
-      overlayLabel: 'Area detectada',
-    },
-    instructions: {
-      title: 'Como gerar os videos',
-      steps: '1. Coloque o video base em public/videos/eu-ja-sabia-base.mp4||2. Execute npm run generate:eu-ja-sabia para detectar a folha e criar as versoes de 0 a 9||3. Confirme os MP4 e o metadata.json dentro de public/videos/eu-ja-sabia',
-      requirement: 'Voce precisa ter ffmpeg/ffprobe no PATH e informar uma fonte manuscrita pelo parametro --font.',
-    },
-    video: {
-      title: 'Painel da revelacao',
-      description: 'Assim que clicar em Iniciar, o clipe correspondente sera exibido automaticamente.',
-      placeholderTitle: 'Pronto para surpreender',
-      placeholderDescription: 'Informe um numero de 0 a 9 e clique em iniciar para reproduzir o video secreto.',
-      activeLabel: 'Reproduzindo o numero {digit}',
-      gridLabel: 'Arquivos gerados',
-      versionLabel: 'Versao {digit}',
-    },
-    alerts: {
-      metadataMissingTitle: 'Gere os arquivos primeiro',
-      metadataMissingDescription: 'Execute npm run generate:eu-ja-sabia para criar os 10 clipes e o metadata.json.',
-      videoErrorTitle: 'Video indisponivel',
-      videoErrorDescription: 'Nao encontramos {file}. Verifique se o arquivo existe em /public/videos/eu-ja-sabia.',
-    },
-  },
   gameSelector: {
     heading: 'Leitores de Mente',
     subheading: 'Escolha uma experiência de leitura mental',
@@ -299,11 +247,7 @@ export const ptBR = {
       },
       myEmojis: {
         title: 'Meus Emojis',
-        description: 'De quem ? qual Emoji'
-      },
-      euJaSabia: {
-        title: 'Eu ja sabia',
-        description: 'Escolha um numero e reproduza o video correspondente'
+        description: 'De quem é qual Emoji'
       }
     }
   },

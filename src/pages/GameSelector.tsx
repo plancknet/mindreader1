@@ -10,7 +10,6 @@ import {
   HelpCircle,
   Smile,
   Shuffle,
-  Scan,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
@@ -120,14 +119,6 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/my-emojis/instructions',
     color: 'from-yellow-400 to-lime-400',
     badgeKey: 'underConstruction',
-    minTier: 'STANDARD',
-  },
-  {
-    id: 'eu-ja-sabia',
-    translationKey: 'euJaSabia',
-    icon: Scan,
-    path: '/eu-ja-sabia',
-    color: 'from-amber-500 to-orange-600',
     minTier: 'STANDARD',
   },
 ];

@@ -212,58 +212,6 @@ export const es = {
       selectLetterDescription: 'Toca discretamente la carta para enviar la próxima letra.',
     },
   },
-  euJaSabia: {
-    badge: 'New mode',
-    digitalDouble: 'Auto edit',
-    title: 'Eu ja sabia',
-    subtitle: 'Cue the pre-edited video that already contains the handwritten number reveal.',
-    input: {
-      title: 'Spectator input',
-      description: 'Ask for a number between 0 and 9 and type it here to trigger the correct video.',
-      label: 'Chosen number (0-9)',
-      helper: 'This value defines which video variation will play.',
-      errorEmpty: 'Enter a number before starting.',
-      errorRange: 'Only numbers from 0 to 9 are allowed.',
-    },
-    quickPickLabel: 'Quick picks',
-    buttons: {
-      start: 'Start video',
-      generatorGuide: 'Open generator guide',
-    },
-    detection: {
-      title: 'Sheet detection',
-      description: 'The blank sheet is detected automatically so the handwriting lands in the right place.',
-      status: {
-        loading: 'Reading metadata...',
-        ready: 'Sheet detected',
-        missing: 'Assets missing',
-      },
-      generatedAt: 'Generated on {date}',
-      frameSize: 'Video resolution',
-      sheetArea: 'Sheet area',
-      overlayLabel: 'Detected area',
-    },
-    instructions: {
-      title: 'How to render the videos',
-      steps: '1. Drop the base clip at public/videos/eu-ja-sabia-base.mp4||2. Run npm run generate:eu-ja-sabia to detect the sheet and render digits 0-9||3. Confirm the MP4 files and metadata.json exist under public/videos/eu-ja-sabia',
-      requirement: 'ffmpeg/ffprobe must be on PATH and a handwriting-friendly font must be provided via --font.',
-    },
-    video: {
-      title: 'Presentation console',
-      description: 'Press Start to instantly play the matching reveal clip.',
-      placeholderTitle: 'Ready to amaze',
-      placeholderDescription: 'Type any number from 0 to 9 and press start to cue the secret clip.',
-      activeLabel: 'Playing number {digit}',
-      gridLabel: 'Generated files',
-      versionLabel: 'Version {digit}',
-    },
-    alerts: {
-      metadataMissingTitle: 'Assets needed',
-      metadataMissingDescription: 'Run npm run generate:eu-ja-sabia to create the 10 clips and metadata.json.',
-      videoErrorTitle: 'Video unavailable',
-      videoErrorDescription: 'File {file} is missing under /public/videos/eu-ja-sabia.',
-    },
-  },
   gameSelector: {
     heading: 'Lectores de Mentes',
     subheading: 'Elige una experiencia de lectura mental',
@@ -303,10 +251,6 @@ export const es = {
       myEmojis: {
         title: 'Mis Emojis',
         description: '¿De quién es cada emoji?'
-      },
-      euJaSabia: {
-        title: 'Eu ja sabia',
-        description: 'Type a number and instantly play the matching clip'
       }
     }
   },
