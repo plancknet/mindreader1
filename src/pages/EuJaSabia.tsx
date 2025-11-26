@@ -240,12 +240,6 @@ const EuJaSabia = () => {
               onEnded={handleVideoEnded}
             />
 
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
-                Toque 2 vezes nas posições invisíveis para registrar o número (dezena + unidade)
-              </p>
-            </div>
-
             <div className="absolute inset-3 z-10 grid grid-cols-3 grid-rows-4 gap-3 text-white pointer-events-auto">
               {GRID_NUMBERS.map((value, index) => (
                 <button
@@ -277,17 +271,6 @@ const EuJaSabia = () => {
             )}
           </div>
 
-          <div className="rounded-2xl border border-primary/15 bg-background/80 p-4 text-center text-sm">
-            <p className="font-semibold text-primary">Número selecionado</p>
-            <p className="mt-2 text-3xl font-black tracking-widest text-white">{formattedNumber}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Dezena: {tensSelection ?? '–'} • Unidade: {unitsSelection ?? '–'}
-            </p>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Status do vídeo: <span className="font-semibold text-primary">{currentVideoStatus}</span>
-            </p>
-          </div>
-
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="flex-1" onClick={handleStart} disabled={videoStarted}>
               Iniciar
@@ -310,8 +293,7 @@ const EuJaSabia = () => {
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
               Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
-              Caso ainda não tenha feito upload, continuaremos usando o vídeo base localizado em
-              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.
+              Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão
             </p>
             <p>
               Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
