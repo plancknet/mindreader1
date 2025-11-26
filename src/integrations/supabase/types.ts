@@ -66,6 +66,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          mask_color: string | null
           mask_offset_x: number | null
           mask_offset_y: number | null
           user_id: string
@@ -74,6 +75,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          mask_color?: string | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           user_id: string
@@ -82,6 +84,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          mask_color?: string | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           user_id?: string
