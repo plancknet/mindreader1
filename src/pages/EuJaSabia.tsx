@@ -8,6 +8,7 @@ const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
 const MAX_VIDEO_SIZE_BYTES = 2048 * 1024; // 2048 KB
 const ACCEPTED_VIDEO_TYPE = 'video/mp4';
 const DEFAULT_MASK_POSITION = { x: 48, y: 62 };
+const DEFAULT_MASK_COLOR = '#000000';
 
 const fileToDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -21,6 +22,7 @@ const EuJaSabia = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const uploadSectionRef = useRef<HTMLDivElement>(null);
+  const colorInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const [tensSelection, setTensSelection] = useState<number | null>(null);
   const [unitsSelection, setUnitsSelection] = useState<number | null>(null);
@@ -31,6 +33,7 @@ const EuJaSabia = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
   const [maskPosition, setMaskPosition] = useState(DEFAULT_MASK_POSITION);
+  const [maskColor, setMaskColor] = useState(DEFAULT_MASK_COLOR);
   const [isEditingMask, setIsEditingMask] = useState(false);
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
@@ -63,6 +66,7 @@ const EuJaSabia = () => {
       setCustomVideoSrc(null);
       setLoadingVideo(false);
       setMaskPosition(DEFAULT_MASK_POSITION);
+      setMaskColor(DEFAULT_MASK_COLOR);
       return;
     }
 
@@ -71,7 +75,7 @@ const EuJaSabia = () => {
       setLoadingVideo(true);
       const { data, error } = await supabase
         .from('user_videos')
-        .select('video_data, mask_offset_x, mask_offset_y')
+        .select('video_data, mask_offset_x, mask_offset_y, mask_color')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -92,6 +96,12 @@ const EuJaSabia = () => {
         });
       } else {
         setMaskPosition(DEFAULT_MASK_POSITION);
+      }
+
+      if (data?.mask_color) {
+        setMaskColor(data.mask_color);
+      } else {
+        setMaskColor(DEFAULT_MASK_COLOR);
       }
 
       setCustomVideoSrc(data?.video_data ?? null);
@@ -234,6 +244,7 @@ const EuJaSabia = () => {
             video_data: base64Video,
             mask_offset_x: maskPosition.x,
             mask_offset_y: maskPosition.y,
+            mask_color: maskColor,
           },
           { onConflict: 'user_id' }
         );
@@ -267,6 +278,7 @@ const EuJaSabia = () => {
     if (!customVideoSrc) {
       setIsEditingMask(false);
       setIsDraggingMask(false);
+      setMaskColor(DEFAULT_MASK_COLOR);
     }
   }, [customVideoSrc]);
 
@@ -280,6 +292,15 @@ const EuJaSabia = () => {
 
   const scrollToUploadSection = () => {
     uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleColorButtonClick = () => {
+    if (!customVideoSrc) return;
+    colorInputRef.current?.click();
+  };
+
+  const handleMaskColorChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setMaskColor(event.target.value);
   };
 
   const handleSaveMaskPosition = async () => {
@@ -304,6 +325,7 @@ const EuJaSabia = () => {
         .update({
           mask_offset_x: maskPosition.x,
           mask_offset_y: maskPosition.y,
+          mask_color: maskColor,
         })
         .eq('user_id', userId);
       if (error) throw error;
@@ -389,8 +411,8 @@ const EuJaSabia = () => {
                   }}
                 >
                   <div
-                    className="rounded-xl bg-transparent px-3 py-2 text-black/60"
-                    style={{ fontFamily: '"Indie Flower", "Brush Script MT", cursive' }}
+                    className="rounded-xl bg-transparent px-3 py-2"
+                    style={{ fontFamily: '"Indie Flower", "Brush Script MT", cursive', color: maskColor }}
                   >
                     <p className="h-2" aria-hidden="true" />
                     <p className="text-[0.72rem] font-semibold leading-tight">Eu já sabia:</p>
@@ -452,6 +474,25 @@ const EuJaSabia = () => {
               />
               {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
             </label>
+            <input
+              ref={colorInputRef}
+              type="color"
+              className="sr-only"
+              value={maskColor}
+              onChange={handleMaskColorChange}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!customVideoSrc}
+              onClick={handleColorButtonClick}
+            >
+              Cor da máscara
+              <span
+                className="ml-2 inline-block h-4 w-4 rounded-full border border-white/30"
+                style={{ backgroundColor: maskColor }}
+              />
+            </Button>
             <Button
               type="button"
               variant="outline"
