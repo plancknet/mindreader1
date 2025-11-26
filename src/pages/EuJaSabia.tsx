@@ -129,14 +129,6 @@ const EuJaSabia = () => {
             )}
           </div>
 
-          <div className="rounded-2xl border border-primary/10 bg-background/60 p-4 text-center text-sm">
-            <p className="font-semibold text-primary">Número selecionado</p>
-            <p className="mt-2 text-3xl font-black tracking-widest text-white">{formattedNumber}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Dezena: {tensSelection ?? '–'} • Unidade: {unitsSelection ?? '–'}
-            </p>
-          </div>
-
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="flex-1" onClick={handleStart} disabled={videoStarted}>
               Iniciar
