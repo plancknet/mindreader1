@@ -66,18 +66,24 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          mask_offset_x: number | null
+          mask_offset_y: number | null
           user_id: string
           video_data: string
         }
         Insert: {
           created_at?: string
           id?: string
+          mask_offset_x?: number | null
+          mask_offset_y?: number | null
           user_id: string
           video_data: string
         }
         Update: {
           created_at?: string
           id?: string
+          mask_offset_x?: number | null
+          mask_offset_y?: number | null
           user_id?: string
           video_data?: string
         }
