@@ -138,7 +138,7 @@ const EuJaSabia = () => {
 
             {maskText && (
               <div className="pointer-events-none absolute inset-3 z-20 grid grid-cols-3 grid-rows-4">
-                <div className="col-start-2 row-start-3 flex items-center justify-center text-center relative left-[-15px] top-[24px]">
+                <div className="col-start-2 row-start-3 flex items-center justify-center text-center relative left-[-17px] top-[24px]">
                   <div
                     className="rounded-xl bg-transparent px-3 py-2 text-black/80"
                     style={{ fontFamily: '"Indie Flower", "Brush Script MT", cursive' }}
