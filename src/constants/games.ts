@@ -5,6 +5,7 @@ export const GAME_IDS = {
   MYSTERY_WORD: 3,
   MY_EMOJIS: 4,
   PAPO_RETO: 5,
+  EU_JA_SABIA: 6,
 } as const;
 
 export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];
