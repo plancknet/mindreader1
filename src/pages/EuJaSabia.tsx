@@ -3,9 +3,7 @@ import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
-const GRID_NUMBERS = Array.from({ length: 12 }, (_, index) => index + 1);
-
-const mapValueToDigit = (value: number) => (value - 1) % 10;
+const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
 
 const EuJaSabia = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -17,9 +15,7 @@ const EuJaSabia = () => {
 
   const selectedNumber = useMemo(() => {
     if (tensSelection === null || unitsSelection === null) return null;
-    const tens = mapValueToDigit(tensSelection);
-    const units = mapValueToDigit(unitsSelection);
-    return tens * 10 + units;
+    return tensSelection * 10 + unitsSelection;
   }, [tensSelection, unitsSelection]);
 
   const formattedNumber = selectedNumber !== null ? selectedNumber.toString().padStart(2, '0') : '--';
@@ -91,7 +87,7 @@ const EuJaSabia = () => {
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-6 pt-12">
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
-          
+
           <div className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl">
             <video
               ref={videoRef}
@@ -102,19 +98,14 @@ const EuJaSabia = () => {
               onEnded={handleVideoEnded}
             />
 
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
-              </p>
-            </div>
-
             <div className="absolute inset-3 z-10 grid grid-cols-3 grid-rows-4 gap-3 text-white pointer-events-auto">
-              {GRID_NUMBERS.map((value) => (
+              {GRID_NUMBERS.map((value, index) => (
                 <button
-                  key={value}
+                  key={`${value}-${index}`}
                   type="button"
                   className="rounded-2xl border border-white/5 bg-transparent focus-visible:outline-none"
                   onClick={() => handleGridClick(value)}
-                  aria-label={`Selecionar posição ${value}`}
+                  aria-label={`Selecionar número ${value}`}
                   disabled={videoStarted}
                 >
                   <span className="sr-only">{value}</span>
@@ -136,6 +127,14 @@ const EuJaSabia = () => {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="rounded-2xl border border-primary/10 bg-background/60 p-4 text-center text-sm">
+            <p className="font-semibold text-primary">Número selecionado</p>
+            <p className="mt-2 text-3xl font-black tracking-widest text-white">{formattedNumber}</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Dezena: {tensSelection ?? '–'} • Unidade: {unitsSelection ?? '–'}
+            </p>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
