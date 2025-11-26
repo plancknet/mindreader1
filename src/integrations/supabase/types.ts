@@ -68,7 +68,6 @@ export type Database = {
           id: string
           mask_offset_x: number | null
           mask_offset_y: number | null
-          mask_color: string | null
           user_id: string
           video_data: string
         }
@@ -77,7 +76,6 @@ export type Database = {
           id?: string
           mask_offset_x?: number | null
           mask_offset_y?: number | null
-          mask_color?: string | null
           user_id: string
           video_data: string
         }
@@ -88,7 +86,6 @@ export type Database = {
           mask_offset_y?: number | null
           user_id?: string
           video_data?: string
-          mask_color?: string | null
         }
         Relationships: []
       }
