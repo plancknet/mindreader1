@@ -337,9 +337,6 @@ const EuJaSabia = () => {
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-10 pt-12">
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
-          <div className="text-center text-sm text-muted-foreground">
-            <p>O primeiro toque indica a dezena e o segundo a unidade. O grid segue 1 2 3 / 4 5 6 / 7 8 9 / 0 0 0.</p>
-          </div>
           <div
             ref={videoContainerRef}
             className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl"
@@ -356,7 +353,6 @@ const EuJaSabia = () => {
 
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
-                Toque 2 vezes nas posições invisíveis para registrar o número (dezena + unidade)
               </p>
               {isEditingMask && customVideoSrc && (
                 <p className="mt-2 text-[0.65rem] text-white/70">Arraste o texto para reposicionar a máscara</p>
@@ -393,7 +389,7 @@ const EuJaSabia = () => {
                   }}
                 >
                   <div
-                    className="rounded-xl bg-transparent px-3 py-2 text-black/70"
+                    className="rounded-xl bg-transparent px-3 py-2 text-black/60"
                     style={{ fontFamily: '"Indie Flower", "Brush Script MT", cursive' }}
                   >
                     <p className="h-2" aria-hidden="true" />
