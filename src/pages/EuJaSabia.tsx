@@ -105,10 +105,10 @@ const EuJaSabia = () => {
             <p>Os botões seguem a ordem de 1 a 12, equivalendo às posições invisíveis ao redor da carta. Pense neles como um relógio mental em que 1 indica 0, 2 indica 1 e assim sucessivamente até 10 indicar 9.</p>
           </div>
 
-          <div className="relative aspect-video w-full rounded-2xl border border-primary/20 bg-black/60 shadow-xl">
+          <div className="relative aspect-[9/16] w-full max-h-[80vh] rounded-2xl border border-primary/20 bg-black/80 shadow-xl">
             <video
               ref={videoRef}
-              className="h-full w-full rounded-2xl object-cover"
+              className="h-full w-full rounded-2xl object-contain bg-black"
               src="/videos/eujasabia_base.mp4"
               playsInline
               controls={false}
