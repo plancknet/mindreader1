@@ -138,11 +138,11 @@ const EuJaSabia = () => {
 
             {maskText && (
               <div className="pointer-events-none absolute inset-3 z-20 grid grid-cols-3 grid-rows-4">
-                <div className="col-start-2 row-start-3 flex items-center justify-center text-center">
+                <div className="col-start-2 row-start-3 flex items-center justify-center text-center relative left-[20px] top-[40px]">
                   <div className="rounded-xl bg-black/70 px-3 py-2 text-white shadow-lg">
                     <p className="h-2" aria-hidden="true" />
-                    <p className="text-[1.2rem] font-semibold leading-tight">Eu já sabia:</p>
-                    <p className="text-2xl font-black leading-tight tracking-widest">{maskText}</p>
+                    <p className="text-[0.72rem] font-semibold leading-tight">Eu já sabia:</p>
+                    <p className="text-[1.2rem] font-black leading-tight tracking-widest">{maskText}</p>
                   </div>
                 </div>
               </div>
