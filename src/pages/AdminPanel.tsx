@@ -62,6 +62,28 @@ const registrationChartConfig = {
 
 const normalizeCouponCode = (code?: string | null) => (code?.trim().toUpperCase() ?? '');
 
+const initialUserFilters = {
+  email: '',
+  tier: 'ALL',
+  status: 'ALL',
+  confirmed: 'ALL',
+  couponCode: '',
+  couponGenerated: 'ALL',
+  premium: 'ALL',
+  premiumType: '',
+  usage: '',
+  jogo1: '',
+  jogo2: '',
+  jogo3: '',
+  jogo4: '',
+  lastAccess: '',
+  lastAccessStart: '',
+  lastAccessEnd: '',
+  createdAt: '',
+  createdAtStart: '',
+  createdAtEnd: '',
+};
+
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
@@ -75,27 +97,7 @@ export default function AdminPanel() {
     influencer: '',
     status: 'ALL',
   });
-  const [userFilters, setUserFilters] = useState({
-    email: '',
-    tier: 'ALL',
-    status: 'ALL',
-    confirmed: 'ALL',
-    couponCode: '',
-    couponGenerated: 'ALL',
-    premium: 'ALL',
-    premiumType: '',
-    usage: '',
-    jogo1: '',
-    jogo2: '',
-    jogo3: '',
-    jogo4: '',
-    lastAccess: '',
-    createdAt: '',
-    createdAtStart: '',
-    createdAtEnd: '',
-    lastAccessStart: '',
-    lastAccessEnd: '',
-  });
+  const [userFilters, setUserFilters] = useState(initialUserFilters);
   const [userSort, setUserSort] = useState<{ column: keyof UserData; direction: 'asc' | 'desc' }>({
     column: 'created_at',
     direction: 'desc',
@@ -413,6 +415,48 @@ export default function AdminPanel() {
     );
   };
 
+  const renderUserSortButton = (label: string, column: keyof UserData, align: 'left' | 'center' | 'right' = 'left') => (
+    <button
+      type="button"
+      className={`flex items-center gap-1 text-sm font-semibold ${align === 'center' ? 'mx-auto justify-center' : align === 'right' ? 'ml-auto justify-end' : ''}`}
+      onClick={() => toggleUserSort(column)}
+    >
+      <span>{label}</span>
+      {renderSortIcon(userSort.column === column, userSort.direction)}
+    </button>
+  );
+
+  const renderCouponSortButton = (label: string, column: keyof CouponStats, align: 'left' | 'center' | 'right' = 'left') => (
+    <button
+      type="button"
+      className={`flex items-center gap-1 text-sm font-semibold ${align === 'center' ? 'mx-auto justify-center' : align === 'right' ? 'ml-auto justify-end' : ''}`}
+      onClick={() => toggleCouponSort(column)}
+    >
+      <span>{label}</span>
+      {renderSortIcon(couponSort.column === column, couponSort.direction)}
+    </button>
+  );
+
+  const renderBooleanBadge = (value: boolean) => (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+        value ? 'bg-emerald-500/15 text-emerald-500' : 'bg-muted text-muted-foreground'
+      }`}
+    >
+      {value ? 'Sim' : 'Não'}
+    </span>
+  );
+
+  const formatDate = (iso?: string | null, withTime = false) => {
+    if (!iso) return '--';
+    const date = new Date(iso);
+    return withTime
+      ? `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`
+      : date.toLocaleDateString('pt-BR');
+  };
+
+  const handleResetUserFilters = () => setUserFilters({ ...initialUserFilters });
+
   const handleResetAllCounts = async (userId: string) => {
     try {
       const { error } = await supabase
@@ -612,23 +656,39 @@ export default function AdminPanel() {
     });
   }, [filteredUsers, userSort]);
 
-  const handleUserFieldChange = <K extends keyof UserData>(userId: string, field: K, value: UserData[K]) => {
-    setEditedUsers((prev) => ({
-      ...prev,
-      [userId]: {
-        ...prev[userId],
-        [field]: value,
-      },
-    }));
+  const openUserEditor = (user: UserData) => {
+    setEditingUserId(user.user_id);
+    setEditingUserData({ ...user });
   };
 
-  const getUserValue = <K extends keyof UserData>(user: UserData, field: K): UserData[K] => {
-    return (editedUsers[user.user_id]?.[field] as UserData[K]) ?? user[field];
+  const closeUserEditor = () => {
+    setEditingUserId(null);
+    setEditingUserData(null);
   };
 
-  const handleSaveUser = async (userId: string) => {
-    const updates = editedUsers[userId];
-    if (!updates || Object.keys(updates).length === 0) {
+  const handleEditUserField = <K extends keyof UserData>(field: K, value: UserData[K]) => {
+    setEditingUserData((prev) => (prev ? { ...prev, [field]: value } : prev));
+  };
+
+  const handleSaveUser = async () => {
+    if (!editingUserId || !editingUserData) return;
+
+    const originalUser = users.find((user) => user.user_id === editingUserId);
+    if (!originalUser) {
+      closeUserEditor();
+      return;
+    }
+
+    const updates: Partial<UserData> = {};
+    (Object.keys(editingUserData) as Array<keyof UserData>).forEach((key) => {
+      if (key === 'user_id') return;
+      const newValue = editingUserData[key];
+      if (newValue !== originalUser[key]) {
+        updates[key] = newValue as UserData[keyof UserData];
+      }
+    });
+
+    if (Object.keys(updates).length === 0) {
       toast({
         title: 'Nada para salvar',
         description: 'Nenhuma alteração foi realizada.',
@@ -637,27 +697,23 @@ export default function AdminPanel() {
     }
 
     try {
-      setSavingUserId(userId);
+      setSavingUserId(editingUserId);
       const { error } = await supabase
         .from('users')
         .update(updates)
-        .eq('user_id', userId);
+        .eq('user_id', editingUserId);
 
       if (error) throw error;
 
       setUsers((prev) =>
-        prev.map((user) => (user.user_id === userId ? { ...user, ...updates } : user))
+        prev.map((user) => (user.user_id === editingUserId ? { ...user, ...editingUserData } : user))
       );
-
-      setEditedUsers((prev) => {
-        const { [userId]: removed, ...rest } = prev;
-        return rest;
-      });
 
       toast({
         title: 'Dados atualizados',
         description: 'As informações do usuário foram salvas com sucesso.',
       });
+      closeUserEditor();
     } catch (error) {
       console.error('Erro ao salvar usuário', error);
       toast({
@@ -668,13 +724,6 @@ export default function AdminPanel() {
     } finally {
       setSavingUserId(null);
     }
-  };
-
-  const handleResetUserChanges = (userId: string) => {
-    setEditedUsers((prev) => {
-      const { [userId]: removed, ...rest } = prev;
-      return rest;
-    });
   };
 
   if (adminLoading || isLoading) {
@@ -855,56 +904,50 @@ export default function AdminPanel() {
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-2">
-                          <div className="flex flex-col gap-1">
-                            <span>Código</span>
-                            <Input
-                              value={couponFilters.code}
-                              onChange={(event) =>
-                                setCouponFilters((prev) => ({ ...prev, code: event.target.value }))
-                              }
-                              placeholder="Filtrar..."
-                              className="h-8"
-                            />
-                          </div>
+                          {renderCouponSortButton('Codigo', 'coupon_code')}
+                          <Input
+                            value={couponFilters.code}
+                            onChange={(event) =>
+                              setCouponFilters((prev) => ({ ...prev, code: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8 mt-2"
+                          />
                         </th>
                         <th className="text-left p-2">
-                          <div className="flex flex-col gap-1">
-                            <span>Influencer</span>
-                            <Input
-                              value={couponFilters.influencer}
-                              onChange={(event) =>
-                                setCouponFilters((prev) => ({ ...prev, influencer: event.target.value }))
-                              }
-                              placeholder="Filtrar..."
-                              className="h-8"
-                            />
-                          </div>
+                          {renderCouponSortButton('Influencer', 'influencer_email')}
+                          <Input
+                            value={couponFilters.influencer}
+                            onChange={(event) =>
+                              setCouponFilters((prev) => ({ ...prev, influencer: event.target.value }))
+                            }
+                            placeholder="Filtrar..."
+                            className="h-8 mt-2"
+                          />
                         </th>
                         <th className="text-center p-2">
-                          <div className="flex flex-col gap-1">
-                            <span>Status</span>
-                            <Select
-                              value={couponFilters.status}
-                              onValueChange={(value) =>
-                                setCouponFilters((prev) => ({ ...prev, status: value }))
-                              }
-                            >
-                              <SelectTrigger className="h-8">
-                                <SelectValue placeholder="Todos" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="ALL">Todos</SelectItem>
-                                <SelectItem value="active">active</SelectItem>
-                                <SelectItem value="inactive">inactive</SelectItem>
-                                <SelectItem value="past_due">past_due</SelectItem>
-                                <SelectItem value="canceled">canceled</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
+                          {renderCouponSortButton('Status', 'subscription_status', 'center')}
+                          <Select
+                            value={couponFilters.status}
+                            onValueChange={(value) =>
+                              setCouponFilters((prev) => ({ ...prev, status: value }))
+                            }
+                          >
+                            <SelectTrigger className="h-8 mt-2">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ALL">Todos</SelectItem>
+                              <SelectItem value="active">active</SelectItem>
+                              <SelectItem value="inactive">inactive</SelectItem>
+                              <SelectItem value="past_due">past_due</SelectItem>
+                              <SelectItem value="canceled">canceled</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </th>
-                        <th className="text-center p-2">Resgates</th>
-                        <th className="text-center p-2">Receita</th>
-                        <th className="text-left p-2">Último resgate</th>
+                        <th className="text-center p-2">{renderCouponSortButton('Resgates', 'total_redemptions', 'center')}</th>
+                        <th className="text-center p-2">{renderCouponSortButton('Receita', 'total_revenue', 'center')}</th>
+                        <th className="text-left p-2">{renderCouponSortButton('Ultimo resgate', 'last_redeemed_at')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -936,453 +979,406 @@ export default function AdminPanel() {
           </CardContent>
         </Card>
 
+
         <Card>
           <CardHeader>
-            <CardTitle>Usuários (edição completa)</CardTitle>
+            <CardTitle>Usu?rios (edi??o completa)</CardTitle>
           </CardHeader>
           <CardContent>
-            {filteredUsers.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
-                Nenhum usuário encontrado para o filtro aplicado.
-              </p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm align-top">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Email</span>
-                          <Input
-                            value={userFilters.email}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, email: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Plano</span>
-                          <Select
-                            value={userFilters.tier}
-                            onValueChange={(value) =>
-                              setUserFilters((prev) => ({ ...prev, tier: value }))
-                            }
-                          >
-                            <SelectTrigger className="h-8">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ALL">Todos</SelectItem>
-                              <SelectItem value="FREE">FREE</SelectItem>
-                              <SelectItem value="STANDARD">STANDARD</SelectItem>
-                              <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Status</span>
-                          <Select
-                            value={userFilters.status}
-                            onValueChange={(value) =>
-                              setUserFilters((prev) => ({ ...prev, status: value }))
-                            }
-                          >
-                            <SelectTrigger className="h-8">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ALL">Todos</SelectItem>
-                              <SelectItem value="active">active</SelectItem>
-                              <SelectItem value="inactive">inactive</SelectItem>
-                              <SelectItem value="past_due">past_due</SelectItem>
-                              <SelectItem value="canceled">canceled</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Confirmado</span>
-                          <Select
-                            value={userFilters.confirmed}
-                            onValueChange={(value) =>
-                              setUserFilters((prev) => ({ ...prev, confirmed: value }))
-                            }
-                          >
-                            <SelectTrigger className="h-8">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ALL">Todos</SelectItem>
-                              <SelectItem value="YES">Sim</SelectItem>
-                              <SelectItem value="NO">Não</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Cupom</span>
-                          <Input
-                            value={userFilters.couponCode}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, couponCode: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Cupom gerado</span>
-                          <Select
-                            value={userFilters.couponGenerated}
-                            onValueChange={(value) =>
-                              setUserFilters((prev) => ({ ...prev, couponGenerated: value }))
-                            }
-                          >
-                            <SelectTrigger className="h-8">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ALL">Todos</SelectItem>
-                              <SelectItem value="YES">Sim</SelectItem>
-                              <SelectItem value="NO">Não</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Premium</span>
-                          <Select
-                            value={userFilters.premium}
-                            onValueChange={(value) =>
-                              setUserFilters((prev) => ({ ...prev, premium: value }))
-                            }
-                          >
-                            <SelectTrigger className="h-8">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ALL">Todos</SelectItem>
-                              <SelectItem value="YES">Sim</SelectItem>
-                              <SelectItem value="NO">Não</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Premium type</span>
-                          <Input
-                            value={userFilters.premiumType}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, premiumType: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Uso total</span>
-                          <Input
-                            value={userFilters.usage}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, usage: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Jogo 1</span>
-                          <Input
-                            value={userFilters.jogo1}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, jogo1: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Jogo 2</span>
-                          <Input
-                            value={userFilters.jogo2}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, jogo2: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Jogo 3</span>
-                          <Input
-                            value={userFilters.jogo3}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, jogo3: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-center p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Jogo 4</span>
-                          <Input
-                            value={userFilters.jogo4}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, jogo4: event.target.value }))
-                            }
-                            placeholder="Filtrar..."
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Último acesso</span>
-                          <Input
-                            value={userFilters.lastAccess}
-                            onChange={(event) =>
-                              setUserFilters((prev) => ({ ...prev, lastAccess: event.target.value }))
-                            }
-                            placeholder="dd/mm"
-                            className="h-8"
-                          />
-                        </div>
-                      </th>
-                      <th className="text-left p-2">
-                        <div className="flex flex-col gap-1">
-                          <span>Cadastro</span>
-                          <div className="grid grid-cols-1 gap-1">
-                            <Input
-                              value={userFilters.createdAt}
-                              onChange={(event) =>
-                                setUserFilters((prev) => ({ ...prev, createdAt: event.target.value }))
-                              }
-                              placeholder="dd/mm"
-                              className="h-8"
-                            />
-                            <div className="flex gap-1">
-                              <Input
-                                type="date"
-                                value={userFilters.createdAtStart}
-                                onChange={(event) =>
-                                  setUserFilters((prev) => ({ ...prev, createdAtStart: event.target.value }))
-                                }
-                                className="h-8"
-                              />
-                              <Input
-                                type="date"
-                                value={userFilters.createdAtEnd}
-                                onChange={(event) =>
-                                  setUserFilters((prev) => ({ ...prev, createdAtEnd: event.target.value }))
-                                }
-                                className="h-8"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </th>
-                      <th className="text-right p-2">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedUsers.map((user) => {
-                      const totalCount =
-                        Number(getUserValue(user, 'jogo1_count')) +
-                        Number(getUserValue(user, 'jogo2_count')) +
-                        Number(getUserValue(user, 'jogo3_count')) +
-                        Number(getUserValue(user, 'jogo4_count'));
-
-                      return (
-                        <tr key={user.user_id} className="border-b hover:bg-muted/50">
-                          <td className="p-2 min-w-[220px]">
-                            <Input
-                              value={getUserValue(user, 'email')}
-                              onChange={(event) => handleUserFieldChange(user.user_id, 'email', event.target.value)}
-                            />
-                          </td>
-                          <td className="p-2 min-w-[150px]">
-                            <Select
-                              value={getUserValue(user, 'subscription_tier')}
-                              onValueChange={(value) =>
-                                handleUserFieldChange(user.user_id, 'subscription_tier', value as UserData['subscription_tier'])
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="FREE">FREE</SelectItem>
-                                <SelectItem value="STANDARD">STANDARD</SelectItem>
-                                <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="p-2 min-w-[150px]">
-                            <Select
-                              value={getUserValue(user, 'subscription_status')}
-                              onValueChange={(value) => handleUserFieldChange(user.user_id, 'subscription_status', value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="active">active</SelectItem>
-                                <SelectItem value="inactive">inactive</SelectItem>
-                                <SelectItem value="past_due">past_due</SelectItem>
-                                <SelectItem value="canceled">canceled</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="p-2 text-center">
-                            <Checkbox
-                              checked={Boolean(getUserValue(user, 'plan_confirmed'))}
-                              onCheckedChange={(checked) =>
-                                handleUserFieldChange(user.user_id, 'plan_confirmed', Boolean(checked))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 min-w-[160px]">
-                            <Input
-                              value={getUserValue(user, 'coupon_code') ?? ''}
-                              onChange={(event) => handleUserFieldChange(user.user_id, 'coupon_code', event.target.value)}
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Checkbox
-                              checked={Boolean(getUserValue(user, 'coupon_generated'))}
-                              onCheckedChange={(checked) =>
-                                handleUserFieldChange(user.user_id, 'coupon_generated', Boolean(checked))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Checkbox
-                              checked={Boolean(getUserValue(user, 'is_premium'))}
-                              onCheckedChange={(checked) =>
-                                handleUserFieldChange(user.user_id, 'is_premium', Boolean(checked))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 min-w-[140px]">
-                            <Input
-                              value={getUserValue(user, 'premium_type') ?? ''}
-                              onChange={(event) => handleUserFieldChange(user.user_id, 'premium_type', event.target.value)}
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Input
-                              type="number"
-                              value={getUserValue(user, 'usage_count')}
-                              onChange={(event) =>
-                                handleUserFieldChange(user.user_id, 'usage_count', Number(event.target.value))
-                              }
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">Total: {totalCount}</p>
-                          </td>
-                          <td className="p-2 text-center">
-                            <Input
-                              type="number"
-                              value={getUserValue(user, 'jogo1_count')}
-                              onChange={(event) =>
-                                handleUserFieldChange(user.user_id, 'jogo1_count', Number(event.target.value))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Input
-                              type="number"
-                              value={getUserValue(user, 'jogo2_count')}
-                              onChange={(event) =>
-                                handleUserFieldChange(user.user_id, 'jogo2_count', Number(event.target.value))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Input
-                              type="number"
-                              value={getUserValue(user, 'jogo3_count')}
-                              onChange={(event) =>
-                                handleUserFieldChange(user.user_id, 'jogo3_count', Number(event.target.value))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Input
-                              type="number"
-                              value={getUserValue(user, 'jogo4_count')}
-                              onChange={(event) =>
-                                handleUserFieldChange(user.user_id, 'jogo4_count', Number(event.target.value))
-                              }
-                            />
-                          </td>
-                          <td className="p-2 text-muted-foreground">
-                            {user.last_accessed_at
-                              ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR')
-                              : 'Nunca'}
-                          </td>
-                          <td className="p-2 text-muted-foreground">
-                            {new Date(user.created_at).toLocaleDateString('pt-BR')}
-                          </td>
-                          <td className="p-2 text-right space-y-2">
-                            <div className="flex flex-col gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => handleSaveUser(user.user_id)}
-                                disabled={savingUserId === user.user_id}
-                              >
-                                <Save className="w-4 h-4 mr-1" />
-                                {savingUserId === user.user_id ? 'Salvando...' : 'Salvar'}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleResetUserChanges(user.user_id)}
-                                disabled={!editedUsers[user.user_id]}
-                              >
-                                <Undo className="w-4 h-4 mr-1" />
-                                Desfazer
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleResetAllCounts(user.user_id)}
-                              >
-                                <RefreshCw className="w-4 h-4 mr-1" />
-                                Reset contadores
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+            <div className="space-y-6">
+              <div className="space-y-4 rounded-2xl border border-primary/10 bg-muted/10 p-4">
+                <p className="text-xs uppercase tracking-[0.35em] text-primary font-semibold">Filtros dos usu?rios</p>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label>Email</Label>
+                    <Input
+                      value={userFilters.email}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, email: event.target.value }))}
+                      placeholder="Filtrar por email"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Plano</Label>
+                    <Select
+                      value={userFilters.tier}
+                      onValueChange={(value) => setUserFilters((prev) => ({ ...prev, tier: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="FREE">FREE</SelectItem>
+                        <SelectItem value="STANDARD">STANDARD</SelectItem>
+                        <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Status</Label>
+                    <Select
+                      value={userFilters.status}
+                      onValueChange={(value) => setUserFilters((prev) => ({ ...prev, status: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="active">active</SelectItem>
+                        <SelectItem value="inactive">inactive</SelectItem>
+                        <SelectItem value="past_due">past_due</SelectItem>
+                        <SelectItem value="canceled">canceled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Confirmado</Label>
+                    <Select
+                      value={userFilters.confirmed}
+                      onValueChange={(value) => setUserFilters((prev) => ({ ...prev, confirmed: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="YES">Sim</SelectItem>
+                        <SelectItem value="NO">N?o</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Cupom</Label>
+                    <Input
+                      value={userFilters.couponCode}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, couponCode: event.target.value }))}
+                      placeholder="Filtrar pelo cupom"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Cupom gerado</Label>
+                    <Select
+                      value={userFilters.couponGenerated}
+                      onValueChange={(value) => setUserFilters((prev) => ({ ...prev, couponGenerated: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="YES">Sim</SelectItem>
+                        <SelectItem value="NO">N?o</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Premium</Label>
+                    <Select
+                      value={userFilters.premium}
+                      onValueChange={(value) => setUserFilters((prev) => ({ ...prev, premium: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="YES">Sim</SelectItem>
+                        <SelectItem value="NO">N?o</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Premium type</Label>
+                    <Input
+                      value={userFilters.premiumType}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, premiumType: event.target.value }))}
+                      placeholder="Filtrar..."
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Uso total</Label>
+                    <Input
+                      value={userFilters.usage}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, usage: event.target.value }))}
+                      placeholder="Buscar valor..."
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Jogos (J1 a J4)</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input value={userFilters.jogo1} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo1: event.target.value }))} placeholder="J1" />
+                      <Input value={userFilters.jogo2} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo2: event.target.value }))} placeholder="J2" />
+                      <Input value={userFilters.jogo3} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo3: event.target.value }))} placeholder="J3" />
+                      <Input value={userFilters.jogo4} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo4: event.target.value }))} placeholder="J4" />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label>Último acesso (intervalo)</Label>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        type="date"
+                        value={userFilters.lastAccessStart}
+                        onChange={(event) => setUserFilters((prev) => ({ ...prev, lastAccessStart: event.target.value }))}
+                      />
+                      <Input
+                        type="date"
+                        value={userFilters.lastAccessEnd}
+                        onChange={(event) => setUserFilters((prev) => ({ ...prev, lastAccessEnd: event.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Último acesso (texto rápido)</Label>
+                    <Input
+                      value={userFilters.lastAccess}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, lastAccess: event.target.value }))}
+                      placeholder="dd/mm"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Cadastro (intervalo)</Label>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        type="date"
+                        value={userFilters.createdAtStart}
+                        onChange={(event) => setUserFilters((prev) => ({ ...prev, createdAtStart: event.target.value }))}
+                      />
+                      <Input
+                        type="date"
+                        value={userFilters.createdAtEnd}
+                        onChange={(event) => setUserFilters((prev) => ({ ...prev, createdAtEnd: event.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Cadastro (texto rápido)</Label>
+                    <Input
+                      value={userFilters.createdAt}
+                      onChange={(event) => setUserFilters((prev) => ({ ...prev, createdAt: event.target.value }))}
+                      placeholder="dd/mm"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="outline" size="sm" onClick={handleResetUserFilters}>
+                    Limpar filtros
+                  </Button>
+                </div>
               </div>
-            )}
+              {sortedUsers.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  Nenhum usu?rio encontrado para o filtro aplicado.
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm align-top">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">{renderUserSortButton('Email', 'email')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Plano', 'subscription_tier')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Status', 'subscription_status')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Confirmado', 'plan_confirmed', 'center')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Cupom', 'coupon_code')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Cupom gerado', 'coupon_generated', 'center')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Premium', 'is_premium', 'center')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Premium type', 'premium_type')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Uso total', 'usage_count', 'center')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Jogo 1', 'jogo1_count', 'center')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Jogo 2', 'jogo2_count', 'center')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Jogo 3', 'jogo3_count', 'center')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Jogo 4', 'jogo4_count', 'center')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Ultimo acesso', 'last_accessed_at')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Cadastro', 'created_at')}</th>
+                        <th className="text-right p-2">{renderUserSortButton('Acoes', 'user_id', 'right')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedUsers.map((user) => {
+                        const totalCount =
+                          (user.jogo1_count ?? 0) +
+                          (user.jogo2_count ?? 0) +
+                          (user.jogo3_count ?? 0) +
+                          (user.jogo4_count ?? 0);
+                        return (
+                          <tr key={user.user_id} className="border-b hover:bg-muted/50">
+                            <td className="p-2 min-w-[200px]">
+                              <div>
+                                <p className="font-semibold">{user.email}</p>
+                                <p className="text-xs text-muted-foreground font-mono">{user.user_id}</p>
+                              </div>
+                            </td>
+                            <td className="p-2">{user.subscription_tier}</td>
+                            <td className="p-2">{user.subscription_status}</td>
+                            <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.plan_confirmed))}</td>
+                            <td className="p-2">{user.coupon_code ?? '--'}</td>
+                            <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.coupon_generated))}</td>
+                            <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.is_premium))}</td>
+                            <td className="p-2">{user.premium_type ?? '--'}</td>
+                            <td className="p-2 text-center font-semibold">
+                              {user.usage_count ?? 0}
+                              <div className="text-xs text-muted-foreground">Total jogos: {totalCount}</div>
+                            </td>
+                            <td className="p-2 text-center">{user.jogo1_count ?? 0}</td>
+                            <td className="p-2 text-center">{user.jogo2_count ?? 0}</td>
+                            <td className="p-2 text-center">{user.jogo3_count ?? 0}</td>
+                            <td className="p-2 text-center">{user.jogo4_count ?? 0}</td>
+                            <td className="p-2">{formatDate(user.last_accessed_at)}</td>
+                            <td className="p-2">{formatDate(user.created_at)}</td>
+                            <td className="p-2 text-right">
+                              <div className="flex flex-col gap-2 items-end">
+                                <Button size="sm" onClick={() => openUserEditor(user)}>
+                                  Editar
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleResetAllCounts(user.user_id)}
+                                >
+                                  <RefreshCw className="w-4 h-4 mr-1" />
+                                  Reset contadores
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
+
+        <Dialog open={Boolean(editingUserId)} onOpenChange={(open) => (open ? null : closeUserEditor())}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Editar usu?rio</DialogTitle>
+            </DialogHeader>
+            {editingUserData && (
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label>Email</Label>
+                  <Input
+                    value={editingUserData.email ?? ''}
+                    onChange={(event) => handleEditUserField('email', event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Plano</Label>
+                  <Select
+                    value={editingUserData.subscription_tier ?? 'FREE'}
+                    onValueChange={(value) => handleEditUserField('subscription_tier', value as UserData['subscription_tier'])}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="FREE">FREE</SelectItem>
+                      <SelectItem value="STANDARD">STANDARD</SelectItem>
+                      <SelectItem value="INFLUENCER">INFLUENCER</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Status</Label>
+                  <Select
+                    value={editingUserData.subscription_status ?? 'inactive'}
+                    onValueChange={(value) => handleEditUserField('subscription_status', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">active</SelectItem>
+                      <SelectItem value="inactive">inactive</SelectItem>
+                      <SelectItem value="past_due">past_due</SelectItem>
+                      <SelectItem value="canceled">canceled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Cupom</Label>
+                  <Input
+                    value={editingUserData.coupon_code ?? ''}
+                    onChange={(event) => handleEditUserField('coupon_code', event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Premium type</Label>
+                  <Input
+                    value={editingUserData.premium_type ?? ''}
+                    onChange={(event) => handleEditUserField('premium_type', event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Uso total</Label>
+                  <Input
+                    type="number"
+                    value={editingUserData.usage_count ?? 0}
+                    onChange={(event) => handleEditUserField('usage_count', Number(event.target.value))}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Jogos (J1 a J4)</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input type="number" value={editingUserData.jogo1_count ?? 0} onChange={(event) => handleEditUserField('jogo1_count', Number(event.target.value))} placeholder="J1" />
+                    <Input type="number" value={editingUserData.jogo2_count ?? 0} onChange={(event) => handleEditUserField('jogo2_count', Number(event.target.value))} placeholder="J2" />
+                    <Input type="number" value={editingUserData.jogo3_count ?? 0} onChange={(event) => handleEditUserField('jogo3_count', Number(event.target.value))} placeholder="J3" />
+                    <Input type="number" value={editingUserData.jogo4_count ?? 0} onChange={(event) => handleEditUserField('jogo4_count', Number(event.target.value))} placeholder="J4" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Op??es</Label>
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={Boolean(editingUserData.plan_confirmed)}
+                        onCheckedChange={(checked) => handleEditUserField('plan_confirmed', Boolean(checked))}
+                      />
+                      <span>Plano confirmado</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={Boolean(editingUserData.coupon_generated)}
+                        onCheckedChange={(checked) => handleEditUserField('coupon_generated', Boolean(checked))}
+                      />
+                      <span>Cupom gerado</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={Boolean(editingUserData.is_premium)}
+                        onCheckedChange={(checked) => handleEditUserField('is_premium', Boolean(checked))}
+                      />
+                      <span>Usu?rio premium</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label>?ltimo acesso</Label>
+                  <p className="text-sm text-muted-foreground">{formatDate(editingUserData.last_accessed_at, true)}</p>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Cadastro</Label>
+                  <p className="text-sm text-muted-foreground">{formatDate(editingUserData.created_at, true)}</p>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={closeUserEditor}>
+                Cancelar
+              </Button>
+              <Button onClick={handleSaveUser} disabled={savingUserId === editingUserId}>
+                {savingUserId === editingUserId ? 'Salvando...' : 'Salvar alterações'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+
       </div>
     </div>
   );
