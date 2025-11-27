@@ -210,12 +210,12 @@ const SuasPalavras = () => {
                   <div className="flex">
                     <button
                       className="flex-1 h-16 opacity-0"
-                      aria-label="Revelar com câmera"
+                      aria-label=""
                       onClick={() => handleModeSelection('camera')}
                     />
                     <button
                       className="flex-1 h-16 opacity-0"
-                      aria-label="Revelar pela frase"
+                      aria-label=""
                       onClick={() => handleModeSelection('phrase')}
                     />
                   </div>
