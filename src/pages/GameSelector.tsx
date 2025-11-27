@@ -29,6 +29,7 @@ type GameCard = {
   color: string;
   badgeKey?: string;
   minTier: Tier;
+  difficulty: number;
 };
 
 const CardIcon = ({ className, ...props }: LucideProps) => (
@@ -59,6 +60,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-orange-500 to-red-500',
     badgeKey: undefined,
     minTier: 'FREE',
+    difficulty: 1,
   },
   {
     id: 'suas-palavras',
@@ -67,6 +69,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/suas-palavras',
     color: 'from-rose-400 via-pink-500 to-purple-600',
     minTier: 'STANDARD',
+    difficulty: 1,
   },
   {
     id: 'mind-reader',
@@ -77,6 +80,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-purple-500 to-pink-500',
     badgeKey: undefined,
     minTier: 'FREE',
+    difficulty: 2,
   },
   {
     id: 'mix-de-cartas',
@@ -85,6 +89,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/mind-reader/mix-de-cartas',
     color: 'from-emerald-500 to-lime-500',
     minTier: 'STANDARD',
+    difficulty: 3,
   },
   {
     id: 'carta-mental',
@@ -93,6 +98,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/carta-mental',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
     minTier: 'STANDARD',
+    difficulty: 2,
   },
   {
     id: 'mental-conversation',
@@ -103,6 +109,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-blue-500 to-cyan-500',
     badgeKey: undefined,
     minTier: 'STANDARD',
+    difficulty: 3,
   },
   {
     id: 'papo-reto',
@@ -111,6 +118,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/papo-reto',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
     minTier: 'STANDARD',
+    difficulty: 3,
   },
   {
     id: 'eu-ja-sabia',
@@ -119,6 +127,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/eu-ja-sabia',
     color: 'from-amber-500 via-orange-500 to-red-500',
     minTier: 'STANDARD',
+    difficulty: 4,
   },
   {
     id: 'my-emojis',
@@ -195,11 +204,16 @@ const GameSelector = () => {
                   enabled ? 'hover:scale-105' : 'opacity-60'
                 }`}
               >
-                {game.badge && (
-                  <Badge className="absolute top-4 right-4 uppercase tracking-wide">
-                    {game.badge}
-                  </Badge>
-                )}
+                  <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                    <span className="rounded-full border border-primary/30 bg-background/80 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-primary">
+                      Nível {game.difficulty}
+                    </span>
+                    {game.badge && (
+                      <Badge className="uppercase tracking-wide">
+                        {game.badge}
+                      </Badge>
+                    )}
+                  </div>
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
                 />
