@@ -37,6 +37,11 @@ const EuJaSabia = () => {
   const [isEditingMask, setIsEditingMask] = useState(false);
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
+  const [adminVideoData, setAdminVideoData] = useState<{
+    videoSrc: string | null;
+    maskPosition: { x: number; y: number };
+    maskColor: string;
+  } | null>(null);
 
   const selectedNumber = useMemo(() => {
     if (tensSelection === null || unitsSelection === null) return null;
@@ -44,7 +49,7 @@ const EuJaSabia = () => {
   }, [tensSelection, unitsSelection]);
 
   const formattedNumber = selectedNumber !== null ? selectedNumber.toString().padStart(2, '0') : '--';
-  const activeVideoSrc = customVideoSrc ?? '/videos/eujasabia_base.mp4';
+  const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
 
   useEffect(() => {
     let isMounted = true;
@@ -113,6 +118,50 @@ const EuJaSabia = () => {
       isMounted = false;
     };
   }, [userId, toast]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadAdminDefaults = async () => {
+      try {
+        const { data: adminRole, error } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'admin')
+          .limit(1)
+          .single();
+        if (!isMounted) return;
+        if (error || !adminRole?.user_id) {
+          setAdminVideoData(null);
+          return;
+        }
+        const { data, error: videoError } = await supabase
+          .from('user_videos')
+          .select('video_data, mask_offset_x, mask_offset_y, mask_color')
+          .eq('user_id', adminRole.user_id)
+          .maybeSingle();
+        if (!isMounted) return;
+        if (videoError || !data?.video_data) {
+          setAdminVideoData(null);
+          return;
+        }
+        setAdminVideoData({
+          videoSrc: data.video_data,
+          maskPosition: {
+            x: data.mask_offset_x ?? DEFAULT_MASK_POSITION.x,
+            y: data.mask_offset_y ?? DEFAULT_MASK_POSITION.y,
+          },
+          maskColor: data.mask_color ?? DEFAULT_MASK_COLOR,
+        });
+      } catch (error) {
+        console.error('Erro ao carregar vídeo do admin', error);
+        if (isMounted) setAdminVideoData(null);
+      }
+    };
+    loadAdminDefaults();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const updateMaskPositionFromPointer = (clientX: number, clientY: number) => {
     const container = videoContainerRef.current;
@@ -278,15 +327,23 @@ const EuJaSabia = () => {
     if (!customVideoSrc) {
       setIsEditingMask(false);
       setIsDraggingMask(false);
-      setMaskColor(DEFAULT_MASK_COLOR);
+      if (adminVideoData) {
+        setMaskPosition(adminVideoData.maskPosition);
+        setMaskColor(adminVideoData.maskColor);
+      } else {
+        setMaskPosition(DEFAULT_MASK_POSITION);
+        setMaskColor(DEFAULT_MASK_COLOR);
+      }
     }
-  }, [customVideoSrc]);
+  }, [customVideoSrc, adminVideoData]);
 
   const currentVideoStatus = loadingVideo
     ? 'Carregando...'
     : customVideoSrc
       ? 'Usando o seu vídeo personalizado'
-      : 'Vídeo base padrão em uso';
+      : adminVideoData?.videoSrc
+        ? 'Usando o vídeo e máscara do admin'
+        : 'Vídeo base padrão em uso';
   const shouldShowMask = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
   const maskDisplayText = maskText ?? '--';
 
