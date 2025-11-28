@@ -58,14 +58,14 @@ export const ChooseCard = () => {
                 return (
                 <Card
                   key={`${rank}${suit.symbol}`}
-                  className="group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] items-center justify-center overflow-hidden rounded-xl transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 sm:max-w-[68px] cursor-pointer"
+                  className="group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] items-center justify-center overflow-hidden rounded-md transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 sm:max-w-[68px] cursor-pointer"
                   onClick={() => handleCardSelect(suit.name, rank)}
                   aria-label={`${rank} ${suit.name}`}
                 >
                   <img
                     src={imgSrc || '/placeholder.svg'}
                     alt={`${rank} ${suit.name}`}
-                    className="h-full w-full rounded-xl object-cover"
+                    className="h-full w-full rounded-md object-cover"
                     draggable={false}
                   />
                 </Card>
