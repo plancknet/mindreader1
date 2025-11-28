@@ -183,18 +183,18 @@ export const Reveal = () => {
           {revealCards.map((card, index) => {
             const imageSrc = getCardImageSrc(card.rank, card.suit);
             return (
-              <Card
-                key={`${card.rank}${card.suit}${index}`}
-                className="aspect-[2/3] flex items-center justify-center overflow-hidden bg-white border-2 shadow-lg animate-scale-in rounded-xl p-1"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <img
-                  src={imageSrc || '/placeholder.svg'}
-                  alt={`${card.rank} ${card.suit}`}
-                  className="h-full w-full rounded-lg object-cover"
-                  draggable={false}
-                />
-              </Card>
+            <Card
+              key={`${card.rank}${card.suit}${index}`}
+              className="aspect-[2/3] flex items-center justify-center overflow-hidden shadow-lg animate-scale-in rounded-xl"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <img
+                src={imageSrc || '/placeholder.svg'}
+                alt={`${card.rank} ${card.suit}`}
+                className="h-full w-full rounded-xl object-cover"
+                draggable={false}
+              />
+            </Card>
             );
           })}
         </div>
