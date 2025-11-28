@@ -685,7 +685,7 @@ export default function AdminPanel() {
       if (key === 'user_id') return;
       const newValue = editingUserData[key];
       if (newValue !== originalUser[key]) {
-        updates[key] = newValue as UserData[keyof UserData];
+        (updates as any)[key] = newValue;
       }
     });
 
