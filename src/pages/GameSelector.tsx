@@ -101,6 +101,15 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 2,
   },
   {
+    id: 'raspa-carta',
+    translationKey: 'raspaCarta',
+    icon: CardIcon,
+    path: '/raspa-carta',
+    color: 'from-cyan-400 via-sky-500 to-blue-600',
+    minTier: 'STANDARD',
+    difficulty: 3,
+  },
+  {
     id: 'mental-conversation',
     translationKey: 'mentalConversation',
     icon: MessageCircle,
@@ -192,11 +201,11 @@ const GameSelector = () => {
             const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier];
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
             const enabled = meetsTier && statusAllowed;
-            const isCartaMental = game.id === 'carta-mental';
-            const iconWrapperClass = isCartaMental
+            const isCardBackGame = ['carta-mental', 'raspa-carta'].includes(game.id);
+            const iconWrapperClass = isCardBackGame
               ? 'p-4 rounded-2xl bg-white/80 shadow-[0_12px_35px_rgba(56,189,248,0.35)] border border-primary/30'
               : `p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`;
-            const iconColorClass = isCartaMental ? 'text-sky-600' : 'text-primary';
+            const iconColorClass = isCardBackGame ? 'text-sky-600' : 'text-primary';
             return (
               <Card
                 key={game.id}

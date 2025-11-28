@@ -169,6 +169,25 @@ export const zhCN = {
       clubs: '??',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: '秘密选择一张 J、Q 或 K，并通过缓慢擦拭来显现这张牌。',
+    gridInstruction: '第一列代表 J，第二列代表 Q，第三列代表 K（黑桃、红心、方块、梅花）。',
+    scratchHint: '像电子橡皮一样滑动手指，逐渐擦开隐藏的图层。',
+    revealedMessage: '已经完全显现！再选一张牌继续表演。',
+    reset: '选择另一张牌',
+    columns: {
+      jacks: 'J (杰克)',
+      queens: 'Q (皇后)',
+      kings: 'K (国王)',
+    },
+    faces: {
+      jack: '杰克',
+      queen: '皇后',
+      king: '国王',
+    },
+    gridButtonAria: '选择{suit}的{rank}',
+  },
   mentalConversation: {
     instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
     title: 'Mental Conversation',
@@ -231,6 +250,10 @@ export const zhCN = {
       cartaMental: {
         title: 'Carta Mental',
         description: '用秘密牌背揭示纸牌的数值与花色'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: '擦拭屏幕来显现隐藏的 J / Q / K'
       },
       suasPalavras: {
         title: 'Suas Palavras',

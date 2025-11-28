@@ -169,6 +169,25 @@ export const en = {
       clubs: 'Clubs',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: 'Secretly pick a Jack, Queen, or King and reveal it by scratching the screen.',
+    gridInstruction: 'Use the first column for Jacks, the second for Queens, and the third for Kings (Spades, Hearts, Diamonds, Clubs).',
+    scratchHint: 'Slide your finger like a digital eraser to gradually uncover the chosen card.',
+    revealedMessage: 'Full reveal complete! Pick another card to keep the mystery going.',
+    reset: 'Pick another card',
+    columns: {
+      jacks: 'Jacks',
+      queens: 'Queens',
+      kings: 'Kings',
+    },
+    faces: {
+      jack: 'Jack',
+      queen: 'Queen',
+      king: 'King',
+    },
+    gridButtonAria: 'Select the {rank} of {suit}',
+  },
   mentalConversation: {
     instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
     title: 'Mental Conversation',
@@ -231,6 +250,10 @@ export const en = {
       cartaMental: {
         title: 'Carta Mental',
         description: 'Use the secret back to reveal both value and suit'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: 'Scratch the magic foil to reveal a hidden Jack, Queen, or King'
       },
       suasPalavras: {
         title: 'Your Words',

@@ -169,6 +169,25 @@ export const it = {
       clubs: 'Fiori',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: 'Scegli in segreto un Jack, una Regina o un Re e rivelalo grattando lo schermo.',
+    gridInstruction: 'Usa la prima colonna per i Jack, la seconda per le Regine e la terza per i Re (Picche, Cuori, Quadri e Fiori).',
+    scratchHint: 'Fai scorrere il dito come una gomma digitale per scoprire lentamente la carta scelta.',
+    revealedMessage: 'Carta completamente rivelata! Scegli un\'altra carta per continuare l\'effetto.',
+    reset: 'Scegli un\'altra carta',
+    columns: {
+      jacks: 'Jack',
+      queens: 'Regine',
+      kings: 'Re',
+    },
+    faces: {
+      jack: 'Jack',
+      queen: 'Regina',
+      king: 'Re',
+    },
+    gridButtonAria: 'Selezionare il {rank} di {suit}',
+  },
   mentalConversation: {
     instructions: '1. La tua prima interazione rivela la categoria scelta (1 parola = Animale, 2 parole = Frutta, 3 parole = Paese).\n2. Nelle tre interazioni successive, la prima lettera dell\'ULTIMA parola indica la prima lettera della parola del tuo amico. Ripeti tre volte.\n3. Se dopo tre lettere l\'app non indovina, mostrerà un elenco di possibilità.\n4. Fai un\'altra interazione con 1, 2 o 3 parole per indicare se la risposta corretta è la 1a, 2a o 3a opzione.',
     title: 'Conversazione Mentale',
@@ -231,6 +250,10 @@ export const it = {
       cartaMental: {
         title: 'Carta Mental',
         description: 'Usa il dorso segreto per rivelare valore e seme'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: 'Gratta lo schermo digitale per rivelare Jack, Regina o Re'
       },
       suasPalavras: {
         title: 'Le Tue Parole',

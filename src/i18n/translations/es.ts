@@ -169,6 +169,25 @@ export const es = {
       clubs: 'Tr?boles',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: 'Elige en secreto una J, Q o K y revela la carta raspando la pantalla.',
+    gridInstruction: 'Usa la primera columna para las Jotas, la segunda para las Reinas y la tercera para los Reyes (Picas, Corazones, Diamantes y Tréboles).',
+    scratchHint: 'Desliza el dedo como una goma mágica para descubrir la carta elegida.',
+    revealedMessage: '¡Carta revelada! Elige otra carta para continuar el efecto.',
+    reset: 'Elegir otra carta',
+    columns: {
+      jacks: 'Jotas',
+      queens: 'Reinas',
+      kings: 'Reyes',
+    },
+    faces: {
+      jack: 'Jota',
+      queen: 'Reina',
+      king: 'Rey',
+    },
+    gridButtonAria: 'Seleccionar la {rank} de {suit}',
+  },
   mentalConversation: {
     instructions: '1. Tu primera interacción revela la categoría elegida (1 palabra = Animal, 2 palabras = Fruta, 3 palabras = País).\n2. En las siguientes tres interacciones, la primera letra de la ÚLTIMA palabra indica la primera letra de la palabra de tu amigo. Repite esto 3 veces.\n3. Si con esas tres letras la app aún no acierta, mostrará una lista de posibilidades.\n4. Haz otra interacción con 1, 2 o 3 palabras para indicar si la respuesta correcta es la 1.ª, 2.ª o 3.ª opción.',
     title: 'Conversación Mental',
@@ -231,6 +250,10 @@ export const es = {
       cartaMental: {
         title: 'Carta Mental',
         description: 'Usa el reverso secreto para revelar valor y palo'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: 'Raspa la pantalla para revelar la Jota, Reina o Rey secreto'
       },
       suasPalavras: {
         title: 'Tus Palabras',

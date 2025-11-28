@@ -35,6 +35,7 @@ import LandingSignup from "./pages/LandingSignup";
 import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import CartaMental from "./pages/CartaMental";
+import RaspaCarta from "./pages/RaspaCarta";
 import SuasPalavras from "./pages/SuasPalavras";
 import PapoReto from "./pages/PapoReto";
 import EuJaSabia from "./pages/EuJaSabia";
@@ -213,6 +214,7 @@ const App = () => (
             <Route path="/mind-reader/mix-de-cartas" element={<ProtectedRoute><MixDeCartasChoose /></ProtectedRoute>} />
             <Route path="/mind-reader/mix-de-cartas/reveal" element={<ProtectedRoute><MixDeCartasReveal /></ProtectedRoute>} />
             <Route path="/carta-mental" element={<ProtectedRoute><CartaMental /></ProtectedRoute>} />
+            <Route path="/raspa-carta" element={<ProtectedRoute><RaspaCarta /></ProtectedRoute>} />
             <Route path="/suas-palavras" element={<ProtectedRoute><SuasPalavras /></ProtectedRoute>} />
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />

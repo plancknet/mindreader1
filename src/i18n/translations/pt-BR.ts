@@ -166,6 +166,25 @@ export const ptBR = {
       clubs: 'Paus',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: 'Selecione secretamente um valete, dama ou rei e revele a carta raspando a tela.',
+    gridInstruction: 'Use a primeira coluna para os Valetes, a segunda para as Damas e a terceira para os Reis (Espadas, Copas, Ouros e Paus).',
+    scratchHint: 'Deslize o dedo como se fosse uma borracha mágica para revelar a carta escolhida.',
+    revealedMessage: 'Carta revelada! Escolha outra carta para continuar a apresentação.',
+    reset: 'Escolher outra carta',
+    columns: {
+      jacks: 'Valetes',
+      queens: 'Damas',
+      kings: 'Reis',
+    },
+    faces: {
+      jack: 'Valete',
+      queen: 'Dama',
+      king: 'Rei',
+    },
+    gridButtonAria: 'Selecionar o {rank} de {suit}',
+  },
   mentalConversation: {
     instructions: '1. Sua primeira interação revela a categoria escolhida (1 palavra = Animal, 2 palavras = Fruta, 3 palavras = País).\n2. Nas três interações seguintes, a primeira letra da ÚLTIMA palavra indica a primeira letra da palavra do seu amigo. Repita isso 3 vezes.\n3. Se mesmo com as três letras o app não descobrir, ele mostrará uma lista de possibilidades.\n4. Faça mais uma interação com 1, 2 ou 3 palavras para indicar se a palavra correta é a 1ª, 2ª ou 3ª opção da lista.',
     title: 'Conversa Mental',
@@ -228,6 +247,10 @@ export const ptBR = {
       cartaMental: {
         title: 'Carta Mental',
         description: 'Conecte a mente do seu amigo e descubra a carta'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: 'Raspe a tela digital para revelar o rei, dama ou valete secreto'
       },
       suasPalavras: {
         title: 'Suas Palavras',

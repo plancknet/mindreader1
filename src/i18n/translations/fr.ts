@@ -169,6 +169,25 @@ export const fr = {
       clubs: 'Tr?fles',
     },
   },
+  raspaCarta: {
+    title: 'Raspa Carta',
+    subtitle: 'Choisissez secrètement un Valet, une Dame ou un Roi et révélez la carte en grattant l’écran.',
+    gridInstruction: 'Utilisez la première colonne pour les Valets, la deuxième pour les Dames et la troisième pour les Rois (Piques, Cœurs, Carreaux et Trèfles).',
+    scratchHint: 'Faites glisser votre doigt comme une gomme magique pour dévoiler lentement la carte choisie.',
+    revealedMessage: 'Carte entièrement révélée ! Choisissez-en une autre pour poursuivre la présentation.',
+    reset: 'Choisir une autre carte',
+    columns: {
+      jacks: 'Valets',
+      queens: 'Dames',
+      kings: 'Rois',
+    },
+    faces: {
+      jack: 'Valet',
+      queen: 'Dame',
+      king: 'Roi',
+    },
+    gridButtonAria: 'Sélectionner le {rank} de {suit}',
+  },
   mentalConversation: {
     instructions: '1. Votre première interaction révèle la catégorie choisie (1 mot = Animal, 2 mots = Fruit, 3 mots = Pays).\n2. Lors des trois interactions suivantes, la première lettre du DERNIER mot indique la première lettre du mot de votre ami. Répétez cela 3 fois.\n3. Si l\'app ne trouve rien après trois lettres, elle affichera une liste de possibilités.\n4. Envoyez une interaction supplémentaire avec 1, 2 ou 3 mots pour indiquer si la bonne réponse est la 1re, la 2e ou la 3e option.',
     title: 'Conversation Mentale',
@@ -231,6 +250,10 @@ export const fr = {
       cartaMental: {
         title: 'Carta Mental',
         description: 'Utilisez le dos secret pour révéler valeur et couleur'
+      },
+      raspaCarta: {
+        title: 'Raspa Carta',
+        description: 'Grattez l??cran pour r?v?ler le Valet, la Dame ou le Roi secret'
       },
       suasPalavras: {
         title: 'Vos Mots',
