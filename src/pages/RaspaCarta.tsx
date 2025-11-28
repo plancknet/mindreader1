@@ -1,7 +1,7 @@
+
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { PointerEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
-import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
@@ -17,7 +17,7 @@ const suits: Array<{ id: SuitName; symbol: string; tone: 'red' | 'black' }> = [
 
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
-type CardData = {
+type SelectedCard = {
   rank: RankId;
   suit: SuitName;
   imageSrc: string;
@@ -25,24 +25,10 @@ type CardData = {
 
 const RaspaCarta = () => {
   const { t } = useTranslation();
-  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [isScratching, setIsScratching] = useState(false);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const scratchProgress = useRef(0);
-
-  const cards = useMemo<CardData[]>(() => {
-    const allCards: CardData[] = [];
-    suits.forEach((suit) => {
-      rankColumns.forEach((rank) => {
-        const imageSrc = getCardImageSrc(rank, suit.id);
-        if (imageSrc) {
-          allCards.push({ rank, suit: suit.id, imageSrc });
-        }
-      });
-    });
-    return allCards;
-  }, []);
+  const cardAreaRef = useRef<HTMLDivElement | null>(null);
 
   const suitLabels = useMemo(
     () => ({
@@ -63,9 +49,9 @@ const RaspaCarta = () => {
     [t],
   );
 
-  const initializeScratchSurface = useCallback(() => {
+  const fillOverlay = useCallback(() => {
     const canvas = overlayRef.current;
-    const container = cardRef.current;
+    const container = cardAreaRef.current;
     if (!canvas || !container) {
       return;
     }
@@ -86,8 +72,8 @@ const RaspaCarta = () => {
     context.globalCompositeOperation = 'source-over';
 
     const gradient = context.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
-    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.95)');
+    gradient.addColorStop(0, 'rgba(15, 23, 42, 0.92)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.92)');
     context.fillStyle = gradient;
     context.fillRect(0, 0, width, height);
 
@@ -99,24 +85,28 @@ const RaspaCarta = () => {
 
   useEffect(() => {
     if (selectedCard) {
-      initializeScratchSurface();
+      fillOverlay();
+    } else {
+      const canvas = overlayRef.current;
+      const context = canvas?.getContext('2d');
+      if (canvas && context) {
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      }
     }
-  }, [selectedCard, initializeScratchSurface]);
-
-  const handleCardSelection = (index: number) => {
-    if (selectedCard) return;
-    setSelectedCard(cards[index]);
-  };
+  }, [selectedCard, fillOverlay]);
 
   const scratchAt = (clientX: number, clientY: number) => {
     const canvas = overlayRef.current;
-    if (!canvas || scratchProgress.current >= 70) {
+    if (!canvas) {
       return;
     }
+
     const context = canvas.getContext('2d');
     if (!context) {
       return;
     }
+
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -124,10 +114,8 @@ const RaspaCarta = () => {
     const y = (clientY - rect.top) * scaleY;
 
     context.beginPath();
-    context.arc(x, y, 50, 0, Math.PI * 2);
+    context.arc(x, y, 42, 0, Math.PI * 2);
     context.fill();
-
-    scratchProgress.current = Math.min(100, scratchProgress.current + 4);
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
@@ -147,10 +135,13 @@ const RaspaCarta = () => {
     setIsScratching(false);
   };
 
-  const handleReset = () => {
-    setSelectedCard(null);
-    setIsScratching(false);
-    scratchProgress.current = 0;
+  const handleSelectCard = (suit: SuitName, rank: RankId) => {
+    if (selectedCard) return;
+    const imageSrc = getCardImageSrc(rank, suit);
+    if (!imageSrc) {
+      return;
+    }
+    setSelectedCard({ rank, suit, imageSrc });
   };
 
   return (
@@ -173,58 +164,55 @@ const RaspaCarta = () => {
           <p className="mt-3 text-base text-muted-foreground">{t('raspaCarta.subtitle')}</p>
         </div>
 
-        <div className="space-y-6 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-          <p className="text-center text-sm text-muted-foreground">
-            {!selectedCard ? t('raspaCarta.selectHint') : t('raspaCarta.scratchHint')}
-          </p>
-          
-          <div className="mx-auto max-w-md">
-            <div
-              ref={cardRef}
-              className="relative aspect-[2/3] overflow-hidden rounded-md shadow-2xl"
-            >
-              {selectedCard ? (
-                <>
-                  <img
-                    src={selectedCard.imageSrc}
-                    alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
-                    className="h-full w-full object-cover select-none"
-                    draggable={false}
+        <div className="rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
+          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
+          <div
+            ref={cardAreaRef}
+            className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.1),_transparent_55%)]" />
+            <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
+              {suits.map((suit) =>
+                rankColumns.map((rank) => (
+                  <button
+                    key={`${rank}-${suit.id}`}
+                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                    aria-label={t('raspaCarta.gridButtonAria', {
+                      rank: faceLabels[rank],
+                      suit: suitLabels[suit.id],
+                    })}
+                    onClick={() => handleSelectCard(suit.id, rank)}
+                    disabled={Boolean(selectedCard)}
+                    style={{ opacity: 0 }}
                   />
-                  <canvas
-                    ref={overlayRef}
-                    className={`absolute inset-0 touch-none cursor-pointer transition-opacity duration-500 ${
-                      scratchProgress.current >= 70 ? 'pointer-events-none opacity-0' : ''
-                    }`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={stopScratching}
-                    onPointerLeave={stopScratching}
-                    onPointerCancel={stopScratching}
-                  />
-                </>
-              ) : (
-                <>
-                  <div className="h-full w-full bg-gradient-to-br from-primary/90 to-secondary/90" />
-                  <div className="absolute inset-0 grid grid-cols-3 grid-rows-4">
-                    {cards.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleCardSelection(index)}
-                        className="hover:bg-primary/10 transition-colors"
-                        aria-label={`Selecionar carta ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </>
+                )),
               )}
             </div>
-          </div>
+            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
+              {rankColumns.map((rank) => (
+                <span key={rank}>{faceLabels[rank]}</span>
+              ))}
+            </div>
 
-          <div className="flex items-center justify-center pt-4">
-            <Button variant="outline" onClick={handleReset}>
-              {t('raspaCarta.reset')}
-            </Button>
+            {selectedCard && (
+              <div className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
+                <img
+                  src={selectedCard.imageSrc}
+                  alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
+                  className="h-full w-full select-none object-contain"
+                  draggable={false}
+                />
+                <canvas
+                  ref={overlayRef}
+                  className="absolute inset-0 touch-none"
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={stopScratching}
+                  onPointerLeave={stopScratching}
+                  onPointerCancel={stopScratching}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
