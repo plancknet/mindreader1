@@ -147,6 +147,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-yellow-400 to-lime-400',
     badgeKey: 'underConstruction',
     minTier: 'STANDARD',
+    difficulty: 2,
   },
 ];
 
