@@ -147,12 +147,14 @@ const CartaMental = () => {
         {stage === 'revealed' && revealedCard && (
           <div className="space-y-8 text-center">
             <div className="flex justify-center">
-              <img
-                src={revealedCard.src}
-                alt={revealedCard.alt}
-                className="h-auto w-full max-w-xs select-none drop-shadow-2xl"
-                draggable={false}
-              />
+              <div key={revealedCard.index} className="card-reveal flex justify-center">
+                <img
+                  src={revealedCard.src}
+                  alt={revealedCard.alt}
+                  className="h-auto w-full max-w-[14.6rem] select-none drop-shadow-2xl"
+                  draggable={false}
+                />
+              </div>
             </div>
 
             <div className="flex items-center justify-center gap-4">
