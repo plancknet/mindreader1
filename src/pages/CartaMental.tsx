@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 type SuitId = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 
-const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const deckRanks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 const suits: Array<{ id: SuitId; symbol: string; tone: 'red' | 'black' }> = [
@@ -41,13 +41,6 @@ const CartaMental = () => {
   const [selectedSuit, setSelectedSuit] = useState<SuitId | null>(null);
   const [stage, setStage] = useState<'setup' | 'revealed'>('setup');
 
-  const effectiveRank = selectedRank ?? 'K';
-  const selectedSuitData = suits.find((suit) => suit.id === selectedSuit);
-  const cardImageSrc = useMemo(() => {
-    const index = getCardImageIndex(effectiveRank, selectedSuit);
-    return index ? `/baralho/${index}.webp` : null;
-  }, [effectiveRank, selectedSuit]);
-
   const suitLabels = useMemo(
     () => ({
       spades: t('cartaMental.suits.spades'),
@@ -57,6 +50,24 @@ const CartaMental = () => {
     }),
     [t],
   );
+
+  const effectiveRank = selectedRank ?? 'A';
+  const revealedCard = useMemo(() => {
+    if (!selectedSuit) {
+      return null;
+    }
+
+    const index = getCardImageIndex(effectiveRank, selectedSuit);
+    if (!index) {
+      return null;
+    }
+
+    return {
+      index,
+      src: `/baralho/${index}.webp`,
+      alt: `${effectiveRank} ${suitLabels[selectedSuit]}`,
+    };
+  }, [effectiveRank, selectedSuit, suitLabels]);
 
   const handleRankTouch = (rank: string) => {
     setSelectedRank(rank);
@@ -133,28 +144,15 @@ const CartaMental = () => {
           </div>
         )}
 
-        {stage === 'revealed' && selectedSuitData && (
-          <div className="space-y-8 rounded-3xl border border-primary/10 bg-card/80 p-8 text-center shadow-2xl shadow-primary/10">
-            <div className="mx-auto w-full max-w-xs">
-              <div className="relative aspect-[2/3] w-full overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-b from-slate-900/20 to-slate-900/5 shadow-2xl">
-                {cardImageSrc ? (
-                  <img
-                    src={cardImageSrc}
-                    alt={`${effectiveRank} ${suitLabels[selectedSuitData.id]}`}
-                    className="h-full w-full object-contain"
-                    draggable={false}
-                  />
-                ) : (
-                  <div className="flex h-full flex-col justify-between rounded-[28px] bg-card/70 p-4 text-foreground">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>{selectedSuitData.symbol}</span>
-                      <span>{selectedSuitData.symbol}</span>
-                    </div>
-                    <div className="text-center text-5xl font-black">{effectiveRank}</div>
-                    <div className="text-center text-6xl text-muted-foreground">{selectedSuitData.symbol}</div>
-                  </div>
-                )}
-              </div>
+        {stage === 'revealed' && revealedCard && (
+          <div className="space-y-8 text-center">
+            <div className="flex justify-center">
+              <img
+                src={revealedCard.src}
+                alt={revealedCard.alt}
+                className="h-auto w-full max-w-xs select-none drop-shadow-2xl"
+                draggable={false}
+              />
             </div>
 
             <div className="flex items-center justify-center gap-4">
