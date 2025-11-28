@@ -185,26 +185,15 @@ export const Reveal = () => {
             return (
               <Card
                 key={`${card.rank}${card.suit}${index}`}
-                className="aspect-[2/3] flex items-center justify-center overflow-hidden bg-card border-2 shadow-lg animate-scale-in"
+                className="aspect-[2/3] flex items-center justify-center overflow-hidden bg-white border-2 shadow-lg animate-scale-in rounded-xl p-1"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                {imageSrc ? (
-                  <img
-                    src={imageSrc}
-                    alt={`${card.rank} ${card.suit}`}
-                    className="h-full w-full object-contain"
-                    draggable={false}
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center">
-                    <div className={`text-3xl md:text-4xl font-bold ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
-                      {card.rank}
-                    </div>
-                    <div className={`text-4xl md:text-5xl ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
-                      {card.suitSymbol}
-                    </div>
-                  </div>
-                )}
+                <img
+                  src={imageSrc || '/placeholder.svg'}
+                  alt={`${card.rank} ${card.suit}`}
+                  className="h-full w-full rounded-lg object-cover"
+                  draggable={false}
+                />
               </Card>
             );
           })}

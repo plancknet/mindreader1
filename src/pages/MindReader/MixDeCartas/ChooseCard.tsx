@@ -58,29 +58,18 @@ export const ChooseCard = () => {
                 return (
                   <Card
                     key={`${rank}${suit.symbol}`}
-                    className={`group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] items-center justify-center overflow-hidden rounded-2xl border bg-white/80 p-1 text-center shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:border-primary/40 hover:shadow-primary/30 sm:max-w-[68px] ${
-                      suit.color === 'red' ? 'border-rose-200' : 'border-slate-400'
+                    className={`group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] items-center justify-center overflow-hidden rounded-xl border-2 bg-white p-0.5 text-center shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/30 sm:max-w-[68px] ${
+                      suit.color === 'red' ? 'border-rose-300' : 'border-slate-400'
                     }`}
                     onClick={() => handleCardSelect(suit.name, rank)}
                     aria-label={`${rank} ${suit.name}`}
                   >
-                    {imgSrc ? (
-                      <img
-                        src={imgSrc}
-                        alt={`${rank} ${suit.name}`}
-                        className="h-full w-full object-contain"
-                        draggable={false}
-                      />
-                    ) : (
-                      <div className="flex h-full w-full flex-col items-center justify-between text-foreground">
-                        <div className="flex w-full items-center justify-between text-[0.6rem]">
-                          <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600'}>{suit.symbol}</span>
-                          <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600'}>{suit.symbol}</span>
-                        </div>
-                        <div className="text-xl font-bold sm:text-2xl">{rank}</div>
-                        <div className="text-2xl sm:text-3xl">{suit.symbol}</div>
-                      </div>
-                    )}
+                    <img
+                      src={imgSrc || '/placeholder.svg'}
+                      alt={`${rank} ${suit.name}`}
+                      className="h-full w-full rounded-lg object-cover"
+                      draggable={false}
+                    />
                   </Card>
                 );
               })
