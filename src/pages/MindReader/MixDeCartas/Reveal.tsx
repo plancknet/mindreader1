@@ -185,13 +185,13 @@ export const Reveal = () => {
             return (
             <Card
               key={`${card.rank}${card.suit}${index}`}
-              className="aspect-[2/3] flex items-center justify-center overflow-hidden shadow-lg animate-scale-in rounded-xl"
+              className="aspect-[2/3] flex items-center justify-center overflow-hidden shadow-lg animate-scale-in rounded-md"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <img
                 src={imageSrc || '/placeholder.svg'}
                 alt={`${card.rank} ${card.suit}`}
-                className="h-full w-full rounded-xl object-cover"
+                className="h-full w-full rounded-md object-cover"
                 draggable={false}
               />
             </Card>
