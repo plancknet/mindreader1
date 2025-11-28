@@ -17,15 +17,31 @@ const suits: Array<{ id: SuitName; symbol: string; tone: 'red' | 'black' }> = [
 
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
+type CardData = {
+  rank: RankId;
+  suit: SuitName;
+  imageSrc: string;
+};
+
 const RaspaCarta = () => {
   const { t } = useTranslation();
-  const [stage, setStage] = useState<'setup' | 'reveal'>('setup');
-  const [selectedCard, setSelectedCard] = useState<{ rank: RankId; suit: SuitName } | null>(null);
-  const [isScratching, setIsScratching] = useState(false);
-  const scratchProgressRef = useRef(0);
-  const [isOverlayCleared, setIsOverlayCleared] = useState(false);
-  const overlayRef = useRef<HTMLCanvasElement | null>(null);
-  const cardRef = useRef<HTMLDivElement | null>(null);
+  const [scratchingCardIndex, setScratchingCardIndex] = useState<number | null>(null);
+  const overlayRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scratchProgress = useRef<number[]>(new Array(12).fill(0));
+
+  const cards = useMemo<CardData[]>(() => {
+    const allCards: CardData[] = [];
+    suits.forEach((suit) => {
+      rankColumns.forEach((rank) => {
+        const imageSrc = getCardImageSrc(rank, suit.id);
+        if (imageSrc) {
+          allCards.push({ rank, suit: suit.id, imageSrc });
+        }
+      });
+    });
+    return allCards;
+  }, []);
 
   const suitLabels = useMemo(
     () => ({
@@ -33,15 +49,6 @@ const RaspaCarta = () => {
       hearts: t('cartaMental.suits.hearts'),
       diamonds: t('cartaMental.suits.diamonds'),
       clubs: t('cartaMental.suits.clubs'),
-    }),
-    [t],
-  );
-
-  const columnLabels = useMemo(
-    () => ({
-      J: t('raspaCarta.columns.jacks'),
-      Q: t('raspaCarta.columns.queens'),
-      K: t('raspaCarta.columns.kings'),
     }),
     [t],
   );
@@ -55,16 +62,9 @@ const RaspaCarta = () => {
     [t],
   );
 
-  const selectedImage = useMemo(() => {
-    if (!selectedCard) {
-      return null;
-    }
-    return getCardImageSrc(selectedCard.rank, selectedCard.suit);
-  }, [selectedCard]);
-
-  const resetScratchSurface = useCallback(() => {
-    const canvas = overlayRef.current;
-    const container = cardRef.current;
+  const initializeScratchSurface = useCallback((index: number) => {
+    const canvas = overlayRefs.current[index];
+    const container = cardRefs.current[index];
     if (!canvas || !container) {
       return;
     }
@@ -85,29 +85,26 @@ const RaspaCarta = () => {
     context.globalCompositeOperation = 'source-over';
 
     const gradient = context.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, 'rgba(15, 23, 42, 0.85)');
-    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.85)');
+    gradient.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.95)');
     context.fillStyle = gradient;
     context.fillRect(0, 0, width, height);
 
-    context.fillStyle = 'rgba(255, 255, 255, 0.18)';
+    context.fillStyle = 'rgba(255, 255, 255, 0.12)';
     context.fillRect(0, 0, width, height);
 
     context.globalCompositeOperation = 'destination-out';
   }, []);
 
   useEffect(() => {
-    if (stage !== 'reveal' || !selectedCard) {
-      return;
-    }
-    resetScratchSurface();
-    scratchProgressRef.current = 0;
-    setIsOverlayCleared(false);
-  }, [stage, selectedCard, resetScratchSurface]);
+    cards.forEach((_, index) => {
+      initializeScratchSurface(index);
+    });
+  }, [cards, initializeScratchSurface]);
 
-  const scratchAt = (clientX: number, clientY: number) => {
-    const canvas = overlayRef.current;
-    if (!canvas || isOverlayCleared) {
+  const scratchAt = (index: number, clientX: number, clientY: number) => {
+    const canvas = overlayRefs.current[index];
+    if (!canvas || scratchProgress.current[index] >= 70) {
       return;
     }
     const context = canvas.getContext('2d');
@@ -121,42 +118,33 @@ const RaspaCarta = () => {
     const y = (clientY - rect.top) * scaleY;
 
     context.beginPath();
-    context.arc(x, y, 40, 0, Math.PI * 2);
+    context.arc(x, y, 50, 0, Math.PI * 2);
     context.fill();
 
-    const nextProgress = Math.min(100, scratchProgressRef.current + 3);
-    scratchProgressRef.current = nextProgress;
-    if (nextProgress >= 70) {
-      setIsOverlayCleared(true);
-    }
+    scratchProgress.current[index] = Math.min(100, scratchProgress.current[index] + 4);
   };
 
-  const handlePointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
+  const handlePointerDown = (index: number) => (event: PointerEvent<HTMLCanvasElement>) => {
     event.preventDefault();
-    setIsScratching(true);
-    scratchAt(event.clientX, event.clientY);
+    setScratchingCardIndex(index);
+    scratchAt(index, event.clientX, event.clientY);
   };
 
-  const handlePointerMove = (event: PointerEvent<HTMLCanvasElement>) => {
-    if (!isScratching) return;
+  const handlePointerMove = (index: number) => (event: PointerEvent<HTMLCanvasElement>) => {
+    if (scratchingCardIndex !== index) return;
     event.preventDefault();
-    scratchAt(event.clientX, event.clientY);
+    scratchAt(index, event.clientX, event.clientY);
   };
 
   const stopScratching = () => {
-    setIsScratching(false);
-  };
-
-  const handleSelectCard = (suit: SuitName, rank: RankId) => {
-    setSelectedCard({ suit, rank });
-    setStage('reveal');
+    setScratchingCardIndex(null);
   };
 
   const handleReset = () => {
-    setStage('setup');
-    setSelectedCard(null);
-    scratchProgressRef.current = 0;
-    setIsOverlayCleared(false);
+    scratchProgress.current = new Array(12).fill(0);
+    cards.forEach((_, index) => {
+      initializeScratchSurface(index);
+    });
   };
 
   return (
@@ -179,79 +167,43 @@ const RaspaCarta = () => {
           <p className="mt-3 text-base text-muted-foreground">{t('raspaCarta.subtitle')}</p>
         </div>
 
-        {stage === 'setup' && (
-          <div className="space-y-8 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-            <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
-            <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl">
-              <div className="absolute inset-0 flex items-center justify-center opacity-80">
+        <div className="space-y-6 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
+          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.scratchHint')}</p>
+          
+          <div className="grid grid-cols-3 gap-4 md:gap-6">
+            {cards.map((card, index) => (
+              <div
+                key={`${card.rank}-${card.suit}`}
+                ref={(el) => (cardRefs.current[index] = el)}
+                className="relative aspect-[2/3] overflow-hidden rounded-md shadow-lg"
+              >
                 <img
-                  src="/icons/icon-144x144.png"
-                  alt="MindReader"
-                  className="h-24 w-24 rotate-6 select-none opacity-60"
-                  draggable={false}
-                />
-              </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_50%)]" />
-              <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
-                {suits.map((suit) =>
-                  rankColumns.map((rank) => (
-                    <button
-                      key={`${rank}-${suit.id}`}
-                      className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                      aria-label={t('raspaCarta.gridButtonAria', {
-                        rank: faceLabels[rank],
-                        suit: suitLabels[suit.id],
-                      })}
-                      onClick={() => handleSelectCard(suit.id, rank)}
-                      style={{ opacity: 0 }}
-                    />
-                  )),
-                )}
-              </div>
-              <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
-                {rankColumns.map((rank) => (
-                  <span key={rank}>{columnLabels[rank]}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {stage === 'reveal' && selectedCard && selectedImage && (
-          <div className="space-y-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              {isOverlayCleared ? t('raspaCarta.revealedMessage') : t('raspaCarta.scratchHint')}
-            </p>
-            <div className="flex justify-center">
-              <div ref={cardRef} className="relative aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-slate-900 shadow-2xl">
-                <img
-                  src={selectedImage}
-                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
-                  className="h-full w-full object-contain"
+                  src={card.imageSrc}
+                  alt={`${faceLabels[card.rank]} ${suitLabels[card.suit]}`}
+                  className="h-full w-full object-cover select-none"
                   draggable={false}
                 />
                 <canvas
-                  ref={overlayRef}
-                  className={`absolute inset-0 touch-none ${isOverlayCleared ? 'pointer-events-none opacity-0' : 'opacity-95'} transition-opacity duration-700`}
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
+                  ref={(el) => (overlayRefs.current[index] = el)}
+                  className={`absolute inset-0 touch-none cursor-pointer transition-opacity duration-500 ${
+                    scratchProgress.current[index] >= 70 ? 'pointer-events-none opacity-0' : ''
+                  }`}
+                  onPointerDown={handlePointerDown(index)}
+                  onPointerMove={handlePointerMove(index)}
                   onPointerUp={stopScratching}
                   onPointerLeave={stopScratching}
                   onPointerCancel={stopScratching}
                 />
-                {!isOverlayCleared && (
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.08),_transparent_55%)]" />
-                )}
               </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-4">
-              <Button variant="outline" onClick={handleReset}>
-                {t('raspaCarta.reset')}
-              </Button>
-            </div>
+            ))}
           </div>
-        )}
+
+          <div className="flex items-center justify-center pt-4">
+            <Button variant="outline" onClick={handleReset}>
+              {t('raspaCarta.reset')}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
