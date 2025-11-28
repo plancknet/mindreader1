@@ -25,10 +25,11 @@ type CardData = {
 
 const RaspaCarta = () => {
   const { t } = useTranslation();
-  const [scratchingCardIndex, setScratchingCardIndex] = useState<number | null>(null);
-  const overlayRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const scratchProgress = useRef<number[]>(new Array(12).fill(0));
+  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [isScratching, setIsScratching] = useState(false);
+  const overlayRef = useRef<HTMLCanvasElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const scratchProgress = useRef(0);
 
   const cards = useMemo<CardData[]>(() => {
     const allCards: CardData[] = [];
@@ -62,9 +63,9 @@ const RaspaCarta = () => {
     [t],
   );
 
-  const initializeScratchSurface = useCallback((index: number) => {
-    const canvas = overlayRefs.current[index];
-    const container = cardRefs.current[index];
+  const initializeScratchSurface = useCallback(() => {
+    const canvas = overlayRef.current;
+    const container = cardRef.current;
     if (!canvas || !container) {
       return;
     }
@@ -97,14 +98,19 @@ const RaspaCarta = () => {
   }, []);
 
   useEffect(() => {
-    cards.forEach((_, index) => {
-      initializeScratchSurface(index);
-    });
-  }, [cards, initializeScratchSurface]);
+    if (selectedCard) {
+      initializeScratchSurface();
+    }
+  }, [selectedCard, initializeScratchSurface]);
 
-  const scratchAt = (index: number, clientX: number, clientY: number) => {
-    const canvas = overlayRefs.current[index];
-    if (!canvas || scratchProgress.current[index] >= 70) {
+  const handleCardSelection = (index: number) => {
+    if (selectedCard) return;
+    setSelectedCard(cards[index]);
+  };
+
+  const scratchAt = (clientX: number, clientY: number) => {
+    const canvas = overlayRef.current;
+    if (!canvas || scratchProgress.current >= 70) {
       return;
     }
     const context = canvas.getContext('2d');
@@ -121,30 +127,30 @@ const RaspaCarta = () => {
     context.arc(x, y, 50, 0, Math.PI * 2);
     context.fill();
 
-    scratchProgress.current[index] = Math.min(100, scratchProgress.current[index] + 4);
+    scratchProgress.current = Math.min(100, scratchProgress.current + 4);
   };
 
-  const handlePointerDown = (index: number) => (event: PointerEvent<HTMLCanvasElement>) => {
+  const handlePointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
+    if (!selectedCard) return;
     event.preventDefault();
-    setScratchingCardIndex(index);
-    scratchAt(index, event.clientX, event.clientY);
+    setIsScratching(true);
+    scratchAt(event.clientX, event.clientY);
   };
 
-  const handlePointerMove = (index: number) => (event: PointerEvent<HTMLCanvasElement>) => {
-    if (scratchingCardIndex !== index) return;
+  const handlePointerMove = (event: PointerEvent<HTMLCanvasElement>) => {
+    if (!isScratching || !selectedCard) return;
     event.preventDefault();
-    scratchAt(index, event.clientX, event.clientY);
+    scratchAt(event.clientX, event.clientY);
   };
 
   const stopScratching = () => {
-    setScratchingCardIndex(null);
+    setIsScratching(false);
   };
 
   const handleReset = () => {
-    scratchProgress.current = new Array(12).fill(0);
-    cards.forEach((_, index) => {
-      initializeScratchSurface(index);
-    });
+    setSelectedCard(null);
+    setIsScratching(false);
+    scratchProgress.current = 0;
   };
 
   return (
@@ -168,34 +174,51 @@ const RaspaCarta = () => {
         </div>
 
         <div className="space-y-6 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.scratchHint')}</p>
+          <p className="text-center text-sm text-muted-foreground">
+            {!selectedCard ? t('raspaCarta.selectHint') : t('raspaCarta.scratchHint')}
+          </p>
           
-          <div className="grid grid-cols-3 gap-4 md:gap-6">
-            {cards.map((card, index) => (
-              <div
-                key={`${card.rank}-${card.suit}`}
-                ref={(el) => (cardRefs.current[index] = el)}
-                className="relative aspect-[2/3] overflow-hidden rounded-md shadow-lg"
-              >
-                <img
-                  src={card.imageSrc}
-                  alt={`${faceLabels[card.rank]} ${suitLabels[card.suit]}`}
-                  className="h-full w-full object-cover select-none"
-                  draggable={false}
-                />
-                <canvas
-                  ref={(el) => (overlayRefs.current[index] = el)}
-                  className={`absolute inset-0 touch-none cursor-pointer transition-opacity duration-500 ${
-                    scratchProgress.current[index] >= 70 ? 'pointer-events-none opacity-0' : ''
-                  }`}
-                  onPointerDown={handlePointerDown(index)}
-                  onPointerMove={handlePointerMove(index)}
-                  onPointerUp={stopScratching}
-                  onPointerLeave={stopScratching}
-                  onPointerCancel={stopScratching}
-                />
-              </div>
-            ))}
+          <div className="mx-auto max-w-md">
+            <div
+              ref={cardRef}
+              className="relative aspect-[2/3] overflow-hidden rounded-md shadow-2xl"
+            >
+              {selectedCard ? (
+                <>
+                  <img
+                    src={selectedCard.imageSrc}
+                    alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
+                    className="h-full w-full object-cover select-none"
+                    draggable={false}
+                  />
+                  <canvas
+                    ref={overlayRef}
+                    className={`absolute inset-0 touch-none cursor-pointer transition-opacity duration-500 ${
+                      scratchProgress.current >= 70 ? 'pointer-events-none opacity-0' : ''
+                    }`}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={stopScratching}
+                    onPointerLeave={stopScratching}
+                    onPointerCancel={stopScratching}
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="h-full w-full bg-gradient-to-br from-primary/90 to-secondary/90" />
+                  <div className="absolute inset-0 grid grid-cols-3 grid-rows-4">
+                    {cards.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleCardSelection(index)}
+                        className="hover:bg-primary/10 transition-colors"
+                        aria-label={`Selecionar carta ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center justify-center pt-4">
