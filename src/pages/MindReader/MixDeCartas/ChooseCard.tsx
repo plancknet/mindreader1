@@ -2,12 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getCardImageSrc } from '@/lib/cardImages';
+import type { SuitName } from '@/lib/cardImages';
 
-const suits = [
-  { symbol: '♠', name: 'spades', color: 'black' },
-  { symbol: '♥', name: 'hearts', color: 'red' },
-  { symbol: '♦', name: 'diamonds', color: 'red' },
-  { symbol: '♣', name: 'clubs', color: 'black' },
+const suits: Array<{ symbol: string; name: SuitName; color: 'red' | 'black' }> = [
+  { symbol: '\u2660', name: 'spades', color: 'black' },
+  { symbol: '\u2665', name: 'hearts', color: 'red' },
+  { symbol: '\u2666', name: 'diamonds', color: 'red' },
+  { symbol: '\u2663', name: 'clubs', color: 'black' },
 ];
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -45,43 +47,43 @@ export const ChooseCard = () => {
 
         <div className="rounded-3xl border border-primary/10 bg-card/70 p-4 shadow-xl shadow-primary/5 backdrop-blur">
           <div className="mb-4 flex items-center justify-center gap-2 text-[0.65rem] uppercase tracking-[0.45em] text-muted-foreground">
-            <span>🎴</span>
+            <span>\u26A1</span>
             <span>{t('mixDeCartas.chooseTitle')}</span>
-            <span>🎴</span>
+            <span>\u26A1</span>
           </div>
           <div className="grid grid-cols-5 gap-1.5 sm:grid-cols-6 sm:gap-2.5 md:grid-cols-8 lg:grid-cols-13">
             {suits.map((suit) =>
-              ranks.map((rank) => (
-                <Card
-                  key={`${rank}${suit.symbol}`}
-                  className={`group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] flex-col items-center justify-between rounded-2xl border p-2 text-center shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:border-primary/40 hover:shadow-primary/30 sm:max-w-[68px] ${
-                    suit.color === 'red'
-                      ? 'border-rose-200 bg-gradient-to-br from-white to-rose-50'
-                      : 'border-slate-400 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300'
-                  }`}
-                  onClick={() => handleCardSelect(suit.name, rank)}
-                  aria-label={`${rank} ${suit.name}`}
-                >
-                  <div className="flex w-full items-center justify-between text-[0.6rem]">
-                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600 drop-shadow-[0_0_2px_rgba(0,0,0,0.6)]'}>♦</span>
-                    <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600 drop-shadow-[0_0_2px_rgba(0,0,0,0.6)]'}>♣</span>
-                  </div>
-                  <div
-                    className={`text-xl font-bold sm:text-2xl ${
-                      suit.color === 'red' ? 'text-red-600' : 'text-gray-900 drop-shadow-[0_0_2px_rgba(0,0,0,0.45)]'
+              ranks.map((rank) => {
+                const imgSrc = getCardImageSrc(rank, suit.name);
+                return (
+                  <Card
+                    key={`${rank}${suit.symbol}`}
+                    className={`group relative mx-auto flex aspect-[7/10] w-full max-w-[56px] items-center justify-center overflow-hidden rounded-2xl border bg-white/80 p-1 text-center shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-1 hover:scale-105 hover:border-primary/40 hover:shadow-primary/30 sm:max-w-[68px] ${
+                      suit.color === 'red' ? 'border-rose-200' : 'border-slate-400'
                     }`}
+                    onClick={() => handleCardSelect(suit.name, rank)}
+                    aria-label={`${rank} ${suit.name}`}
                   >
-                    {rank}
-                  </div>
-                  <div
-                    className={`text-2xl sm:text-3xl ${
-                      suit.color === 'red' ? 'text-red-600' : 'text-gray-900 drop-shadow-[0_0_2px_rgba(0,0,0,0.45)]'
-                    }`}
-                  >
-                    {suit.symbol}
-                  </div>
-                </Card>
-              ))
+                    {imgSrc ? (
+                      <img
+                        src={imgSrc}
+                        alt={`${rank} ${suit.name}`}
+                        className="h-full w-full object-contain"
+                        draggable={false}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full flex-col items-center justify-between text-foreground">
+                        <div className="flex w-full items-center justify-between text-[0.6rem]">
+                          <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600'}>{suit.symbol}</span>
+                          <span className={suit.color === 'red' ? 'text-red-300' : 'text-slate-600'}>{suit.symbol}</span>
+                        </div>
+                        <div className="text-xl font-bold sm:text-2xl">{rank}</div>
+                        <div className="text-2xl sm:text-3xl">{suit.symbol}</div>
+                      </div>
+                    )}
+                  </Card>
+                );
+              })
             )}
           </div>
         </div>

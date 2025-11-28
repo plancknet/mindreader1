@@ -5,24 +5,31 @@ import { Button } from '@/components/ui/button';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Shuffle } from 'lucide-react';
+import { getCardImageSrc } from '@/lib/cardImages';
+import type { SuitName } from '@/lib/cardImages';
 
 interface PlayingCard {
   rank: string;
-  suit: string;
+  suit: SuitName;
   suitSymbol: string;
-  color: string;
+  color: 'red' | 'black';
 }
 
 interface DeckCard extends PlayingCard {
   value: number;
 }
 
-const suits = [
+const suits: Array<{ name: SuitName; symbol: string; color: 'red' | 'black' }> = [
   { name: 'spades', symbol: '\u2660', color: 'black' },
   { name: 'hearts', symbol: '\u2665', color: 'red' },
   { name: 'diamonds', symbol: '\u2666', color: 'red' },
   { name: 'clubs', symbol: '\u2663', color: 'black' },
 ];
+
+const isValidSuit = (value: string | null): value is SuitName => {
+  if (!value) return false;
+  return suits.some((suit) => suit.name === value);
+};
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
@@ -39,7 +46,7 @@ const fullDeck: DeckCard[] = suits.flatMap((suit) =>
 type ReadingMode = 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT';
 
 // Converte carta para indice (1-52)
-const getCardIndex = (suit: string, rank: string): number => {
+const getCardIndex = (suit: SuitName, rank: string): number => {
   const suitIndex = suits.findIndex(s => s.name === suit);
   const rankIndex = ranks.indexOf(rank);
   return suitIndex * 13 + rankIndex + 1;
@@ -66,7 +73,7 @@ const chooseModeRandomly = (): ReadingMode => {
 };
 
 // Gera sequencia de 6 cartas
-const generateSequence = (chosenSuit: string, chosenRank: string): PlayingCard[] => {
+const generateSequence = (chosenSuit: SuitName, chosenRank: string): PlayingCard[] => {
   const chosenIndex = getCardIndex(chosenSuit, chosenRank);
   const binaryBits = decimalToBinary6(chosenIndex).split('');
   const mode = chooseModeRandomly();
@@ -128,8 +135,9 @@ export const Reveal = () => {
   const [revealCards, setRevealCards] = useState<PlayingCard[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
 
-  const suit = searchParams.get('suit');
+  const suitParam = searchParams.get('suit');
   const rank = searchParams.get('rank');
+  const suit = isValidSuit(suitParam) ? suitParam : null;
 
   useEffect(() => {
     if (!suit || !rank) {
@@ -172,20 +180,34 @@ export const Reveal = () => {
         </div>
 
         <div className={`grid grid-cols-3 md:grid-cols-6 gap-4 mb-8 transition-opacity duration-300 ${isShuffling ? 'opacity-0' : 'opacity-100'}`}>
-          {revealCards.map((card, index) => (
-            <Card
-              key={index}
-              className="aspect-[2/3] flex flex-col items-center justify-center bg-card border-2 shadow-lg animate-scale-in"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <div className={`text-3xl md:text-4xl font-bold ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
-                {card.rank}
-              </div>
-              <div className={`text-4xl md:text-5xl ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
-                {card.suitSymbol}
-              </div>
-            </Card>
-          ))}
+          {revealCards.map((card, index) => {
+            const imageSrc = getCardImageSrc(card.rank, card.suit);
+            return (
+              <Card
+                key={`${card.rank}${card.suit}${index}`}
+                className="aspect-[2/3] flex items-center justify-center overflow-hidden bg-card border-2 shadow-lg animate-scale-in"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt={`${card.rank} ${card.suit}`}
+                    className="h-full w-full object-contain"
+                    draggable={false}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center">
+                    <div className={`text-3xl md:text-4xl font-bold ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
+                      {card.rank}
+                    </div>
+                    <div className={`text-4xl md:text-5xl ${card.color === 'red' ? 'text-red-500' : 'text-foreground'}`}>
+                      {card.suitSymbol}
+                    </div>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
 
         <div className="text-center">
