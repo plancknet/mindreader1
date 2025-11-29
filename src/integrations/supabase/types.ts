@@ -67,6 +67,7 @@ export type Database = {
           created_at: string
           id: string
           mask_color: string | null
+          mask_font_size: number | null
           mask_offset_x: number | null
           mask_offset_y: number | null
           user_id: string
@@ -76,6 +77,7 @@ export type Database = {
           created_at?: string
           id?: string
           mask_color?: string | null
+          mask_font_size?: number | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           user_id: string
@@ -85,6 +87,7 @@ export type Database = {
           created_at?: string
           id?: string
           mask_color?: string | null
+          mask_font_size?: number | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           user_id?: string
