@@ -217,7 +217,6 @@ const EuJaSabia = () => {
   }, [isDraggingMask]);
 
   const handleGridClick = (value: number) => {
-    if (videoStarted) return;
     if (tensSelection === null) {
       setTensSelection(value);
       return;
@@ -497,7 +496,6 @@ const EuJaSabia = () => {
                   className="rounded-2xl border border-white/5 bg-transparent focus-visible:outline-none"
                   onClick={() => handleGridClick(value)}
                   aria-label={`Selecionar número ${value}`}
-                  disabled={videoStarted}
                 >
                   <span className="sr-only">{value}</span>
                 </button>
