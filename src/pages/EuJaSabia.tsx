@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type ChangeEvent } from 'react';
+import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -52,12 +52,6 @@ const EuJaSabia = () => {
     maskFontSize: number;
   } | null>(null);
 
-  const selectedNumber = useMemo(() => {
-    if (tensSelection === null || unitsSelection === null) return null;
-    return tensSelection * 10 + unitsSelection;
-  }, [tensSelection, unitsSelection]);
-
-  const formattedNumber = selectedNumber !== null ? selectedNumber.toString().padStart(2, '0') : '--';
   const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
 
   useEffect(() => {
@@ -219,27 +213,21 @@ const EuJaSabia = () => {
   const handleGridClick = (value: number) => {
     if (tensSelection === null) {
       setTensSelection(value);
+      setMaskText(null);
       return;
     }
     if (unitsSelection === null) {
       setUnitsSelection(value);
+      const nextNumber = tensSelection * 10 + value;
+      setMaskText(nextNumber.toString().padStart(2, '0'));
       return;
     }
     setTensSelection(value);
     setUnitsSelection(null);
+    setMaskText(null);
   };
 
   const handleStart = () => {
-    if (selectedNumber === null) {
-      toast({
-        title: 'Defina o número',
-        description: 'Toque uma vez para a dezena e outra para a unidade antes de iniciar.',
-      });
-      return;
-    }
-
-    const padded = selectedNumber.toString().padStart(2, '0');
-    setMaskText(padded);
     setVideoStarted(true);
     setIsVideoPaused(false);
     requestAnimationFrame(() => {
