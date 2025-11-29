@@ -5,10 +5,16 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
-const MAX_VIDEO_SIZE_BYTES = 6 * 1024 * 1024; // 6 MB
+const MAX_VIDEO_SIZE_MB = 20;
+const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
+const MAX_VIDEO_SIZE_KB = MAX_VIDEO_SIZE_BYTES / 1024;
 const ACCEPTED_VIDEO_TYPE = 'video/mp4';
 const DEFAULT_MASK_POSITION = { x: 48, y: 62 };
 const DEFAULT_MASK_COLOR = '#000000';
+const DEFAULT_MASK_FONT_SIZE = 1.2;
+const MIN_MASK_FONT_SIZE = 0.8;
+const MAX_MASK_FONT_SIZE = 2;
+const MASK_FONT_SIZE_STEP = 0.05;
 
 const fileToDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -27,6 +33,7 @@ const EuJaSabia = () => {
   const [tensSelection, setTensSelection] = useState<number | null>(null);
   const [unitsSelection, setUnitsSelection] = useState<number | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
+  const [isVideoPaused, setIsVideoPaused] = useState(false);
   const [maskText, setMaskText] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [customVideoSrc, setCustomVideoSrc] = useState<string | null>(null);
@@ -34,6 +41,7 @@ const EuJaSabia = () => {
   const [loadingVideo, setLoadingVideo] = useState(true);
   const [maskPosition, setMaskPosition] = useState(DEFAULT_MASK_POSITION);
   const [maskColor, setMaskColor] = useState(DEFAULT_MASK_COLOR);
+  const [maskFontSize, setMaskFontSize] = useState(DEFAULT_MASK_FONT_SIZE);
   const [isEditingMask, setIsEditingMask] = useState(false);
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
@@ -41,6 +49,7 @@ const EuJaSabia = () => {
     videoSrc: string | null;
     maskPosition: { x: number; y: number };
     maskColor: string;
+    maskFontSize: number;
   } | null>(null);
 
   const selectedNumber = useMemo(() => {
@@ -72,6 +81,7 @@ const EuJaSabia = () => {
       setLoadingVideo(false);
       setMaskPosition(DEFAULT_MASK_POSITION);
       setMaskColor(DEFAULT_MASK_COLOR);
+      setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
       return;
     }
 
@@ -80,7 +90,7 @@ const EuJaSabia = () => {
       setLoadingVideo(true);
       const { data, error } = await supabase
         .from('user_videos')
-        .select('video_data, mask_offset_x, mask_offset_y, mask_color')
+        .select('video_data, mask_offset_x, mask_offset_y, mask_color, mask_font_size')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -107,6 +117,12 @@ const EuJaSabia = () => {
         setMaskColor(data.mask_color);
       } else {
         setMaskColor(DEFAULT_MASK_COLOR);
+      }
+
+      if (typeof data?.mask_font_size === 'number') {
+        setMaskFontSize(data.mask_font_size);
+      } else {
+        setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
       }
 
       setCustomVideoSrc(data?.video_data ?? null);
@@ -136,7 +152,7 @@ const EuJaSabia = () => {
         }
         const { data, error: videoError } = await supabase
           .from('user_videos')
-          .select('video_data, mask_offset_x, mask_offset_y, mask_color')
+          .select('video_data, mask_offset_x, mask_offset_y, mask_color, mask_font_size')
           .eq('user_id', adminRole.user_id)
           .maybeSingle();
         if (!isMounted) return;
@@ -151,6 +167,7 @@ const EuJaSabia = () => {
             y: data.mask_offset_y ?? DEFAULT_MASK_POSITION.y,
           },
           maskColor: data.mask_color ?? DEFAULT_MASK_COLOR,
+          maskFontSize: typeof data.mask_font_size === 'number' ? data.mask_font_size : DEFAULT_MASK_FONT_SIZE,
         });
       } catch (error) {
         console.error('Erro ao carregar vídeo do admin', error);
@@ -225,6 +242,7 @@ const EuJaSabia = () => {
     const padded = selectedNumber.toString().padStart(2, '0');
     setMaskText(padded);
     setVideoStarted(true);
+    setIsVideoPaused(false);
     requestAnimationFrame(() => {
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
@@ -238,8 +256,31 @@ const EuJaSabia = () => {
     });
   };
 
+  const handlePauseToggle = () => {
+    if (!videoRef.current || !videoStarted) return;
+
+    if (isVideoPaused) {
+      videoRef.current
+        .play()
+        .then(() => {
+          setIsVideoPaused(false);
+        })
+        .catch(() => {
+          toast({
+            title: 'N�o foi poss�vel reproduzir o v�deo',
+            description: 'Tente tocar novamente no bot�o Reproduzir.',
+          });
+        });
+      return;
+    }
+
+    videoRef.current.pause();
+    setIsVideoPaused(true);
+  };
+
   const handleReset = () => {
     setVideoStarted(false);
+    setIsVideoPaused(false);
     setMaskText(null);
     setTensSelection(null);
     setUnitsSelection(null);
@@ -251,6 +292,7 @@ const EuJaSabia = () => {
 
   const handleVideoEnded = () => {
     setVideoStarted(false);
+    setIsVideoPaused(false);
   };
 
   const handleVideoUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +311,7 @@ const EuJaSabia = () => {
     if (file.size > MAX_VIDEO_SIZE_BYTES) {
       toast({
         title: 'Vídeo muito grande',
-        description: 'O arquivo precisa ter no máximo 6 MB.',
+        description: 'O arquivo precisa ter no máximo 20 MB.',
       });
       return;
     }
@@ -294,6 +336,7 @@ const EuJaSabia = () => {
             mask_offset_x: maskPosition.x,
             mask_offset_y: maskPosition.y,
             mask_color: maskColor,
+            mask_font_size: maskFontSize,
           },
           { onConflict: 'user_id' }
         );
@@ -330,9 +373,11 @@ const EuJaSabia = () => {
       if (adminVideoData) {
         setMaskPosition(adminVideoData.maskPosition);
         setMaskColor(adminVideoData.maskColor);
+        setMaskFontSize(adminVideoData.maskFontSize);
       } else {
         setMaskPosition(DEFAULT_MASK_POSITION);
         setMaskColor(DEFAULT_MASK_COLOR);
+        setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
       }
     }
   }, [customVideoSrc, adminVideoData]);
@@ -360,6 +405,11 @@ const EuJaSabia = () => {
     setMaskColor(event.target.value);
   };
 
+  const handleMaskFontSizeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = parseFloat(event.target.value);
+    setMaskFontSize(Number.isNaN(nextValue) ? DEFAULT_MASK_FONT_SIZE : nextValue);
+  };
+
   const handleSaveMaskPosition = async () => {
     if (!userId) {
       toast({
@@ -383,6 +433,7 @@ const EuJaSabia = () => {
           mask_offset_x: maskPosition.x,
           mask_offset_y: maskPosition.y,
           mask_color: maskColor,
+          mask_font_size: maskFontSize,
         })
         .eq('user_id', userId);
       if (error) throw error;
@@ -473,7 +524,10 @@ const EuJaSabia = () => {
                   >
                     <p className="h-2" aria-hidden="true" />
                     <p className="text-[0.72rem] font-semibold leading-tight">Eu já sabia:</p>
-                    <p className="text-[1.2rem] font-black leading-tight tracking-widest whitespace-pre-line">
+                    <p
+                      className="font-black leading-tight tracking-widest whitespace-pre-line"
+                      style={{ fontSize: `${maskFontSize}rem` }}
+                    >
                       {maskDisplayText}
                     </p>
                   </div>
@@ -485,6 +539,14 @@ const EuJaSabia = () => {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="flex-1" onClick={handleStart} disabled={videoStarted}>
               Iniciar
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={handlePauseToggle}
+              disabled={!videoStarted}
+            >
+              {isVideoPaused ? 'Reproduzir' : 'Pausar'}
             </Button>
             <Button variant="outline" className="flex-1" onClick={handleReset}>
               Reiniciar
@@ -505,7 +567,8 @@ const EuJaSabia = () => {
             <p>
               Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
               Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão localizado em
-              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>. Formato obrigatório MP4 e tamanho máximo de 6 MB (6144 KB).
+              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.{' '}
+              Formato obrigatório MP4 e tamanho máximo de {MAX_VIDEO_SIZE_MB} MB ({MAX_VIDEO_SIZE_KB} KB).
             </p>
             <p>
               Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
@@ -550,6 +613,22 @@ const EuJaSabia = () => {
                 style={{ backgroundColor: maskColor }}
               />
             </Button>
+            <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
+              <span>Tamanho da fonte</span>
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <input
+                  type="range"
+                  min={MIN_MASK_FONT_SIZE}
+                  max={MAX_MASK_FONT_SIZE}
+                  step={MASK_FONT_SIZE_STEP}
+                  value={maskFontSize}
+                  onChange={handleMaskFontSizeChange}
+                  disabled={!customVideoSrc}
+                  className="h-1.5 flex-1 cursor-pointer accent-primary disabled:cursor-not-allowed"
+                />
+                <span className="text-sm font-bold text-primary">{maskFontSize.toFixed(2)} rem</span>
+              </div>
+            </label>
             <Button
               type="button"
               variant="outline"
