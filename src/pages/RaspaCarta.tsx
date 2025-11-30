@@ -116,15 +116,13 @@ const RaspaCarta = () => {
     const x = (clientX - rect.left) * scaleX;
     const y = (clientY - rect.top) * scaleY;
 
-    // Criar efeito de raspagem mais suave com gradiente radial
-    const gradient = context.createRadialGradient(x, y, 0, x, y, 60);
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.8)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    // Garantir que o composite operation está correto para o efeito de raspagem
+    context.globalCompositeOperation = 'destination-out';
     
-    context.fillStyle = gradient;
+    // Criar efeito de raspagem mais suave
     context.beginPath();
-    context.arc(x, y, 60, 0, Math.PI * 2);
+    context.arc(x, y, 50, 0, Math.PI * 2);
+    context.fillStyle = 'rgba(0, 0, 0, 1)';
     context.fill();
   };
 
