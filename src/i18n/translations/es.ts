@@ -145,6 +145,7 @@ export const es = {
     revealSubtitle: "Haz clic en Barajar para generar nuevas cartas de revelación",
     chosenCard: "Carta elegida:",
     shuffleButton: "Barajar",
+    resetButton: 'Reiniciar',
     magicTip: "¡Cada barajada genera una nueva secuencia que codifica tu carta de forma única!",
   },
   cartaMental: {

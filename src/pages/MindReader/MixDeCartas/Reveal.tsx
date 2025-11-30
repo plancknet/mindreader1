@@ -199,15 +199,18 @@ export const Reveal = () => {
           })}
         </div>
 
-        <div className="text-center">
-          <Button
-            onClick={shuffle}
-            disabled={isShuffling}
-            size="lg"
-            className="gap-2"
-          >
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button onClick={shuffle} disabled={isShuffling} size="lg" className="gap-2">
             <Shuffle size={20} />
             {t('mixDeCartas.shuffleButton')}
+          </Button>
+          <Button
+            onClick={() => navigate('/mind-reader/mix-de-cartas')}
+            variant="outline"
+            size="lg"
+            disabled={isShuffling}
+          >
+            {t('mixDeCartas.resetButton')}
           </Button>
         </div>
 

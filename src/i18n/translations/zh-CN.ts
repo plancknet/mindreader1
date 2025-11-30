@@ -145,6 +145,7 @@ export const zhCN = {
     revealSubtitle: "点击洗牌以生成新的揭示牌",
     chosenCard: "已选择的牌：",
     shuffleButton: "洗牌",
+    resetButton: '????',
     magicTip: "每次洗牌都会生成一个独特的序列来编码您的牌！",
   },
   cartaMental: {

@@ -11,12 +11,12 @@ import {
   Smile,
   Shuffle,
   Play,
-  type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 
@@ -30,6 +30,7 @@ type GameCard = {
   badgeKey?: string;
   minTier: Tier;
   difficulty: number;
+  requiresAdmin?: boolean;
 };
 
 const CardIcon = ({ className, ...props }: LucideProps) => (
@@ -49,6 +50,60 @@ const CardIcon = ({ className, ...props }: LucideProps) => (
     />
   </svg>
 );
+
+const ScratchCardIcon = ({ className, ...props }: LucideProps) => (
+  <svg viewBox="0 0 64 64" role="img" aria-hidden="true" className={className} {...props}>
+    <rect x="6" y="14" width="52" height="36" rx="8" ry="8" fill="currentColor" opacity="0.15" />
+    <rect
+      x="10"
+      y="18"
+      width="44"
+      height="28"
+      rx="6"
+      ry="6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeDasharray="6 4"
+      opacity="0.8"
+    />
+    <circle cx="48" cy="32" r="9" fill="currentColor" opacity="0.25" />
+    <circle cx="48" cy="32" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path
+      d="M16 24 L40 24 M14 30 L38 28 M18 36 L42 34 M20 40 L44 38"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      opacity="0.8"
+    />
+  </svg>
+);
+
+const MAX_LEVEL = 4;
+
+const LevelBars = ({ level }: { level: number }) => {
+  return (
+    <div className="flex items-end gap-1" aria-label={`Nivel ${level}`}>
+      {Array.from({ length: MAX_LEVEL }).map((_, index) => {
+        const barLevel = index + 1;
+        const isActive = barLevel <= level;
+        const barHeight = 8 + index * 4;
+        return (
+          <span
+            key={barLevel}
+            className={`w-1.5 rounded-full transition-colors ${
+              isActive ? 'bg-primary shadow-[0_0_10px_rgba(59,130,246,0.45)]' : 'bg-muted-foreground/30'
+            }`}
+            style={{ height: `${barHeight}px` }}
+          />
+        );
+      })}
+      <span className="ml-2 text-[0.6rem] font-semibold uppercase tracking-[0.4em] text-primary">
+        Nivel {level}
+      </span>
+    </div>
+  );
+};
 
 const GAME_CARDS: GameCard[] = [
   {
@@ -89,7 +144,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/mind-reader/mix-de-cartas',
     color: 'from-emerald-500 to-lime-500',
     minTier: 'STANDARD',
-    difficulty: 3,
+    difficulty: 2,
   },
   {
     id: 'carta-mental',
@@ -98,16 +153,17 @@ const GAME_CARDS: GameCard[] = [
     path: '/carta-mental',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
     minTier: 'STANDARD',
-    difficulty: 2,
+    difficulty: 3,
   },
   {
     id: 'raspa-carta',
     translationKey: 'raspaCarta',
-    icon: CardIcon,
+    icon: ScratchCardIcon,
     path: '/raspa-carta',
     color: 'from-cyan-400 via-sky-500 to-blue-600',
     minTier: 'STANDARD',
     difficulty: 3,
+    requiresAdmin: true,
   },
   {
     id: 'mental-conversation',
@@ -127,7 +183,7 @@ const GAME_CARDS: GameCard[] = [
     path: '/papo-reto',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
     minTier: 'STANDARD',
-    difficulty: 3,
+    difficulty: 2,
   },
   {
     id: 'eu-ja-sabia',
@@ -156,6 +212,7 @@ const GameSelector = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const { usageData } = useUsageLimit();
+  const { isAdmin } = useIsAdmin();
   const subscriptionTier: Tier = usageData?.subscriptionTier ?? 'FREE';
   const subscriptionStatus = usageData?.subscriptionStatus ?? 'inactive';
   const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
@@ -199,14 +256,30 @@ const GameSelector = () => {
           {games.map((game) => {
             const Icon = game.icon;
             const instructionsPath = game.instructionsPath;
-            const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier];
+            const freeTierUnlock = subscriptionTier === 'FREE' && game.difficulty <= 2;
+            const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier] || freeTierUnlock;
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
-            const enabled = meetsTier && statusAllowed;
-            const isCardBackGame = ['carta-mental', 'raspa-carta'].includes(game.id);
+            const adminAllowed = !game.requiresAdmin || isAdmin;
+            const enabled = meetsTier && statusAllowed && adminAllowed;
+            const isCardBackGame = game.id === 'carta-mental';
+            const isRaspaCarta = game.id === 'raspa-carta';
             const iconWrapperClass = isCardBackGame
               ? 'p-4 rounded-2xl bg-white/80 shadow-[0_12px_35px_rgba(56,189,248,0.35)] border border-primary/30'
-              : `p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`;
-            const iconColorClass = isCardBackGame ? 'text-sky-600' : 'text-primary';
+              : isRaspaCarta
+                ? 'p-4 rounded-2xl bg-slate-900/80 shadow-[0_12px_35px_rgba(15,23,42,0.4)] border border-white/10'
+                : `p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`;
+            const iconColorClass = isCardBackGame ? 'text-sky-600' : isRaspaCarta ? 'text-amber-400' : 'text-primary';
+            let disabledMessage: string | null = null;
+            if (!adminAllowed) {
+              disabledMessage = 'Disponível apenas para administradores.';
+            } else if (!meetsTier) {
+              disabledMessage =
+                subscriptionTier === 'FREE'
+                  ? 'Níveis acima de 2 exigem um plano pago.'
+                  : 'Disponível apenas em um plano superior.';
+            } else if (!statusAllowed) {
+              disabledMessage = 'Ative sua assinatura para jogar.';
+            }
             return (
               <Card
                 key={game.id}
@@ -215,9 +288,7 @@ const GameSelector = () => {
                 }`}
               >
                   <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                    <span className="rounded-full border border-primary/30 bg-background/80 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-primary">
-                      Nível {game.difficulty}
-                    </span>
+                    <LevelBars level={game.difficulty} />
                     {game.badge && (
                       <Badge className="uppercase tracking-wide">
                         {game.badge}
@@ -241,9 +312,9 @@ const GameSelector = () => {
                     {game.description}
                   </p>
 
-                  {!enabled && (
+                  {!enabled && disabledMessage && (
                     <p className="text-xs text-center text-muted-foreground">
-                      Disponível no plano Vitalício ou Influencer.
+                      {disabledMessage}
                     </p>
                   )}
                   <div className="flex gap-2">

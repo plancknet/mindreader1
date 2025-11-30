@@ -145,6 +145,7 @@ export const fr = {
     revealSubtitle: "Cliquez sur Mélanger pour générer de nouvelles cartes de révélation",
     chosenCard: "Carte choisie:",
     shuffleButton: "Mélanger",
+    resetButton: 'Recommencer',
     magicTip: "Chaque mélange génère une nouvelle séquence qui code votre carte de manière unique!",
   },
   cartaMental: {

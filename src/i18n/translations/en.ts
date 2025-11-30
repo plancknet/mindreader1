@@ -145,6 +145,7 @@ export const en = {
     revealSubtitle: "Click Shuffle to generate new revelation cards",
     chosenCard: "Chosen card:",
     shuffleButton: "Shuffle",
+    resetButton: 'Reset',
     magicTip: "Each shuffle generates a new sequence that uniquely encodes your card!",
   },
   cartaMental: {

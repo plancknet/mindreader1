@@ -142,6 +142,7 @@ export const ptBR = {
     revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
     chosenCard: "",
     shuffleButton: "Embaralhar",
+    resetButton: 'Reiniciar',
     magicTip: "",
   },
   cartaMental: {
