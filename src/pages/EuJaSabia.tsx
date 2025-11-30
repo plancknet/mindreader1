@@ -51,6 +51,7 @@ const EuJaSabia = () => {
     maskColor: string;
     maskFontSize: number;
   } | null>(null);
+  const [showCustomization, setShowCustomization] = useState(false);
 
   const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
 
@@ -380,6 +381,13 @@ const EuJaSabia = () => {
   const maskDisplayText = maskText ?? '--';
 
   const scrollToUploadSection = () => {
+    if (!showCustomization) {
+      setShowCustomization(true);
+      setTimeout(() => {
+        uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+      return;
+    }
     uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -544,94 +552,96 @@ const EuJaSabia = () => {
           </Button>
         </div>
 
-        <div
-          ref={uploadSectionRef}
-          className="space-y-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-2xl shadow-primary/15"
-        >
-          <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold">Área de personalização</p>
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <p>
-              Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
-              Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão localizado em
-              <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.{' '}
-              Formato obrigatório MP4 e tamanho máximo de {MAX_VIDEO_SIZE_MB} MB ({MAX_VIDEO_SIZE_KB} KB).
-            </p>
-            <p>
-              Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
-              uma folha em branco na mesma altura, posicionada a YY&nbsp;cm. Vista-se de preto e salve em MP4.
-            </p>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              Status atual: {currentVideoStatus}
-            </p>
-          </div>
+        {showCustomization && (
+          <div
+            ref={uploadSectionRef}
+            className="space-y-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-2xl shadow-primary/15"
+          >
+            <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold">Área de personalização</p>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>
+                Você pode manter apenas 1 vídeo personalizado. Ao enviar um novo arquivo, o anterior será substituído.
+                Caso ainda não tenha feito upload, continuaremos usando o vídeo padrão localizado em
+                <code className="text-xs text-primary"> /public/videos/eujasabia_base.mp4</code>.{' '}
+                Formato obrigatório MP4 e tamanho máximo de {MAX_VIDEO_SIZE_MB} MB ({MAX_VIDEO_SIZE_KB} KB).
+              </p>
+              <p>
+                Gravação recomendada: celular em posição vertical (em pé), usando a câmera frontal na altura de XX&nbsp;cm e
+                uma folha em branco na mesma altura, posicionada a YY&nbsp;cm. Vista-se de preto e salve em MP4.
+              </p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                Status atual: {currentVideoStatus}
+              </p>
+            </div>
 
-          <div className="flex flex-wrap gap-3">
-            <label
-              className={`inline-flex cursor-pointer items-center justify-center rounded-full border border-primary/40 px-6 py-2 text-sm font-semibold transition hover:bg-primary/10 ${
-                isUploading || !userId ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              <input
-                type="file"
-                accept="video/mp4"
-                className="sr-only"
-                onChange={handleVideoUpload}
-                disabled={isUploading || !userId}
-              />
-              {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
-            </label>
-            <input
-              ref={colorInputRef}
-              type="color"
-              className="sr-only"
-              value={maskColor}
-              onChange={handleMaskColorChange}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!customVideoSrc}
-              onClick={handleColorButtonClick}
-            >
-              Cor da máscara
-              <span
-                className="ml-2 inline-block h-4 w-4 rounded-full border border-white/30"
-                style={{ backgroundColor: maskColor }}
-              />
-            </Button>
-            <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
-              <span>Tamanho da fonte</span>
-              <div className="flex items-center gap-3 text-muted-foreground">
+            <div className="flex flex-wrap gap-3">
+              <label
+                className={`inline-flex cursor-pointer items-center justify-center rounded-full border border-primary/40 px-6 py-2 text-sm font-semibold transition hover:bg-primary/10 ${
+                  isUploading || !userId ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
                 <input
-                  type="range"
-                  min={MIN_MASK_FONT_SIZE}
-                  max={MAX_MASK_FONT_SIZE}
-                  step={MASK_FONT_SIZE_STEP}
-                  value={maskFontSize}
-                  onChange={handleMaskFontSizeChange}
-                  disabled={!customVideoSrc}
-                  className="h-1.5 flex-1 cursor-pointer accent-primary disabled:cursor-not-allowed"
+                  type="file"
+                  accept="video/mp4"
+                  className="sr-only"
+                  onChange={handleVideoUpload}
+                  disabled={isUploading || !userId}
                 />
-                <span className="text-sm font-bold text-primary">{maskFontSize.toFixed(2)} rem</span>
-              </div>
-            </label>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!customVideoSrc}
-              onClick={() => setIsEditingMask((prev) => !prev)}
-            >
-              {isEditingMask ? 'Encerrar edição da máscara' : 'Editar Posição da Máscara'}
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSaveMaskPosition}
-              disabled={!customVideoSrc || isSavingMask}
-            >
-              {isSavingMask ? 'Salvando...' : 'Salvar Máscara'}
-            </Button>
+                {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
+              </label>
+              <input
+                ref={colorInputRef}
+                type="color"
+                className="sr-only"
+                value={maskColor}
+                onChange={handleMaskColorChange}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!customVideoSrc}
+                onClick={handleColorButtonClick}
+              >
+                Cor da máscara
+                <span
+                  className="ml-2 inline-block h-4 w-4 rounded-full border border-white/30"
+                  style={{ backgroundColor: maskColor }}
+                />
+              </Button>
+              <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
+                <span>Tamanho da fonte</span>
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <input
+                    type="range"
+                    min={MIN_MASK_FONT_SIZE}
+                    max={MAX_MASK_FONT_SIZE}
+                    step={MASK_FONT_SIZE_STEP}
+                    value={maskFontSize}
+                    onChange={handleMaskFontSizeChange}
+                    disabled={!customVideoSrc}
+                    className="h-1.5 flex-1 cursor-pointer accent-primary disabled:cursor-not-allowed"
+                  />
+                  <span className="text-sm font-bold text-primary">{maskFontSize.toFixed(2)} rem</span>
+                </div>
+              </label>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!customVideoSrc}
+                onClick={() => setIsEditingMask((prev) => !prev)}
+              >
+                {isEditingMask ? 'Encerrar edição da máscara' : 'Editar Posição da Máscara'}
+              </Button>
+              <Button
+                type="button"
+                onClick={handleSaveMaskPosition}
+                disabled={!customVideoSrc || isSavingMask}
+              >
+                {isSavingMask ? 'Salvando...' : 'Salvar Máscara'}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

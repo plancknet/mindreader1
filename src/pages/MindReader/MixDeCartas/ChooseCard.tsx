@@ -47,9 +47,7 @@ export const ChooseCard = () => {
 
         <div className="rounded-3xl border border-primary/10 bg-card/70 p-4 shadow-xl shadow-primary/5 backdrop-blur">
           <div className="mb-4 flex items-center justify-center gap-2 text-[0.65rem] uppercase tracking-[0.45em] text-muted-foreground">
-            <span>\u26A1</span>
             <span>{t('mixDeCartas.chooseTitle')}</span>
-            <span>\u26A1</span>
           </div>
           <div className="grid grid-cols-5 gap-1.5 sm:grid-cols-6 sm:gap-2.5 md:grid-cols-8 lg:grid-cols-13">
             {suits.map((suit) =>
