@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Smile } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Shuffle } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
 
@@ -261,11 +261,11 @@ const Auth = () => {
       message: 'Ele ANOTA, eu e vc conversamos e EU leio a mente dele',
     },
     {
-      id: 'my-emojis',
-      icon: Smile,
-      title: t('gameSelector.cards.myEmojis.title'),
-      color: 'from-yellow-400 to-lime-400',
-      message: 'Em construção',
+      id: 'mix-de-cartas',
+      icon: Shuffle,
+      title: t('gameSelector.cards.mixDeCartas.title'),
+      color: 'from-emerald-500 to-lime-500',
+      message: 'Ele escolhe uma carta e EU sempre revelo certo',
     },
   ];
 
