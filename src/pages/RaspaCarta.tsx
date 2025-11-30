@@ -29,7 +29,6 @@ const RaspaCarta = () => {
   const [isScratching, setIsScratching] = useState(false);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const cardAreaRef = useRef<HTMLDivElement | null>(null);
-  const overlayIconRef = useRef<HTMLImageElement | null>(null);
 
   const suitLabels = useMemo(
     () => ({
@@ -72,29 +71,7 @@ const RaspaCarta = () => {
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'source-over';
 
-    const gradient = context.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, 'rgba(2, 6, 23, 0.95)');
-    gradient.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, width, height);
-
-    const glow = context.createRadialGradient(width * 0.5, height * 0.28, width * 0.05, width * 0.5, height * 0.3, width * 0.9);
-    glow.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-    glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    context.fillStyle = glow;
-    context.fillRect(0, 0, width, height);
-
-    const icon = overlayIconRef.current;
-    if (icon && icon.complete) {
-      const iconSize = Math.min(width, height) * 0.32;
-      const iconX = (width - iconSize) / 2;
-      const iconY = height * 0.25 - iconSize / 2;
-      context.globalAlpha = 0.55;
-      context.drawImage(icon, iconX, iconY, iconSize, iconSize);
-      context.globalAlpha = 1;
-    }
-
-    context.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
     context.fillRect(0, 0, width, height);
 
     context.font = `600 ${Math.max(12, width * 0.05)}px 'Inter', sans-serif`;
@@ -108,17 +85,6 @@ const RaspaCarta = () => {
 
     context.globalCompositeOperation = 'destination-out';
   }, [faceLabels]);
-
-  useEffect(() => {
-    const iconImage = new Image();
-    iconImage.src = '/icons/icon-144x144.png';
-    iconImage.onload = () => {
-      overlayIconRef.current = iconImage;
-      if (selectedCard) {
-        fillOverlay();
-      }
-    };
-  }, [fillOverlay, selectedCard]);
 
   useEffect(() => {
     if (selectedCard) {
@@ -205,9 +171,8 @@ const RaspaCarta = () => {
           <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
           <div
             ref={cardAreaRef}
-            className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl"
+            className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.1),_transparent_55%)]" />
             <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
               {suits.map((suit) =>
                 rankColumns.map((rank) => (
