@@ -71,7 +71,7 @@ const RaspaCarta = () => {
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'source-over';
 
-    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    context.fillStyle = 'rgba(0, 0, 0, 1)';
     context.fillRect(0, 0, width, height);
 
     context.font = `600 ${Math.max(12, width * 0.05)}px 'Inter', sans-serif`;
@@ -207,6 +207,7 @@ const RaspaCarta = () => {
                 <canvas
                   ref={overlayRef}
                   className="absolute inset-0 touch-none"
+                  style={{ backgroundColor: selectedCard ? '#000' : 'transparent' }}
                   onPointerDown={handlePointerDown}
                   onPointerMove={handlePointerMove}
                   onPointerUp={stopScratching}
