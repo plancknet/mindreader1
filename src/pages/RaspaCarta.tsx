@@ -30,6 +30,7 @@ const RaspaCarta = () => {
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const cardAreaRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
+  const overlayFilledRef = useRef(false);
 
   const suitLabels = useMemo(
     () => ({
@@ -88,9 +89,11 @@ const RaspaCarta = () => {
   }, [faceLabels]);
 
   useEffect(() => {
-    if (selectedCard) {
+    if (selectedCard && !overlayFilledRef.current) {
       fillOverlay();
-    } else {
+      overlayFilledRef.current = true;
+    } else if (!selectedCard) {
+      overlayFilledRef.current = false;
       const canvas = overlayRef.current;
       const context = canvas?.getContext('2d');
       if (canvas && context) {
