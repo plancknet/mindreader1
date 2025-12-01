@@ -42,15 +42,6 @@ const RaspaCarta = () => {
     [t],
   );
 
-  const faceLabels = useMemo(
-    () => ({
-      J: t('raspaCarta.faces.jack'),
-      Q: t('raspaCarta.faces.queen'),
-      K: t('raspaCarta.faces.king'),
-    }),
-    [t],
-  );
-
   const fillOverlay = useCallback(() => {
     const canvas = overlayRef.current;
     const container = imageContainerRef.current;
@@ -191,7 +182,7 @@ const RaspaCarta = () => {
                     key={`${rank}-${suit.id}`}
                     className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
                     aria-label={t('raspaCarta.gridButtonAria', {
-                      rank: faceLabels[rank],
+                      rank,
                       suit: suitLabels[suit.id],
                     })}
                     onClick={() => handleSelectCard(suit.id, rank)}
@@ -205,7 +196,7 @@ const RaspaCarta = () => {
               {selectedCard ? (
                 <img
                   src={selectedCard.imageSrc}
-                  alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
+                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
                   className="h-full w-full select-none object-contain"
                   draggable={false}
                 />
