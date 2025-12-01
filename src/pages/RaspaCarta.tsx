@@ -67,17 +67,8 @@ const RaspaCarta = () => {
     context.fillStyle = 'rgba(0, 0, 0, 1)';
     context.fillRect(0, 0, width, height);
 
-    context.font = `600 ${Math.max(12, width * 0.05)}px 'Inter', sans-serif`;
-    context.fillStyle = 'rgba(125, 211, 252, 0.8)';
-    context.textAlign = 'center';
-    const labelY = height - height * 0.07;
-    rankColumns.forEach((rank, index) => {
-      const xOffset = (index + 0.5) * (width / rankColumns.length);
-      context.fillText(faceLabels[rank], xOffset, labelY);
-    });
-
     context.globalCompositeOperation = 'destination-out';
-  }, [faceLabels]);
+  }, []);
 
   useEffect(() => {
     if (selectedCard && !overlayFilledRef.current) {
