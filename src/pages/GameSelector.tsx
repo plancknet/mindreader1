@@ -259,7 +259,8 @@ const GameSelector = () => {
             const freeTierUnlock = subscriptionTier === 'FREE' && game.difficulty <= 2;
             const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier] || freeTierUnlock;
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
-            const adminAllowed = !game.requiresAdmin || isAdmin;
+            const isInfluencerTier = subscriptionTier === 'INFLUENCER';
+            const adminAllowed = !game.requiresAdmin || isAdmin || isInfluencerTier;
             const enabled = meetsTier && statusAllowed && adminAllowed;
             const isCardBackGame = game.id === 'carta-mental';
             const isRaspaCarta = game.id === 'raspa-carta';
@@ -271,7 +272,7 @@ const GameSelector = () => {
             const iconColorClass = isCardBackGame ? 'text-sky-600' : isRaspaCarta ? 'text-amber-400' : 'text-primary';
             let disabledMessage: string | null = null;
             if (!adminAllowed) {
-              disabledMessage = 'Disponível apenas para administradores.';
+              disabledMessage = 'Disponível apenas para administradores ou plano Influencer.';
             } else if (!meetsTier) {
               disabledMessage =
                 subscriptionTier === 'FREE'
