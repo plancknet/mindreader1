@@ -129,6 +129,7 @@ const RaspaCarta = () => {
   const handlePointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
     if (!selectedCard) return;
     event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
     setIsScratching(true);
     scratchAt(event.clientX, event.clientY);
   };
@@ -137,6 +138,13 @@ const RaspaCarta = () => {
     if (!isScratching || !selectedCard) return;
     event.preventDefault();
     scratchAt(event.clientX, event.clientY);
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLCanvasElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    setIsScratching(false);
   };
 
   const stopScratching = () => {
@@ -215,7 +223,7 @@ const RaspaCarta = () => {
                   style={{ backgroundColor: selectedCard ? '#000' : 'transparent' }}
                   onPointerDown={handlePointerDown}
                   onPointerMove={handlePointerMove}
-                  onPointerUp={stopScratching}
+                  onPointerUp={handlePointerUp}
                   onPointerLeave={stopScratching}
                   onPointerCancel={stopScratching}
                 />
