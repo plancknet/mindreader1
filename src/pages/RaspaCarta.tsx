@@ -64,7 +64,7 @@ const RaspaCarta = () => {
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'source-over';
 
-    context.fillStyle = 'rgba(0, 0, 0, 1)';
+    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
     context.fillRect(0, 0, width, height);
 
     context.globalCompositeOperation = 'destination-out';
@@ -194,25 +194,32 @@ const RaspaCarta = () => {
               )}
             </div>
 
-            {selectedCard && (
-              <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
-                <img
-                  src={selectedCard.imageSrc}
-                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
-                  className="h-full w-full select-none object-contain"
-                  draggable={false}
-                />
-                <canvas
-                  ref={overlayRef}
-                  className="absolute inset-0 touch-none cursor-pointer"
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  onPointerLeave={stopScratching}
-                  onPointerCancel={stopScratching}
-                />
-              </div>
-            )}
+            <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-black/70">
+              {selectedCard ? (
+                <>
+                  <img
+                    src={selectedCard.imageSrc}
+                    alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
+                    className="h-full w-full select-none object-contain"
+                    draggable={false}
+                  />
+                  <canvas
+                    ref={overlayRef}
+                    className="absolute inset-0 touch-none cursor-pointer"
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerLeave={stopScratching}
+                    onPointerCancel={stopScratching}
+                    style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+                  />
+                </>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center rounded-[24px] bg-black/70">
+                  <div className="h-3/4 w-3/4 rounded-2xl border border-white/10 bg-black/70" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
