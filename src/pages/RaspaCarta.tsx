@@ -177,45 +177,53 @@ const RaspaCarta = () => {
             ref={cardAreaRef}
             className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
           >
-            {!selectedCard && (
-              <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
-                {suits.map((suit) =>
-                  rankColumns.map((rank) => (
-                    <button
-                      key={`${rank}-${suit.id}`}
-                      className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                      aria-label={t('raspaCarta.gridButtonAria', {
-                        rank,
-                        suit: suitLabels[suit.id],
-                      })}
-                      onClick={() => handleSelectCard(suit.id, rank)}
-                      style={{ opacity: 0 }}
-                    />
-                  )),
-                )}
-              </div>
-            )}
+            <div
+              className={`absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3 transition-opacity duration-200 ${
+                selectedCard ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              }`}
+            >
+              {suits.map((suit) =>
+                rankColumns.map((rank) => (
+                  <button
+                    key={`${rank}-${suit.id}`}
+                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                    aria-label={t('raspaCarta.gridButtonAria', {
+                      rank,
+                      suit: suitLabels[suit.id],
+                    })}
+                    onClick={() => handleSelectCard(suit.id, rank)}
+                    style={{ opacity: 0 }}
+                  />
+                )),
+              )}
             </div>
 
-            {selectedCard && (
-            <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
-                <img
-                  src={selectedCard.imageSrc}
-                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
-                  className="h-full w-full select-none object-contain"
-                  draggable={false}
-                />
-                <canvas
-                  ref={overlayRef}
-                  className="absolute inset-0 touch-none cursor-pointer"
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  onPointerLeave={stopScratching}
-                  onPointerCancel={stopScratching}
-                />
-              </div>
-            )}
+            <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-black/70">
+              {selectedCard ? (
+                <>
+                  <img
+                    src={selectedCard.imageSrc}
+                    alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
+                    className="h-full w-full select-none object-contain"
+                    draggable={false}
+                  />
+                  <canvas
+                    ref={overlayRef}
+                    className="absolute inset-0 touch-none cursor-pointer"
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerLeave={stopScratching}
+                    onPointerCancel={stopScratching}
+                    style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+                  />
+                </>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center rounded-[24px] bg-black/70">
+                  <div className="h-3/4 w-3/4 rounded-2xl border border-white/10 bg-black/70" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {selectedCard && (
