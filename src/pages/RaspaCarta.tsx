@@ -115,12 +115,13 @@ const RaspaCarta = () => {
     }
 
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (clientX - rect.left) * scaleX;
-    const y = (clientY - rect.top) * scaleY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
-    // Garantir que o composite operation está correto para o efeito de raspagem
+    const scale = window.devicePixelRatio || 1;
+
+    // Garantir que a transformação e composite operation estão corretos
+    context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'destination-out';
     
     // Criar efeito de raspagem mais suave
