@@ -29,6 +29,7 @@ const RaspaCarta = () => {
   const [isScratching, setIsScratching] = useState(false);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const cardAreaRef = useRef<HTMLDivElement | null>(null);
+  const imageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const suitLabels = useMemo(
     () => ({
@@ -51,7 +52,7 @@ const RaspaCarta = () => {
 
   const fillOverlay = useCallback(() => {
     const canvas = overlayRef.current;
-    const container = cardAreaRef.current;
+    const container = imageContainerRef.current;
     if (!canvas || !container) {
       return;
     }
@@ -211,7 +212,7 @@ const RaspaCarta = () => {
             </div>
 
             {selectedCard && (
-              <div className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
+              <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
                 <img
                   src={selectedCard.imageSrc}
                   alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
@@ -220,8 +221,7 @@ const RaspaCarta = () => {
                 />
                 <canvas
                   ref={overlayRef}
-                  className="absolute inset-0 touch-none"
-                  style={{ backgroundColor: selectedCard ? '#000' : 'transparent' }}
+                  className="absolute inset-0 touch-none cursor-pointer"
                   onPointerDown={handlePointerDown}
                   onPointerMove={handlePointerMove}
                   onPointerUp={handlePointerUp}
