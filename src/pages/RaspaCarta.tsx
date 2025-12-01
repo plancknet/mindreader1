@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { PointerEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
@@ -165,6 +166,11 @@ const RaspaCarta = () => {
     setSelectedCard({ rank, suit, imageSrc });
   };
 
+  const handleReset = () => {
+    setSelectedCard(null);
+    overlayFilledRef.current = false;
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
       <div className="pointer-events-none absolute inset-0 opacity-60">
@@ -235,6 +241,13 @@ const RaspaCarta = () => {
               </div>
             )}
           </div>
+          {selectedCard && (
+            <div className="mt-6 flex justify-center">
+              <Button variant="outline" onClick={handleReset}>
+                Reiniciar
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
