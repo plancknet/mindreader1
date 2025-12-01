@@ -207,7 +207,6 @@ const RaspaCarta = () => {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center rounded-[24px] bg-black/70">
-                  <div className="h-3/4 w-3/4 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-inner" />
                 </div>
               )}
               <canvas
