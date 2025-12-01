@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { PointerEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
-import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
@@ -165,11 +164,6 @@ const RaspaCarta = () => {
       return;
     }
     setSelectedCard({ rank, suit, imageSrc });
-  };
-
-  const handleReset = () => {
-    setSelectedCard(null);
-    overlayFilledRef.current = false;
   };
 
   const handleReset = () => {
