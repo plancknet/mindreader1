@@ -42,6 +42,15 @@ const RaspaCarta = () => {
     [t],
   );
 
+  const faceLabels = useMemo(
+    () => ({
+      J: t('raspaCarta.faces.jack'),
+      Q: t('raspaCarta.faces.queen'),
+      K: t('raspaCarta.faces.king'),
+    }),
+    [t],
+  );
+
   const fillOverlay = useCallback(() => {
     const canvas = overlayRef.current;
     const container = imageContainerRef.current;
@@ -182,32 +191,35 @@ const RaspaCarta = () => {
             ref={cardAreaRef}
             className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
           >
-            <div
-              className={`absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3 transition-opacity duration-200 ${
-                selectedCard ? 'opacity-0 pointer-events-none' : 'opacity-100'
-              }`}
-            >
-              {suits.map((suit) =>
-                rankColumns.map((rank) => (
-                  <button
-                    key={`${rank}-${suit.id}`}
-                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                    aria-label={t('raspaCarta.gridButtonAria', {
-                      rank,
-                      suit: suitLabels[suit.id],
-                    })}
-                    onClick={() => handleSelectCard(suit.id, rank)}
-                    style={{ opacity: 0 }}
-                  />
-                )),
-              )}
+            {!selectedCard && (
+              <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
+                {suits.map((suit) =>
+                  rankColumns.map((rank) => (
+                    <button
+                      key={`${rank}-${suit.id}`}
+                      className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                      aria-label={t('raspaCarta.gridButtonAria', {
+                        rank: faceLabels[rank],
+                        suit: suitLabels[suit.id],
+                      })}
+                      onClick={() => handleSelectCard(suit.id, rank)}
+                      style={{ opacity: 0 }}
+                    />
+                  )),
+                )}
+              </div>
+            )}
+            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
+              {rankColumns.map((rank) => (
+                <span key={rank}>{faceLabels[rank]}</span>
+              ))}
             </div>
 
             {selectedCard && (
               <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
                 <img
                   src={selectedCard.imageSrc}
-                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
+                  alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
                   className="h-full w-full select-none object-contain"
                   draggable={false}
                 />
