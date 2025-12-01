@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { PointerEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
@@ -42,15 +43,6 @@ const RaspaCarta = () => {
     [t],
   );
 
-  const faceLabels = useMemo(
-    () => ({
-      J: t('raspaCarta.faces.jack'),
-      Q: t('raspaCarta.faces.queen'),
-      K: t('raspaCarta.faces.king'),
-    }),
-    [t],
-  );
-
   const fillOverlay = useCallback(() => {
     const canvas = overlayRef.current;
     const container = imageContainerRef.current;
@@ -73,20 +65,11 @@ const RaspaCarta = () => {
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'source-over';
 
-    context.fillStyle = 'rgba(0, 0, 0, 1)';
+    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
     context.fillRect(0, 0, width, height);
 
-    context.font = `600 ${Math.max(12, width * 0.05)}px 'Inter', sans-serif`;
-    context.fillStyle = 'rgba(125, 211, 252, 0.8)';
-    context.textAlign = 'center';
-    const labelY = height - height * 0.07;
-    rankColumns.forEach((rank, index) => {
-      const xOffset = (index + 0.5) * (width / rankColumns.length);
-      context.fillText(faceLabels[rank], xOffset, labelY);
-    });
-
     context.globalCompositeOperation = 'destination-out';
-  }, [faceLabels]);
+  }, []);
 
   useEffect(() => {
     if (selectedCard && !overlayFilledRef.current) {
@@ -165,6 +148,11 @@ const RaspaCarta = () => {
     setSelectedCard({ rank, suit, imageSrc });
   };
 
+  const handleReset = () => {
+    setSelectedCard(null);
+    overlayFilledRef.current = false;
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
       <div className="pointer-events-none absolute inset-0 opacity-60">
@@ -182,11 +170,9 @@ const RaspaCarta = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
             {t('raspaCarta.title')}
           </p>
-          <p className="mt-3 text-base text-muted-foreground">{t('raspaCarta.subtitle')}</p>
         </div>
 
         <div className="rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
           <div
             ref={cardAreaRef}
             className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
@@ -199,7 +185,7 @@ const RaspaCarta = () => {
                       key={`${rank}-${suit.id}`}
                       className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
                       aria-label={t('raspaCarta.gridButtonAria', {
-                        rank: faceLabels[rank],
+                        rank,
                         suit: suitLabels[suit.id],
                       })}
                       onClick={() => handleSelectCard(suit.id, rank)}
@@ -209,17 +195,13 @@ const RaspaCarta = () => {
                 )}
               </div>
             )}
-            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
-              {rankColumns.map((rank) => (
-                <span key={rank}>{faceLabels[rank]}</span>
-              ))}
             </div>
 
             {selectedCard && (
-              <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
+            <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
                 <img
                   src={selectedCard.imageSrc}
-                  alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
+                  alt={`${selectedCard.rank} ${suitLabels[selectedCard.suit]}`}
                   className="h-full w-full select-none object-contain"
                   draggable={false}
                 />
@@ -236,6 +218,13 @@ const RaspaCarta = () => {
             )}
           </div>
         </div>
+        {selectedCard && (
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={handleReset}>
+              Reiniciar
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
