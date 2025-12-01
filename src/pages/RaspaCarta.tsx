@@ -186,23 +186,24 @@ const RaspaCarta = () => {
             ref={cardAreaRef}
             className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
           >
-            <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
-              {suits.map((suit) =>
-                rankColumns.map((rank) => (
-                  <button
-                    key={`${rank}-${suit.id}`}
-                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                    aria-label={t('raspaCarta.gridButtonAria', {
-                      rank: faceLabels[rank],
-                      suit: suitLabels[suit.id],
-                    })}
-                    onClick={() => handleSelectCard(suit.id, rank)}
-                    disabled={Boolean(selectedCard)}
-                    style={{ opacity: 0 }}
-                  />
-                )),
-              )}
-            </div>
+            {!selectedCard && (
+              <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
+                {suits.map((suit) =>
+                  rankColumns.map((rank) => (
+                    <button
+                      key={`${rank}-${suit.id}`}
+                      className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                      aria-label={t('raspaCarta.gridButtonAria', {
+                        rank: faceLabels[rank],
+                        suit: suitLabels[suit.id],
+                      })}
+                      onClick={() => handleSelectCard(suit.id, rank)}
+                      style={{ opacity: 0 }}
+                    />
+                  )),
+                )}
+              </div>
+            )}
             <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
               {rankColumns.map((rank) => (
                 <span key={rank}>{faceLabels[rank]}</span>
