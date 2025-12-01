@@ -73,11 +73,20 @@ const RaspaCarta = () => {
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'source-over';
 
-    context.fillStyle = 'rgba(0, 0, 0, 0.95)';
+    context.fillStyle = 'rgba(0, 0, 0, 1)';
     context.fillRect(0, 0, width, height);
 
+    context.font = `600 ${Math.max(12, width * 0.05)}px 'Inter', sans-serif`;
+    context.fillStyle = 'rgba(125, 211, 252, 0.8)';
+    context.textAlign = 'center';
+    const labelY = height - height * 0.07;
+    rankColumns.forEach((rank, index) => {
+      const xOffset = (index + 0.5) * (width / rankColumns.length);
+      context.fillText(faceLabels[rank], xOffset, labelY);
+    });
+
     context.globalCompositeOperation = 'destination-out';
-  }, []);
+  }, [faceLabels]);
 
   useEffect(() => {
     if (selectedCard && !overlayFilledRef.current) {
@@ -173,57 +182,58 @@ const RaspaCarta = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
             {t('raspaCarta.title')}
           </p>
+          <p className="mt-3 text-base text-muted-foreground">{t('raspaCarta.subtitle')}</p>
         </div>
 
         <div className="rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
+          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
           <div
             ref={cardAreaRef}
             className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
           >
-            <div
-              className={`absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3 transition-opacity duration-200 ${
-                selectedCard ? 'opacity-0 pointer-events-none' : 'opacity-100'
-              }`}
-            >
-              {suits.map((suit) =>
-                rankColumns.map((rank) => (
-                  <button
-                    key={`${rank}-${suit.id}`}
-                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-                    aria-label={t('raspaCarta.gridButtonAria', {
-                      rank: faceLabels[rank],
-                      suit: suitLabels[suit.id],
-                    })}
-                    onClick={() => handleSelectCard(suit.id, rank)}
-                    style={{ opacity: 0 }}
-                  />
-                )),
-              )}
+            {!selectedCard && (
+              <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-3">
+                {suits.map((suit) =>
+                  rankColumns.map((rank) => (
+                    <button
+                      key={`${rank}-${suit.id}`}
+                      className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                      aria-label={t('raspaCarta.gridButtonAria', {
+                        rank: faceLabels[rank],
+                        suit: suitLabels[suit.id],
+                      })}
+                      onClick={() => handleSelectCard(suit.id, rank)}
+                      style={{ opacity: 0 }}
+                    />
+                  )),
+                )}
+              </div>
+            )}
+            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
+              {rankColumns.map((rank) => (
+                <span key={rank}>{faceLabels[rank]}</span>
+              ))}
             </div>
 
-            <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
-              {selectedCard ? (
+            {selectedCard && (
+              <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-slate-900">
                 <img
                   src={selectedCard.imageSrc}
                   alt={`${faceLabels[selectedCard.rank]} ${suitLabels[selectedCard.suit]}`}
                   className="h-full w-full select-none object-contain"
                   draggable={false}
                 />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-[24px] bg-black/80">
-                  <div className="h-3/4 w-3/4 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-inner" />
-                </div>
-              )}
-              <canvas
-                ref={overlayRef}
-                className={`absolute inset-0 touch-none ${selectedCard ? 'cursor-pointer' : 'pointer-events-none'}`}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerLeave={stopScratching}
-                onPointerCancel={stopScratching}
-              />
-            </div>
+                <canvas
+                  ref={overlayRef}
+                  className="absolute inset-0 touch-none cursor-pointer"
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onPointerLeave={stopScratching}
+                  onPointerCancel={stopScratching}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
