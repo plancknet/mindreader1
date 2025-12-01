@@ -169,8 +169,8 @@ export const ptBR = {
   },
   raspaCarta: {
     title: 'Raspa Carta',
-    subtitle: 'Selecione uma carta com uma figura do baralho (Valete, Dama ou Rei)',
-    gridInstruction: '',
+    subtitle: 'Selecione secretamente um valete, dama ou rei e revele a carta raspando a tela.',
+    gridInstruction: 'Use a primeira coluna para os Valetes, a segunda para as Damas e a terceira para os Reis (Espadas, Copas, Ouros e Paus).',
     scratchHint: 'Deslize o dedo como se fosse uma borracha mágica para revelar a carta escolhida.',
     revealedMessage: 'Carta revelada! Escolha outra carta para continuar a apresentação.',
     reset: 'Escolher outra carta',
