@@ -254,6 +254,10 @@ export const en = {
         title: 'Card Mix',
         description: 'Encode a hidden card using a six-card color pattern'
       },
+      pontaCarta: {
+        title: 'Card Edge',
+        description: 'Select special cards and shuffle to flip them upside down'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Use the secret back to reveal both value and suit'
