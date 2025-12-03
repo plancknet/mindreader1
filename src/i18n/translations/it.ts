@@ -153,6 +153,7 @@ export const it = {
     chooseSubtitle: 'Scegli una carta speciale e mescola per mostrarne la punta.',
     shuffleButton: 'Mescola',
     hint: 'Seleziona una carta consentita e mescola quante volte desideri',
+    resetButton: 'Reimpostare',
   },
   cartaMental: {
     title: 'Carta Mental',

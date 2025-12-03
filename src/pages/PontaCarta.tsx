@@ -15,7 +15,7 @@ const suits: Array<{ name: SuitName; symbol: string; tone: 'red' | 'black' }> = 
   { name: 'clubs', symbol: '\u2663', tone: 'black' },
 ];
 
-const allowedIndices = [1, 3, 5, 6, 7, 9, 4, 16, 18, 19, 20, 22, 33, 40, 42, 44, 45, 46, 48];
+const allowedIndices = [1, 3, 5, 6, 7, 9, 14, 16, 18, 19, 20, 22, 33, 40, 42, 44, 45, 46, 48];
 
 type PontaCard = {
   id: string;
@@ -85,6 +85,12 @@ const PontaCarta = () => {
 
   };
 
+  const handleReset = () => {
+    setSelectedCardId(null);
+    setHasShuffled(false);
+    setCardOrder(cards);
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/15 px-4 py-6">
       <div className="pointer-events-none absolute inset-0 opacity-50">
@@ -114,7 +120,7 @@ const PontaCarta = () => {
             <span>{t('pontaCarta.chooseTitle')}</span>
             <span>\u2660</span>
           </div>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+          <div className="grid grid-cols-4 gap-3 md:gap-4">
             {cardOrder.map((card) => {
               const isSelected = selectedCardId === card.id;
               return (
@@ -144,7 +150,7 @@ const PontaCarta = () => {
           </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Button
             size="lg"
             className="gap-2"
@@ -153,6 +159,9 @@ const PontaCarta = () => {
           >
             <Shuffle size={20} />
             {t('pontaCarta.shuffleButton')}
+          </Button>
+          <Button variant="outline" size="lg" onClick={handleReset} disabled={isShuffling && Boolean(selectedCardId)}>
+            {t('pontaCarta.resetButton')}
           </Button>
         </div>
       </div>

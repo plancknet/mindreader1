@@ -153,6 +153,7 @@ export const es = {
     chooseSubtitle: 'Elige una de las cartas especiales y bar?jalas para mostrar la punta.',
     shuffleButton: 'Barajar',
     hint: 'Selecciona una carta permitida y baraja las veces que quieras',
+    resetButton: 'Reiniciar',
   },
   cartaMental: {
     title: 'Carta Mental',

@@ -153,6 +153,7 @@ export const fr = {
     chooseSubtitle: 'Choisissez une des cartes sp?ciales et m?langez pour la retourner.',
     shuffleButton: 'M?langer',
     hint: 'S?lectionnez une carte autoris?e et m?langez autant de fois que vous le souhaitez',
+    resetButton: 'Recommencer',
   },
   cartaMental: {
     title: 'Carta Mental',

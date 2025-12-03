@@ -153,6 +153,7 @@ export const en = {
     chooseSubtitle: 'Pick one of the special cards and shuffle to flip it upside down.',
     shuffleButton: 'Shuffle',
     hint: 'Select a card and shuffle as many times as you want',
+    resetButton: 'Reset',
   },
   cartaMental: {
     title: 'Carta Mental',
