@@ -108,6 +108,15 @@ const LevelBars = ({ level }: { level: number }) => {
 
 const GAME_CARDS: GameCard[] = [
   {
+    id: 'ponta-da-carta',
+    translationKey: 'pontaCarta',
+    icon: CardIcon,
+    path: '/ponta-da-carta',
+    color: 'from-emerald-500 via-cyan-500 to-blue-500',
+    minTier: 'FREE',
+    difficulty: 1,
+  },
+  {
     id: 'mystery-word',
     translationKey: 'mysteryWord',
     icon: Sparkles,
@@ -124,7 +133,7 @@ const GAME_CARDS: GameCard[] = [
     icon: Sparkles,
     path: '/suas-palavras',
     color: 'from-rose-400 via-pink-500 to-purple-600',
-    minTier: 'STANDARD',
+    minTier: 'FREE',
     difficulty: 1,
   },
   {
@@ -139,24 +148,6 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 2,
   },
   {
-    id: 'mix-de-cartas',
-    translationKey: 'mixDeCartas',
-    icon: Shuffle,
-    path: '/mind-reader/mix-de-cartas',
-    color: 'from-emerald-500 to-lime-500',
-    minTier: 'STANDARD',
-    difficulty: 2,
-  },
-  {
-    id: 'ponta-da-carta',
-    translationKey: 'pontaCarta',
-    icon: CardIcon,
-    path: '/ponta-da-carta',
-    color: 'from-emerald-500 via-cyan-500 to-blue-500',
-    minTier: 'STANDARD',
-    difficulty: 2,
-  },
-  {
     id: 'mental-conversation',
     translationKey: 'mentalConversation',
     icon: MessageCircle,
@@ -164,8 +155,17 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/mental-conversation/instructions',
     color: 'from-blue-500 to-cyan-500',
     badgeKey: undefined,
-    minTier: 'STANDARD',
-    difficulty: 2,
+    minTier: 'FREE',
+    difficulty: 3,
+  },
+  {
+    id: 'mix-de-cartas',
+    translationKey: 'mixDeCartas',
+    icon: Shuffle,
+    path: '/mind-reader/mix-de-cartas',
+    color: 'from-emerald-500 to-lime-500',
+    minTier: 'FREE',
+    difficulty: 3,
   },
   {
     id: 'carta-mental',
@@ -173,8 +173,8 @@ const GAME_CARDS: GameCard[] = [
     icon: CardIcon,
     path: '/carta-mental',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
-    minTier: 'STANDARD',
-    difficulty: 3,
+    minTier: 'INFLUENCER',
+    difficulty: 4,
   },
   {
     id: 'raspa-carta',
@@ -182,8 +182,8 @@ const GAME_CARDS: GameCard[] = [
     icon: ScratchCardIcon,
     path: '/raspa-carta',
     color: 'from-cyan-400 via-sky-500 to-blue-600',
-    minTier: 'STANDARD',
-    difficulty: 3,
+    minTier: 'INFLUENCER',
+    difficulty: 4,
     requiresAdmin: true,
   },
   {
@@ -192,8 +192,8 @@ const GAME_CARDS: GameCard[] = [
     icon: MessageCircle,
     path: '/papo-reto',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
-    minTier: 'STANDARD',
-    difficulty: 3,
+    minTier: 'INFLUENCER',
+    difficulty: 4,
   },
   {
     id: 'eu-ja-sabia',
@@ -201,8 +201,8 @@ const GAME_CARDS: GameCard[] = [
     icon: Play,
     path: '/eu-ja-sabia',
     color: 'from-amber-500 via-orange-500 to-red-500',
-    minTier: 'STANDARD',
-    difficulty: 4,
+    minTier: 'INFLUENCER',
+    difficulty: 5,
   },
   {
     id: 'eu-ja-sabia-2',
@@ -210,8 +210,8 @@ const GAME_CARDS: GameCard[] = [
     icon: Play,
     path: '/eu-ja-sabia-2',
     color: 'from-amber-400 via-pink-400 to-rose-500',
-    minTier: 'STANDARD',
-    difficulty: 2,
+    minTier: 'INFLUENCER',
+    difficulty: 5,
     adminOnly: true,
   },
   {
@@ -276,8 +276,7 @@ const GameSelector = () => {
           {games.map((game) => {
             const Icon = game.icon;
             const instructionsPath = game.instructionsPath;
-            const freeTierUnlock = subscriptionTier === 'FREE' && game.difficulty <= 2;
-            const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier] || freeTierUnlock;
+            const meetsTier = isAdmin || tierRank[subscriptionTier] >= tierRank[game.minTier];
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
             const isInfluencerTier = subscriptionTier === 'INFLUENCER';
             const adminAllowed =
@@ -299,9 +298,9 @@ const GameSelector = () => {
                 : 'Disponível apenas para administradores ou plano Influencer.';
             } else if (!meetsTier) {
               disabledMessage =
-                subscriptionTier === 'FREE'
-                  ? 'Níveis acima de 2 exigem um plano pago.'
-                  : 'Disponível apenas em um plano superior.';
+                subscriptionTier === 'FREE' || subscriptionTier === 'STANDARD'
+                  ? 'Níveis 4 e 5 exigem o plano Influencer.'
+                  : 'Disponível apenas para Influencer.';
             } else if (!statusAllowed) {
               disabledMessage = 'Ative sua assinatura para jogar.';
             }
