@@ -120,7 +120,7 @@ const PontaCarta = () => {
               return (
                 <Card
                   key={card.id}
-                  className={group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 }
+                  className={`group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 ${isSelected ? 'border-primary bg-primary/10' : 'border-white/10'}`}
                   role="button"
                   tabIndex={0}
                   onClick={() => handleSelectCard(card.id)}
@@ -129,7 +129,7 @@ const PontaCarta = () => {
                     <img
                       src={card.imageSrc}
                       alt={${card.rank} }
-                      className={h-full w-full object-cover transition-transform duration-300  }
+                      className={`h-full w-full object-cover transition-transform duration-300 ${hasShuffled && isSelected ? 'rotate-180' : ''} ${isShuffling ? 'opacity-60' : 'opacity-100'}`}
                       draggable={false}
                     />
                   ) : (
