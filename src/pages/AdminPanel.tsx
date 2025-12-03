@@ -84,6 +84,17 @@ const initialUserFilters = {
   createdAtEnd: '',
 };
 
+const GAME_USAGE_CONFIG = [
+  { key: 'MIND_READER', label: 'Mind Reader', initials: 'MR', field: 'jogo1_count' as const },
+  { key: 'MENTAL_CONVERSATION', label: 'Conversa Mental', initials: 'CM', field: 'jogo2_count' as const },
+  { key: 'MYSTERY_WORD', label: 'Palavra Misteriosa', initials: 'PM', field: 'jogo3_count' as const },
+  { key: 'MY_EMOJIS', label: 'Meus Emojis', initials: 'ME', field: 'jogo4_count' as const },
+  { key: 'PAPO_RETO', label: 'Papo Reto', initials: 'PR' },
+  { key: 'MIX_DE_CARTAS', label: 'Mix de Cartas', initials: 'MC' },
+  { key: 'RASPA_CARTA', label: 'Raspa Carta', initials: 'RC' },
+  { key: 'EU_JA_SABIA', label: 'Eu Já Sabia', initials: 'EJS' },
+];
+
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
@@ -668,7 +679,32 @@ export default function AdminPanel() {
   };
 
   const handleEditUserField = <K extends keyof UserData>(field: K, value: UserData[K]) => {
+    if (!editingUserData) return;
     setEditingUserData((prev) => (prev ? { ...prev, [field]: value } : prev));
+    if (editingUserId) {
+      setEditedUsers((prev) => ({
+        ...prev,
+        [editingUserId]: {
+          ...(prev[editingUserId] ?? {}),
+          [field]: value,
+        },
+      }));
+    }
+  };
+
+  type GameUsageConfig = (typeof GAME_USAGE_CONFIG)[number];
+
+  const getGameUsageValue = (data: Partial<UserData> | null, config: GameUsageConfig) => {
+    if (!data) return 0;
+    if (config.field && typeof data[config.field] === 'number') {
+      return data[config.field] ?? 0;
+    }
+    return 0;
+  };
+
+  const handleGameUsageChange = (config: GameUsageConfig, value: number) => {
+    if (!config.field) return;
+    handleEditUserField(config.field, value as UserData[typeof config.field]);
   };
 
   const handleSaveUser = async () => {
@@ -1181,28 +1217,15 @@ export default function AdminPanel() {
                         <th className="text-left p-2">{renderUserSortButton('Email', 'email')}</th>
                         <th className="text-left p-2">{renderUserSortButton('Plano', 'subscription_tier')}</th>
                         <th className="text-left p-2">{renderUserSortButton('Status', 'subscription_status')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Confirmado', 'plan_confirmed', 'center')}</th>
-                        <th className="text-left p-2">{renderUserSortButton('Cupom', 'coupon_code')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Cupom gerado', 'coupon_generated', 'center')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Premium', 'is_premium', 'center')}</th>
-                        <th className="text-left p-2">{renderUserSortButton('Premium type', 'premium_type')}</th>
+                        <th className="text-center p-2">{renderUserSortButton('Confirm. cupom', 'coupon_generated', 'center')}</th>
                         <th className="text-center p-2">{renderUserSortButton('Uso total', 'usage_count', 'center')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Jogo 1', 'jogo1_count', 'center')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Jogo 2', 'jogo2_count', 'center')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Jogo 3', 'jogo3_count', 'center')}</th>
-                        <th className="text-center p-2">{renderUserSortButton('Jogo 4', 'jogo4_count', 'center')}</th>
-                        <th className="text-left p-2">{renderUserSortButton('Ultimo acesso', 'last_accessed_at')}</th>
+                        <th className="text-left p-2">{renderUserSortButton('Último acesso', 'last_accessed_at')}</th>
                         <th className="text-left p-2">{renderUserSortButton('Cadastro', 'created_at')}</th>
-                        <th className="text-right p-2">{renderUserSortButton('Acoes', 'user_id', 'right')}</th>
+                        <th className="text-right p-2">{renderUserSortButton('Ações', 'user_id', 'right')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {sortedUsers.map((user) => {
-                        const totalCount =
-                          (user.jogo1_count ?? 0) +
-                          (user.jogo2_count ?? 0) +
-                          (user.jogo3_count ?? 0) +
-                          (user.jogo4_count ?? 0);
                         return (
                           <tr key={user.user_id} className="border-b hover:bg-muted/50">
                             <td className="p-2 min-w-[200px]">
@@ -1213,19 +1236,8 @@ export default function AdminPanel() {
                             </td>
                             <td className="p-2">{user.subscription_tier}</td>
                             <td className="p-2">{user.subscription_status}</td>
-                            <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.plan_confirmed))}</td>
-                            <td className="p-2">{user.coupon_code ?? '--'}</td>
                             <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.coupon_generated))}</td>
-                            <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.is_premium))}</td>
-                            <td className="p-2">{user.premium_type ?? '--'}</td>
-                            <td className="p-2 text-center font-semibold">
-                              {user.usage_count ?? 0}
-                              <div className="text-xs text-muted-foreground">Total jogos: {totalCount}</div>
-                            </td>
-                            <td className="p-2 text-center">{user.jogo1_count ?? 0}</td>
-                            <td className="p-2 text-center">{user.jogo2_count ?? 0}</td>
-                            <td className="p-2 text-center">{user.jogo3_count ?? 0}</td>
-                            <td className="p-2 text-center">{user.jogo4_count ?? 0}</td>
+                            <td className="p-2 text-center font-semibold">{user.usage_count ?? 0}</td>
                             <td className="p-2">{formatDate(user.last_accessed_at)}</td>
                             <td className="p-2">{formatDate(user.created_at)}</td>
                             <td className="p-2 text-right">
@@ -1323,13 +1335,23 @@ export default function AdminPanel() {
                     onChange={(event) => handleEditUserField('usage_count', Number(event.target.value))}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label>Jogos (J1 a J4)</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input type="number" value={editingUserData.jogo1_count ?? 0} onChange={(event) => handleEditUserField('jogo1_count', Number(event.target.value))} placeholder="J1" />
-                    <Input type="number" value={editingUserData.jogo2_count ?? 0} onChange={(event) => handleEditUserField('jogo2_count', Number(event.target.value))} placeholder="J2" />
-                    <Input type="number" value={editingUserData.jogo3_count ?? 0} onChange={(event) => handleEditUserField('jogo3_count', Number(event.target.value))} placeholder="J3" />
-                    <Input type="number" value={editingUserData.jogo4_count ?? 0} onChange={(event) => handleEditUserField('jogo4_count', Number(event.target.value))} placeholder="J4" />
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Uso por jogo</Label>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {GAME_USAGE_CONFIG.map((game) => (
+                      <div key={game.key} className="grid gap-1">
+                        <Label className="text-xs font-semibold text-muted-foreground">
+                          Jogo {game.initials}
+                          <span className="font-normal text-[0.65rem] text-muted-foreground/80"> ({game.label})</span>
+                        </Label>
+                        <Input
+                          type="number"
+                          value={getGameUsageValue(editingUserData, game)}
+                          onChange={(event) => handleGameUsageChange(game, Number(event.target.value))}
+                          disabled={!game.field}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <div className="space-y-2">
