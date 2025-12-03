@@ -255,6 +255,10 @@ export const es = {
         title: 'Mix de Cartas',
         description: 'Codifica una carta secreta con un patrón de colores de seis cartas'
       },
+      pontaCarta: {
+        title: 'Punta de la Carta',
+        description: 'Selecciona cartas especiales y barájalas para voltearlas'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Usa el reverso secreto para revelar valor y palo'

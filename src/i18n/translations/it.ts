@@ -255,6 +255,10 @@ export const it = {
         title: 'Mix di Carte',
         description: 'Codifica una carta segreta con un motivo di colori su sei carte'
       },
+      pontaCarta: {
+        title: 'Punta della Carta',
+        description: 'Seleziona carte speciali e mescola per capovolgerle'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Usa il dorso segreto per rivelare valore e seme'
