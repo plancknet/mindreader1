@@ -254,6 +254,10 @@ export const zhCN = {
         title: 'Card Mix',
         description: 'Encode a hidden card via a six-card color pattern'
       },
+      pontaCarta: {
+        title: '卡片边缘',
+        description: '选择特殊卡片并洗牌将其翻转'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: '用秘密牌背揭示纸牌的数值与花色'
