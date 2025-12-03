@@ -147,9 +147,9 @@ export const ptBR = {
   },
   pontaCarta: {
     chooseTitle: 'Ponta da Carta',
-    chooseSubtitle: 'Selecione uma das cartas especiais e embaralhe para mostrar a ponta.',
+    chooseSubtitle: 'Selecione uma das cartas e embaralhe.',
     shuffleButton: 'Embaralhar',
-    hint: 'Escolha uma carta permitida e embaralhe quantas vezes quiser',
+    hint: '',
     resetButton: 'Reiniciar',
   },
   cartaMental: {

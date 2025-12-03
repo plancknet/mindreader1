@@ -116,9 +116,9 @@ const PontaCarta = () => {
 
         <div className="rounded-3xl border border-primary/10 bg-card/70 p-4 shadow-xl shadow-primary/5 backdrop-blur">
           <div className="mb-4 flex items-center justify-center gap-2 text-[0.65rem] uppercase tracking-[0.45em] text-muted-foreground">
-            <span>\u2665</span>
-            <span>{t('pontaCarta.chooseTitle')}</span>
-            <span>\u2660</span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
           <div className="grid grid-cols-4 gap-3 md:gap-4">
             {cardOrder.map((card) => {
