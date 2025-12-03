@@ -139,14 +139,20 @@ export const it = {
     phrases: 'Cominciamo?||Pronto per un gioco di lettura mentale?||Posso iniziare a leggere i tuoi pensieri?||Attiviamo il potere della telepatia?||Che ne dici di iniziare la sfida psichica?'
   },
   mixDeCartas: {
-    chooseTitle: "Scegli una Carta",
-    chooseSubtitle: "Seleziona qualsiasi carta del mazzo",
-    revealTitle: "Rivelazione Segreta",
-    revealSubtitle: "Clicca su Mescola per generare nuove carte di rivelazione",
-    chosenCard: "Carta scelta:",
-    shuffleButton: "Mescola",
+    chooseTitle: 'Scegli una carta',
+    chooseSubtitle: 'Seleziona qualsiasi carta del mazzo',
+    revealTitle: 'Mix di Carte',
+    revealSubtitle: 'Clicca su Mescola per generare nuove carte di rivelazione',
+    chosenCard: '',
+    shuffleButton: 'Mescola',
     resetButton: 'Reimpostare',
-    magicTip: "Ogni mescolata genera una nuova sequenza che codifica la tua carta in modo unico!",
+    magicTip: '',
+  },
+  pontaCarta: {
+    chooseTitle: 'Punta della Carta',
+    chooseSubtitle: 'Scegli una carta speciale e mescola per mostrarne la punta.',
+    shuffleButton: 'Mescola',
+    hint: 'Seleziona una carta consentita e mescola quante volte desideri',
   },
   cartaMental: {
     title: 'Carta Mental',

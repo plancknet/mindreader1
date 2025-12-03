@@ -147,6 +147,15 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 2,
   },
   {
+    id: 'ponta-da-carta',
+    translationKey: 'pontaCarta',
+    icon: CardIcon,
+    path: '/ponta-da-carta',
+    color: 'from-emerald-500 via-cyan-500 to-blue-500',
+    minTier: 'STANDARD',
+    difficulty: 2,
+  },
+  {
     id: 'mental-conversation',
     translationKey: 'mentalConversation',
     icon: MessageCircle,

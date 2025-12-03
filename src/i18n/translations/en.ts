@@ -139,14 +139,20 @@ export const en = {
     phrases: "Let's get started!||Ready for a mind-reading game?||Can I begin reading your thoughts?||Shall we awaken our telepathy powers?||How about starting the psychic challenge?"
   },
   mixDeCartas: {
-    chooseTitle: "Choose a Card",
-    chooseSubtitle: "Select any card from the deck",
-    revealTitle: "Secret Revelation",
-    revealSubtitle: "Click Shuffle to generate new revelation cards",
-    chosenCard: "Chosen card:",
-    shuffleButton: "Shuffle",
+    chooseTitle: 'Choose a Card',
+    chooseSubtitle: 'Select any card from the deck',
+    revealTitle: 'Secret Revelation',
+    revealSubtitle: 'Click Shuffle to generate new revelation cards',
+    chosenCard: '',
+    shuffleButton: 'Shuffle',
     resetButton: 'Reset',
-    magicTip: "Each shuffle generates a new sequence that uniquely encodes your card!",
+    magicTip: '',
+  },
+  pontaCarta: {
+    chooseTitle: 'Card Edge',
+    chooseSubtitle: 'Pick one of the special cards and shuffle to flip it upside down.',
+    shuffleButton: 'Shuffle',
+    hint: 'Select a card and shuffle as many times as you want',
   },
   cartaMental: {
     title: 'Carta Mental',

@@ -139,11 +139,17 @@ export const ptBR = {
     chooseTitle: "Escolha uma Carta",
     chooseSubtitle: "Selecione qualquer carta do baralho",
     revealTitle: "Mix de Cartas",
-    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelação",
+    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revela??o",
     chosenCard: "",
     shuffleButton: "Embaralhar",
     resetButton: 'Reiniciar',
     magicTip: "",
+  },
+  pontaCarta: {
+    chooseTitle: 'Ponta da Carta',
+    chooseSubtitle: 'Selecione uma das cartas especiais e embaralhe para mostrar a ponta.',
+    shuffleButton: 'Embaralhar',
+    hint: 'Escolha uma carta permitida e embaralhe quantas vezes quiser',
   },
   cartaMental: {
     title: 'Carta Mental',
@@ -244,6 +250,10 @@ export const ptBR = {
       mixDeCartas: {
         title: 'Mix de Cartas',
         description: 'Conecte a sua mente e descubra a carta'
+      },
+      pontaCarta: {
+        title: 'Ponta da Carta',
+        description: 'Selecione cartas especiais e revele apenas a ponta'
       },
       cartaMental: {
         title: 'Carta Mental',

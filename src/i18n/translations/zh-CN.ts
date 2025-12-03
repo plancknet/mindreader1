@@ -139,14 +139,20 @@ export const zhCN = {
     phrases: "Let's get started!||Ready for a mind-reading game?||Can I begin reading your thoughts?||Shall we awaken our telepathy powers?||How about starting the psychic challenge?"
   },
   mixDeCartas: {
-    chooseTitle: "选择一张牌",
-    chooseSubtitle: "从牌组中选择任意一张牌",
-    revealTitle: "秘密揭示",
-    revealSubtitle: "点击洗牌以生成新的揭示牌",
-    chosenCard: "已选择的牌：",
-    shuffleButton: "洗牌",
+    chooseTitle: '?????',
+    chooseSubtitle: '??????????',
+    revealTitle: '????',
+    revealSubtitle: '???????????',
+    chosenCard: '',
+    shuffleButton: '??',
     resetButton: '????',
-    magicTip: "每次洗牌都会生成一个独特的序列来编码您的牌！",
+    magicTip: '',
+  },
+  pontaCarta: {
+    chooseTitle: '????',
+    chooseSubtitle: '????????????????',
+    shuffleButton: '??',
+    hint: '???????????',
   },
   cartaMental: {
     title: 'Carta Mental',

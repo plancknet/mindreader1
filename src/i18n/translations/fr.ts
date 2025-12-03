@@ -139,14 +139,20 @@ export const fr = {
     phrases: 'On commence ?||Prêt pour un jeu de lecture mentale ?||Puis-je commencer à lire vos pensées ?||Et si on activait nos pouvoirs de télépathie ?||Envie de relever le défi psychique ?'
   },
   mixDeCartas: {
-    chooseTitle: "Choisissez une Carte",
-    chooseSubtitle: "Sélectionnez n'importe quelle carte du jeu",
-    revealTitle: "Révélation Secrète",
-    revealSubtitle: "Cliquez sur Mélanger pour générer de nouvelles cartes de révélation",
-    chosenCard: "Carte choisie:",
-    shuffleButton: "Mélanger",
+    chooseTitle: 'Choisissez une carte',
+    chooseSubtitle: 'S?lectionnez n?importe quelle carte du paquet',
+    revealTitle: 'Mix de Cartes',
+    revealSubtitle: 'Cliquez sur M?langer pour g?n?rer de nouvelles cartes de r?v?lation',
+    chosenCard: '',
+    shuffleButton: 'M?langer',
     resetButton: 'Recommencer',
-    magicTip: "Chaque mélange génère une nouvelle séquence qui code votre carte de manière unique!",
+    magicTip: '',
+  },
+  pontaCarta: {
+    chooseTitle: 'Pointe de Carte',
+    chooseSubtitle: 'Choisissez une des cartes sp?ciales et m?langez pour la retourner.',
+    shuffleButton: 'M?langer',
+    hint: 'S?lectionnez une carte autoris?e et m?langez autant de fois que vous le souhaitez',
   },
   cartaMental: {
     title: 'Carta Mental',
