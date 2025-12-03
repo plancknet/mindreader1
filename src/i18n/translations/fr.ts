@@ -284,6 +284,11 @@ export const fr = {
         description: 'Révélez secrètement votre mot au public'
       },
       euJaSabia: {
+      euJaSabia2: {
+        title: 'Je le Savais 2',
+        description: 'R?v?lez le num?ro avec des masques illustr?s.'
+      },
+
         title: 'Je Le Savais',
         description: 'Enregistrez le nombre choisi avant de le révéler avec la vidéo'
       },

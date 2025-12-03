@@ -31,6 +31,7 @@ type GameCard = {
   minTier: Tier;
   difficulty: number;
   requiresAdmin?: boolean;
+  adminOnly?: boolean;
 };
 
 const CardIcon = ({ className, ...props }: LucideProps) => (
@@ -204,6 +205,16 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 4,
   },
   {
+    id: 'eu-ja-sabia-2',
+    translationKey: 'euJaSabia2',
+    icon: Play,
+    path: '/eu-ja-sabia-2',
+    color: 'from-amber-400 via-pink-400 to-rose-500',
+    minTier: 'STANDARD',
+    difficulty: 2,
+    adminOnly: true,
+  },
+  {
     id: 'my-emojis',
     translationKey: 'myEmojis',
     icon: Smile,
@@ -269,7 +280,9 @@ const GameSelector = () => {
             const meetsTier = tierRank[subscriptionTier] >= tierRank[game.minTier] || freeTierUnlock;
             const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
             const isInfluencerTier = subscriptionTier === 'INFLUENCER';
-            const adminAllowed = !game.requiresAdmin || isAdmin || isInfluencerTier;
+            const adminAllowed =
+              (!game.requiresAdmin || isAdmin || isInfluencerTier) &&
+              (!game.adminOnly || isAdmin);
             const enabled = meetsTier && statusAllowed && adminAllowed;
             const isCardBackGame = game.id === 'carta-mental';
             const isRaspaCarta = game.id === 'raspa-carta';
@@ -281,7 +294,9 @@ const GameSelector = () => {
             const iconColorClass = isCardBackGame ? 'text-sky-600' : isRaspaCarta ? 'text-amber-400' : 'text-primary';
             let disabledMessage: string | null = null;
             if (!adminAllowed) {
-              disabledMessage = 'Disponível apenas para administradores ou plano Influencer.';
+              disabledMessage = game.adminOnly
+                ? 'Disponível apenas para administradores.'
+                : 'Disponível apenas para administradores ou plano Influencer.';
             } else if (!meetsTier) {
               disabledMessage =
                 subscriptionTier === 'FREE'

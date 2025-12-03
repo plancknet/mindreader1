@@ -283,6 +283,11 @@ export const zhCN = {
         description: 'Secretly reveal your word to the audience'
       },
       euJaSabia: {
+      euJaSabia2: {
+        title: '????? 2',
+        description: '??????????????'
+      },
+
         title: '我早就知道',
         description: '先记录对方的数字再配合视频揭晓'
       },

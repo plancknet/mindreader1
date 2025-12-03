@@ -281,6 +281,11 @@ export const ptBR = {
         description: 'Revele secretamente sua palavra para o público'
       },
       euJaSabia: {
+      euJaSabia2: {
+        title: 'Eu J? Sabia 2',
+        description: 'Revele o n?mero usando m?scaras ilustradas.'
+      },
+
         title: 'Eu Ja Sabia',
         description: 'Registre o numero pensado e revele durante o video'
       },

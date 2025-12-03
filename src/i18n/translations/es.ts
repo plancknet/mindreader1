@@ -284,6 +284,11 @@ export const es = {
         description: 'Revela tu palabra en secreto al público'
       },
       euJaSabia: {
+      euJaSabia2: {
+        title: 'Ya Lo Sab?a 2',
+        description: 'Revela el n?mero usando m?scaras ilustradas.'
+      },
+
         title: 'Ya Lo Sabia',
         description: 'Registra el numero pensado antes de revelarlo con el video'
       },

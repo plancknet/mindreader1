@@ -284,6 +284,11 @@ export const en = {
         description: 'Secretly reveal your word to the audience'
       },
       euJaSabia: {
+      euJaSabia2: {
+        title: 'Eu Already Knew 2',
+        description: 'Reveal the number using illustrated masks.'
+      },
+
         title: 'I Already Knew',
         description: 'Capture the chosen number before revealing it with the video'
       },

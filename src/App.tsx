@@ -40,6 +40,7 @@ import RaspaCarta from "./pages/RaspaCarta";
 import SuasPalavras from "./pages/SuasPalavras";
 import PapoReto from "./pages/PapoReto";
 import EuJaSabia from "./pages/EuJaSabia";
+import EuJaSabia2 from "./pages/EuJaSabia2";
 
 const queryClient = new QueryClient();
 
@@ -220,6 +221,7 @@ const App = () => (
             <Route path="/suas-palavras" element={<ProtectedRoute><SuasPalavras /></ProtectedRoute>} />
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />
+            <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><EuJaSabia2 /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
