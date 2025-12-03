@@ -57,7 +57,7 @@ const PontaCarta = () => {
         const base = getCardFromIndex(index);
         return {
           ...base,
-          id: ${base.rank}--,
+          id: `${base.rank}-${base.suit}-${index}`,
           imageSrc: getCardImageSrc(base.rank, base.suit),
         };
       }),
