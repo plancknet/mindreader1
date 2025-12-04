@@ -362,7 +362,7 @@ const EuJaSabia2 = () => {
     }
   };
 
-  const maskImageSrc = maskNumber ? `/numeros/${maskNumber}.svg` : null;
+  const maskImageSrc = maskNumber ? `/numeros/${maskNumber}.png` : null;
   const hasMaskContent = Boolean(maskNumber) || isEditingMask;
   const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
