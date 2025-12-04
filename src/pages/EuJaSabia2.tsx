@@ -57,7 +57,6 @@ const EuJaSabia2 = () => {
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
   const [maskDisplayTime, setMaskDisplayTime] = useState(0);
-  const [isMaskTimeReached, setIsMaskTimeReached] = useState(true);
   const [adminVideoData, setAdminVideoData] = useState<{
     videoSrc: string | null;
     maskPosition: { x: number; y: number };
@@ -66,6 +65,22 @@ const EuJaSabia2 = () => {
   } | null>(null);
   const [showCustomization, setShowCustomization] = useState(false);
   const [videoProgress, setVideoProgress] = useState({ current: 0, duration: 0 });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const storedTime = window.localStorage.getItem('euJaSabia2_maskTime');
+    if (storedTime) {
+      const parsed = Number(storedTime);
+      if (!Number.isNaN(parsed) && parsed >= 0) {
+        setMaskDisplayTime(parsed);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('euJaSabia2_maskTime', String(maskDisplayTime));
+  }, [maskDisplayTime]);
 
   const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
 
@@ -408,7 +423,7 @@ const EuJaSabia2 = () => {
   const maskDisplayText = maskText ?? '--';
   const maskImageSrc = maskText ? `/numeros/${maskText}.svg` : null;
   const hasMaskContent = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
-  const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
+  const isVideoReadyForMask = !videoStarted || isEditingMask || videoProgress.current >= maskDisplayTime;
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
 
   const scrollToUploadSection = () => {
@@ -736,20 +751,3 @@ const EuJaSabia2 = () => {
 };
 
 export default EuJaSabia2;
-  useEffect(() => {
-    const storedTime = localStorage.getItem('euJaSabia2_maskTime');
-    if (storedTime) {
-      const parsed = Number(storedTime);
-      if (!Number.isNaN(parsed) && parsed >= 0) {
-        setMaskDisplayTime(parsed);
-        setIsMaskTimeReached(parsed === 0);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('euJaSabia2_maskTime', String(maskDisplayTime));
-    if (!videoStarted) {
-      setIsMaskTimeReached(maskDisplayTime === 0);
-    }
-  }, [maskDisplayTime, videoStarted]);
