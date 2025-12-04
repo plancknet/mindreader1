@@ -486,7 +486,7 @@ const EuJaSabia2 = () => {
           </div>
 
           <Button variant="secondary" className="w-full" onClick={scrollToUploadSection}>
-            Configurar máscara
+            Personalizar vídeo
           </Button>
         </div>
 
@@ -501,9 +501,27 @@ const EuJaSabia2 = () => {
                 Ajuste a posição, cor e tamanho da máscara SVG que exibe o número selecionado.
                 As configurações serão salvas separadamente das configurações do jogo "Eu já sabia".
               </p>
+              <p>
+                O mesmo vídeo utilizado no jogo "Eu já sabia" também será usado aqui. Caso deseje alterar,
+                envie um novo arquivo MP4 abaixo para atualizar o vídeo compartilhado.
+              </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <label
+                className={`inline-flex cursor-pointer items-center justify-center rounded-full border border-primary/40 px-6 py-2 text-sm font-semibold transition hover:bg-primary/10 ${
+                  isUploading || !userId ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="video/mp4"
+                  className="sr-only"
+                  onChange={handleVideoUpload}
+                  disabled={isUploading || !userId}
+                />
+                {isUploading ? 'Enviando...' : 'Selecionar vídeo MP4'}
+              </label>
               <input
                 ref={colorInputRef}
                 type="color"
