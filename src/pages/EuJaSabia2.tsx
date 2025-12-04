@@ -12,6 +12,7 @@ const ACCEPTED_VIDEO_TYPE = 'video/mp4';
 const DEFAULT_MASK_POSITION = { x: 48, y: 62 };
 const DEFAULT_MASK_COLOR = '#000000';
 const DEFAULT_MASK_FONT_SIZE = 1.2;
+const DEFAULT_MASK_DISPLAY_TIME = 0;
 const MIN_MASK_FONT_SIZE = 0.8;
 const MAX_MASK_FONT_SIZE = 2;
 const MASK_FONT_SIZE_STEP = 0.05;
@@ -42,6 +43,7 @@ const EuJaSabia2 = () => {
   const [maskPosition, setMaskPosition] = useState(DEFAULT_MASK_POSITION);
   const [maskColor, setMaskColor] = useState(DEFAULT_MASK_COLOR);
   const [maskFontSize, setMaskFontSize] = useState(DEFAULT_MASK_FONT_SIZE);
+  const [maskDisplayTime, setMaskDisplayTime] = useState(DEFAULT_MASK_DISPLAY_TIME);
   const [isEditingMask, setIsEditingMask] = useState(false);
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
@@ -54,6 +56,26 @@ const EuJaSabia2 = () => {
   const [showCustomization, setShowCustomization] = useState(false);
 
   const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
+
+  useEffect(() => {
+    const storedMaskTime = localStorage.getItem('euJaSabia2_maskTime');
+    if (storedMaskTime) {
+      const parsed = Number(storedMaskTime);
+      if (!Number.isNaN(parsed) && parsed >= 0) {
+        setMaskDisplayTime(parsed);
+        setIsMaskTimeReached(parsed === 0);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('euJaSabia2_maskTime', String(maskDisplayTime));
+    if (!videoStarted) {
+      setIsMaskTimeReached(maskDisplayTime === 0);
+    } else if (videoRef.current) {
+      setIsMaskTimeReached(videoRef.current.currentTime >= maskDisplayTime);
+    }
+  }, [maskDisplayTime, videoStarted]);
 
   useEffect(() => {
     let isMounted = true;
@@ -77,6 +99,7 @@ const EuJaSabia2 = () => {
       setMaskPosition(DEFAULT_MASK_POSITION);
       setMaskColor(DEFAULT_MASK_COLOR);
       setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
+      setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
       return;
     }
 
@@ -231,6 +254,7 @@ const EuJaSabia2 = () => {
   const handleStart = () => {
     setVideoStarted(true);
     setIsVideoPaused(false);
+    setIsMaskTimeReached(maskDisplayTime === 0);
     requestAnimationFrame(() => {
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
@@ -266,6 +290,11 @@ const EuJaSabia2 = () => {
     setIsVideoPaused(true);
   };
 
+  const handleTimeUpdate = () => {
+    if (!videoRef.current) return;
+    setIsMaskTimeReached(videoRef.current.currentTime >= maskDisplayTime);
+  };
+
   const handleReset = () => {
     setVideoStarted(false);
     setIsVideoPaused(false);
@@ -276,11 +305,13 @@ const EuJaSabia2 = () => {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
     }
+    setIsMaskTimeReached(maskDisplayTime === 0);
   };
 
   const handleVideoEnded = () => {
     setVideoStarted(false);
     setIsVideoPaused(false);
+    setIsMaskTimeReached(maskDisplayTime === 0);
   };
 
   const handleVideoUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -362,10 +393,12 @@ const EuJaSabia2 = () => {
         setMaskPosition(adminVideoData.maskPosition);
         setMaskColor(adminVideoData.maskColor);
         setMaskFontSize(adminVideoData.maskFontSize);
+        setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
       } else {
         setMaskPosition(DEFAULT_MASK_POSITION);
         setMaskColor(DEFAULT_MASK_COLOR);
         setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
+        setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
       }
     }
   }, [customVideoSrc, adminVideoData]);
@@ -377,8 +410,12 @@ const EuJaSabia2 = () => {
       : adminVideoData?.videoSrc
         ? 'Usando o vídeo e máscara do admin'
         : 'Vídeo base padrão em uso';
-  const shouldShowMask = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
   const maskDisplayText = maskText ?? '--';
+  const hasMaskContent = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
+  const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
+  const shouldShowMask = hasMaskContent && isVideoReadyForMask;
+  const [isMaskTimeReached, setIsMaskTimeReached] = useState(maskDisplayTime === 0);
+  const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const maskImageSrc = maskText ? `/numeros/${maskText}.png` : null;
 
   const scrollToUploadSection = () => {
@@ -399,6 +436,15 @@ const EuJaSabia2 = () => {
 
   const handleMaskColorChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMaskColor(event.target.value);
+  };
+
+  const handleMaskDisplayTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = Number(event.target.value);
+    if (Number.isNaN(nextValue) || nextValue < 0) {
+      setMaskDisplayTime(0);
+      return;
+    }
+    setMaskDisplayTime(nextValue);
   };
 
   const handleMaskFontSizeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -474,6 +520,7 @@ const EuJaSabia2 = () => {
               src={activeVideoSrc}
               playsInline
               controls={false}
+              onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnded}
             />
 
@@ -633,6 +680,17 @@ const EuJaSabia2 = () => {
                   />
                   <span className="text-sm font-bold text-primary">{maskFontSize.toFixed(2)} rem</span>
                 </div>
+              </label>
+              <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
+                <span>Momento da máscara (segundos)</span>
+                <input
+                  type="number"
+                  min={0}
+                  step={0.5}
+                  value={maskDisplayTime}
+                  onChange={handleMaskDisplayTimeChange}
+                  className="rounded-xl border border-primary/20 bg-background/60 px-3 py-2 text-sm text-foreground shadow-inner focus-visible:outline-none disabled:opacity-60"
+                />
               </label>
               <Button
                 type="button"
