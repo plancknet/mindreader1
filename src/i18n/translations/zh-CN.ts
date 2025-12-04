@@ -149,10 +149,11 @@ export const zhCN = {
     magicTip: '',
   },
   pontaCarta: {
-    chooseTitle: '????',
-    chooseSubtitle: '????????????????',
-    shuffleButton: '??',
-    hint: '???????????',
+    chooseTitle: '卡片边缘',
+    chooseSubtitle: '选择一张特殊卡片并洗牌翻转',
+    shuffleButton: '洗牌',
+    hint: '选择一张卡片并随意洗牌',
+    resetButton: '重置',
   },
   cartaMental: {
     title: 'Carta Mental',

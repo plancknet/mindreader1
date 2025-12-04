@@ -223,7 +223,7 @@ const EuJaSabia2 = () => {
   };
 
   const handleMaskPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isEditingMask || !customVideoSrc) return;
+    if (!isEditingMask) return;
     event.preventDefault();
     updateMaskPositionFromPointer(event.clientX, event.clientY);
     setIsDraggingMask(true);
@@ -409,18 +409,14 @@ const EuJaSabia2 = () => {
 
   useEffect(() => {
     if (!customVideoSrc) {
-      setIsEditingMask(false);
-      setIsDraggingMask(false);
       if (adminVideoData) {
         setMaskPosition(adminVideoData.maskPosition);
         setMaskColor(adminVideoData.maskColor);
         setMaskFontSize(adminVideoData.maskFontSize);
-        setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
       } else {
         setMaskPosition(DEFAULT_MASK_POSITION);
         setMaskColor(DEFAULT_MASK_COLOR);
         setMaskFontSize(DEFAULT_MASK_FONT_SIZE);
-        setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
       }
     }
   }, [customVideoSrc, adminVideoData]);
@@ -452,7 +448,6 @@ const EuJaSabia2 = () => {
   };
 
   const handleColorButtonClick = () => {
-    if (!customVideoSrc) return;
     colorInputRef.current?.click();
   };
 
@@ -571,12 +566,12 @@ const EuJaSabia2 = () => {
 
             {shouldShowMask && (
               <div
-                className={`absolute inset-0 z-30 ${isEditingMask && customVideoSrc ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                className={`absolute inset-0 z-30 ${isEditingMask ? 'pointer-events-auto' : 'pointer-events-none'}`}
                 onPointerDown={handleMaskPointerDown}
               >
                 <div
                   className={`absolute flex max-w-[70%] -translate-x-1/2 -translate-y-1/2 select-none text-center ${
-                    isEditingMask && customVideoSrc ? 'cursor-grab active:cursor-grabbing' : ''
+                    isEditingMask ? 'cursor-grab active:cursor-grabbing' : ''
                   }`}
                   style={{
                     left: `${maskPosition.x}%`,
@@ -705,7 +700,6 @@ const EuJaSabia2 = () => {
               <Button
                 type="button"
                 variant="outline"
-                disabled={!customVideoSrc}
                 onClick={handleColorButtonClick}
               >
                 Cor da máscara
@@ -715,7 +709,7 @@ const EuJaSabia2 = () => {
                 />
               </Button>
               <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
-                <span>Tamanho da fonte</span>
+                <span>Tamanho da máscara</span>
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <input
                     type="range"
@@ -724,10 +718,9 @@ const EuJaSabia2 = () => {
                     step={MASK_FONT_SIZE_STEP}
                     value={maskFontSize}
                     onChange={handleMaskFontSizeChange}
-                    disabled={!customVideoSrc}
                     className="h-1.5 flex-1 cursor-pointer accent-primary disabled:cursor-not-allowed"
                   />
-                  <span className="text-sm font-bold text-primary">{maskFontSize.toFixed(2)} rem</span>
+                  <span className="text-sm font-bold text-primary">{(maskFontSize * 4).toFixed(1)} rem</span>
                 </div>
               </label>
               <label className="flex w-full flex-col gap-2 rounded-2xl border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:w-auto">
@@ -744,7 +737,6 @@ const EuJaSabia2 = () => {
               <Button
                 type="button"
                 variant="outline"
-                disabled={!customVideoSrc}
                 onClick={() => setIsEditingMask((prev) => !prev)}
               >
                 {isEditingMask ? 'Encerrar edição da máscara' : 'Editar Posição da Máscara'}
