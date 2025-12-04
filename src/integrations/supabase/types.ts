@@ -70,6 +70,10 @@ export type Database = {
           mask_font_size: number | null
           mask_offset_x: number | null
           mask_offset_y: number | null
+          mask2_color: string | null
+          mask2_offset_x: number | null
+          mask2_offset_y: number | null
+          mask2_size: number | null
           user_id: string
           video_data: string
         }
@@ -80,6 +84,10 @@ export type Database = {
           mask_font_size?: number | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
+          mask2_color?: string | null
+          mask2_offset_x?: number | null
+          mask2_offset_y?: number | null
+          mask2_size?: number | null
           user_id: string
           video_data: string
         }
@@ -90,6 +98,10 @@ export type Database = {
           mask_font_size?: number | null
           mask_offset_x?: number | null
           mask_offset_y?: number | null
+          mask2_color?: string | null
+          mask2_offset_x?: number | null
+          mask2_offset_y?: number | null
+          mask2_size?: number | null
           user_id?: string
           video_data?: string
         }
