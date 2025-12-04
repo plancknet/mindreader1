@@ -610,7 +610,7 @@ const EuJaSabia2 = () => {
                       WebkitMaskSize: 'contain',
                       maskPosition: 'center',
                       WebkitMaskPosition: 'center',
-                      borderRadius: maskImageSrc ? '0' : '8px',
+                      borderRadius: maskAssetBase ? '0' : '8px',
                     }}
                   />
                 </div>
