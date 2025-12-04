@@ -39,7 +39,7 @@ const EuJaSabia2 = () => {
   const [isEditingMask, setIsEditingMask] = useState(false);
   const [isSavingMask, setIsSavingMask] = useState(false);
   const [isDraggingMask, setIsDraggingMask] = useState(false);
-  const [showCustomization, setShowCustomization] = useState(false);
+  const [showCustomization, setShowCustomization] = useState(true);
   const [isMaskTimeReached, setIsMaskTimeReached] = useState(true);
   const [videoProgress, setVideoProgress] = useState({ current: 0, duration: 0 });
 
