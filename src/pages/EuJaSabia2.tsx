@@ -17,6 +17,17 @@ const MIN_MASK_FONT_SIZE = 0.8;
 const MAX_MASK_FONT_SIZE = 2;
 const MASK_FONT_SIZE_STEP = 0.05;
 
+const formatTime = (seconds: number) => {
+  if (!Number.isFinite(seconds)) return '00:00';
+  const mins = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0');
+  const secs = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, '0');
+  return `${mins}:${secs}`;
+};
+
 const fileToDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -254,10 +265,12 @@ const EuJaSabia2 = () => {
   const handleStart = () => {
     setVideoStarted(true);
     setIsVideoPaused(false);
+    setVideoProgress((prev) => ({ ...prev, current: 0 }));
     setIsMaskTimeReached(maskDisplayTime === 0);
     requestAnimationFrame(() => {
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
+        setVideoProgress((prev) => ({ ...prev, duration: videoRef.current?.duration || prev.duration }));
         videoRef.current.play().catch(() => {
           toast({
             title: 'Não foi possível iniciar o vídeo',
@@ -292,7 +305,14 @@ const EuJaSabia2 = () => {
 
   const handleTimeUpdate = () => {
     if (!videoRef.current) return;
-    setIsMaskTimeReached(videoRef.current.currentTime >= maskDisplayTime);
+    const current = videoRef.current.currentTime;
+    setVideoProgress((prev) => ({ ...prev, current }));
+    setIsMaskTimeReached(current >= maskDisplayTime);
+  };
+
+  const handleLoadedMetadata = () => {
+    if (!videoRef.current) return;
+    setVideoProgress((prev) => ({ ...prev, duration: videoRef.current.duration || prev.duration }));
   };
 
   const handleReset = () => {
@@ -306,12 +326,14 @@ const EuJaSabia2 = () => {
       videoRef.current.currentTime = 0;
     }
     setIsMaskTimeReached(maskDisplayTime === 0);
+    setVideoProgress((prev) => ({ ...prev, current: 0 }));
   };
 
   const handleVideoEnded = () => {
     setVideoStarted(false);
     setIsVideoPaused(false);
     setIsMaskTimeReached(maskDisplayTime === 0);
+    setVideoProgress((prev) => ({ ...prev, current: prev.duration }));
   };
 
   const handleVideoUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -410,13 +432,13 @@ const EuJaSabia2 = () => {
       : adminVideoData?.videoSrc
         ? 'Usando o vídeo e máscara do admin'
         : 'Vídeo base padrão em uso';
+  const [isMaskTimeReached, setIsMaskTimeReached] = useState(maskDisplayTime === 0);
+  const [videoProgress, setVideoProgress] = useState({ current: 0, duration: 0 });
   const maskDisplayText = maskText ?? '--';
+  const maskImageSrc = maskText ? `/numeros/${maskText}.svg` : null;
   const hasMaskContent = Boolean(maskText) || (isEditingMask && Boolean(customVideoSrc));
   const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
-  const [isMaskTimeReached, setIsMaskTimeReached] = useState(maskDisplayTime === 0);
-  const [currentVideoTime, setCurrentVideoTime] = useState(0);
-  const maskImageSrc = maskText ? `/numeros/${maskText}.png` : null;
 
   const scrollToUploadSection = () => {
     if (!showCustomization) {
@@ -520,6 +542,7 @@ const EuJaSabia2 = () => {
               src={activeVideoSrc}
               playsInline
               controls={false}
+              onLoadedMetadata={handleLoadedMetadata}
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnded}
             />
@@ -561,11 +584,22 @@ const EuJaSabia2 = () => {
                   }}
                 >
                   {maskImageSrc ? (
-                    <img
-                      src={maskImageSrc}
-                      alt={`Número ${maskDisplayText}`}
-                      className="max-h-32 w-auto select-none object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]"
-                      draggable={false}
+                    <div
+                      aria-label={`Número ${maskDisplayText}`}
+                      className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]"
+                      style={{
+                        backgroundColor: maskColor,
+                        width: `${maskFontSize * 4}rem`,
+                        height: `${maskFontSize * 4}rem`,
+                        maskImage: `url(${maskImageSrc})`,
+                        WebkitMaskImage: `url(${maskImageSrc})`,
+                        maskRepeat: 'no-repeat',
+                        WebkitMaskRepeat: 'no-repeat',
+                        maskSize: 'contain',
+                        WebkitMaskSize: 'contain',
+                        maskPosition: 'center',
+                        WebkitMaskPosition: 'center',
+                      }}
                     />
                   ) : (
                     <div
@@ -585,9 +619,24 @@ const EuJaSabia2 = () => {
                 </div>
               </div>
             )}
-          </div>
+        </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-[0.75rem] text-muted-foreground">
+            <span>{formatTime(videoProgress.current)}</span>
+            <span>{formatTime(videoProgress.duration)}</span>
+          </div>
+          <div className="mt-1 h-2 w-full rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{
+                width: `${videoProgress.duration > 0 ? Math.min(100, (videoProgress.current / videoProgress.duration) * 100) : 0}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="flex-1" onClick={handleStart} disabled={videoStarted}>
               Iniciar
             </Button>
