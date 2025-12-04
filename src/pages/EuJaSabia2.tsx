@@ -16,6 +16,7 @@ const MIN_MASK_FONT_SIZE = 0.8;
 const MAX_MASK_FONT_SIZE = 2;
 const MASK_FONT_SIZE_STEP = 0.05;
 
+
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds)) return '00:00';
   const mins = Math.floor(seconds / 60)
