@@ -28,8 +28,9 @@ serve(async (req) => {
 
     // Get game_id from request body
     const { game_id } = await req.json();
-    if (!game_id || ![1, 2, 3, 4].includes(game_id)) {
-      throw new Error("game_id inválido. Deve ser 1, 2, 3 ou 4");
+    // Game IDs: 1-4 have individual counters, 5-8 only increment total usage
+    if (!game_id || game_id < 1 || game_id > 8) {
+      throw new Error("game_id inválido. Deve ser um número entre 1 e 8");
     }
 
     console.log(`Incrementing usage for user ${user.id}, game ${game_id}`);
@@ -45,22 +46,28 @@ serve(async (req) => {
       throw fetchError;
     }
 
-    // Determine which counter to increment
-    const gameCountField = `jogo${game_id}_count`;
+    // Determine which counter to increment (only games 1-4 have individual counters)
+    const hasIndividualCounter = game_id >= 1 && game_id <= 4;
+    const gameCountField = hasIndividualCounter ? `jogo${game_id}_count` : null;
 
     // If no record exists, create one with the appropriate game counter = 1
     if (!premiumUser) {
+      const insertData: Record<string, any> = {
+        user_id: user.id,
+        is_premium: false,
+        subscription_tier: "FREE",
+        plan_confirmed: false,
+        usage_count: 1,
+        last_accessed_at: new Date().toISOString(),
+      };
+      
+      if (gameCountField) {
+        insertData[gameCountField] = 1;
+      }
+
       const { data: newUser, error: createError } = await supabaseClient
         .from("users")
-        .insert({
-          user_id: user.id,
-          is_premium: false,
-          subscription_tier: "FREE",
-          plan_confirmed: false,
-          usage_count: 1,
-          [`jogo${game_id}_count`]: 1,
-          last_accessed_at: new Date().toISOString(),
-        })
+        .insert(insertData)
         .select()
         .single();
 
@@ -70,7 +77,7 @@ serve(async (req) => {
         JSON.stringify({
           success: true,
           usageCount: 1,
-          gameCount: 1,
+          gameCount: hasIndividualCounter ? 1 : 0,
           totalCount: 1,
           isPremium: false,
         }),
@@ -81,19 +88,26 @@ serve(async (req) => {
       );
     }
 
-    // Increment the appropriate game counter and overall usage_count
-    const newGameCount = (premiumUser[gameCountField] || 0) + 1;
+    // Increment the appropriate game counter (if applicable) and overall usage_count
+    const updateData: Record<string, any> = {
+      usage_count: premiumUser.usage_count + 1,
+      last_accessed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    let newGameCount = 0;
+    if (gameCountField) {
+      newGameCount = (premiumUser[gameCountField] || 0) + 1;
+      updateData[gameCountField] = newGameCount;
+    }
+
     const newTotalCount = premiumUser.jogo1_count + premiumUser.jogo2_count + 
-                          premiumUser.jogo3_count + premiumUser.jogo4_count + 1;
+                          premiumUser.jogo3_count + premiumUser.jogo4_count + 
+                          (hasIndividualCounter ? 1 : 0);
 
     const { error: updateError } = await supabaseClient
       .from("users")
-      .update({
-        [gameCountField]: newGameCount,
-        usage_count: premiumUser.usage_count + 1,
-        last_accessed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq("user_id", user.id);
 
     if (updateError) throw updateError;

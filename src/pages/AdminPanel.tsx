@@ -85,14 +85,10 @@ const initialUserFilters = {
 };
 
 const GAME_USAGE_CONFIG = [
-  { key: 'MIND_READER', label: 'Mind Reader', initials: 'MR', field: 'jogo1_count' as const },
+  { key: 'MIND_READER', label: 'Quadrante Mágico', initials: 'QM', field: 'jogo1_count' as const },
   { key: 'MENTAL_CONVERSATION', label: 'Conversa Mental', initials: 'CM', field: 'jogo2_count' as const },
   { key: 'MYSTERY_WORD', label: 'Palavra Misteriosa', initials: 'PM', field: 'jogo3_count' as const },
   { key: 'MY_EMOJIS', label: 'Meus Emojis', initials: 'ME', field: 'jogo4_count' as const },
-  { key: 'PAPO_RETO', label: 'Papo Reto', initials: 'PR' },
-  { key: 'MIX_DE_CARTAS', label: 'Mix de Cartas', initials: 'MC' },
-  { key: 'RASPA_CARTA', label: 'Raspa Carta', initials: 'RC' },
-  { key: 'EU_JA_SABIA', label: 'Eu Já Sabia', initials: 'EJS' },
 ];
 
 export default function AdminPanel() {

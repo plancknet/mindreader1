@@ -5,6 +5,12 @@ export const GAME_IDS = {
   MYSTERY_WORD: 3,
   MY_EMOJIS: 4,
   PAPO_RETO: 5,
+  MIX_DE_CARTAS: 6,
+  RASPA_CARTA: 7,
+  EU_JA_SABIA: 8,
 } as const;
 
 export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];
+
+// Valid game IDs array for validation
+export const VALID_GAME_IDS = Object.values(GAME_IDS);

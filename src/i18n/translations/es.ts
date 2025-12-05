@@ -284,13 +284,12 @@ export const es = {
         description: 'Revela tu palabra en secreto al público'
       },
       euJaSabia: {
-      euJaSabia2: {
-        title: 'Ya Lo Sab?a 2',
-        description: 'Revela el n?mero usando m?scaras ilustradas.'
+        title: 'Ya Lo Sabía',
+        description: 'Registra el número pensado antes de revelarlo con el video'
       },
-
-        title: 'Ya Lo Sabia',
-        description: 'Registra el numero pensado antes de revelarlo con el video'
+      euJaSabia2: {
+        title: 'Ya Lo Sabía 2',
+        description: 'Revela el número usando máscaras ilustradas.'
       },
       myEmojis: {
         title: 'Mis Emojis',

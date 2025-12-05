@@ -265,7 +265,7 @@ export const fr = {
       },
       raspaCarta: {
         title: 'Raspa Carta',
-        description: 'Grattez l??cran pour r?v?ler le Valet, la Dame ou le Roi secret'
+        description: 'Grattez l\'écran pour révéler le Valet, la Dame ou le Roi secret'
       },
       suasPalavras: {
         title: 'Vos Mots',
@@ -284,13 +284,12 @@ export const fr = {
         description: 'Révélez secrètement votre mot au public'
       },
       euJaSabia: {
-      euJaSabia2: {
-        title: 'Je le Savais 2',
-        description: 'R?v?lez le num?ro avec des masques illustr?s.'
-      },
-
         title: 'Je Le Savais',
         description: 'Enregistrez le nombre choisi avant de le révéler avec la vidéo'
+      },
+      euJaSabia2: {
+        title: 'Je Le Savais 2',
+        description: 'Révélez le numéro avec des masques illustrés.'
       },
       myEmojis: {
         title: 'Mes Emojis',
