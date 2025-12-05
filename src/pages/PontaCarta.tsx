@@ -129,10 +129,13 @@ const PontaCarta = () => {
           <div className="grid grid-cols-4 gap-3 md:gap-4">
             {cardOrder.map((card) => {
               const isSelected = selectedCardId === card.id;
+              const showSelection = isSelected && !hasShuffled;
               return (
                 <Card
                   key={card.id}
-                  className={`group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 ${isSelected ? 'border-primary bg-primary/10' : 'border-white/10'}`}
+                  className={`group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 ${
+                    showSelection ? 'border-primary bg-primary/10' : 'border-white/10'
+                  }`}
                   role="button"
                   tabIndex={0}
                   onClick={() => handleSelectCard(card.id)}
