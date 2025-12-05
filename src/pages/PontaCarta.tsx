@@ -144,7 +144,9 @@ const PontaCarta = () => {
                     <img
                       src={card.imageSrc}
                       alt={`${card.rank}`}
-                      className={`h-full w-full object-cover transition-transform duration-300 ${hasShuffled && isSelected ? 'rotate-180' : ''} ${isShuffling ? 'opacity-60' : 'opacity-100'}`}
+                      className={`h-full w-full object-cover transition-opacity duration-300 ${
+                        isShuffling ? 'opacity-60' : 'opacity-100'
+                      }`}
                       draggable={false}
                     />
                   ) : (
