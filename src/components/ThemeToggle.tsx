@@ -1,33 +1,36 @@
+import { useCallback, useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+
+type ThemeVariant = 'dark' | 'light';
+
+const applyThemeClasses = (theme: ThemeVariant) => {
+  const root = document.documentElement;
+  if (theme === 'light') {
+    root.classList.remove('dark');
+    root.classList.add('theme-light');
+  } else {
+    root.classList.remove('theme-light');
+    root.classList.add('dark');
+  }
+};
 
 export const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(true);
+  const [theme, setTheme] = useState<ThemeVariant>('dark');
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light') {
-      root.classList.remove('dark');
-      setIsDark(false);
-    } else {
-      root.classList.add('dark');
-      setIsDark(true);
-    }
+  const setAndPersistTheme = useCallback((nextTheme: ThemeVariant) => {
+    applyThemeClasses(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    setTheme(nextTheme);
   }, []);
 
+  useEffect(() => {
+    const stored = (localStorage.getItem('theme') as ThemeVariant | null) ?? 'dark';
+    setAndPersistTheme(stored === 'light' ? 'light' : 'dark');
+  }, [setAndPersistTheme]);
+
   const toggleTheme = () => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
+    setAndPersistTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -35,9 +38,9 @@ export const ThemeToggle = () => {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+      aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
   );
 };
