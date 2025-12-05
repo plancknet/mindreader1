@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { VALID_GAME_IDS } from '@/constants/games';
 
 interface UsageLimitData {
   canUse: boolean;
@@ -78,8 +79,8 @@ export const useUsageLimit = () => {
         throw new Error('Usuário não autenticado');
       }
 
-      if (!game_id || game_id < 1 || game_id > 8) {
-        throw new Error('game_id inválido. Deve ser um número entre 1 e 8');
+      if (!VALID_GAME_IDS.includes(game_id)) {
+        throw new Error('game_id inválido.');
       }
 
       const { data, error: invokeError } = await supabase.functions.invoke('increment-usage', {

@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Shuffle } from 'lucide-react';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
+import { GAME_IDS } from '@/constants/games';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const suits: Array<{ name: SuitName; symbol: string; tone: 'red' | 'black' }> = [
@@ -50,6 +52,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 
 const PontaCarta = () => {
   const { t } = useTranslation();
+  const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.PONTA_DA_CARTA);
 
   const cards = useMemo<PontaCard[]>(
     () =>
@@ -72,6 +75,7 @@ const PontaCarta = () => {
   const handleSelectCard = (cardId: string) => {
     setSelectedCardId(cardId);
     setHasShuffled(false);
+    resetUsageTracking();
   };
 
   const handleShuffle = async () => {
@@ -81,6 +85,7 @@ const PontaCarta = () => {
       setCardOrder((prev) => shuffleArray(prev));
       setHasShuffled(true);
       setIsShuffling(false);
+      trackUsage();
     }, 180);
 
   };
@@ -89,6 +94,7 @@ const PontaCarta = () => {
     setSelectedCardId(null);
     setHasShuffled(false);
     setCardOrder(cards);
+    resetUsageTracking();
   };
 
   return (

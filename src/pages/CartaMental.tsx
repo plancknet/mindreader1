@@ -3,6 +3,8 @@ import type { MouseEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
+import { GAME_IDS } from '@/constants/games';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
 type SuitId = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 
@@ -37,6 +39,7 @@ const getCardImageIndex = (rank: string, suit: SuitId | null): number | null => 
 
 const CartaMental = () => {
   const { t } = useTranslation();
+  const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.CARTA_MENTAL);
   const [selectedRank, setSelectedRank] = useState<string | null>(null);
   const [selectedSuit, setSelectedSuit] = useState<SuitId | null>(null);
   const [stage, setStage] = useState<'setup' | 'revealed'>('setup');
@@ -83,12 +86,14 @@ const CartaMental = () => {
     const suitId = suits[quadrant]?.id ?? 'spades';
     setSelectedSuit(suitId);
     setStage('revealed');
+    trackUsage();
   };
 
   const resetSelection = () => {
     setSelectedRank(null);
     setSelectedSuit(null);
     setStage('setup');
+    resetUsageTracking();
   };
 
   return (

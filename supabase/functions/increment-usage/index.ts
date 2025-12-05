@@ -26,17 +26,17 @@ serve(async (req) => {
       throw new Error("Usuário não autenticado");
     }
 
-    // Get game_id from request body
     const { game_id } = await req.json();
-    // Game IDs: 1-4 have individual counters, 5-8 only increment total usage
-    if (!game_id || game_id < 1 || game_id > 8) {
-      throw new Error("game_id inválido. Deve ser um número entre 1 e 8");
+    const MIN_GAME_ID = 1;
+    const MAX_GAME_ID = 12;
+    if (!game_id || typeof game_id !== "number" || game_id < MIN_GAME_ID || game_id > MAX_GAME_ID) {
+      throw new Error("game_id inválido. Deve ser um número entre 1 e 12");
     }
 
     console.log(`Incrementing usage for user ${user.id}, game ${game_id}`);
 
     // Get current premium status
-    const { data: premiumUser, error: fetchError } = await supabaseClient
+    let { data: premiumUser, error: fetchError } = await supabaseClient
       .from("users")
       .select("*")
       .eq("user_id", user.id)
@@ -46,79 +46,70 @@ serve(async (req) => {
       throw fetchError;
     }
 
-    // Determine which counter to increment (only games 1-4 have individual counters)
-    const hasIndividualCounter = game_id >= 1 && game_id <= 4;
-    const gameCountField = hasIndividualCounter ? `jogo${game_id}_count` : null;
-
-    // If no record exists, create one with the appropriate game counter = 1
     if (!premiumUser) {
-      const insertData: Record<string, any> = {
-        user_id: user.id,
-        is_premium: false,
-        subscription_tier: "FREE",
-        plan_confirmed: false,
-        usage_count: 1,
-        last_accessed_at: new Date().toISOString(),
-      };
-      
-      if (gameCountField) {
-        insertData[gameCountField] = 1;
-      }
-
       const { data: newUser, error: createError } = await supabaseClient
         .from("users")
-        .insert(insertData)
+        .insert({
+          user_id: user.id,
+          is_premium: false,
+          subscription_tier: "FREE",
+          plan_confirmed: false,
+          usage_count: 0,
+        })
         .select()
         .single();
 
       if (createError) throw createError;
+      premiumUser = newUser;
+    }
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          usageCount: 1,
-          gameCount: hasIndividualCounter ? 1 : 0,
-          totalCount: 1,
-          isPremium: false,
-        }),
+    const nowIso = new Date().toISOString();
+    const nextUsageCount = (premiumUser?.usage_count ?? 0) + 1;
+
+    const { data: currentGameUsage, error: gameUsageError } = await supabaseClient
+      .from("user_game_usage")
+      .select("usage_count")
+      .eq("user_id", user.id)
+      .eq("game_id", game_id)
+      .maybeSingle();
+
+    if (gameUsageError && gameUsageError.code !== "PGRST116") {
+      throw gameUsageError;
+    }
+
+    const newGameCount = (currentGameUsage?.usage_count ?? 0) + 1;
+
+    const { error: usageUpsertError } = await supabaseClient
+      .from("user_game_usage")
+      .upsert(
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
+          user_id: user.id,
+          game_id,
+          usage_count: newGameCount,
+          last_used_at: nowIso,
+        },
+        { onConflict: "user_id,game_id" },
       );
-    }
 
-    // Increment the appropriate game counter (if applicable) and overall usage_count
-    const updateData: Record<string, any> = {
-      usage_count: premiumUser.usage_count + 1,
-      last_accessed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    if (usageUpsertError) throw usageUpsertError;
 
-    let newGameCount = 0;
-    if (gameCountField) {
-      newGameCount = (premiumUser[gameCountField] || 0) + 1;
-      updateData[gameCountField] = newGameCount;
-    }
-
-    const newTotalCount = premiumUser.jogo1_count + premiumUser.jogo2_count + 
-                          premiumUser.jogo3_count + premiumUser.jogo4_count + 
-                          (hasIndividualCounter ? 1 : 0);
-
-    const { error: updateError } = await supabaseClient
+    const { error: userUpdateError } = await supabaseClient
       .from("users")
-      .update(updateData)
+      .update({
+        usage_count: nextUsageCount,
+        updated_at: nowIso,
+      })
       .eq("user_id", user.id);
 
-    if (updateError) throw updateError;
+    if (userUpdateError) throw userUpdateError;
 
     return new Response(
       JSON.stringify({
         success: true,
-        usageCount: premiumUser.usage_count + 1,
+        usageCount: nextUsageCount,
         gameCount: newGameCount,
-        totalCount: newTotalCount,
-        isPremium: premiumUser.is_premium,
+        totalCount: nextUsageCount,
+        isPremium: premiumUser?.is_premium ?? false,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -8,6 +8,10 @@ export const GAME_IDS = {
   MIX_DE_CARTAS: 6,
   RASPA_CARTA: 7,
   EU_JA_SABIA: 8,
+  CARTA_MENTAL: 9,
+  SUAS_PALAVRAS: 10,
+  PONTA_DA_CARTA: 11,
+  EU_JA_SABIA_2: 12,
 } as const;
 
 export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];

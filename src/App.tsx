@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import Index from "./pages/Index";
@@ -48,12 +48,29 @@ const queryClient = new QueryClient();
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const lastLoginUpdateRef = useRef<string | null>(null);
+
+  const recordLastLogin = async (userId: string) => {
+    if (lastLoginUpdateRef.current === userId) return;
+    lastLoginUpdateRef.current = userId;
+    try {
+      await supabase
+        .from('users')
+        .update({ last_accessed_at: new Date().toISOString() })
+        .eq('user_id', userId);
+    } catch (error) {
+      console.error('Erro ao atualizar último acesso', error);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setLoading(false);
+      if (event === 'SIGNED_IN' && session?.user) {
+        void recordLastLogin(session.user.id);
+      }
     });
 
     // Check for existing session

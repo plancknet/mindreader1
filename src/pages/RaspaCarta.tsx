@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
+import { GAME_IDS } from '@/constants/games';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
 type RankId = 'J' | 'Q' | 'K';
 
@@ -26,6 +28,7 @@ type SelectedCard = {
 
 const RaspaCarta = () => {
   const { t } = useTranslation();
+  const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.RASPA_CARTA);
   const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [isScratching, setIsScratching] = useState(false);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
@@ -164,11 +167,13 @@ const RaspaCarta = () => {
       return;
     }
     setSelectedCard({ rank, suit, imageSrc });
+    trackUsage();
   };
 
   const handleReset = () => {
     setSelectedCard(null);
     overlayFilledRef.current = false;
+    resetUsageTracking();
   };
 
   return (

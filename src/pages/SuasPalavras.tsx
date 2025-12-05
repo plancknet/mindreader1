@@ -151,7 +151,7 @@ const SuasPalavras = () => {
     setIsPlaying(false);
     stopCamera();
     setStage('revealed');
-    void incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
+    void incrementUsage(GAME_IDS.SUAS_PALAVRAS).catch(console.error);
   }, [incrementUsage, stopCamera]);
 
   useEffect(() => {

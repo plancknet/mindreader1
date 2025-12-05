@@ -3,6 +3,8 @@ import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { GAME_IDS } from '@/constants/games';
 
 const GRID_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0];
 const MAX_VIDEO_SIZE_MB = 20;
@@ -41,6 +43,7 @@ const EuJaSabia = () => {
   const uploadSectionRef = useRef<HTMLDivElement>(null);
   const colorInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { incrementUsage } = useUsageLimit();
   const [tensSelection, setTensSelection] = useState<number | null>(null);
   const [unitsSelection, setUnitsSelection] = useState<number | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
@@ -244,6 +247,7 @@ const EuJaSabia = () => {
     setVideoStarted(true);
     setIsVideoPaused(false);
     setVideoProgress((prev) => ({ ...prev, current: 0 }));
+    void incrementUsage(GAME_IDS.EU_JA_SABIA).catch(console.error);
     requestAnimationFrame(() => {
       if (videoRef.current) {
         videoRef.current.currentTime = 0;

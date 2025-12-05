@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { GAME_IDS } from '@/constants/games';
 
 interface UserData {
   user_id: string;
@@ -27,11 +28,8 @@ interface UserData {
   premium_type: string | null;
   created_at: string;
   usage_count: number;
-  jogo1_count: number;
-  jogo2_count: number;
-  jogo3_count: number;
-  jogo4_count: number;
   last_accessed_at: string | null;
+  game_usage: Record<number, number>;
 }
 
 interface CouponStats {
@@ -62,7 +60,28 @@ const registrationChartConfig = {
 
 const normalizeCouponCode = (code?: string | null) => (code?.trim().toUpperCase() ?? '');
 
-const initialUserFilters = {
+const GAME_USAGE_CONFIG = [
+  { id: GAME_IDS.PONTA_DA_CARTA, label: 'Ponta da Carta', initials: 'PC' },
+  { id: GAME_IDS.MYSTERY_WORD, label: 'Palavra Misteriosa', initials: 'PM' },
+  { id: GAME_IDS.SUAS_PALAVRAS, label: 'Suas Palavras', initials: 'SP' },
+  { id: GAME_IDS.MIND_READER, label: 'Quadrante Mágico', initials: 'QM' },
+  { id: GAME_IDS.MIX_DE_CARTAS, label: 'Mix de Cartas', initials: 'MC' },
+  { id: GAME_IDS.MENTAL_CONVERSATION, label: 'Conversa Mental', initials: 'CM' },
+  { id: GAME_IDS.CARTA_MENTAL, label: 'Carta Mental', initials: 'CtM' },
+  { id: GAME_IDS.RASPA_CARTA, label: 'Raspa Carta', initials: 'RC' },
+  { id: GAME_IDS.PAPO_RETO, label: 'Papo Reto', initials: 'PR' },
+  { id: GAME_IDS.EU_JA_SABIA, label: 'Eu Já Sabia', initials: 'EJS' },
+  { id: GAME_IDS.EU_JA_SABIA_2, label: 'Eu Já Sabia 2', initials: 'EJS2' },
+  { id: GAME_IDS.MY_EMOJIS, label: 'Meus Emojis', initials: 'ME' },
+] as const;
+
+const createInitialGameUsageFilters = () =>
+  GAME_USAGE_CONFIG.reduce<Record<number, string>>((acc, game) => {
+    acc[game.id] = '';
+    return acc;
+  }, {});
+
+const getInitialUserFilters = () => ({
   email: '',
   tier: 'ALL',
   status: 'ALL',
@@ -72,24 +91,16 @@ const initialUserFilters = {
   premium: 'ALL',
   premiumType: '',
   usage: '',
-  jogo1: '',
-  jogo2: '',
-  jogo3: '',
-  jogo4: '',
+  gameUsage: createInitialGameUsageFilters(),
   lastAccess: '',
   lastAccessStart: '',
   lastAccessEnd: '',
   createdAt: '',
   createdAtStart: '',
   createdAtEnd: '',
-};
+});
 
-const GAME_USAGE_CONFIG = [
-  { key: 'MIND_READER', label: 'Quadrante Mágico', initials: 'QM', field: 'jogo1_count' as const },
-  { key: 'MENTAL_CONVERSATION', label: 'Conversa Mental', initials: 'CM', field: 'jogo2_count' as const },
-  { key: 'MYSTERY_WORD', label: 'Palavra Misteriosa', initials: 'PM', field: 'jogo3_count' as const },
-  { key: 'MY_EMOJIS', label: 'Meus Emojis', initials: 'ME', field: 'jogo4_count' as const },
-];
+type UserFilters = ReturnType<typeof getInitialUserFilters>;
 
 export default function AdminPanel() {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
@@ -104,7 +115,7 @@ export default function AdminPanel() {
     influencer: '',
     status: 'ALL',
   });
-  const [userFilters, setUserFilters] = useState(initialUserFilters);
+  const [userFilters, setUserFilters] = useState<UserFilters>(getInitialUserFilters());
   const [userSort, setUserSort] = useState<{ column: keyof UserData; direction: 'asc' | 'desc' }>({
     column: 'created_at',
     direction: 'desc',
@@ -148,48 +159,69 @@ export default function AdminPanel() {
   }, []);
 
   const fetchUsersData = async () => {
-    const { data, error } = await supabase
-      .from('users')
-      .select(`
-        user_id,
-        email,
-        is_premium,
-        subscription_tier,
-        subscription_status,
-        plan_confirmed,
-        coupon_code,
-        coupon_generated,
-        premium_type,
-        created_at,
-        usage_count,
-        jogo1_count,
-        jogo2_count,
-        jogo3_count,
-        jogo4_count,
-        last_accessed_at
-      `)
-      .order('created_at', { ascending: false });
+    const [userResponse, usageResponse] = await Promise.all([
+      supabase
+        .from('users')
+        .select(`
+          user_id,
+          email,
+          is_premium,
+          subscription_tier,
+          subscription_status,
+          plan_confirmed,
+          coupon_code,
+          coupon_generated,
+          premium_type,
+          created_at,
+          usage_count,
+          jogo1_count,
+          jogo2_count,
+          jogo3_count,
+          jogo4_count,
+          last_accessed_at
+        `)
+        .order('created_at', { ascending: false }),
+      supabase.from('user_game_usage').select('user_id, game_id, usage_count'),
+    ]);
 
-    if (error) throw error;
+    if (userResponse.error) throw userResponse.error;
+    if (usageResponse.error && usageResponse.error.code !== 'PGRST116') throw usageResponse.error;
 
-    const formattedUsers: UserData[] = (data || []).map((user) => ({
-      user_id: user.user_id,
-      email: user.email ?? 'Email não disponível',
-      is_premium: Boolean(user.is_premium),
-      subscription_tier: (user.subscription_tier as UserData['subscription_tier']) ?? 'FREE',
-      subscription_status: user.subscription_status ?? 'inactive',
-      plan_confirmed: Boolean(user.plan_confirmed),
-      coupon_code: user.coupon_code,
-      coupon_generated: Boolean(user.coupon_generated),
-      premium_type: user.premium_type ?? null,
-      created_at: user.created_at,
-      usage_count: user.usage_count ?? 0,
-      jogo1_count: user.jogo1_count ?? 0,
-      jogo2_count: user.jogo2_count ?? 0,
-      jogo3_count: user.jogo3_count ?? 0,
-      jogo4_count: user.jogo4_count ?? 0,
-      last_accessed_at: user.last_accessed_at,
-    }));
+    const usageMap = new Map<string, Record<number, number>>();
+    (usageResponse.data || []).forEach((entry) => {
+      if (!usageMap.has(entry.user_id)) {
+        usageMap.set(entry.user_id, {});
+      }
+      usageMap.get(entry.user_id)![entry.game_id] = entry.usage_count ?? 0;
+    });
+
+    const formattedUsers: UserData[] = (userResponse.data || []).map((user) => {
+      const legacyUsage: Record<number, number> = {
+        [GAME_IDS.MIND_READER]: user.jogo1_count ?? 0,
+        [GAME_IDS.MENTAL_CONVERSATION]: user.jogo2_count ?? 0,
+        [GAME_IDS.MYSTERY_WORD]: user.jogo3_count ?? 0,
+        [GAME_IDS.MY_EMOJIS]: user.jogo4_count ?? 0,
+      };
+      const mergedUsage = {
+        ...legacyUsage,
+        ...(usageMap.get(user.user_id) ?? {}),
+      };
+      return {
+        user_id: user.user_id,
+        email: user.email ?? 'Email não disponível',
+        is_premium: Boolean(user.is_premium),
+        subscription_tier: (user.subscription_tier as UserData['subscription_tier']) ?? 'FREE',
+        subscription_status: user.subscription_status ?? 'inactive',
+        plan_confirmed: Boolean(user.plan_confirmed),
+        coupon_code: user.coupon_code,
+        coupon_generated: Boolean(user.coupon_generated),
+        premium_type: user.premium_type ?? null,
+        created_at: user.created_at,
+        usage_count: user.usage_count ?? 0,
+        last_accessed_at: user.last_accessed_at,
+        game_usage: mergedUsage,
+      };
+    });
 
     setUsers(formattedUsers);
     setRegistrationSeries(generateRegistrationSeries(formattedUsers));
@@ -463,7 +495,7 @@ export default function AdminPanel() {
       : date.toLocaleDateString('pt-BR');
   };
 
-  const handleResetUserFilters = () => setUserFilters({ ...initialUserFilters });
+  const handleResetUserFilters = () => setUserFilters(getInitialUserFilters());
 
   const handleResetAllCounts = async (userId: string) => {
     try {
@@ -479,6 +511,13 @@ export default function AdminPanel() {
         .eq('user_id', userId);
 
       if (error) throw error;
+
+      const { error: usageError } = await supabase
+        .from('user_game_usage')
+        .delete()
+        .eq('user_id', userId);
+
+      if (usageError) throw usageError;
 
       toast({
         title: 'Sucesso',
@@ -579,17 +618,10 @@ export default function AdminPanel() {
       if (!matchNumber(userFilters.usage, user.usage_count)) {
         return false;
       }
-      if (!matchNumber(userFilters.jogo1, user.jogo1_count)) {
-        return false;
-      }
-      if (!matchNumber(userFilters.jogo2, user.jogo2_count)) {
-        return false;
-      }
-      if (!matchNumber(userFilters.jogo3, user.jogo3_count)) {
-        return false;
-      }
-      if (!matchNumber(userFilters.jogo4, user.jogo4_count)) {
-        return false;
+      for (const gameConfig of GAME_USAGE_CONFIG) {
+        if (!matchNumber(userFilters.gameUsage[gameConfig.id], user.game_usage?.[gameConfig.id] ?? 0)) {
+          return false;
+        }
       }
 
       const lastAccess = user.last_accessed_at
@@ -664,6 +696,17 @@ export default function AdminPanel() {
     });
   }, [filteredUsers, userSort]);
 
+  const gameUsageTotals = useMemo(() => {
+    const totals: Record<number, number> = {};
+    users.forEach((user) => {
+      Object.entries(user.game_usage ?? {}).forEach(([gameId, count]) => {
+        const numericId = Number(gameId);
+        totals[numericId] = (totals[numericId] ?? 0) + Number(count ?? 0);
+      });
+    });
+    return totals;
+  }, [users]);
+
   const openUserEditor = (user: UserData) => {
     setEditingUserId(user.user_id);
     setEditingUserData({ ...user });
@@ -691,16 +734,8 @@ export default function AdminPanel() {
   type GameUsageConfig = (typeof GAME_USAGE_CONFIG)[number];
 
   const getGameUsageValue = (data: Partial<UserData> | null, config: GameUsageConfig) => {
-    if (!data) return 0;
-    if (config.field && typeof data[config.field] === 'number') {
-      return data[config.field] ?? 0;
-    }
-    return 0;
-  };
-
-  const handleGameUsageChange = (config: GameUsageConfig, value: number) => {
-    if (!config.field) return;
-    handleEditUserField(config.field, value as UserData[typeof config.field]);
+    if (!data || !data.game_usage) return 0;
+    return data.game_usage[config.id] ?? 0;
   };
 
   const handleSaveUser = async () => {
@@ -822,6 +857,29 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Uso por jogo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {GAME_USAGE_CONFIG.map((game) => (
+                <div key={game.id} className="rounded-2xl border border-primary/10 bg-card/60 p-4 shadow-inner">
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                    {game.initials}
+                    <span className="pl-2 text-[0.65rem] font-normal tracking-normal text-muted-foreground/80">
+                      {game.label}
+                    </span>
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {gameUsageTotals[game.id] ?? 0}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
@@ -1138,12 +1196,21 @@ export default function AdminPanel() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label>Jogos (J1 a J4)</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input value={userFilters.jogo1} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo1: event.target.value }))} placeholder="J1" />
-                      <Input value={userFilters.jogo2} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo2: event.target.value }))} placeholder="J2" />
-                      <Input value={userFilters.jogo3} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo3: event.target.value }))} placeholder="J3" />
-                      <Input value={userFilters.jogo4} onChange={(event) => setUserFilters((prev) => ({ ...prev, jogo4: event.target.value }))} placeholder="J4" />
+                    <Label>Uso por jogo</Label>
+                    <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+                      {GAME_USAGE_CONFIG.map((game) => (
+                        <Input
+                          key={game.id}
+                          value={userFilters.gameUsage[game.id]}
+                          onChange={(event) =>
+                            setUserFilters((prev) => ({
+                              ...prev,
+                              gameUsage: { ...prev.gameUsage, [game.id]: event.target.value },
+                            }))
+                          }
+                          placeholder={game.initials}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1335,17 +1402,12 @@ export default function AdminPanel() {
                   <Label>Uso por jogo</Label>
                   <div className="grid gap-3 md:grid-cols-2">
                     {GAME_USAGE_CONFIG.map((game) => (
-                      <div key={game.key} className="grid gap-1">
-                        <Label className="text-xs font-semibold text-muted-foreground">
+                      <div key={game.id} className="rounded-2xl border border-primary/10 bg-muted/10 p-3">
+                        <p className="text-xs font-semibold text-muted-foreground">
                           Jogo {game.initials}
                           <span className="font-normal text-[0.65rem] text-muted-foreground/80"> ({game.label})</span>
-                        </Label>
-                        <Input
-                          type="number"
-                          value={getGameUsageValue(editingUserData, game)}
-                          onChange={(event) => handleGameUsageChange(game, Number(event.target.value))}
-                          disabled={!game.field}
-                        />
+                        </p>
+                        <p className="text-2xl font-bold text-foreground">{getGameUsageValue(editingUserData, game)}</p>
                       </div>
                     ))}
                   </div>

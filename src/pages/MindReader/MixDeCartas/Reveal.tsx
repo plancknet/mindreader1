@@ -7,6 +7,8 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { Shuffle } from 'lucide-react';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
+import { GAME_IDS } from '@/constants/games';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
 interface PlayingCard {
   rank: string;
@@ -134,6 +136,7 @@ export const Reveal = () => {
   const { t } = useTranslation();
   const [revealCards, setRevealCards] = useState<PlayingCard[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
+  const { trackUsage } = useGameUsageTracker(GAME_IDS.MIX_DE_CARTAS);
 
   const suitParam = searchParams.get('suit');
   const rank = searchParams.get('rank');
@@ -155,6 +158,7 @@ export const Reveal = () => {
       const newSequence = generateSequence(suit, rank);
       setRevealCards(newSequence);
       setIsShuffling(false);
+      trackUsage();
     }, 300);
   };
 

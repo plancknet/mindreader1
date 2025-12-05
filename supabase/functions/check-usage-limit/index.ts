@@ -114,9 +114,21 @@ serve(async (req) => {
       );
     }
 
-    // Calculate total count from all games
-    const totalCount = (premiumUser.jogo1_count || 0) + (premiumUser.jogo2_count || 0) + 
-                       (premiumUser.jogo3_count || 0) + (premiumUser.jogo4_count || 0);
+    const { data: usageRows, error: usageError } = await supabaseClient
+      .from("user_game_usage")
+      .select("usage_count")
+      .eq("user_id", user.id);
+
+    if (usageError && usageError.code !== "PGRST116") {
+      throw usageError;
+    }
+
+    const legacyCount = (premiumUser.jogo1_count || 0) + (premiumUser.jogo2_count || 0) +
+      (premiumUser.jogo3_count || 0) + (premiumUser.jogo4_count || 0);
+
+    const totalCount = usageRows && usageRows.length > 0
+      ? usageRows.reduce((sum, row) => sum + (row.usage_count || 0), 0)
+      : legacyCount;
 
     // Check if user has reached free limit
     const canUse = totalCount < 3;
