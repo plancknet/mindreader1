@@ -41,6 +41,38 @@ export type Database = {
         }
         Relationships: []
       }
+      user_game_usage: {
+        Row: {
+          created_at: string
+          game_id: number
+          last_used_at: string
+          usage_count: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: number
+          last_used_at?: string
+          usage_count?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: number
+          last_used_at?: string
+          usage_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_game_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
