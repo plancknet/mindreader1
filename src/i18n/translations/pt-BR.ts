@@ -281,13 +281,12 @@ export const ptBR = {
         description: 'Revele secretamente sua palavra para o público'
       },
       euJaSabia: {
-      euJaSabia2: {
-        title: 'Eu J? Sabia 2',
-        description: 'Revele o n?mero usando m?scaras ilustradas.'
+        title: 'Eu Já Sabia',
+        description: 'Registre o número pensado e revele durante o vídeo'
       },
-
-        title: 'Eu Ja Sabia',
-        description: 'Registre o numero pensado e revele durante o video'
+      euJaSabia2: {
+        title: 'Eu Já Sabia 2',
+        description: 'Revele o número usando máscaras ilustradas.'
       },
       myEmojis: {
         title: 'Meus Emojis',

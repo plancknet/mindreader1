@@ -284,13 +284,12 @@ export const it = {
         description: 'Rivela in segreto la tua parola al pubblico'
       },
       euJaSabia: {
+        title: 'Lo Sapevo Già',
+        description: 'Registrati il numero scelto prima di rivelarlo con il video'
+      },
       euJaSabia2: {
         title: 'Lo Sapevo 2',
         description: 'Rivela il numero con maschere illustrate.'
-      },
-
-        title: 'Lo Sapevo Gia',
-        description: 'Registrati il numero scelto prima di rivelarlo con il video'
       },
       myEmojis: {
         title: 'I Miei Emoji',

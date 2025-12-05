@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useSubscriptionTier } from '@/hooks/useSubscriptionTier';
@@ -51,6 +52,7 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
           Cupons
         </Button>
       )}
+      <ThemeToggle />
       <LanguageSelector />
       <LogoutButton />
     </div>

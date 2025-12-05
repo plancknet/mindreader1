@@ -78,8 +78,8 @@ export const useUsageLimit = () => {
         throw new Error('Usuário não autenticado');
       }
 
-      if (!game_id || ![1, 2, 3, 4].includes(game_id)) {
-        throw new Error('game_id inválido. Deve ser 1, 2, 3 ou 4');
+      if (!game_id || game_id < 1 || game_id > 8) {
+        throw new Error('game_id inválido. Deve ser um número entre 1 e 8');
       }
 
       const { data, error: invokeError } = await supabase.functions.invoke('increment-usage', {
