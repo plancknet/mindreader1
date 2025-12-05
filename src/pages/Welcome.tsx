@@ -69,7 +69,7 @@ const Welcome = () => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Agora nososs conseguiremos Ler de Mentes
+            Agora nos conseguiremos Ler Mentes!
           </h1>
           
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
