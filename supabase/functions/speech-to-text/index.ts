@@ -1,11 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema - limit audio to ~5MB base64 encoded
+const inputSchema = z.object({
+  audio: z.string().max(7_000_000, "Audio file too large. Maximum size is approximately 5MB."),
+  language: z.string().max(10).optional(),
+});
 
 function processBase64Chunks(base64String: string, chunkSize = 32768) {
   const chunks: Uint8Array[] = [];
@@ -65,11 +72,19 @@ serve(async (req) => {
       );
     }
 
-    const { audio, language } = await req.json();
+    // Validate input
+    const rawBody = await req.json();
+    const parseResult = inputSchema.safeParse(rawBody);
     
-    if (!audio) {
-      throw new Error('No audio data provided');
+    if (!parseResult.success) {
+      console.error('Input validation failed:', parseResult.error.errors);
+      return new Response(
+        JSON.stringify({ error: parseResult.error.errors[0]?.message || 'Invalid input' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+
+    const { audio, language } = parseResult.data;
 
     console.log('Processing audio data with language:', language || 'auto-detect');
     const binaryAudio = processBase64Chunks(audio);
