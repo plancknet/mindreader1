@@ -79,7 +79,7 @@ export const useUsageLimit = () => {
         throw new Error('Usuário não autenticado');
       }
 
-      if (!VALID_GAME_IDS.includes(game_id)) {
+      if (!(VALID_GAME_IDS as readonly number[]).includes(game_id)) {
         throw new Error('game_id inválido.');
       }
 
