@@ -1,11 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema - limit text to 5000 characters
+const inputSchema = z.object({
+  text: z.string().min(1, "Text is required").max(5000, "Text too long. Maximum 5000 characters allowed."),
+  voice: z.string().max(50).optional(),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -36,13 +43,21 @@ serve(async (req) => {
       );
     }
 
-    const { text, voice } = await req.json();
-
-    if (!text) {
-      throw new Error('Text is required');
+    // Validate input
+    const rawBody = await req.json();
+    const parseResult = inputSchema.safeParse(rawBody);
+    
+    if (!parseResult.success) {
+      console.error('Input validation failed:', parseResult.error.errors);
+      return new Response(
+        JSON.stringify({ error: parseResult.error.errors[0]?.message || 'Invalid input' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    console.log('Generating speech for text:', text);
+    const { text, voice } = parseResult.data;
+
+    console.log('Generating speech for text:', text.substring(0, 100) + (text.length > 100 ? '...' : ''));
 
     const response = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
