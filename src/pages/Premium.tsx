@@ -192,10 +192,10 @@ const Premium = () => {
                 ))}
               </ul>
               <Button
-                variant="outline"
+                variant={profile?.subscription_tier === 'FREE' ? 'default' : 'outline'}
                 onClick={handleFreePlan}
                 disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false)}
-                className="w-full"
+                className={`w-full ${profile?.subscription_tier === 'FREE' ? 'bg-primary text-white hover:bg-primary/90' : ''}`}
               >
                 {profile?.subscription_tier === 'FREE'
                   ? 'Plano atual'
