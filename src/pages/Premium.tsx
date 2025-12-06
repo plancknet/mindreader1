@@ -19,28 +19,25 @@ interface UserProfile {
 
 const PLAN_FEATURES = {
   FREE: [
-    'Uso limitado a 3 vezes',
-    'Palavra Misteriosa - Modos 1, 2 e 3',
-    'Quadrante Mágico - Modos 1 e 2',
+    '3 mágicas gratuitas por dia',
+    'Nível 1: Ponta da Carta, Palavra Misteriosa, Suas Palavras',
+    'Nível 2: Quadrante Mágico',
+    'Nível 3: Conversa Mental e Mix de Cartas',
   ],
   STANDARD: [
     'Uso vitalício ilimitado',
-    'Todos os modos da Palavra Misteriosa',
-    'Quadrante Mágico (Modos 1 e 2)',
-    'Conversa Mental (Nível 2)',
-    'Mix de Cartas (Nível 3)',
-    'Todas as atualizações futuras',
-    'Suporte Premium',
+    'Todos os jogos dos níveis 1, 2 e 3',
+    'Atualizações futuras incluídas',
+    'Suporte prioritário',
   ],
   INFLUENCER: [
-    'Todos os recursos do Vitalício',
-    'Cupons com 30% de desconto para seguidores',
-    'R$ 6,00 por cupom pago',
-    'Desenvolvimento de novas ideias',
-    'Recursos disponíveis enquanto for assinante',
-    'Grupo de WhatsApp dos iMindReaders',
+    'Todos os benefícios do Vitalício',
+    'Nível 4: Carta Mental, Raspa Carta, Papo Reto',
+    'Nível 5: Eu Já Sabia e Eu Já Sabia 2',
+    'Cupons com 30% para seguidores + R$ 6 por resgate',
+    'Grupo iMindReaders e co-criação de novas mágicas',
   ],
-};
+} as const;
 
 const Premium = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -166,7 +163,7 @@ const Premium = () => {
 
         <div className="text-center space-y-2">
           <p className="text-sm uppercase tracking-[0.35em] text-primary">Escolha seu modo</p>
-          <h1 className="text-4xl md:text-5xl font-bold">Como você quer jogar hoje?</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">Escolha seu plano mágico</h1>
           <p className="text-muted-foreground text-lg">
             Selecione um dos planos abaixo para continuar usando o MindReader.
           </p>
@@ -197,7 +194,7 @@ const Premium = () => {
               <Button
                 variant="outline"
                 onClick={handleFreePlan}
-                disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false) || profile?.subscription_tier === 'FREE'}
+                disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false)}
                 className="w-full"
               >
                 {profile?.subscription_tier === 'FREE'
