@@ -68,15 +68,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setLoading(false);
-      if (event === 'SIGNED_IN' && session?.user) {
+      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') && session?.user) {
         void recordLastLogin(session.user.id);
       }
     });
 
-    // Check for existing session
+    // Check for existing session and record access
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
+      if (session?.user) {
+        void recordLastLogin(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
