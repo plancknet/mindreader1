@@ -145,14 +145,14 @@ const SuasPalavras = () => {
     setCurrentIndex(0);
     setCurrentWord('');
     setHasTriggeredCamera(false);
+    incrementUsage(GAME_IDS.SUAS_PALAVRAS).catch(console.error);
   };
 
   const handleStop = useCallback(() => {
     setIsPlaying(false);
     stopCamera();
     setStage('revealed');
-    void incrementUsage(GAME_IDS.SUAS_PALAVRAS).catch(console.error);
-  }, [incrementUsage, stopCamera]);
+  }, [stopCamera]);
 
   useEffect(() => {
     if (!isPlaying || sequence.length === 0) return;

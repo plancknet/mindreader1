@@ -124,13 +124,13 @@ const MysteryWord = () => {
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
+    incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
   };
 
   const handleStop = () => {
     setIsPlaying(false);
     setStage('stopped');
     stopCamera();
-    incrementUsage(GAME_IDS.MYSTERY_WORD).catch(console.error);
   };
 
   const handlePlayAgain = () => {
