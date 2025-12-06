@@ -18,6 +18,7 @@ const MAX_VIDEO_SIZE_MB = 20;
 const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const MAX_VIDEO_SIZE_KB = MAX_VIDEO_SIZE_BYTES / 1024;
 const ACCEPTED_VIDEO_TYPE = 'video/mp4';
+const NUMEROS2_ASSET_BASE = `${import.meta.env.BASE_URL ?? '/'}numeros2/`;
 
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds)) return '00:00';
@@ -528,8 +529,8 @@ const EuJaSabia2 = () => {
         ? 'Usando o vídeo do admin'
         : 'Vídeo base padrão em uso';
 
-  const maskAssetPath = maskNumber ? `/numeros2/${maskNumber}.svg` : null;
-  const maskImageValue = maskAssetPath ? `url(${maskAssetPath})` : 'none';
+  const maskAssetPath = maskNumber ? `${NUMEROS2_ASSET_BASE}${maskNumber}.svg` : null;
+  const maskImageValue = maskAssetPath ? `url("${maskAssetPath}")` : 'none';
   const hasMaskContent = Boolean(maskNumber) || (isEditingMask && Boolean(customVideoSrc));
   const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
