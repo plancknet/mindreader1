@@ -8,6 +8,8 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { START_WORDS } from '@/i18n/languages';
 import { themes } from '@/data/themes';
 import { HeaderControls } from '@/components/HeaderControls';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
+import { GAME_IDS } from '@/constants/games';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -23,6 +25,7 @@ const StartPrompt = () => {
   const { t, language } = useTranslation();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
+  const { trackUsage } = useGameUsageTracker(GAME_IDS.MIND_READER);
 
   const [rawInput, setRawInput] = useState('');
   const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
@@ -105,6 +108,7 @@ const StartPrompt = () => {
       return;
     }
 
+    trackUsage();
     const lastChar = normalizedInput.charAt(normalizedInput.length - 1);
     navigate(`/gameplay?theme=${themeId}&userWord=${encodeURIComponent(lastChar)}`);
   };

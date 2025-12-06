@@ -236,6 +236,7 @@ const MentalConversation = () => {
       setCategory(detectedCategory);
       setStep('collecting');
       addAiMessage(t('mentalConversation.messages.startCollecting'));
+      incrementUsage(GAME_IDS.MENTAL_CONVERSATION).catch(console.error);
       return;
     }
 
@@ -289,7 +290,6 @@ const MentalConversation = () => {
     }
 
     if (step === 'revealing') {
-      incrementUsage(GAME_IDS.MENTAL_CONVERSATION).catch(console.error);
       navigate('/game-selector');
     }
   };
