@@ -81,6 +81,8 @@ const createInitialGameUsageFilters = () =>
     return acc;
   }, {});
 
+const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
+
 const getInitialUserFilters = () => ({
   email: '',
   tier: 'ALL',
@@ -490,9 +492,18 @@ export default function AdminPanel() {
   const formatDate = (iso?: string | null, withTime = false) => {
     if (!iso) return '--';
     const date = new Date(iso);
-    return withTime
-      ? `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`
-      : date.toLocaleDateString('pt-BR');
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: BRAZIL_TIMEZONE,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    };
+    if (withTime) {
+      options.hour = '2-digit';
+      options.minute = '2-digit';
+      options.second = '2-digit';
+    }
+    return new Intl.DateTimeFormat('pt-BR', options).format(date);
   };
 
   const handleResetUserFilters = () => setUserFilters(getInitialUserFilters());
@@ -624,9 +635,7 @@ export default function AdminPanel() {
         }
       }
 
-      const lastAccess = user.last_accessed_at
-        ? new Date(user.last_accessed_at).toLocaleDateString('pt-BR')
-        : '';
+      const lastAccess = user.last_accessed_at ? formatDate(user.last_accessed_at, true) : '';
       const lastAccessDate = user.last_accessed_at ? new Date(user.last_accessed_at) : null;
       if (userFilters.lastAccess && !lastAccess.includes(userFilters.lastAccess)) {
         return false;
@@ -644,8 +653,9 @@ export default function AdminPanel() {
         }
       }
 
+      const createdAtDisplay = user.created_at ? formatDate(user.created_at) : '';
       const createdAtDate = user.created_at ? new Date(user.created_at) : null;
-      if (userFilters.createdAt && (!createdAtDate || !createdAtDate.toLocaleDateString('pt-BR').includes(userFilters.createdAt))) {
+      if (userFilters.createdAt && (!createdAtDisplay || !createdAtDisplay.includes(userFilters.createdAt))) {
         return false;
       }
       if (userFilters.createdAtStart) {
@@ -900,7 +910,11 @@ export default function AdminPanel() {
                   <XAxis
                     dataKey="date"
                     tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' })
+                      new Date(value).toLocaleDateString('pt-BR', {
+                        month: 'short',
+                        day: 'numeric',
+                        timeZone: BRAZIL_TIMEZONE,
+                      })
                     }
                     tickLine={false}
                     axisLine={false}
@@ -1054,11 +1068,7 @@ export default function AdminPanel() {
                             R$ {coupon.total_revenue.toFixed(2)}
                           </td>
                           <td className="p-2">
-                            {coupon.last_redeemed_at
-                              ? `${new Date(coupon.last_redeemed_at).toLocaleDateString('pt-BR')} ${new Date(
-                                  coupon.last_redeemed_at
-                                ).toLocaleTimeString('pt-BR')}`
-                              : 'Sem resgates'}
+                            {coupon.last_redeemed_at ? formatDate(coupon.last_redeemed_at, true) : 'Sem resgates'}
                           </td>
                         </tr>
                       ))}
@@ -1235,7 +1245,7 @@ export default function AdminPanel() {
                     <Input
                       value={userFilters.lastAccess}
                       onChange={(event) => setUserFilters((prev) => ({ ...prev, lastAccess: event.target.value }))}
-                      placeholder="dd/mm"
+                      placeholder="dd/mm/aaaa hh:mm:ss"
                     />
                   </div>
                   <div className="grid gap-2">
@@ -1301,7 +1311,7 @@ export default function AdminPanel() {
                             <td className="p-2">{user.subscription_status}</td>
                             <td className="p-2 text-center">{renderBooleanBadge(Boolean(user.coupon_generated))}</td>
                             <td className="p-2 text-center font-semibold">{user.usage_count ?? 0}</td>
-                            <td className="p-2">{formatDate(user.last_accessed_at)}</td>
+                            <td className="p-2">{formatDate(user.last_accessed_at, true)}</td>
                             <td className="p-2">{formatDate(user.created_at)}</td>
                             <td className="p-2 text-right">
                               <div className="flex flex-col gap-2 items-end">
