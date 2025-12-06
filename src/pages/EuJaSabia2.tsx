@@ -528,8 +528,8 @@ const EuJaSabia2 = () => {
         ? 'Usando o vídeo do admin'
         : 'Vídeo base padrão em uso';
 
-  const maskAssetBase = maskNumber ? `/numeros/${maskNumber}` : null;
-  const maskImageValue = maskAssetBase ? `url(${maskAssetBase}.svg), url(${maskAssetBase}.png)` : 'none';
+  const maskAssetPath = maskNumber ? `/numeros2/${maskNumber}.svg` : null;
+  const maskImageValue = maskAssetPath ? `url(${maskAssetPath})` : 'none';
   const hasMaskContent = Boolean(maskNumber) || (isEditingMask && Boolean(customVideoSrc));
   const isVideoReadyForMask = !videoStarted || isEditingMask || isMaskTimeReached;
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
@@ -614,7 +614,7 @@ const EuJaSabia2 = () => {
                       WebkitMaskSize: 'contain',
                       maskPosition: 'center',
                       WebkitMaskPosition: 'center',
-                      borderRadius: maskAssetBase ? '0' : '8px',
+                      borderRadius: maskAssetPath ? '0' : '8px',
                     }}
                   />
                 </div>
