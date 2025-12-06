@@ -212,7 +212,6 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-amber-400 via-pink-400 to-rose-500',
     minTier: 'INFLUENCER',
     difficulty: 5,
-    adminOnly: true,
   },
   {
     id: 'my-emojis',
@@ -243,7 +242,9 @@ const GameSelector = () => {
     }
   }, [usageData, navigate]);
 
-  const games = GAME_CARDS.filter((game) => game.id !== 'my-emojis').map((game) => {
+  const games = GAME_CARDS.filter(
+    (game) => game.id !== 'my-emojis' && game.id !== 'eu-ja-sabia'
+  ).map((game) => {
     const baseKey = `gameSelector.cards.${game.translationKey}`;
     return {
       ...game,
