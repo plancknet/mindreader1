@@ -32,7 +32,9 @@ const PontaCartaInstructions = () => {
       <style>{`
         @keyframes cardFlip180 {
           0% { transform: rotateZ(0deg); }
-          50% { transform: rotateZ(360deg); }
+          40% { transform: rotateZ(180deg); }
+          50% { transform: rotateZ(180deg); }
+          90% { transform: rotateZ(360deg); }
           100% { transform: rotateZ(360deg); }
         }
       `}</style>
