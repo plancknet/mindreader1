@@ -165,6 +165,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'mixDeCartas',
     icon: Shuffle,
     path: '/mind-reader/mix-de-cartas',
+    instructionsPath: '/mix-de-cartas/instrucoes',
     color: 'from-emerald-500 to-lime-500',
     minTier: 'FREE',
     difficulty: 3,

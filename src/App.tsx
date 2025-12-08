@@ -20,6 +20,7 @@ import StartPrompt from "./pages/MindReader/StartPrompt";
 import GamePlay from "./pages/MindReader/GamePlay";
 import { ChooseCard as MixDeCartasChoose } from "./pages/MindReader/MixDeCartas/ChooseCard";
 import { Reveal as MixDeCartasReveal } from "./pages/MindReader/MixDeCartas/Reveal";
+import MixDeCartasInstructions from "./pages/MixDeCartasInstructions";
 import PontaCarta from "./pages/PontaCarta";
 import Result from "./pages/MindReader/Result";
 import Instructions from "./pages/MindReader/Instructions";
@@ -239,6 +240,7 @@ const App = () => (
             <Route path="/mind-reader/instructions" element={<ProtectedRoute><Instructions /></ProtectedRoute>} />
             <Route path="/mind-reader/mix-de-cartas" element={<ProtectedRoute><MixDeCartasChoose /></ProtectedRoute>} />
             <Route path="/mind-reader/mix-de-cartas/reveal" element={<ProtectedRoute><MixDeCartasReveal /></ProtectedRoute>} />
+            <Route path="/mix-de-cartas/instrucoes" element={<ProtectedRoute><MixDeCartasInstructions /></ProtectedRoute>} />
             <Route path="/ponta-da-carta" element={<ProtectedRoute><PontaCarta /></ProtectedRoute>} />
             <Route path="/ponta-da-carta/instrucoes" element={<ProtectedRoute><PontaCartaInstructions /></ProtectedRoute>} />
             <Route path="/carta-mental" element={<ProtectedRoute><CartaMental /></ProtectedRoute>} />
