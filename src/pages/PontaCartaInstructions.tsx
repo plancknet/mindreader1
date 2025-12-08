@@ -31,9 +31,9 @@ const PontaCartaInstructions = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 px-4 py-8">
       <style>{`
         @keyframes cardFlip180 {
-          0% { transform: rotateY(0deg); }
-          50% { transform: rotateY(180deg); }
-          100% { transform: rotateY(360deg); }
+          0% { transform: rotateX(0deg); }
+          50% { transform: rotateX(180deg); }
+          100% { transform: rotateX(360deg); }
         }
       `}</style>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
