@@ -31,9 +31,8 @@ const PontaCartaInstructions = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 px-4 py-8">
       <style>{`
         @keyframes cardFlip180 {
-          0% { transform: rotateX(0deg); }
-          50% { transform: rotateX(180deg); }
-          100% { transform: rotateX(360deg); }
+          0% { transform: rotateZ(0deg); }
+          100% { transform: rotateZ(360deg); }
         }
       `}</style>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
@@ -67,7 +66,7 @@ const PontaCartaInstructions = () => {
                       className="relative mx-auto aspect-[7/10] w-full max-w-[120px] overflow-hidden rounded-2xl border border-primary/30 bg-black/40 shadow-lg shadow-primary/20"
                       style={{
                         animation: 'cardFlip180 3s linear infinite',
-                        transformStyle: 'preserve-3d',
+                        transformOrigin: 'center',
                       }}
                     >
                       {card.imageSrc ? (
