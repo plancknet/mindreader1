@@ -3,14 +3,16 @@ import { HeaderControls } from '@/components/HeaderControls';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
+import { getCardImageSrc } from '@/lib/cardImages';
+import type { SuitName } from '@/lib/cardImages';
 
 type RankId = 'J' | 'Q' | 'K';
 
-const suits = [
-  { id: 'spades', label: 'Espadas', tone: 'text-slate-100' },
-  { id: 'hearts', label: 'Copas', tone: 'text-rose-300' },
-  { id: 'diamonds', label: 'Ouros', tone: 'text-amber-200' },
-  { id: 'clubs', label: 'Paus', tone: 'text-emerald-200' },
+const suits: Array<{ id: SuitName; label: string }> = [
+  { id: 'spades', label: 'Espadas' },
+  { id: 'hearts', label: 'Copas' },
+  { id: 'diamonds', label: 'Ouros' },
+  { id: 'clubs', label: 'Paus' },
 ];
 
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
@@ -27,6 +29,14 @@ const paragraphsAfterGrid = [
 
 const RaspaCartaInstructions = () => {
   const navigate = useNavigate();
+  const cardButtons = suits.flatMap((suit) =>
+    rankColumns.map((rank) => ({
+      rank,
+      suit: suit.id,
+      label: `${rank} de ${suit.label}`,
+      imageSrc: getCardImageSrc(rank, suit.id),
+    })),
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 px-4 py-8">
@@ -57,20 +67,25 @@ const RaspaCartaInstructions = () => {
               <div className="relative aspect-[2/3] w-full max-w-xs rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.3),_rgba(17,24,39,0.95))] p-3 shadow-[0_20px_60px_rgba(15,23,42,0.6)]">
                 <div className="absolute inset-1 rounded-[28px] border border-white/20 bg-gradient-to-b from-slate-900/80 via-slate-900 to-slate-950" />
                 <div className="relative z-10 grid h-full grid-cols-3 grid-rows-4 gap-3 p-3">
-                  {suits.map((suit) =>
-                    rankColumns.map((rank) => (
-                      <button
-                        key={`${rank}-${suit.id}`}
-                        type="button"
-                        className="flex items-center justify-center rounded-2xl border border-primary/20 bg-white/10 px-2 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-primary/10"
-                        disabled
-                      >
-                        <span className={`${suit.tone}`}>
-                          {`${rank} de ${suit.label}`}
-                        </span>
-                      </button>
-                    )),
-                  )}
+                  {cardButtons.map((card) => (
+                    <button
+                      key={`${card.rank}-${card.suit}`}
+                      type="button"
+                      className="flex items-center justify-center rounded-2xl border border-primary/20 bg-white/10 text-center text-sm font-semibold text-white shadow-lg shadow-primary/10"
+                      disabled
+                    >
+                      {card.imageSrc ? (
+                        <img
+                          src={card.imageSrc}
+                          alt={card.label}
+                          className="h-full w-full rounded-2xl object-cover"
+                          draggable={false}
+                        />
+                      ) : (
+                        <span>{card.label}</span>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
