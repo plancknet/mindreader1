@@ -32,6 +32,7 @@ const exampleChosenCard = {
 };
 
 const readingDirection: 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT' = 'RIGHT_TO_LEFT';
+const slotValues = [32, 16, 8, 4, 2, 1];
 
 const rawSequenceData: Array<{ rank: string; suit: SuitName }> = [
   { rank: 'K', suit: 'diamonds' },
@@ -48,6 +49,7 @@ const MixDeCartasInstructions = () => {
   const binaryDigits = decimalToBinary6(exampleIndex).split('');
   const displayBits =
     readingDirection === 'LEFT_TO_RIGHT' ? binaryDigits : [...binaryDigits].reverse();
+  const slotValuesDisplay = readingDirection === 'LEFT_TO_RIGHT' ? slotValues : [...slotValues].reverse();
   const anchorIndex = readingDirection === 'LEFT_TO_RIGHT' ? 0 : rawSequenceData.length - 1;
   const directionLabel = readingDirection === 'LEFT_TO_RIGHT' ? 'Esquerda → Direita' : 'Direita → Esquerda';
 
@@ -84,7 +86,7 @@ const MixDeCartasInstructions = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-primary">Mix de Cartas</p>
           <h1 className="text-4xl font-bold text-foreground">Como o app codifica a carta escolhida</h1>
           <p className="text-muted-foreground">
-            Aprenda a converter a carta em um número, transformá-lo em bits e reconstruir a informação observando o mix.
+            Veja a matemática simples que transforma a carta em uma soma e como usar as cores do mix para desfazer o truque.
           </p>
         </div>
 
@@ -94,24 +96,24 @@ const MixDeCartasInstructions = () => {
               <h2 className="text-xl font-semibold text-foreground">Passo a passo</h2>
               <ol className="list-decimal space-y-3 pl-5">
                 <li>
-                  <strong>Transforme a carta em número 1-52.</strong> A ordem usada é: Espadas (A-K) = 1-13,
-                  Copas = 14-26, Ouros = 27-39 e Paus = 40-52. Exemplo: {exampleChosenCard.label} fica na posição{' '}
-                  <strong>{exampleIndex}</strong>.
+                  <strong>Transforme a carta em número 1-52.</strong> Some 13 para cada bloco de naipe até chegar ao desejado.
+                  Espadas valem 1-13, Copas começam em 14, Ouros em 27 e Paus em 40. Exemplo: {exampleChosenCard.label} fica na posição{' '}
+                  <strong>{exampleIndex}</strong> porque (Copas = 13 cartas antes) + posição do 7 dentro do naipe.
                 </li>
                 <li>
-                  <strong>Converta para binário de 6 bits.</strong> {exampleIndex.toString()} em binário é{' '}
-                  <code className="font-mono text-primary">{binaryDigits.join('')}</code>. Cada bit vira uma cor:
-                  vermelho para <code>1</code>, preto para <code>0</code>.
+                  <strong>Associe cada uma das 6 posições a um valor fixo.</strong> Seguindo o sentido escolhido pelo app,
+                  as cartas representam os valores {slotValuesDisplay.join(', ')} (começando em {directionLabel}). Você só precisa saber
+                  que sempre haverá os valores 32, 16, 8, 4, 2 e 1 colocados em linha.
                 </li>
                 <li>
-                  <strong>Descubra o sentido.</strong> O app escolhe aleatoriamente se lê os bits da esquerda para a direita
-                  ou o contrário. A dica é encontrar a <em>âncora</em>: a menor carta da linha. Ela sempre ocupa a extremidade
-                  de onde você deve iniciar a leitura.
+                  <strong>Descubra o sentido olhando a âncora.</strong> A menor carta em valor (normalmente um número baixo de Espadas)
+                  aparece na extremidade de onde você deve começar a ler. Se ela estiver à direita, leia da direita para a esquerda
+                  e atribua os valores nessa ordem; se estiver à esquerda, faça o contrário.
                 </li>
                 <li>
-                  <strong>Leia as cores e volte para o número.</strong> Percorra as seis cartas a partir da âncora,
-                  substituindo vermelho por 1 e preto por 0. Reconverta o binário para decimal e use a mesma tabela 1-52
-                  para revelar a carta.
+                  <strong>Soma das cores = número da carta.</strong> Percorra as seis cartas adicionando o valor da posição
+                  toda vez que ela for <span className="font-semibold text-destructive">vermelha</span>. Se a carta for preta,
+                  some zero. A soma final é exatamente o número 1-52 da carta escolhida — basta localizar na tabela do passo 1.
                 </li>
               </ol>
             </section>
@@ -119,10 +121,9 @@ const MixDeCartasInstructions = () => {
             <section className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">Exemplo animado</h3>
               <p>
-                No exemplo abaixo, a menor carta é o <strong>3 de Espadas</strong>, localizado à direita.
-                Isso significa que devemos ler <strong>{directionLabel}</strong>. A sequência de cores (1 = vermelho, 0 = preto)
-                gera novamente <code className="font-mono text-primary">{binaryDigits.join('')}</code>, que equivale ao
-                número <strong>{exampleIndex}</strong> ⇒ {exampleChosenCard.label}.
+                No exemplo abaixo, a menor carta é o <strong>3 de Espadas</strong>, localizado à direita, então aplicamos os valores
+                na ordem <strong>{directionLabel}</strong>. Somamos os valores exibidos nos cartões vermelhos
+                e ignoramos os pretos. A soma resultante é <strong>{exampleIndex}</strong>, o que nos leva de volta ao {exampleChosenCard.label}.
               </p>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -147,7 +148,7 @@ const MixDeCartasInstructions = () => {
                           <div className="flex h-full items-center justify-center text-sm text-white/70">{card.label}</div>
                         )}
                         <div className="absolute top-2 left-2 rounded-full bg-background/80 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-primary">
-                          bit {card.bit}
+                          {card.bit === '1' ? `+${slotValuesDisplay[index]}` : '+0'}
                         </div>
                         {card.isAnchor && (
                           <div className="absolute bottom-2 right-2 rounded-full bg-primary/80 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-background">
