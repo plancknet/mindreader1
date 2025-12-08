@@ -32,6 +32,7 @@ const PontaCartaInstructions = () => {
       <style>{`
         @keyframes cardFlip180 {
           0% { transform: rotateZ(0deg); }
+          50% { transform: rotateZ(360deg); }
           100% { transform: rotateZ(360deg); }
         }
       `}</style>
@@ -65,7 +66,7 @@ const PontaCartaInstructions = () => {
                     <div
                       className="relative mx-auto aspect-[7/10] w-full max-w-[120px] overflow-hidden rounded-2xl border border-primary/30 bg-black/40 shadow-lg shadow-primary/20"
                       style={{
-                        animation: 'cardFlip180 3s linear infinite',
+                        animation: 'cardFlip180 6s linear infinite',
                         transformOrigin: 'center',
                       }}
                     >
