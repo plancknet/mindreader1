@@ -271,6 +271,10 @@ export const it = {
         title: 'Le Tue Parole',
         description: 'Inserisci cinque parole personali per rivelare il segreto'
       },
+      cartaPensada: {
+        title: 'Carta Pensata',
+        description: 'Trucco classico di 21 carte per scoprire il pensiero'
+      },
       mentalConversation: {
         title: 'Conversazione Mentale',
         description: 'Conversa con un\'IA che prova a indovinare la tua parola'

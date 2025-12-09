@@ -271,6 +271,10 @@ export const es = {
         title: 'Tus Palabras',
         description: 'Introduce cinco palabras propias para revelar el secreto'
       },
+      cartaPensada: {
+        title: 'Carta Pensada',
+        description: 'Truco clásico de 21 cartas para descubrir el pensamiento'
+      },
       mentalConversation: {
         title: 'Conversación Mental',
         description: 'Conversa con una IA que intenta adivinar tu palabra'

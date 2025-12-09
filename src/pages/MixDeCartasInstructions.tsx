@@ -31,8 +31,9 @@ const exampleChosenCard = {
   label: '7 de Copas',
 };
 
-const readingDirection: 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT' = 'RIGHT_TO_LEFT';
+const readingDirection: string = 'RIGHT_TO_LEFT';
 const slotValues = [32, 16, 8, 4, 2, 1];
+const IS_LEFT_TO_RIGHT = readingDirection === 'LEFT_TO_RIGHT';
 
 const rawSequenceData: Array<{ rank: string; suit: SuitName }> = [
   { rank: 'K', suit: 'diamonds' },
@@ -47,11 +48,10 @@ const MixDeCartasInstructions = () => {
   const navigate = useNavigate();
   const exampleIndex = getCardIndex(exampleChosenCard.rank, exampleChosenCard.suit);
   const binaryDigits = decimalToBinary6(exampleIndex).split('');
-  const displayBits =
-    readingDirection === 'LEFT_TO_RIGHT' ? binaryDigits : [...binaryDigits].reverse();
-  const slotValuesDisplay = readingDirection === 'LEFT_TO_RIGHT' ? slotValues : [...slotValues].reverse();
-  const anchorIndex = readingDirection === 'LEFT_TO_RIGHT' ? 0 : rawSequenceData.length - 1;
-  const directionLabel = readingDirection === 'LEFT_TO_RIGHT' ? 'Esquerda → Direita' : 'Direita → Esquerda';
+  const displayBits = IS_LEFT_TO_RIGHT ? binaryDigits : [...binaryDigits].reverse();
+  const slotValuesDisplay = IS_LEFT_TO_RIGHT ? slotValues : [...slotValues].reverse();
+  const anchorIndex = IS_LEFT_TO_RIGHT ? 0 : rawSequenceData.length - 1;
+  const directionLabel = IS_LEFT_TO_RIGHT ? 'Esquerda → Direita' : 'Direita → Esquerda';
 
   const exampleSequence = useMemo(
     () =>
