@@ -39,7 +39,7 @@ const CartaMentalInstructions = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 px-4 py-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
-        <HeaderControls />
+        <HeaderControls showExtras />
 
         <div className="text-center space-y-3">
           <div className="flex justify-center">

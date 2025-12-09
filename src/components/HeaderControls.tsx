@@ -11,10 +11,10 @@ import { cn } from '@/lib/utils';
 
 interface HeaderControlsProps {
   className?: string;
-  onlyCouponsAndTheme?: boolean;
+  showExtras?: boolean;
 }
 
-export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: HeaderControlsProps) => {
+export const HeaderControls = ({ className, showExtras = false }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
@@ -22,24 +22,6 @@ export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: Heade
 
   const adminLabel = t('common.admin');
   const showCoupons = !isAdmin && tier === 'INFLUENCER' && status === 'active';
-
-  if (onlyCouponsAndTheme) {
-    return (
-      <div className={cn('flex flex-wrap items-center gap-2', className)}>
-        {showCoupons && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/influencer/coupon')}
-            className="font-medium"
-          >
-            Cupons
-          </Button>
-        )}
-        <ThemeToggle />
-      </div>
-    );
-  }
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
@@ -51,7 +33,7 @@ export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: Heade
         <ArrowLeft className="w-4 h-4" />
         {t('common.back')}
       </Button>
-      {isAdmin && (
+      {showExtras && isAdmin && (
         <Button
           variant="outline"
           size="sm"
@@ -61,7 +43,7 @@ export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: Heade
           {adminLabel === 'common.admin' ? 'Admin' : adminLabel}
         </Button>
       )}
-      {showCoupons && (
+      {showExtras && showCoupons && (
         <Button
           variant="outline"
           size="sm"
@@ -71,8 +53,8 @@ export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: Heade
           Cupons
         </Button>
       )}
-      <ThemeToggle />
-      <LanguageSelector />
+      {showExtras && <ThemeToggle />}
+      {showExtras && <LanguageSelector />}
       <LogoutButton />
     </div>
   );
