@@ -127,10 +127,6 @@ const CartaPensada = () => {
             Carta Pensada · Apenas para administradores
           </p>
           <h1 className="mt-2 text-4xl font-extrabold text-foreground">Pense em uma carta</h1>
-          <p className="mt-3 text-base text-muted-foreground">
-            Escolha mentalmente qualquer carta exibida abaixo e guarde-a em segredo. Em seguida, informe em qual coluna
-            ela aparece. Repetiremos isso {TOTAL_ROUNDS} vezes e a carta será encontrada automaticamente.
-          </p>
           <div className="mt-4 text-sm text-muted-foreground">
             {isComplete
               ? 'Processo concluído! Veja o resultado abaixo.'
@@ -138,7 +134,7 @@ const CartaPensada = () => {
           </div>
         </div>
 
-        <div className="grid gap-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-xl shadow-primary/5 backdrop-blur md:grid-cols-3">
+        <div className="grid grid-cols-3 gap-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-xl shadow-primary/5 backdrop-blur">
           {columns.map((column, columnIndex) => (
             <div key={columnIndex} className="space-y-4">
               <button
