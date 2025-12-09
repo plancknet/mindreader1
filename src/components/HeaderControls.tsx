@@ -11,9 +11,10 @@ import { cn } from '@/lib/utils';
 
 interface HeaderControlsProps {
   className?: string;
+  onlyCouponsAndTheme?: boolean;
 }
 
-export const HeaderControls = ({ className }: HeaderControlsProps) => {
+export const HeaderControls = ({ className, onlyCouponsAndTheme = false }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
@@ -21,6 +22,24 @@ export const HeaderControls = ({ className }: HeaderControlsProps) => {
 
   const adminLabel = t('common.admin');
   const showCoupons = !isAdmin && tier === 'INFLUENCER' && status === 'active';
+
+  if (onlyCouponsAndTheme) {
+    return (
+      <div className={cn('flex flex-wrap items-center gap-2', className)}>
+        {showCoupons && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/influencer/coupon')}
+            className="font-medium"
+          >
+            Cupons
+          </Button>
+        )}
+        <ThemeToggle />
+      </div>
+    );
+  }
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>

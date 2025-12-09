@@ -263,7 +263,7 @@ const GameSelector = () => {
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
       <div className="max-w-6xl w-full space-y-8">
         <div className="flex justify-end">
-          <HeaderControls />
+          <HeaderControls onlyCouponsAndTheme />
         </div>
 
         <div className="text-center space-y-4">
