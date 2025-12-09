@@ -175,6 +175,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'cartaPensada',
     icon: CardIcon,
     path: '/carta-pensada',
+    instructionsPath: '/carta-pensada/instrucoes',
     color: 'from-indigo-500 via-blue-500 to-cyan-500',
     minTier: 'FREE',
     difficulty: 5,
