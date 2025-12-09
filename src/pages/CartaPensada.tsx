@@ -115,6 +115,26 @@ const CartaPensada = () => {
     return null;
   }
 
+  if (isComplete && finalCard) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/15 px-4 py-6">
+        <div className="fixed top-4 right-4 z-20">
+          <HeaderControls />
+        </div>
+        <div className="flex min-h-screen items-center justify-center">
+          <Card className="aspect-[7/10] w-56 overflow-hidden rounded-3xl border border-primary/30 shadow-2xl shadow-primary/20">
+            <img
+              src={finalCard.imageSrc || '/placeholder.svg'}
+              alt={finalCard.label}
+              className="h-full w-full object-cover"
+              draggable={false}
+            />
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/15 px-4 py-6">
       <div className="fixed top-4 right-4 z-20">
@@ -123,11 +143,7 @@ const CartaPensada = () => {
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 pt-16 pb-10">
         <div className="rounded-3xl border border-primary/15 bg-background/80 p-6 text-center shadow-2xl shadow-primary/10 backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-primary">
-            Carta Pensada · Apenas para administradores
-          </p>
-          <h1 className="mt-2 text-4xl font-extrabold text-foreground">Pense em uma carta</h1>
-          <div className="mt-4 text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground">
             {isComplete
               ? 'Processo concluído! Veja o resultado abaixo.'
               : `Rodada ${round} de ${TOTAL_ROUNDS} · Toque na coluna correta.`}
@@ -137,18 +153,6 @@ const CartaPensada = () => {
         <div className="grid grid-cols-3 gap-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-xl shadow-primary/5 backdrop-blur">
           {columns.map((column, columnIndex) => (
             <div key={columnIndex} className="space-y-4">
-              <button
-                type="button"
-                disabled={isProcessing || isComplete}
-                onClick={() => processSelection(columnIndex)}
-                className={`w-full rounded-2xl border px-4 py-2 text-sm font-semibold uppercase tracking-[0.4em] transition ${
-                  selectedColumn === columnIndex
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-white/10 bg-background/60 text-muted-foreground hover:border-primary/40'
-                }`}
-              >
-                Coluna {columnIndex + 1}
-              </button>
               <div
                 className={`grid gap-2 rounded-2xl border border-white/10 p-3 shadow-inner ${
                   selectedColumn === columnIndex ? 'ring-2 ring-primary/50' : ''
@@ -172,39 +176,21 @@ const CartaPensada = () => {
                   </Card>
                 ))}
               </div>
+              <button
+                type="button"
+                disabled={isProcessing}
+                onClick={() => processSelection(columnIndex)}
+                className={`w-full rounded-2xl border px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] transition ${
+                  selectedColumn === columnIndex
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-white/10 bg-background/60 text-muted-foreground hover:border-primary/40'
+                }`}
+              >
+                Coluna {columnIndex + 1}
+              </button>
             </div>
           ))}
         </div>
-
-        <div className="rounded-3xl border border-primary/10 bg-card/60 p-6 text-center text-sm text-muted-foreground">
-          <p>
-            Passos resumidos: escolha mentalmente uma carta → informe a coluna → agrupamos as pilhas (coluna escolhida
-            sempre no meio) → giramos a pilha completa → redistribuímos nas três colunas.
-          </p>
-          <p className="mt-3">
-            Após {TOTAL_ROUNDS} repetições, a carta pensada estará na 11ª posição do baralho virtual (linha 4, coluna 2).
-          </p>
-        </div>
-
-        {isComplete && finalCard && (
-          <div className="rounded-3xl border border-emerald-500/40 bg-emerald-500/5 p-6 text-center shadow-lg shadow-emerald-500/20">
-            <p className="text-xs uppercase tracking-[0.4em] text-emerald-400">Carta encontrada</p>
-            <h2 className="mt-2 text-3xl font-bold text-foreground">{finalCard.label}</h2>
-            <p className="mt-2 text-muted-foreground">
-              Ela ocupou naturalmente a 11ª posição após as três reorganizações.
-            </p>
-            <div className="mx-auto mt-4 flex max-w-xs justify-center">
-              <Card className="aspect-[7/10] w-40 overflow-hidden rounded-2xl border border-emerald-500/40 shadow-2xl">
-                <img
-                  src={finalCard.imageSrc || '/placeholder.svg'}
-                  alt={finalCard.label}
-                  className="h-full w-full object-cover"
-                  draggable={false}
-                />
-              </Card>
-            </div>
-          </div>
-        )}
 
         <div className="flex flex-wrap justify-center gap-3">
           <Button variant="outline" onClick={initializeGame} disabled={isProcessing}>
