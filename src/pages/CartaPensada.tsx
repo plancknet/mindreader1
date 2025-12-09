@@ -4,8 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
-import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { useNavigate } from 'react-router-dom';
 import { GAME_IDS } from '@/constants/games';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
@@ -65,15 +63,7 @@ const CartaPensada = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<number | null>(null);
-  const { isAdmin, isLoading } = useIsAdmin();
-  const navigate = useNavigate();
   const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.CARTA_PENSADA);
-
-  useEffect(() => {
-    if (!isLoading && !isAdmin) {
-      navigate('/game-selector');
-    }
-  }, [isAdmin, isLoading, navigate]);
 
   const initializeGame = useCallback(() => {
     setDeck(getRandomDeck());

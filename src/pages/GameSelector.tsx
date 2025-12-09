@@ -116,7 +116,6 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-indigo-500 via-blue-500 to-cyan-500',
     minTier: 'FREE',
     difficulty: 1,
-    adminOnly: true,
   },
   {
     id: 'ponta-da-carta',
