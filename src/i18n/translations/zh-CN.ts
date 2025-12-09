@@ -271,6 +271,10 @@ export const zhCN = {
         title: 'Suas Palavras',
         description: '输入五个私人的单词来揭示秘密'
       },
+      cartaPensada: {
+        title: '心中之牌',
+        description: '经典21张牌魔术揭示心中所想'
+      },
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'

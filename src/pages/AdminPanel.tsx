@@ -73,6 +73,7 @@ const GAME_USAGE_CONFIG = [
   { id: GAME_IDS.EU_JA_SABIA, label: 'Eu Já Sabia', initials: 'EJS' },
   { id: GAME_IDS.EU_JA_SABIA_2, label: 'Eu Já Sabia 2', initials: 'EJS2' },
   { id: GAME_IDS.MY_EMOJIS, label: 'Meus Emojis', initials: 'ME' },
+  { id: GAME_IDS.CARTA_PENSADA, label: 'Carta Pensada', initials: 'CP' },
 ] as const;
 
 const createInitialGameUsageFilters = () =>

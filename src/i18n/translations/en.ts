@@ -271,6 +271,10 @@ export const en = {
         title: 'Your Words',
         description: 'Enter five personal words to reveal the secret'
       },
+      cartaPensada: {
+        title: 'Thought Card',
+        description: 'Classic 21-card trick to discover the thought'
+      },
       mentalConversation: {
         title: 'Mental Conversation',
         description: 'Chat with an AI that tries to guess your word'

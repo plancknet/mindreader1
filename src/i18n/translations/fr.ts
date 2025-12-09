@@ -271,6 +271,10 @@ export const fr = {
         title: 'Vos Mots',
         description: 'Saisissez cinq mots personnels pour révéler le secret'
       },
+      cartaPensada: {
+        title: 'Carte Pensée',
+        description: 'Tour classique de 21 cartes pour découvrir la pensée'
+      },
       mentalConversation: {
         title: 'Conversation Mentale',
         description: 'Discutez avec une IA qui tente de deviner votre mot'

@@ -101,10 +101,6 @@ const CartaPensada = () => {
     }, 600);
   };
 
-  if (!isAdmin && !isLoading) {
-    return null;
-  }
-
   if (isComplete && finalCard) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/15 px-4 py-6">
