@@ -46,6 +46,7 @@ import PapoReto from "./pages/PapoReto";
 import EuJaSabia from "./pages/EuJaSabia";
 import EuJaSabia2 from "./pages/EuJaSabia2";
 import PontaCartaInstructions from "./pages/PontaCartaInstructions";
+import CartaPensada from "./pages/CartaPensada";
 
 const queryClient = new QueryClient();
 
@@ -249,6 +250,7 @@ const App = () => (
             <Route path="/raspa-carta/instrucoes" element={<ProtectedRoute><RaspaCartaInstructions /></ProtectedRoute>} />
             <Route path="/suas-palavras" element={<ProtectedRoute><SuasPalavras /></ProtectedRoute>} />
             <Route path="/suas-palavras/instrucoes" element={<ProtectedRoute><SuasPalavrasInstructions /></ProtectedRoute>} />
+            <Route path="/carta-pensada" element={<ProtectedRoute><CartaPensada /></ProtectedRoute>} />
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><EuJaSabia2 /></ProtectedRoute>} />

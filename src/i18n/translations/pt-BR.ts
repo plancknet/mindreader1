@@ -268,6 +268,10 @@ export const ptBR = {
         title: 'Suas Palavras',
         description: 'Use cinco palavras pessoais para revelar o segredo'
       },
+      cartaPensada: {
+        title: 'Carta Pensada',
+        description: 'Truque clássico com 21 cartas para descobrir o pensamento'
+      },
       mentalConversation: {
         title: 'Conversa Mental',
         description: 'Converse com uma IA que tenta adivinhar sua palavra'

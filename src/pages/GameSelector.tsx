@@ -171,6 +171,16 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 3,
   },
   {
+    id: 'carta-pensada',
+    translationKey: 'cartaPensada',
+    icon: CardIcon,
+    path: '/carta-pensada',
+    color: 'from-indigo-500 via-blue-500 to-cyan-500',
+    minTier: 'FREE',
+    difficulty: 5,
+    adminOnly: true,
+  },
+  {
     id: 'carta-mental',
     translationKey: 'cartaMental',
     icon: CardIcon,

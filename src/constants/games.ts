@@ -12,6 +12,7 @@ export const GAME_IDS = {
   SUAS_PALAVRAS: 10,
   PONTA_DA_CARTA: 11,
   EU_JA_SABIA_2: 12,
+  CARTA_PENSADA: 13,
 } as const;
 
 export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];
