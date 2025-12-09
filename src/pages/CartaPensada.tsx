@@ -157,10 +157,16 @@ const CartaPensada = () => {
                 className={`grid gap-2 rounded-2xl border border-white/10 p-3 shadow-inner ${
                   selectedColumn === columnIndex ? 'ring-2 ring-primary/50' : ''
                 }`}
-                style={{ gridTemplateRows: 'repeat(7, minmax(0, 1fr))' }}
+                style={{
+                  gridTemplateRows: 'repeat(7, minmax(0, 1fr))',
+                  gridAutoRows: '1fr',
+                }}
               >
                 {column.map((card) => (
-                  <Card key={`${card.rank}-${card.suit}`} className="aspect-[7/10] overflow-hidden rounded-lg">
+                  <Card
+                    key={`${card.rank}-${card.suit}`}
+                    className="mx-auto aspect-[7/10] w-full max-w-[70px] overflow-hidden rounded-lg border border-white/5 shadow-sm shadow-black/20 sm:max-w-[80px]"
+                  >
                     <img
                       src={card.imageSrc || '/placeholder.svg'}
                       alt={card.label}
