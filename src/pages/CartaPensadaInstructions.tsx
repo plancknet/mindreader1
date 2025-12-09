@@ -6,11 +6,9 @@ import { Sparkles } from 'lucide-react';
 
 const steps = [
   'Peça para a pessoa pensar em qualquer carta exibida nas três colunas e guardar somente na mente.',
-  'Pergunte em qual das colunas a carta aparece. Este será o único input visível.',
-  'Empilhe cada coluna mantendo a ordem mostrada (a carta superior da coluna vira a base da pilha).',
-  'Monte a pilha principal colocando uma pilha não escolhida em primeiro, a pilha escolhida no meio e a outra não escolhida no final.',
-  'Vire a pilha inteira (como se mostrasse o verso da carta inferior) e redistribua nas três colunas, carta por carta, sempre da esquerda para a direita.',
-  'Repita esse processo por três rodadas. Depois disso, a carta pensada estará automaticamente na 11ª posição (linha 4, coluna 2).',
+  'Pergunte em qual das colunas a carta aparece.',
+  'As cartas serão redistribuídas. Peça para ele selecionar a coluna novamente e novamente.',
+  'A carta pensada será revelada.'
 ];
 
 const CartaPensadaInstructions = () => {

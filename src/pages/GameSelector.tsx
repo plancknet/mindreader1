@@ -108,6 +108,17 @@ const LevelBars = ({ level }: { level: number }) => {
 
 const GAME_CARDS: GameCard[] = [
   {
+    id: 'carta-pensada',
+    translationKey: 'cartaPensada',
+    icon: CardIcon,
+    path: '/carta-pensada',
+    instructionsPath: '/carta-pensada/instrucoes',
+    color: 'from-indigo-500 via-blue-500 to-cyan-500',
+    minTier: 'FREE',
+    difficulty: 1,
+    adminOnly: true,
+  },
+  {
     id: 'ponta-da-carta',
     translationKey: 'pontaCarta',
     icon: CardIcon,
@@ -169,17 +180,6 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-emerald-500 to-lime-500',
     minTier: 'FREE',
     difficulty: 3,
-  },
-  {
-    id: 'carta-pensada',
-    translationKey: 'cartaPensada',
-    icon: CardIcon,
-    path: '/carta-pensada',
-    instructionsPath: '/carta-pensada/instrucoes',
-    color: 'from-indigo-500 via-blue-500 to-cyan-500',
-    minTier: 'FREE',
-    difficulty: 5,
-    adminOnly: true,
   },
   {
     id: 'carta-mental',
