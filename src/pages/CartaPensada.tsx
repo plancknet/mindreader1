@@ -142,14 +142,6 @@ const CartaPensada = () => {
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 pt-16 pb-10">
-        <div className="rounded-3xl border border-primary/15 bg-background/80 p-6 text-center shadow-2xl shadow-primary/10 backdrop-blur">
-          <div className="text-sm text-muted-foreground">
-            {isComplete
-              ? 'Processo concluído! Veja o resultado abaixo.'
-              : `Rodada ${round} de ${TOTAL_ROUNDS} · Toque na coluna correta.`}
-          </div>
-        </div>
-
         <div className="grid grid-cols-3 gap-4 rounded-3xl border border-primary/10 bg-card/80 p-6 shadow-xl shadow-primary/5 backdrop-blur">
           {columns.map((column, columnIndex) => (
             <div key={columnIndex} className="space-y-4">
@@ -165,7 +157,7 @@ const CartaPensada = () => {
                 {column.map((card) => (
                   <Card
                     key={`${card.rank}-${card.suit}`}
-                    className="mx-auto aspect-[7/10] w-full max-w-[70px] overflow-hidden rounded-lg border border-white/5 shadow-sm shadow-black/20 sm:max-w-[80px]"
+                    className="mx-auto aspect-[7/10] w-full max-w-[60px] overflow-hidden rounded-lg border border-white/5 shadow-sm shadow-black/20 sm:max-w-[68px]"
                   >
                     <img
                       src={card.imageSrc || '/placeholder.svg'}
@@ -180,13 +172,13 @@ const CartaPensada = () => {
                 type="button"
                 disabled={isProcessing}
                 onClick={() => processSelection(columnIndex)}
-                className={`w-full rounded-2xl border px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] transition ${
+                className={`w-full rounded-2xl border px-4 py-2 text-lg font-semibold transition ${
                   selectedColumn === columnIndex
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-white/10 bg-background/60 text-muted-foreground hover:border-primary/40'
                 }`}
               >
-                Coluna {columnIndex + 1}
+                ↑
               </button>
             </div>
           ))}
