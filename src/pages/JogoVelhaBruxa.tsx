@@ -106,8 +106,8 @@ const JogoVelhaBruxa = () => {
   }, [isFinished, winner]);
 
   const renderCellContent = (value: CellValue) => {
-    if (value === 'user') return 'X';
-    if (value === 'ai') return 'O';
+    if (value === 'ai') return 'X';
+    if (value === 'user') return 'O';
     return '';
   };
 
