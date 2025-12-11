@@ -31,7 +31,7 @@ const NEWS_ARTICLES = [
   },
 ];
 
-type Stage = 'search' | 'results' | 'images' | 'scrolled' | 'reveal';
+type Stage = 'search' | 'results' | 'images' | 'reveal';
 type Tab = 'all' | 'images' | 'news' | 'videos';
 
 export default function GoogleMime() {
@@ -41,7 +41,6 @@ export default function GoogleMime() {
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCelebrity, setSelectedCelebrity] = useState<Celebrity | null>(null);
-  const [hasScrolled, setHasScrolled] = useState(false);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
@@ -68,23 +67,12 @@ export default function GoogleMime() {
     // No visual feedback - this is the magic trick!
   }, []);
 
-  // Handle scroll detection
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    if ((stage === 'results' || stage === 'images') && selectedCelebrity && !hasScrolled) {
-      const target = e.currentTarget;
-      if (target.scrollTop > 150) {
-        setHasScrolled(true);
-        setStage('scrolled');
-      }
-    }
-  }, [stage, selectedCelebrity, hasScrolled]);
-
   // Handle link click - reveal the selected image
   const handleLinkClick = useCallback(() => {
-    if (!selectedCelebrity || !hasScrolled) return;
+    if (!selectedCelebrity) return;
     trackUsage();
     setStage('reveal');
-  }, [selectedCelebrity, hasScrolled, trackUsage]);
+  }, [selectedCelebrity, trackUsage]);
 
   // Handle tab change
   const handleTabChange = (tab: Tab) => {
@@ -544,7 +532,6 @@ export default function GoogleMime() {
       {/* Scrollable Content */}
       <div 
         className="flex-1 overflow-y-auto bg-[#f8f9fa]"
-        onScroll={handleScroll}
       >
         {/* Images Tab Content - Masonry Layout */}
         {(activeTab === 'images' || stage === 'images') && (
@@ -556,7 +543,7 @@ export default function GoogleMime() {
                 {getInfiniteCards().filter((_, i) => i % 2 === 0).map((card) => (
                   <div
                     key={card.uniqueKey}
-                    className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                    className={`bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition ring-offset-2 ${selectedCelebrity?.id === card.id ? 'ring-4 ring-[#1A73E8]/80 shadow-lg' : 'ring-transparent'}`}
                     onDoubleClick={() => handleImageDoubleClick(card)}
                     onClick={handleLinkClick}
                   >
@@ -588,7 +575,7 @@ export default function GoogleMime() {
                 {getInfiniteCards().filter((_, i) => i % 2 === 1).map((card) => (
                   <div
                     key={card.uniqueKey}
-                    className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                    className={`bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition ring-offset-2 ${selectedCelebrity?.id === card.id ? 'ring-4 ring-[#1A73E8]/80 shadow-lg' : 'ring-transparent'}`}
                     onDoubleClick={() => handleImageDoubleClick(card)}
                     onClick={handleLinkClick}
                   >
@@ -641,7 +628,7 @@ export default function GoogleMime() {
                 {CELEBRITIES.slice(0, 6).map((celebrity) => (
                   <div
                     key={celebrity.id}
-                    className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer"
+                    className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer border-4 transition ${selectedCelebrity?.id === celebrity.id ? 'border-[#1A73E8]' : 'border-transparent'}`}
                     onDoubleClick={() => handleImageDoubleClick(celebrity)}
                   >
                     <img
@@ -662,7 +649,7 @@ export default function GoogleMime() {
               {SEARCH_RESULTS.map((result, index) => (
                 <div 
                   key={index}
-                  className={`cursor-pointer ${hasScrolled ? 'hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded' : ''}`}
+                  className="cursor-pointer hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded transition"
                   onClick={handleLinkClick}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -695,7 +682,6 @@ export default function GoogleMime() {
           </div>
         )}
 
-        {/* Scroll indicator when celebrity is selected but not scrolled yet */}
       </div>
 
       {/* Bottom Navigation */}
