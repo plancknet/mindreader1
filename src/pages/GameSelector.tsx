@@ -128,6 +128,15 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 1,
   },
   {
+    id: 'oi-sumida',
+    translationKey: 'oiSumida',
+    icon: CardIcon,
+    path: '/oi-sumida',
+    color: 'from-rose-500 via-pink-500 to-orange-400',
+    minTier: 'FREE',
+    difficulty: 1,
+  },
+  {
     id: 'mystery-word',
     translationKey: 'mysteryWord',
     icon: Sparkles,

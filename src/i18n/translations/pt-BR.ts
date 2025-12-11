@@ -256,6 +256,10 @@ export const ptBR = {
         title: 'Ponta da Carta',
         description: 'Selecione cartas especiais e revele apenas a ponta'
       },
+      oiSumida: {
+        title: 'Oi Sumida',
+        description: 'Grid de cartas com embaralhamento instantÇ­neo'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Conecte a mente do seu amigo e descubra a carta'

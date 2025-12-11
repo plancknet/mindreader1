@@ -48,6 +48,7 @@ import EuJaSabia2 from "./pages/EuJaSabia2";
 import PontaCartaInstructions from "./pages/PontaCartaInstructions";
 import CartaPensada from "./pages/CartaPensada";
 import CartaPensadaInstructions from "./pages/CartaPensadaInstructions";
+import OiSumida from "./pages/OiSumida";
 
 const queryClient = new QueryClient();
 
@@ -256,6 +257,7 @@ const App = () => (
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><EuJaSabia2 /></ProtectedRoute>} />
+            <Route path="/oi-sumida" element={<ProtectedRoute><OiSumida /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
