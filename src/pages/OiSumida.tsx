@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { HeaderControls } from '@/components/HeaderControls';
 import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
 
 type CardDefinition = {
@@ -66,6 +67,9 @@ const OiSumida = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background px-4 py-8 flex items-center justify-center">
       <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-end">
+          <HeaderControls showExtras />
+        </div>
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight">Oi Sumida</h1>
         </div>

@@ -260,6 +260,10 @@ export const ptBR = {
         title: 'Oi Sumida',
         description: 'Grid de cartas com embaralhamento instantÇ­neo'
       },
+      jogoVelhaBruxa: {
+        title: 'Jogo da Velha Bruxa',
+        description: 'Desafie a bruxa em um duelo m?stico de X e O'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Conecte a mente do seu amigo e descubra a carta'

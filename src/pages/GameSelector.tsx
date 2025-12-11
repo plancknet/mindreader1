@@ -11,6 +11,7 @@ import {
   Smile,
   Shuffle,
   Play,
+  Wand2,
   type LucideProps,
 } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
@@ -135,6 +136,15 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-rose-500 via-pink-500 to-orange-400',
     minTier: 'FREE',
     difficulty: 1,
+  },
+  {
+    id: 'jogo-da-velha-bruxa',
+    translationKey: 'jogoVelhaBruxa',
+    icon: Wand2,
+    path: '/jogo-da-velha-bruxa',
+    color: 'from-slate-700 via-indigo-700 to-purple-700',
+    minTier: 'FREE',
+    difficulty: 2,
   },
   {
     id: 'mystery-word',
