@@ -155,7 +155,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-orange-500 to-red-500',
     badgeKey: undefined,
     minTier: 'FREE',
-    difficulty: 1,
+    difficulty: 2,
   },
   {
     id: 'suas-palavras',
@@ -165,7 +165,7 @@ const GAME_CARDS: GameCard[] = [
     instructionsPath: '/suas-palavras/instrucoes',
     color: 'from-rose-400 via-pink-500 to-purple-600',
     minTier: 'FREE',
-    difficulty: 1,
+    difficulty: 2,
   },
   {
     id: 'mind-reader',
@@ -278,15 +278,22 @@ const GameSelector = () => {
 
   const games = GAME_CARDS.filter(
     (game) => game.id !== 'my-emojis' && game.id !== 'eu-ja-sabia'
-  ).map((game) => {
-    const baseKey = `gameSelector.cards.${game.translationKey}`;
-    return {
-      ...game,
-      title: t(`${baseKey}.title`),
-      description: t(`${baseKey}.description`),
-      badge: game.badgeKey ? t(`gameSelector.${game.badgeKey}`) : undefined,
-    };
-  });
+  )
+    .map((game) => {
+      const baseKey = `gameSelector.cards.${game.translationKey}`;
+      return {
+        ...game,
+        title: t(`${baseKey}.title`),
+        description: t(`${baseKey}.description`),
+        badge: game.badgeKey ? t(`gameSelector.${game.badgeKey}`) : undefined,
+      };
+    })
+    .sort((a, b) => {
+      if (a.difficulty === b.difficulty) {
+        return a.title.localeCompare(b.title);
+      }
+      return a.difficulty - b.difficulty;
+    });
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
