@@ -37,6 +37,18 @@ const getWinner = (board: CellValue[]): CellValue => {
   return null;
 };
 
+const isLosingMove = (board: CellValue[]): boolean => {
+  return winningLines.some((line) => {
+    let aiCount = 0;
+    let emptyCount = 0;
+    line.forEach((index) => {
+      if (board[index] === 'ai') aiCount += 1;
+      if (board[index] === null) emptyCount += 1;
+    });
+    return aiCount === 2 && emptyCount === 1;
+  });
+};
+
 const findNextAvailable = (order: number[], fromIndex: number, board: CellValue[]): number | null => {
   const start = order.indexOf(fromIndex);
   if (start === -1) {
@@ -59,13 +71,20 @@ const JogoVelhaBruxa = () => {
 
   const handleCellClick = (index: number) => {
     if (board[index] || isFinished) {
-      setStatusMessage('Movimento perdedor! Reveja o movimento.');
+      setStatusMessage('Essa posição já foi usada. Escolha outra.');
+      return;
+    }
+
+    const tentativeBoard = [...board];
+    tentativeBoard[index] = 'user';
+
+    if (isLosingMove(tentativeBoard)) {
+      setStatusMessage('Esse movimento faria você perder. Escolha outro.');
       return;
     }
 
     setStatusMessage(null);
-    const updatedBoard = [...board];
-    updatedBoard[index] = 'user';
+    let updatedBoard = tentativeBoard;
     let currentWinner = getWinner(updatedBoard);
     if (currentWinner || isBoardFull(updatedBoard)) {
       setBoard(updatedBoard);
