@@ -8,28 +8,27 @@ type CardDefinition = {
   suit: SuitName;
 };
 
-const initialDeck: CardDefinition[] = [
+const BASE_DECK: CardDefinition[] = [
+  { rank: 'A', label: 'A de paus', suit: 'clubs' },
+  { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
+  { rank: 'J', label: 'J de espada', suit: 'spades' },
+  { rank: 'K', label: 'K de ouros', suit: 'diamonds' },
+  { rank: '5', label: '5 de espada', suit: 'spades' },
+  { rank: 'A', label: 'A de copas', suit: 'hearts' },
+  { rank: 'Q', label: 'Q de paus', suit: 'clubs' },
+  { rank: 'J', label: 'J de copas', suit: 'hearts' },
+  { rank: 'K', label: 'K de espada', suit: 'spades' },
+];
+
+const OI_SUMIDA_DECK: CardDefinition[] = [
   { rank: 'A', label: 'A de espada', suit: 'spades' },
   { rank: 'Q', label: 'Q de ouros', suit: 'diamonds' },
   { rank: 'J', label: 'J de paus', suit: 'clubs' },
   { rank: 'K', label: 'K de copas', suit: 'hearts' },
-  { rank: '5', label: '5 de espada', suit: 'spades' },
-  { rank: 'J', label: 'J de espada', suit: 'spades' },
-  { rank: 'K', label: 'K de ouros', suit: 'diamonds' },
   { rank: 'A', label: 'A de paus', suit: 'clubs' },
   { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
-];
-
-const oiSumidaDeck: CardDefinition[] = [
-  { rank: 'A', label: 'A de paus', suit: 'clubs' },
-  { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
-  { rank: 'J', label: 'J de espadas', suit: 'spades' },
-  { rank: 'K', label: 'K de ouros', suit: 'diamonds' },
-  { rank: '5', label: '5 de paus', suit: 'clubs' },
-  { rank: 'J', label: 'J de paus', suit: 'clubs' },
-  { rank: 'K', label: 'K de copas', suit: 'hearts' },
-  { rank: 'A', label: 'A de espadas', suit: 'spades' },
-  { rank: 'Q', label: 'Q de ouros', suit: 'diamonds' },
+  { rank: 'J', label: 'J de ouros', suit: 'diamonds' },
+  { rank: 'K', label: 'K de paus', suit: 'clubs' },
 ];
 
 const shuffleCards = (cards: CardDefinition[]) => {
@@ -42,15 +41,27 @@ const shuffleCards = (cards: CardDefinition[]) => {
 };
 
 const OiSumida = () => {
-  const [cards, setCards] = useState<CardDefinition[]>(initialDeck);
+  const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
+  const [isOiSumidaActive, setIsOiSumidaActive] = useState(false);
 
-  const handleShuffle = () => {
+  const handlePrimaryButton = () => {
+    if (isOiSumidaActive) {
+      setCards([...BASE_DECK]);
+      setIsOiSumidaActive(false);
+      return;
+    }
     setCards((prev) => shuffleCards(prev));
   };
 
   const handleOiSumida = () => {
-    setCards([...oiSumidaDeck]);
+    setCards([...OI_SUMIDA_DECK]);
+    setIsOiSumidaActive(true);
   };
+
+  const displayCards: (CardDefinition | null)[] =
+    cards.length === 9
+      ? cards
+      : [...cards, ...Array.from({ length: 9 - cards.length }, () => null)];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background px-4 py-8 flex items-center justify-center">
@@ -60,8 +71,8 @@ const OiSumida = () => {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button className="w-full" onClick={handleShuffle}>
-            Embaralhar
+          <Button className="w-full" onClick={handlePrimaryButton}>
+            {isOiSumidaActive ? 'Reiniciar' : 'Embaralhar'}
           </Button>
           <Button variant="secondary" className="w-full" onClick={handleOiSumida}>
             Oi Sumida
@@ -69,12 +80,22 @@ const OiSumida = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          {cards.map((card) => {
+          {displayCards.map((card, index) => {
+            if (!card) {
+              return (
+                <div
+                  key={`placeholder-${index}`}
+                  className="rounded-2xl border border-transparent"
+                  style={{ aspectRatio: '2 / 3' }}
+                  aria-hidden="true"
+                />
+              );
+            }
             const imageSrc = getCardImageSrc(card.rank, card.suit);
             return (
               <div
-                key={`${card.label}-${card.rank}-${card.suit}`}
-                className="rounded-2xl border border-border bg-white/90 shadow-[0_12px_35px_rgba(15,23,42,0.1)] p-1 flex items-center justify-center"
+                key={`${card.rank}-${card.suit}-${index}`}
+                className="rounded-2xl border border-border bg-black shadow-[0_12px_35px_rgba(15,23,42,0.25)] p-1 flex items-center justify-center"
                 style={{ aspectRatio: '2 / 3' }}
               >
                 {imageSrc ? (
