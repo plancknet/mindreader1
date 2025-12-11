@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
@@ -96,7 +95,6 @@ const findSafeMove = (order: number[], fromIndex: number, board: CellValue[]): n
 };
 
 const JogoVelhaBruxa = () => {
-  const navigate = useNavigate();
   const [board, setBoard] = useState<CellValue[]>(createInitialBoard);
   const [winner, setWinner] = useState<CellValue>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -172,15 +170,6 @@ const JogoVelhaBruxa = () => {
       <div className="w-full max-w-md space-y-6">
         <div className="flex justify-end">
           <HeaderControls showExtras />
-        </div>
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            className="border-white/30 text-white hover:bg-white/10"
-            onClick={() => navigate('/jogo-da-velha-bruxa/instrucoes')}
-          >
-            Ver instruções
-          </Button>
         </div>
         <div className="text-center space-y-2">
           <p className="text-sm text-slate-300 uppercase tracking-[0.3em]">Jogo da Velha</p>

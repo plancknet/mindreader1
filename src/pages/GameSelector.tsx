@@ -142,6 +142,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'jogoVelhaBruxa',
     icon: Wand2,
     path: '/jogo-da-velha-bruxa',
+    instructionsPath: '/jogo-da-velha-bruxa/instrucoes',
     color: 'from-slate-700 via-indigo-700 to-purple-700',
     minTier: 'FREE',
     difficulty: 2,
