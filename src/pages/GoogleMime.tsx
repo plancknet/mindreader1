@@ -328,6 +328,8 @@ export default function GoogleMime() {
 
   // Reveal stage - Show Wikipedia-style page for selected celebrity
   if (stage === 'reveal' && selectedCelebrity) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
     // Related celebrities for the bottom section
     const relatedCelebrities = CELEBRITIES.filter(c => c.id !== selectedCelebrity.id).slice(0, 4);
     
