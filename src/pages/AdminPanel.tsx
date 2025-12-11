@@ -74,6 +74,8 @@ const GAME_USAGE_CONFIG = [
   { id: GAME_IDS.EU_JA_SABIA_2, label: 'Eu Já Sabia 2', initials: 'EJS2' },
   { id: GAME_IDS.MY_EMOJIS, label: 'Meus Emojis', initials: 'ME' },
   { id: GAME_IDS.CARTA_PENSADA, label: 'Carta Pensada', initials: 'CP' },
+  { id: GAME_IDS.OI_SUMIDA, label: 'Oi Sumida', initials: 'OS' },
+  { id: GAME_IDS.JOGO_VELHA_BRUXA, label: 'Jogo da Velha Bruxa', initials: 'JVB' },
 ] as const;
 
 const createInitialGameUsageFilters = () =>

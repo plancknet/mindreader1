@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { HeaderControls } from '@/components/HeaderControls';
 import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
+import { GAME_IDS } from '@/constants/games';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 
 type CardDefinition = {
   rank: string;
@@ -44,17 +46,21 @@ const shuffleCards = (cards: CardDefinition[]) => {
 const OiSumida = () => {
   const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
   const [isOiSumidaActive, setIsOiSumidaActive] = useState(false);
+  const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.OI_SUMIDA);
 
   const handlePrimaryButton = () => {
     if (isOiSumidaActive) {
       setCards([...BASE_DECK]);
       setIsOiSumidaActive(false);
+      resetUsageTracking();
       return;
     }
+    trackUsage();
     setCards((prev) => shuffleCards(prev));
   };
 
   const handleOiSumida = () => {
+    trackUsage();
     setCards([...OI_SUMIDA_DECK]);
     setIsOiSumidaActive(true);
   };

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { HeaderControls } from '@/components/HeaderControls';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
+import { GAME_IDS } from '@/constants/games';
 
 type CellValue = 'user' | 'ai' | null;
 
@@ -68,6 +70,7 @@ const JogoVelhaBruxa = () => {
   const [winner, setWinner] = useState<CellValue>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
+  const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.JOGO_VELHA_BRUXA);
 
   const handleCellClick = (index: number) => {
     if (board[index] || isFinished) {
@@ -84,6 +87,7 @@ const JogoVelhaBruxa = () => {
     }
 
     setStatusMessage(null);
+    trackUsage();
     let updatedBoard = tentativeBoard;
     let currentWinner = getWinner(updatedBoard);
     if (currentWinner || isBoardFull(updatedBoard)) {
@@ -116,6 +120,7 @@ const JogoVelhaBruxa = () => {
     setWinner(null);
     setStatusMessage(null);
     setIsFinished(false);
+    resetUsageTracking();
   };
 
   const resultMessage = useMemo(() => {
