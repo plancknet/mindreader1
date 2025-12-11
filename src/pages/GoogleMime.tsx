@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
-import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, ArrowLeft, MoreVertical } from 'lucide-react';
+import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, ArrowLeft, MoreVertical, X, Share2, Bookmark, ScanSearch, Languages } from 'lucide-react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { CELEBRITIES, type Celebrity } from '@/data/celebrities';
 
@@ -106,7 +106,6 @@ export default function GoogleMime() {
     setActiveTab('all');
     setSearchQuery('');
     setSelectedCelebrity(null);
-    setHasScrolled(false);
     setShowSearchSuggestions(false);
     setIsSearchFocused(false);
   };
@@ -329,103 +328,142 @@ export default function GoogleMime() {
 
   // Reveal stage - Show Wikipedia-style page for selected celebrity
   if (stage === 'reveal' && selectedCelebrity) {
+    // Related celebrities for the bottom section
+    const relatedCelebrities = CELEBRITIES.filter(c => c.id !== selectedCelebrity.id).slice(0, 4);
+    
     return (
-      <div className="min-h-screen bg-white flex flex-col">
-        {/* Wikipedia-style Header */}
-        <div className="bg-white border-b border-[#a2a9b1] px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button onClick={handleReset} className="p-2 -ml-2">
-                <ArrowLeft className="w-5 h-5 text-[#54595d]" />
-              </button>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/103px-Wikipedia-logo-v2.svg.png" alt="Wikipedia" className="h-8" />
+      <div className="min-h-screen bg-[#f8f9fa] flex flex-col">
+        {/* Header with website name */}
+        <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-[#e8eaed]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 via-purple-500 to-blue-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                <span className="text-xs">🎨</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="p-2">
-                <Search className="w-5 h-5 text-[#54595d]" />
-              </button>
-            </div>
+            <span className="text-[#202124] font-medium">Wallpapers.com</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="p-2">
+              <MoreVertical className="w-5 h-5 text-[#5f6368]" />
+            </button>
+            <button onClick={handleReset} className="p-2">
+              <X className="w-5 h-5 text-[#5f6368]" />
+            </button>
           </div>
         </div>
 
-        {/* Wikipedia Content */}
-        <div className="flex-1 overflow-y-auto">
-          {/* Title */}
-          <div className="px-4 py-4 border-b border-[#eaecf0]">
-            <h1 className="text-2xl font-serif text-[#202122]">{selectedCelebrity.name}</h1>
-            <p className="text-sm text-[#54595d] mt-1">Origem: Wikipédia, a enciclopédia livre.</p>
-          </div>
-
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto bg-[#f8f9fa]">
           {/* Main Image */}
-          <div className="px-4 py-4">
-            <div className="float-right ml-4 mb-4 w-48">
-              <div className="border border-[#a2a9b1] bg-[#f8f9fa] p-2">
-                <img 
-                  src={selectedCelebrity.image} 
-                  alt={selectedCelebrity.name}
-                  className="w-full"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://via.placeholder.com/300x400/f8f9fa/202122?text=${encodeURIComponent(selectedCelebrity.name)}`;
-                  }}
-                />
-                <p className="text-xs text-[#54595d] text-center mt-2">{selectedCelebrity.name}</p>
-              </div>
-              
-              {/* Info Box */}
-              <div className="border border-[#a2a9b1] bg-[#f8f9fa] mt-2">
-                <div className="bg-[#eaecf0] px-2 py-1 text-center font-medium text-sm">{selectedCelebrity.name}</div>
-                <table className="w-full text-xs">
-                  <tbody>
-                    <tr className="border-t border-[#eaecf0]">
-                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Nascimento</td>
-                      <td className="px-2 py-1">{selectedCelebrity.birthDate}</td>
-                    </tr>
-                    <tr className="border-t border-[#eaecf0]">
-                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Nacionalidade</td>
-                      <td className="px-2 py-1">{selectedCelebrity.nationality}</td>
-                    </tr>
-                    <tr className="border-t border-[#eaecf0]">
-                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Ocupação</td>
-                      <td className="px-2 py-1">{selectedCelebrity.occupation}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+          <div className="relative">
+            <img 
+              src={selectedCelebrity.image} 
+              alt={selectedCelebrity.name}
+              className="w-full aspect-[3/4] object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = `https://via.placeholder.com/400x533/f8f9fa/202122?text=${encodeURIComponent(selectedCelebrity.name)}`;
+              }}
+            />
+            {/* Overlay icons */}
+            <div className="absolute bottom-4 left-4 flex gap-2">
+              <button className="w-10 h-10 rounded-full bg-[#3c4043]/80 flex items-center justify-center">
+                <ScanSearch className="w-5 h-5 text-white" />
+              </button>
+              <button className="w-10 h-10 rounded-full bg-[#3c4043]/80 flex items-center justify-center">
+                <Languages className="w-5 h-5 text-white" />
+              </button>
+            </div>
+          </div>
+
+          {/* Info Section */}
+          <div className="bg-white px-4 py-4">
+            {/* Title and Access Button */}
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <h1 className="text-lg font-medium text-[#202124] flex-1">
+                100+] Imagens De {selectedCelebrity.name} | Wallpapers.com
+              </h1>
+              <button className="flex-shrink-0 bg-[#1A73E8] text-white px-5 py-2 rounded-full font-medium text-sm flex items-center gap-1">
+                Acessar
+                <span className="text-lg">›</span>
+              </button>
             </div>
 
-            {/* Article Text */}
-            <p className="text-[#202122] text-base leading-relaxed mb-4">
-              <strong>{selectedCelebrity.name}</strong> {selectedCelebrity.description}
+            {/* Source info */}
+            <p className="text-sm text-[#5f6368] mb-1">
+              Veja essa imagem em: <span className="text-[#1A73E8]">Wallpapers.com</span> | <span className="text-[#1A73E8]">Detalhes da licença</span>
             </p>
-            <p className="text-[#202122] text-base leading-relaxed mb-4">
-              Considerado(a) um(a) dos maiores nomes de sua área no Brasil, {selectedCelebrity.name.split(' ')[0]} conquistou reconhecimento nacional e internacional ao longo de sua carreira.
+            <p className="text-sm text-[#5f6368] mb-4">
+              Quer entender de onde vieram essas informações? <span className="text-[#1A73E8]">Saiba mais</span>
             </p>
-            <p className="text-[#202122] text-base leading-relaxed mb-4">
-              Sua trajetória profissional é marcada por grandes conquistas e contribuições significativas para a cultura brasileira.
-            </p>
-            
-            <div className="clear-both" />
-            
-            {/* Sections */}
-            <h2 className="text-xl font-serif text-[#202122] mt-6 mb-2 pb-1 border-b border-[#a2a9b1]">Carreira</h2>
-            <p className="text-[#202122] text-base leading-relaxed mb-4">
-              {selectedCelebrity.name.split(' ')[0]} iniciou sua carreira profissional ainda jovem, demonstrando talento excepcional desde cedo. Ao longo dos anos, acumulou uma série de conquistas que consolidaram sua posição como referência em sua área de atuação.
-            </p>
-            
-            <h2 className="text-xl font-serif text-[#202122] mt-6 mb-2 pb-1 border-b border-[#a2a9b1]">Vida pessoal</h2>
-            <p className="text-[#202122] text-base leading-relaxed mb-4">
-              Nascido(a) em {selectedCelebrity.birthDate}, {selectedCelebrity.name.split(' ')[0]} é conhecido(a) por manter aspectos de sua vida pessoal de forma reservada, embora seja frequentemente visto(a) em eventos públicos e aparições na mídia.
-            </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mb-4">
+              <button className="flex-1 flex items-center justify-center gap-2 py-3 border border-[#dadce0] rounded-full text-[#3c4043] font-medium">
+                <Share2 className="w-5 h-5" />
+                Compartilhar
+              </button>
+              <button className="flex-1 flex items-center justify-center gap-2 py-3 border border-[#dadce0] rounded-full text-[#3c4043] font-medium">
+                <Bookmark className="w-5 h-5" />
+                Salvar
+              </button>
+            </div>
+          </div>
+
+          {/* Related Images Section */}
+          <div className="bg-white mt-2 px-4 py-4">
+            <div className="grid grid-cols-2 gap-3">
+              {relatedCelebrities.map((celeb, index) => (
+                <div key={celeb.id} className="rounded-xl overflow-hidden bg-white shadow-sm">
+                  <img 
+                    src={celeb.image} 
+                    alt={celeb.name}
+                    className="w-full aspect-square object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://via.placeholder.com/200x200/f1f3f4/5f6368?text=${encodeURIComponent(celeb.name.split(' ')[0])}`;
+                    }}
+                  />
+                  <div className="p-2">
+                    <p className="text-sm text-[#202124] truncate">
+                      {index === 0 ? '10 celebridades mais bem...' : 
+                       index === 1 ? 'As celebridades mais seguida...' : 
+                       `${celeb.name} - Fotos...`}
+                    </p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <div className="w-4 h-4 rounded-full bg-[#f1f3f4] flex items-center justify-center">
+                        <span className="text-[8px]">📰</span>
+                      </div>
+                      <span className="text-xs text-[#70757a]">
+                        {index === 0 ? 'Forbes Brasil' : index === 1 ? 'O Globo' : 'UOL'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Bottom button to restart */}
-        <div className="p-4 border-t border-[#eaecf0]">
-          <button 
-            onClick={handleReset}
-            className="w-full py-3 bg-[#1A73E8] text-white rounded-full font-medium"
-          >
-            Nova pesquisa
+        {/* Bottom Navigation */}
+        <div className="flex justify-around py-3 bg-white border-t border-[#e8eaed]">
+          <button className="flex flex-col items-center gap-1">
+            <Home className="w-6 h-6 text-[#5f6368]" />
+            <span className="text-xs text-[#5f6368]">Início</span>
+          </button>
+          <button className="flex flex-col items-center gap-1">
+            <div className="bg-[#e8f0fe] rounded-full px-4 py-1">
+              <Search className="w-6 h-6 text-[#1a73e8]" />
+            </div>
+            <span className="text-xs text-[#1a73e8] font-medium">Pesquisar</span>
+          </button>
+          <button className="flex flex-col items-center gap-1 relative">
+            <Bell className="w-6 h-6 text-[#5f6368]" />
+            <span className="absolute -top-1 right-0 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">9+</span>
+            <span className="text-xs text-[#5f6368]">Notificações</span>
+          </button>
+          <button className="flex flex-col items-center gap-1">
+            <Clock className="w-6 h-6 text-[#5f6368]" />
+            <span className="text-xs text-[#5f6368]">Atividade</span>
           </button>
         </div>
       </div>
