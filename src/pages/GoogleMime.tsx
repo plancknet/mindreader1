@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
+import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, ArrowLeft, MoreVertical } from 'lucide-react';
 
 // Real celebrity data with Wikipedia-style info
 const CELEBRITIES = [
@@ -123,6 +124,22 @@ const SEARCH_RESULTS = [
   { title: 'Caras Brasil - Revista de celebridades', url: 'caras.uol.com.br', snippet: 'Tudo sobre famosos, festas, casamentos, filhos e a vida das celebridades brasileiras...' },
 ];
 
+// News articles for the home screen
+const NEWS_ARTICLES = [
+  {
+    source: 'Jornal O Globo',
+    sourceIcon: '📰',
+    title: 'As novas superestrelas de IA da Meta começam a bater de frente com o restante da empresa',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+  },
+  {
+    source: 'Folha de S.Paulo',
+    sourceIcon: '📰',
+    title: 'Brasil lidera crescimento econômico na América Latina em 2024',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+  },
+];
+
 type Stage = 'search' | 'results' | 'images' | 'scrolled' | 'reveal';
 type Tab = 'all' | 'images' | 'news' | 'videos';
 
@@ -133,6 +150,7 @@ export default function GoogleMime() {
   const [selectedCelebrity, setSelectedCelebrity] = useState<typeof CELEBRITIES[0] | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
 
   // Handle search submission
@@ -141,6 +159,7 @@ export default function GoogleMime() {
     if (searchQuery.toLowerCase().includes('celebridade') || searchQuery.toLowerCase().includes('celebrity') || searchQuery.toLowerCase().includes('famoso')) {
       setStage('results');
       setShowSearchSuggestions(false);
+      setIsSearchFocused(false);
     }
   };
 
@@ -187,116 +206,236 @@ export default function GoogleMime() {
     setSelectedCelebrity(null);
     setHasScrolled(false);
     setShowSearchSuggestions(false);
+    setIsSearchFocused(false);
   };
 
-  // Google Logo SVG
-  const GoogleLogo = ({ size = 'large' }: { size?: 'small' | 'large' }) => (
-    <svg viewBox="0 0 272 92" className={size === 'large' ? 'h-12 w-auto' : 'h-7 w-auto'}>
-      <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-      <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-      <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
-      <path fill="#4285F4" d="M225 3v65h-9.5V3h9.5z"/>
-      <path fill="#34A853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
-      <path fill="#EA4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
-    </svg>
+  // Google Logo with Christmas lights
+  const GoogleLogoFestive = () => (
+    <div className="relative flex flex-col items-center">
+      {/* Christmas lights decoration */}
+      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-32 h-3">
+        <svg viewBox="0 0 120 12" className="w-full h-full">
+          <path d="M0,6 Q30,0 60,6 Q90,12 120,6" fill="none" stroke="#333" strokeWidth="1"/>
+          <circle cx="15" cy="4" r="4" fill="#FF4444"/>
+          <circle cx="35" cy="7" r="4" fill="#FFD700"/>
+          <circle cx="55" cy="5" r="4" fill="#4CAF50"/>
+          <circle cx="75" cy="8" r="4" fill="#FF4444"/>
+          <circle cx="95" cy="5" r="4" fill="#2196F3"/>
+          <circle cx="105" cy="7" r="4" fill="#FFD700"/>
+        </svg>
+      </div>
+      {/* Google text */}
+      <svg viewBox="0 0 272 92" className="h-10 w-auto mt-2">
+        <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+        <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+        <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+        <path fill="#4285F4" d="M225 3v65h-9.5V3h9.5z"/>
+        <path fill="#34A853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+        <path fill="#EA4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
+      </svg>
+    </div>
   );
 
-  // Search stage - Google home screen
+  // Search stage - Google home screen matching the app visual
   if (stage === 'search') {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="w-8" />
-          <div className="w-8 h-8 rounded-full bg-[#1A73E8] flex items-center justify-center text-white text-sm font-medium">
-            U
+      <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)' }}>
+        {/* Status Bar simulation */}
+        <div className="flex items-center justify-between px-4 py-2 text-white text-xs">
+          <span className="font-medium">18:05</span>
+          <div className="flex items-center gap-1">
+            <span>📶</span>
+            <span>40%</span>
+            <span>🔋</span>
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4">
-          <GoogleLogo size="large" />
-          
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="w-full max-w-xl mt-8 relative">
-            <div className="relative flex items-center bg-white rounded-full border border-[#dfe1e5] shadow-sm hover:shadow-md focus-within:shadow-md transition-shadow">
-              <svg className="w-5 h-5 ml-4 text-[#9aa0a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setShowSearchSuggestions(e.target.value.length > 0);
-                }}
-                placeholder="Pesquisar"
-                className="flex-1 bg-transparent py-3 px-4 text-[#202124] placeholder-[#9aa0a6] focus:outline-none text-base"
-                autoFocus
-              />
-              <button type="button" className="p-2 mr-2">
-                <svg className="w-6 h-6 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3z"/>
-                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                </svg>
-              </button>
-            </div>
-            
-            {/* Search Suggestions */}
-            {showSearchSuggestions && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl border border-[#dfe1e5] shadow-lg z-10 overflow-hidden">
-                {['Celebridade', 'Celebridades brasileiras', 'Celebridades famosas'].map((suggestion, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery(suggestion);
-                      handleSearch();
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f8f9fa] text-left border-b border-[#f1f3f4] last:border-0"
-                  >
-                    <svg className="w-4 h-4 text-[#9aa0a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <span className="text-[#202124]">{suggestion}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </form>
-          
-          {/* Google Lens & Voice */}
-          <div className="flex gap-6 mt-8">
-            <button className="flex flex-col items-center gap-2 px-6 py-3 hover:bg-[#f8f9fa] rounded-lg">
-              <div className="w-12 h-12 rounded-full bg-[#f8f9fa] flex items-center justify-center">
-                <svg className="w-6 h-6" viewBox="0 0 192 192" fill="none">
-                  <rect x="64" y="64" width="64" height="64" rx="8" stroke="#4285F4" strokeWidth="8"/>
-                  <circle cx="96" cy="96" r="88" stroke="#FBBC05" strokeWidth="8" strokeDasharray="16 16"/>
-                </svg>
-              </div>
-              <span className="text-xs text-[#5f6368]">Pesquisar com sua câmera</span>
-            </button>
+        {/* Header with Labs icon and Profile */}
+        <div className="flex items-center justify-between px-4 py-2">
+          <div className="w-12 h-12 rounded-full bg-[#4285F4]/20 flex items-center justify-center border border-[#4285F4]/30">
+            <span className="text-[#4285F4] text-lg">🧪</span>
           </div>
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center border-2 border-red-500 overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" 
+              alt="Profile" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Google Logo */}
+        <div className="flex justify-center mt-4 mb-6">
+          <GoogleLogoFestive />
+        </div>
+
+        {/* Search Bar */}
+        <div className="px-4 mb-4">
+          <div 
+            className="relative flex items-center bg-[#303134] rounded-full shadow-lg"
+            onClick={() => setIsSearchFocused(true)}
+          >
+            {isSearchFocused ? (
+              <form onSubmit={handleSearch} className="flex-1 flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSearchSuggestions(e.target.value.length > 0);
+                  }}
+                  placeholder="Pesquisa"
+                  className="flex-1 bg-transparent py-4 px-6 text-white placeholder-[#9aa0a6] focus:outline-none text-base"
+                  autoFocus
+                />
+                <button type="button" className="p-3">
+                  <Mic className="w-6 h-6 text-[#4285F4]" />
+                </button>
+                <button type="button" className="p-3 pr-4">
+                  <Camera className="w-6 h-6 text-white" />
+                </button>
+              </form>
+            ) : (
+              <>
+                <span className="flex-1 py-4 px-6 text-[#9aa0a6] text-base">Pesquisa</span>
+                <button type="button" className="p-3">
+                  <Mic className="w-6 h-6 text-[#4285F4]" />
+                </button>
+                <button type="button" className="p-3 pr-4">
+                  <Camera className="w-6 h-6 text-white" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Search Suggestions */}
+          {showSearchSuggestions && isSearchFocused && (
+            <div className="absolute left-4 right-4 mt-1 bg-[#303134] rounded-2xl shadow-lg z-10 overflow-hidden">
+              {['Celebridade', 'Celebridades brasileiras', 'Celebridades famosas'].map((suggestion, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery(suggestion);
+                    setTimeout(() => handleSearch(), 100);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#3c4043] text-left border-b border-[#5f6368]/30 last:border-0"
+                >
+                  <Search className="w-4 h-4 text-[#9aa0a6]" />
+                  <span className="text-white">{suggestion}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Action Pills */}
+        <div className="flex gap-3 px-4 mb-6 overflow-x-auto">
+          <button className="flex items-center gap-2 bg-[#303134] rounded-full px-5 py-3 whitespace-nowrap">
+            <Sparkles className="w-5 h-5 text-[#8ab4f8]" />
+            <span className="text-white font-medium">Modo IA</span>
+          </button>
+          <button className="flex items-center justify-center bg-[#303134] rounded-full w-12 h-12">
+            <Music className="w-5 h-5 text-white" />
+          </button>
+          <button className="flex items-center justify-center bg-[#303134] rounded-full w-12 h-12">
+            <span className="text-xl">🍌</span>
+          </button>
+        </div>
+
+        {/* Info Cards Row */}
+        <div className="flex gap-3 px-4 mb-4 overflow-x-auto">
+          {/* Sports Card */}
+          <div className="flex-shrink-0 bg-[#303134] rounded-2xl p-4 min-w-[160px]">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-white font-medium text-sm">VDG x FLU</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                  <span className="text-xs">⚽</span>
+                </div>
+                <span className="text-[#9aa0a6] text-xs">Hoje<br/>20:00</span>
+                <div className="w-8 h-8 bg-[#8B0000] rounded-full flex items-center justify-center">
+                  <span className="text-xs">⚽</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Weather Card */}
+          <div className="flex-shrink-0 bg-[#303134] rounded-2xl p-4 min-w-[140px]">
+            <span className="text-white font-medium text-sm">Quiririm</span>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-white text-2xl font-light">31°</span>
+              <span className="text-[#9aa0a6] text-sm">☁️ 5%</span>
+            </div>
+          </div>
+
+          {/* Time Card */}
+          <div className="flex-shrink-0 bg-[#303134] rounded-2xl p-4 min-w-[100px]">
+            <span className="text-white font-medium text-sm">Pô...</span>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-white text-2xl font-light">6:</span>
+            </div>
+          </div>
+        </div>
+
+        {/* News Feed */}
+        <div className="flex-1 bg-white rounded-t-3xl mt-2 overflow-hidden">
+          {NEWS_ARTICLES.map((article, index) => (
+            <div key={index} className="border-b border-[#e8eaed]">
+              {/* Article Header */}
+              <div className="flex items-center justify-between px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-[#f1f3f4] flex items-center justify-center">
+                    <span>{article.sourceIcon}</span>
+                  </div>
+                  <span className="text-[#202124] text-sm font-medium">{article.source}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="px-3 py-1 border border-[#dadce0] rounded-full text-sm text-[#1a73e8]">
+                    Seguir
+                  </button>
+                  <button className="p-1">
+                    <MoreVertical className="w-5 h-5 text-[#5f6368]" />
+                  </button>
+                </div>
+              </div>
+              {/* Article Image */}
+              <img 
+                src={article.image} 
+                alt={article.title}
+                className="w-full h-48 object-cover"
+              />
+              {/* Article Title */}
+              <p className="px-4 py-3 text-[#202124] text-lg leading-tight">
+                {article.title}
+              </p>
+            </div>
+          ))}
         </div>
         
         {/* Bottom Navigation */}
-        <div className="flex justify-around py-3 border-t border-[#e8eaed] bg-white">
-          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#1A73E8]">
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span className="text-xs font-medium">Início</span>
+        <div className="flex justify-around py-3 bg-white border-t border-[#e8eaed]">
+          <button className="flex flex-col items-center gap-1">
+            <div className="bg-[#e8f0fe] rounded-full px-4 py-1">
+              <Home className="w-6 h-6 text-[#1a73e8]" />
+            </div>
+            <span className="text-xs text-[#1a73e8] font-medium">Início</span>
           </button>
-          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#5f6368]">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-            </svg>
-            <span className="text-xs">Salvos</span>
+          <button className="flex flex-col items-center gap-1">
+            <Search className="w-6 h-6 text-[#5f6368]" />
+            <span className="text-xs text-[#5f6368]">Pesquisar</span>
           </button>
-          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#5f6368]">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-xs">Recentes</span>
+          <button className="flex flex-col items-center gap-1 relative">
+            <Bell className="w-6 h-6 text-[#5f6368]" />
+            <span className="absolute -top-1 right-0 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">9+</span>
+            <span className="text-xs text-[#5f6368]">Notificações</span>
+          </button>
+          <button className="flex flex-col items-center gap-1">
+            <Clock className="w-6 h-6 text-[#5f6368]" />
+            <span className="text-xs text-[#5f6368]">Atividade</span>
           </button>
         </div>
       </div>
@@ -312,17 +451,13 @@ export default function GoogleMime() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button onClick={handleReset} className="p-2 -ml-2">
-                <svg className="w-5 h-5 text-[#54595d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
+                <ArrowLeft className="w-5 h-5 text-[#54595d]" />
               </button>
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/103px-Wikipedia-logo-v2.svg.png" alt="Wikipedia" className="h-8" />
             </div>
             <div className="flex items-center gap-2">
               <button className="p-2">
-                <svg className="w-5 h-5 text-[#54595d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className="w-5 h-5 text-[#54595d]" />
               </button>
             </div>
           </div>
@@ -419,17 +554,13 @@ export default function GoogleMime() {
       <div className="sticky top-0 z-10 bg-white border-b border-[#e8eaed]">
         <div className="flex items-center gap-2 px-4 py-2">
           <button onClick={handleReset} className="p-2 -ml-2">
-            <svg className="w-5 h-5 text-[#5f6368]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <ArrowLeft className="w-5 h-5 text-[#5f6368]" />
           </button>
           <div className="flex-1 flex items-center bg-[#f1f3f4] rounded-full px-4 py-2">
             <span className="text-[#202124] text-sm">{searchQuery || 'Celebridade'}</span>
           </div>
           <button className="p-2">
-            <svg className="w-5 h-5 text-[#5f6368]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-            </svg>
+            <MoreVertical className="w-5 h-5 text-[#5f6368]" />
           </button>
         </div>
         
