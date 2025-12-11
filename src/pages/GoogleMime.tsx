@@ -240,27 +240,10 @@ export default function GoogleMime() {
   if (stage === 'search') {
     return (
       <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)' }}>
-        {/* Status Bar simulation */}
-        <div className="flex items-center justify-between px-4 py-2 text-white text-xs">
-          <span className="font-medium">18:05</span>
-          <div className="flex items-center gap-1">
-            <span>📶</span>
-            <span>40%</span>
-            <span>🔋</span>
-          </div>
-        </div>
-
-        {/* Header with Labs icon and Profile */}
-        <div className="flex items-center justify-between px-4 py-2">
+        {/* Header with Labs icon only - no status bar or profile */}
+        <div className="flex items-center justify-center px-4 py-4 mt-2">
           <div className="w-12 h-12 rounded-full bg-[#4285F4]/20 flex items-center justify-center border border-[#4285F4]/30">
             <span className="text-[#4285F4] text-lg">🧪</span>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center border-2 border-red-500 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" 
-              alt="Profile" 
-              className="w-full h-full object-cover"
-            />
           </div>
         </div>
 
@@ -547,98 +530,183 @@ export default function GoogleMime() {
     );
   }
 
+  // Image cards data for masonry layout with sources
+  const IMAGE_CARDS = CELEBRITIES.map((celeb, index) => ({
+    ...celeb,
+    source: ['Forbes Brasil', 'O Globo', 'VEJA RIO', 'Steal The Look', 'CBN', 'UOL', 'Gshow'][index % 7],
+    title: [
+      '30 celebridades brasileiras...',
+      'Sua Marca Vai Ser Um Sucess...',
+      'As celebridades mais seguida...',
+      'As celebridades mais...',
+      'Quem são as celebridades...',
+      'Lista de famosos brasileiros...',
+      'Celebridades mais influentes...',
+    ][index % 7],
+  }));
+
+  // Create infinite scroll by repeating cards
+  const getInfiniteCards = () => {
+    const result = [];
+    for (let i = 0; i < 10; i++) {
+      result.push(...IMAGE_CARDS.map((card, idx) => ({ ...card, uniqueKey: `${i}-${idx}` })));
+    }
+    return result;
+  };
+
   // Results/Images/Scrolled stage - Search results with celebrity images
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Search Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-[#e8eaed]">
-        <div className="flex items-center gap-2 px-4 py-2">
-          <button onClick={handleReset} className="p-2 -ml-2">
-            <ArrowLeft className="w-5 h-5 text-[#5f6368]" />
-          </button>
-          <div className="flex-1 flex items-center bg-[#f1f3f4] rounded-full px-4 py-2">
-            <span className="text-[#202124] text-sm">{searchQuery || 'Celebridade'}</span>
+      {/* Search Header - No status bar or profile */}
+      <div className="sticky top-0 z-10 bg-white">
+        {/* Google Logo Header */}
+        <div className="flex items-center gap-3 px-4 py-3">
+          <div className="w-10 h-10 rounded-full bg-[#4285F4]/20 flex items-center justify-center">
+            <span className="text-[#4285F4] text-sm">🧪</span>
           </div>
-          <button className="p-2">
-            <MoreVertical className="w-5 h-5 text-[#5f6368]" />
-          </button>
+          <GoogleLogoFestive />
+        </div>
+
+        {/* Search Bar */}
+        <div className="px-4 pb-2">
+          <div className="flex items-center bg-white border border-[#dfe1e5] rounded-full shadow-sm px-4 py-2.5">
+            <Search className="w-5 h-5 text-[#9aa0a6] mr-3" />
+            <span className="flex-1 text-[#202124]">{searchQuery || 'celebridades'}</span>
+            <Mic className="w-5 h-5 text-[#4285F4] mx-2" />
+            <Camera className="w-5 h-5 text-[#34a853]" />
+          </div>
         </div>
         
         {/* Tabs */}
-        <div className="flex gap-0 px-4 text-sm overflow-x-auto">
+        <div className="flex gap-0 px-2 text-sm overflow-x-auto border-b border-[#e8eaed]">
           <button 
             onClick={() => handleTabChange('all')}
-            className={`py-3 px-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#1A73E8] border-b-2 border-[#1A73E8]' : 'text-[#5f6368]'}`}
+            className={`py-2.5 px-3 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#1A73E8] border-b-[3px] border-[#1A73E8]' : 'text-[#5f6368]'}`}
           >
-            Todos
+            Modo IA
+          </button>
+          <button 
+            onClick={() => handleTabChange('all')}
+            className={`py-2.5 px-3 font-medium whitespace-nowrap ${activeTab === 'all' && stage === 'results' ? 'text-[#1A73E8] border-b-[3px] border-[#1A73E8]' : 'text-[#5f6368]'}`}
+          >
+            Tudo
           </button>
           <button 
             onClick={() => handleTabChange('images')}
-            className={`py-3 px-4 font-medium whitespace-nowrap ${activeTab === 'images' ? 'text-[#1A73E8] border-b-2 border-[#1A73E8]' : 'text-[#5f6368]'}`}
+            className={`py-2.5 px-3 font-medium whitespace-nowrap ${activeTab === 'images' ? 'text-[#1A73E8] border-b-[3px] border-[#1A73E8]' : 'text-[#5f6368]'}`}
           >
             Imagens
           </button>
-          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Notícias</button>
-          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Vídeos</button>
-          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Shopping</button>
+          <button className="py-2.5 px-3 text-[#5f6368] whitespace-nowrap">Notícias</button>
+          <button className="py-2.5 px-3 text-[#5f6368] whitespace-nowrap">Vídeos</button>
+          <button className="py-2.5 px-3 text-[#5f6368] whitespace-nowrap">Shopping</button>
         </div>
+
+        {/* Filter Pills - Only show in images tab */}
+        {(activeTab === 'images' || stage === 'images') && (
+          <div className="flex gap-2 px-4 py-3 overflow-x-auto bg-white">
+            <button className="flex items-center gap-2 bg-white border border-[#dadce0] rounded-full px-4 py-2 whitespace-nowrap">
+              <div className="w-6 h-6 rounded-full overflow-hidden">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/120px-GoldenGateBridge-001.jpg" alt="" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-sm text-[#3c4043]">Hollywood</span>
+            </button>
+            <button className="flex items-center gap-2 bg-white border border-[#dadce0] rounded-full px-4 py-2 whitespace-nowrap">
+              <div className="w-6 h-6 rounded-full overflow-hidden">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Anitta_2023.png/440px-Anitta_2023.png" alt="" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-sm text-[#3c4043]">Dress to impress</span>
+            </button>
+            <button className="flex items-center gap-2 bg-white border border-[#dadce0] rounded-full px-4 py-2 whitespace-nowrap">
+              <div className="w-6 h-6 rounded-full overflow-hidden bg-green-500 flex items-center justify-center">
+                <span className="text-white text-xs">🇧🇷</span>
+              </div>
+              <span className="text-sm text-[#3c4043]">Brasil</span>
+            </button>
+          </div>
+        )}
       </div>
       
       {/* Scrollable Content */}
       <div 
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto bg-[#f8f9fa]"
         onScroll={handleScroll}
       >
-        {/* Images Tab Content */}
+        {/* Images Tab Content - Masonry Layout */}
         {(activeTab === 'images' || stage === 'images') && (
           <div className="p-2">
-            <div className="grid grid-cols-3 gap-1">
-              {CELEBRITIES.map((celebrity) => (
-                <div
-                  key={celebrity.id}
-                  className="aspect-square overflow-hidden cursor-pointer relative group"
-                  onDoubleClick={() => handleImageDoubleClick(celebrity)}
-                >
-                  <img
-                    src={celebrity.image}
-                    alt={celebrity.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://via.placeholder.com/200x200/f1f3f4/5f6368?text=${encodeURIComponent(celebrity.name.split(' ')[0])}`;
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
-              ))}
-            </div>
-            
-            {/* Links below images */}
-            {hasScrolled && (
-              <div className="mt-4 px-2 space-y-4">
-                <p className="text-xs text-[#70757a]">Pesquisas relacionadas</p>
-                {SEARCH_RESULTS.slice(0, 3).map((result, index) => (
-                  <div 
-                    key={index}
-                    className="cursor-pointer hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded"
-                    onClick={handleLinkClick}
+            {/* Masonry grid with 2 columns */}
+            <div className="flex gap-2">
+              {/* Left Column */}
+              <div className="flex-1 flex flex-col gap-2">
+                {getInfiniteCards().filter((_, i) => i % 2 === 0).map((card) => (
+                  <div
+                    key={card.uniqueKey}
+                    className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                    onDoubleClick={() => handleImageDoubleClick(card)}
+                    onClick={hasScrolled ? handleLinkClick : undefined}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-5 h-5 rounded-full bg-[#f1f3f4] flex items-center justify-center">
-                        <span className="text-[10px] text-[#5f6368] font-medium">{result.url[0].toUpperCase()}</span>
-                      </div>
-                      <span className="text-xs text-[#202124]">{result.url}</span>
+                    <div className="relative" style={{ height: Math.random() > 0.5 ? '180px' : '240px' }}>
+                      <img
+                        src={card.image}
+                        alt={card.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://via.placeholder.com/200x280/f1f3f4/5f6368?text=${encodeURIComponent(card.name.split(' ')[0])}`;
+                        }}
+                      />
                     </div>
-                    <h3 className="text-base text-[#1a0dab] hover:underline">{result.title}</h3>
+                    <div className="p-2">
+                      <p className="text-sm text-[#202124] line-clamp-2 mb-1">{card.title}</p>
+                      <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 rounded bg-[#f1f3f4] flex items-center justify-center">
+                          <span className="text-[8px] font-bold text-[#5f6368]">{card.source[0]}</span>
+                        </div>
+                        <span className="text-xs text-[#70757a]">{card.source}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
-            )}
+
+              {/* Right Column */}
+              <div className="flex-1 flex flex-col gap-2">
+                {getInfiniteCards().filter((_, i) => i % 2 === 1).map((card) => (
+                  <div
+                    key={card.uniqueKey}
+                    className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                    onDoubleClick={() => handleImageDoubleClick(card)}
+                    onClick={hasScrolled ? handleLinkClick : undefined}
+                  >
+                    <div className="relative" style={{ height: Math.random() > 0.5 ? '200px' : '260px' }}>
+                      <img
+                        src={card.image}
+                        alt={card.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://via.placeholder.com/200x280/f1f3f4/5f6368?text=${encodeURIComponent(card.name.split(' ')[0])}`;
+                        }}
+                      />
+                    </div>
+                    <div className="p-2">
+                      <p className="text-sm text-[#202124] line-clamp-2 mb-1">{card.title}</p>
+                      <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 rounded bg-[#f1f3f4] flex items-center justify-center">
+                          <span className="text-[8px] font-bold text-[#5f6368]">{card.source[0]}</span>
+                        </div>
+                        <span className="text-xs text-[#70757a]">{card.source}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
         {/* All Tab Content */}
         {activeTab === 'all' && stage !== 'images' && (
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 bg-white">
             {/* Results count */}
             <p className="text-xs text-[#70757a] mb-4">
               Cerca de 1.230.000.000 resultados (0,42 s)
@@ -721,6 +789,29 @@ export default function GoogleMime() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="flex justify-around py-3 bg-white border-t border-[#e8eaed]">
+        <button className="flex flex-col items-center gap-1">
+          <Home className="w-6 h-6 text-[#5f6368]" />
+          <span className="text-xs text-[#5f6368]">Início</span>
+        </button>
+        <button className="flex flex-col items-center gap-1">
+          <div className="bg-[#e8f0fe] rounded-full px-4 py-1">
+            <Search className="w-6 h-6 text-[#1a73e8]" />
+          </div>
+          <span className="text-xs text-[#1a73e8] font-medium">Pesquisar</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 relative">
+          <Bell className="w-6 h-6 text-[#5f6368]" />
+          <span className="absolute -top-1 right-0 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">9+</span>
+          <span className="text-xs text-[#5f6368]">Notificações</span>
+        </button>
+        <button className="flex flex-col items-center gap-1">
+          <Clock className="w-6 h-6 text-[#5f6368]" />
+          <span className="text-xs text-[#5f6368]">Atividade</span>
+        </button>
       </div>
     </div>
   );
