@@ -1,139 +1,236 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 
-// Celebrity images - using placeholder celebrities
-const CELEBRITY_IMAGES = [
-  { id: 1, name: 'Taylor Swift', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop' },
-  { id: 2, name: 'Brad Pitt', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop' },
-  { id: 3, name: 'Beyoncé', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop' },
-  { id: 4, name: 'Leonardo DiCaprio', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop' },
-  { id: 5, name: 'Rihanna', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop' },
-  { id: 6, name: 'Tom Hanks', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop' },
-  { id: 7, name: 'Selena Gomez', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop' },
-  { id: 8, name: 'Chris Evans', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&h=200&fit=crop' },
+// Real celebrity data with Wikipedia-style info
+const CELEBRITIES = [
+  { 
+    id: 1, 
+    name: 'Anitta', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Anitta_2023.png/440px-Anitta_2023.png',
+    description: 'Larissa de Macedo Machado, conhecida pelo nome artístico Anitta, é uma cantora, compositora, atriz, dançarina e empresária brasileira.',
+    birthDate: '30 de março de 1993',
+    occupation: 'Cantora, compositora, atriz',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 2, 
+    name: 'Neymar Jr', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Bra-Cos_%281%29_%28cropped%29.jpg/440px-Bra-Cos_%281%29_%28cropped%29.jpg',
+    description: 'Neymar da Silva Santos Júnior, conhecido como Neymar Jr., é um futebolista brasileiro que atua como ponta-esquerda e meia-atacante.',
+    birthDate: '5 de fevereiro de 1992',
+    occupation: 'Futebolista',
+    nationality: 'Brasileiro'
+  },
+  { 
+    id: 3, 
+    name: 'Ivete Sangalo', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ivete_Sangalo_2018_%28cropped%29.jpg/440px-Ivete_Sangalo_2018_%28cropped%29.jpg',
+    description: 'Ivete Maria Dias de Sangalo é uma cantora, compositora, instrumentista, apresentadora e atriz brasileira.',
+    birthDate: '27 de maio de 1972',
+    occupation: 'Cantora, apresentadora',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 4, 
+    name: 'Ronaldinho Gaúcho', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Ronaldinho_2019.jpg/440px-Ronaldinho_2019.jpg',
+    description: 'Ronaldo de Assis Moreira, mais conhecido como Ronaldinho Gaúcho, é um ex-futebolista brasileiro, considerado um dos maiores jogadores de todos os tempos.',
+    birthDate: '21 de março de 1980',
+    occupation: 'Ex-futebolista',
+    nationality: 'Brasileiro'
+  },
+  { 
+    id: 5, 
+    name: 'Gisele Bündchen', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gisele_Bundchen_2.jpg/440px-Gisele_Bundchen_2.jpg',
+    description: 'Gisele Caroline Bündchen é uma supermodelo brasileira, considerada uma das mais influentes do mundo da moda.',
+    birthDate: '20 de julho de 1980',
+    occupation: 'Modelo, empresária',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 6, 
+    name: 'Pelé', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Pele_con_brasil_%28cropped%29.jpg/440px-Pele_con_brasil_%28cropped%29.jpg',
+    description: 'Edson Arantes do Nascimento, conhecido mundialmente como Pelé, foi um futebolista brasileiro, amplamente considerado o maior jogador de futebol de todos os tempos.',
+    birthDate: '23 de outubro de 1940',
+    occupation: 'Ex-futebolista',
+    nationality: 'Brasileiro'
+  },
+  { 
+    id: 7, 
+    name: 'Xuxa', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Xuxa_Meneghel_em_2019_%28cropped%29.jpg/440px-Xuxa_Meneghel_em_2019_%28cropped%29.jpg',
+    description: 'Maria da Graça Xuxa Meneghel, conhecida como Xuxa, é uma apresentadora de televisão, cantora, atriz e empresária brasileira.',
+    birthDate: '27 de março de 1963',
+    occupation: 'Apresentadora, cantora, atriz',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 8, 
+    name: 'Gusttavo Lima', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gusttavo_Lima_%28cropped%29.jpg/440px-Gusttavo_Lima_%28cropped%29.jpg',
+    description: 'Nivaldo Batista Lima, mais conhecido pelo nome artístico Gusttavo Lima, é um cantor e compositor brasileiro de música sertaneja.',
+    birthDate: '3 de setembro de 1989',
+    occupation: 'Cantor, compositor',
+    nationality: 'Brasileiro'
+  },
+  { 
+    id: 9, 
+    name: 'Bruna Marquezine', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Bruna_Marquezine_em_2023.jpg/440px-Bruna_Marquezine_em_2023.jpg',
+    description: 'Bruna Reis Maia, conhecida como Bruna Marquezine, é uma atriz brasileira conhecida por seus papéis em novelas da TV Globo.',
+    birthDate: '4 de agosto de 1995',
+    occupation: 'Atriz',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 10, 
+    name: 'Caetano Veloso', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Caetano_Veloso_2012_%28cropped%29.jpg/440px-Caetano_Veloso_2012_%28cropped%29.jpg',
+    description: 'Caetano Emanuel Viana Teles Veloso é um músico, produtor, arranjador e escritor brasileiro, considerado um dos maiores artistas da música brasileira.',
+    birthDate: '7 de agosto de 1942',
+    occupation: 'Cantor, compositor',
+    nationality: 'Brasileiro'
+  },
+  { 
+    id: 11, 
+    name: 'Sabrina Sato', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Sabrina_Sato_em_2019.jpg/440px-Sabrina_Sato_em_2019.jpg',
+    description: 'Sabrina Sato Rahal é uma apresentadora de televisão, atriz, modelo e empresária brasileira.',
+    birthDate: '4 de fevereiro de 1981',
+    occupation: 'Apresentadora, modelo',
+    nationality: 'Brasileira'
+  },
+  { 
+    id: 12, 
+    name: 'Roberto Carlos', 
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Roberto_Carlos_2019_%28cropped%29.jpg/440px-Roberto_Carlos_2019_%28cropped%29.jpg',
+    description: 'Roberto Carlos Braga é um cantor e compositor brasileiro, considerado o Rei da Música Brasileira e um dos artistas mais influentes do país.',
+    birthDate: '19 de abril de 1941',
+    occupation: 'Cantor, compositor',
+    nationality: 'Brasileiro'
+  },
 ];
 
-const FAKE_LINKS = [
-  { title: 'Wikipedia - Lista de celebridades famosas', url: 'wikipedia.org' },
-  { title: 'IMDb - Top 100 atores mais populares', url: 'imdb.com' },
-  { title: 'Forbes - Celebridades mais bem pagas de 2024', url: 'forbes.com' },
-  { title: 'People Magazine - Notícias de celebridades', url: 'people.com' },
-  { title: 'E! Online - Fofocas e novidades', url: 'eonline.com' },
-  { title: 'TMZ - Últimas notícias de Hollywood', url: 'tmz.com' },
+// Fake search results for web tab
+const SEARCH_RESULTS = [
+  { title: 'Lista de celebridades brasileiras - Wikipédia', url: 'pt.wikipedia.org', snippet: 'Esta é uma lista de celebridades brasileiras famosas do cinema, televisão, música e esporte...' },
+  { title: 'Celebridades brasileiras mais seguidas nas redes sociais', url: 'uol.com.br', snippet: 'Confira o ranking das celebridades brasileiras com mais seguidores no Instagram em 2024...' },
+  { title: 'Notícias de famosos e celebridades - Gshow', url: 'gshow.globo.com', snippet: 'Últimas notícias de famosos, fofocas e novidades sobre celebridades brasileiras e internacionais...' },
+  { title: 'Forbes Brasil - Lista dos famosos mais ricos', url: 'forbes.com.br', snippet: 'Ranking anual das celebridades brasileiras mais bem pagas do ano...' },
+  { title: 'Caras Brasil - Revista de celebridades', url: 'caras.uol.com.br', snippet: 'Tudo sobre famosos, festas, casamentos, filhos e a vida das celebridades brasileiras...' },
 ];
 
-type Stage = 'search' | 'results' | 'scrolled' | 'reveal';
+type Stage = 'search' | 'results' | 'images' | 'scrolled' | 'reveal';
+type Tab = 'all' | 'images' | 'news' | 'videos';
 
 export default function GoogleMime() {
   const [stage, setStage] = useState<Stage>('search');
+  const [activeTab, setActiveTab] = useState<Tab>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedImage, setSelectedImage] = useState<typeof CELEBRITY_IMAGES[0] | null>(null);
+  const [selectedCelebrity, setSelectedCelebrity] = useState<typeof CELEBRITIES[0] | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
 
   // Handle search submission
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.toLowerCase().includes('celebridade') || searchQuery.toLowerCase().includes('celebrity')) {
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.toLowerCase().includes('celebridade') || searchQuery.toLowerCase().includes('celebrity') || searchQuery.toLowerCase().includes('famoso')) {
       setStage('results');
       setShowSearchSuggestions(false);
     }
   };
 
   // Handle double click on image to secretly select it
-  const handleImageDoubleClick = useCallback((celebrity: typeof CELEBRITY_IMAGES[0]) => {
-    setSelectedImage(celebrity);
-    // Small visual feedback without revealing the selection
+  const handleImageDoubleClick = useCallback((celebrity: typeof CELEBRITIES[0]) => {
+    setSelectedCelebrity(celebrity);
+    // No visual feedback - this is the magic trick!
   }, []);
 
   // Handle scroll detection
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    if (stage === 'results' && selectedImage && !hasScrolled) {
+    if ((stage === 'results' || stage === 'images') && selectedCelebrity && !hasScrolled) {
       const target = e.currentTarget;
-      if (target.scrollTop > 100) {
+      if (target.scrollTop > 150) {
         setHasScrolled(true);
         setStage('scrolled');
       }
     }
-  }, [stage, selectedImage, hasScrolled]);
+  }, [stage, selectedCelebrity, hasScrolled]);
 
   // Handle link click - reveal the selected image
   const handleLinkClick = () => {
-    if (selectedImage && hasScrolled) {
+    if (selectedCelebrity && hasScrolled) {
       trackUsage();
       setStage('reveal');
+    }
+  };
+
+  // Handle tab change
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    if (tab === 'images') {
+      setStage('images');
+    } else if (tab === 'all') {
+      setStage('results');
     }
   };
 
   // Reset game
   const handleReset = () => {
     setStage('search');
+    setActiveTab('all');
     setSearchQuery('');
-    setSelectedImage(null);
+    setSelectedCelebrity(null);
     setHasScrolled(false);
     setShowSearchSuggestions(false);
   };
 
-  // Auto-suggest for search
-  useEffect(() => {
-    if (searchQuery.length > 0 && stage === 'search') {
-      setShowSearchSuggestions(true);
-    } else {
-      setShowSearchSuggestions(false);
-    }
-  }, [searchQuery, stage]);
-
-  // Google-style header component
-  const GoogleHeader = () => (
-    <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#202124]">
-      <div className="flex items-center gap-4">
-        <svg viewBox="0 0 272 92" className="h-7 w-auto">
-          <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-          <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-          <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
-          <path fill="#4285F4" d="M225 3v65h-9.5V3h9.5z"/>
-          <path fill="#34A853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
-          <path fill="#EA4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
-        </svg>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
-          U
-        </div>
-      </div>
-    </div>
+  // Google Logo SVG
+  const GoogleLogo = ({ size = 'large' }: { size?: 'small' | 'large' }) => (
+    <svg viewBox="0 0 272 92" className={size === 'large' ? 'h-12 w-auto' : 'h-7 w-auto'}>
+      <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+      <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+      <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+      <path fill="#4285F4" d="M225 3v65h-9.5V3h9.5z"/>
+      <path fill="#34A853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+      <path fill="#EA4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
+    </svg>
   );
 
   // Search stage - Google home screen
   if (stage === 'search') {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#202124] flex flex-col">
-        <GoogleHeader />
-        <div className="flex-1 flex flex-col items-center justify-start pt-16 px-4">
-          {/* Google Logo */}
-          <svg viewBox="0 0 272 92" className="h-12 w-auto mb-8">
-            <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-            <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
-            <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
-            <path fill="#4285F4" d="M225 3v65h-9.5V3h9.5z"/>
-            <path fill="#34A853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
-            <path fill="#EA4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
-          </svg>
+      <div className="min-h-screen bg-white flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="w-8" />
+          <div className="w-8 h-8 rounded-full bg-[#1A73E8] flex items-center justify-center text-white text-sm font-medium">
+            U
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4">
+          <GoogleLogo size="large" />
           
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="w-full max-w-xl relative">
-            <div className="relative flex items-center bg-white dark:bg-[#303134] rounded-full border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow">
-              <svg className="w-5 h-5 ml-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <form onSubmit={handleSearch} className="w-full max-w-xl mt-8 relative">
+            <div className="relative flex items-center bg-white rounded-full border border-[#dfe1e5] shadow-sm hover:shadow-md focus-within:shadow-md transition-shadow">
+              <svg className="w-5 h-5 ml-4 text-[#9aa0a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Pesquisar no Google"
-                className="flex-1 bg-transparent py-3 px-4 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchSuggestions(e.target.value.length > 0);
+                }}
+                placeholder="Pesquisar"
+                className="flex-1 bg-transparent py-3 px-4 text-[#202124] placeholder-[#9aa0a6] focus:outline-none text-base"
                 autoFocus
               />
               <button type="button" className="p-2 mr-2">
@@ -146,246 +243,354 @@ export default function GoogleMime() {
             
             {/* Search Suggestions */}
             {showSearchSuggestions && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#303134] rounded-lg border border-gray-200 dark:border-gray-600 shadow-lg z-10">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('Celebridade');
-                    setStage('results');
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
-                >
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span className="text-gray-900 dark:text-white">Celebridade</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('Celebridades famosas');
-                    setStage('results');
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
-                >
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span className="text-gray-900 dark:text-white">Celebridades famosas</span>
-                </button>
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl border border-[#dfe1e5] shadow-lg z-10 overflow-hidden">
+                {['Celebridade', 'Celebridades brasileiras', 'Celebridades famosas'].map((suggestion, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery(suggestion);
+                      handleSearch();
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f8f9fa] text-left border-b border-[#f1f3f4] last:border-0"
+                  >
+                    <svg className="w-4 h-4 text-[#9aa0a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span className="text-[#202124]">{suggestion}</span>
+                  </button>
+                ))}
               </div>
             )}
           </form>
           
-          {/* Search Buttons */}
-          <div className="flex gap-3 mt-6">
-            <button
-              type="submit"
-              onClick={handleSearch}
-              className="px-4 py-2 bg-gray-100 dark:bg-[#303134] text-gray-700 dark:text-gray-300 text-sm rounded hover:border-gray-300 dark:hover:border-gray-500 border border-transparent"
-            >
-              Pesquisa Google
-            </button>
-            <button className="px-4 py-2 bg-gray-100 dark:bg-[#303134] text-gray-700 dark:text-gray-300 text-sm rounded hover:border-gray-300 dark:hover:border-gray-500 border border-transparent">
-              Estou com sorte
+          {/* Google Lens & Voice */}
+          <div className="flex gap-6 mt-8">
+            <button className="flex flex-col items-center gap-2 px-6 py-3 hover:bg-[#f8f9fa] rounded-lg">
+              <div className="w-12 h-12 rounded-full bg-[#f8f9fa] flex items-center justify-center">
+                <svg className="w-6 h-6" viewBox="0 0 192 192" fill="none">
+                  <rect x="64" y="64" width="64" height="64" rx="8" stroke="#4285F4" strokeWidth="8"/>
+                  <circle cx="96" cy="96" r="88" stroke="#FBBC05" strokeWidth="8" strokeDasharray="16 16"/>
+                </svg>
+              </div>
+              <span className="text-xs text-[#5f6368]">Pesquisar com sua câmera</span>
             </button>
           </div>
         </div>
         
         {/* Bottom Navigation */}
-        <div className="flex justify-around py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#202124]">
-          <button className="flex flex-col items-center gap-1 text-blue-500">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        <div className="flex justify-around py-3 border-t border-[#e8eaed] bg-white">
+          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#1A73E8]">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
-            <span className="text-xs">Descubra</span>
+            <span className="text-xs font-medium">Início</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-gray-500">
+          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#5f6368]">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
             </svg>
-            <span className="text-xs">Pesquisa</span>
+            <span className="text-xs">Salvos</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-gray-500">
+          <button className="flex flex-col items-center gap-1 px-6 py-2 text-[#5f6368]">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-xs">Coleções</span>
+            <span className="text-xs">Recentes</span>
           </button>
         </div>
       </div>
     );
   }
 
-  // Results stage - Search results with celebrity images
-  if (stage === 'results' || stage === 'scrolled') {
+  // Reveal stage - Show Wikipedia-style page for selected celebrity
+  if (stage === 'reveal' && selectedCelebrity) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#202124] flex flex-col">
-        {/* Search Header */}
-        <div className="sticky top-0 z-10 bg-white dark:bg-[#202124] border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-3 px-4 py-2">
-            <button onClick={handleReset} className="p-2">
-              <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </button>
-            <div className="flex-1 flex items-center bg-gray-100 dark:bg-[#303134] rounded-full px-4 py-2">
-              <span className="text-gray-900 dark:text-white">{searchQuery || 'Celebridade'}</span>
+      <div className="min-h-screen bg-white flex flex-col">
+        {/* Wikipedia-style Header */}
+        <div className="bg-white border-b border-[#a2a9b1] px-4 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button onClick={handleReset} className="p-2 -ml-2">
+                <svg className="w-5 h-5 text-[#54595d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/103px-Wikipedia-logo-v2.svg.png" alt="Wikipedia" className="h-8" />
             </div>
-            <button className="p-2">
-              <svg className="w-6 h-6 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3z"/>
-                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-              </svg>
-            </button>
-          </div>
-          
-          {/* Tabs */}
-          <div className="flex gap-6 px-4 text-sm">
-            <button className="py-3 border-b-2 border-blue-500 text-blue-500 font-medium">Todos</button>
-            <button className="py-3 text-gray-600 dark:text-gray-400">Imagens</button>
-            <button className="py-3 text-gray-600 dark:text-gray-400">Notícias</button>
-            <button className="py-3 text-gray-600 dark:text-gray-400">Vídeos</button>
+            <div className="flex items-center gap-2">
+              <button className="p-2">
+                <svg className="w-5 h-5 text-[#54595d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Wikipedia Content */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Title */}
+          <div className="px-4 py-4 border-b border-[#eaecf0]">
+            <h1 className="text-2xl font-serif text-[#202122]">{selectedCelebrity.name}</h1>
+            <p className="text-sm text-[#54595d] mt-1">Origem: Wikipédia, a enciclopédia livre.</p>
+          </div>
+
+          {/* Main Image */}
+          <div className="px-4 py-4">
+            <div className="float-right ml-4 mb-4 w-48">
+              <div className="border border-[#a2a9b1] bg-[#f8f9fa] p-2">
+                <img 
+                  src={selectedCelebrity.image} 
+                  alt={selectedCelebrity.name}
+                  className="w-full"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://via.placeholder.com/300x400/f8f9fa/202122?text=${encodeURIComponent(selectedCelebrity.name)}`;
+                  }}
+                />
+                <p className="text-xs text-[#54595d] text-center mt-2">{selectedCelebrity.name}</p>
+              </div>
+              
+              {/* Info Box */}
+              <div className="border border-[#a2a9b1] bg-[#f8f9fa] mt-2">
+                <div className="bg-[#eaecf0] px-2 py-1 text-center font-medium text-sm">{selectedCelebrity.name}</div>
+                <table className="w-full text-xs">
+                  <tbody>
+                    <tr className="border-t border-[#eaecf0]">
+                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Nascimento</td>
+                      <td className="px-2 py-1">{selectedCelebrity.birthDate}</td>
+                    </tr>
+                    <tr className="border-t border-[#eaecf0]">
+                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Nacionalidade</td>
+                      <td className="px-2 py-1">{selectedCelebrity.nationality}</td>
+                    </tr>
+                    <tr className="border-t border-[#eaecf0]">
+                      <td className="px-2 py-1 font-medium bg-[#f8f9fa]">Ocupação</td>
+                      <td className="px-2 py-1">{selectedCelebrity.occupation}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Article Text */}
+            <p className="text-[#202122] text-base leading-relaxed mb-4">
+              <strong>{selectedCelebrity.name}</strong> {selectedCelebrity.description}
+            </p>
+            <p className="text-[#202122] text-base leading-relaxed mb-4">
+              Considerado(a) um(a) dos maiores nomes de sua área no Brasil, {selectedCelebrity.name.split(' ')[0]} conquistou reconhecimento nacional e internacional ao longo de sua carreira.
+            </p>
+            <p className="text-[#202122] text-base leading-relaxed mb-4">
+              Sua trajetória profissional é marcada por grandes conquistas e contribuições significativas para a cultura brasileira.
+            </p>
+            
+            <div className="clear-both" />
+            
+            {/* Sections */}
+            <h2 className="text-xl font-serif text-[#202122] mt-6 mb-2 pb-1 border-b border-[#a2a9b1]">Carreira</h2>
+            <p className="text-[#202122] text-base leading-relaxed mb-4">
+              {selectedCelebrity.name.split(' ')[0]} iniciou sua carreira profissional ainda jovem, demonstrando talento excepcional desde cedo. Ao longo dos anos, acumulou uma série de conquistas que consolidaram sua posição como referência em sua área de atuação.
+            </p>
+            
+            <h2 className="text-xl font-serif text-[#202122] mt-6 mb-2 pb-1 border-b border-[#a2a9b1]">Vida pessoal</h2>
+            <p className="text-[#202122] text-base leading-relaxed mb-4">
+              Nascido(a) em {selectedCelebrity.birthDate}, {selectedCelebrity.name.split(' ')[0]} é conhecido(a) por manter aspectos de sua vida pessoal de forma reservada, embora seja frequentemente visto(a) em eventos públicos e aparições na mídia.
+            </p>
+          </div>
+        </div>
+
+        {/* Bottom button to restart */}
+        <div className="p-4 border-t border-[#eaecf0]">
+          <button 
+            onClick={handleReset}
+            className="w-full py-3 bg-[#1A73E8] text-white rounded-full font-medium"
+          >
+            Nova pesquisa
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Results/Images/Scrolled stage - Search results with celebrity images
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Search Header */}
+      <div className="sticky top-0 z-10 bg-white border-b border-[#e8eaed]">
+        <div className="flex items-center gap-2 px-4 py-2">
+          <button onClick={handleReset} className="p-2 -ml-2">
+            <svg className="w-5 h-5 text-[#5f6368]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <div className="flex-1 flex items-center bg-[#f1f3f4] rounded-full px-4 py-2">
+            <span className="text-[#202124] text-sm">{searchQuery || 'Celebridade'}</span>
+          </div>
+          <button className="p-2">
+            <svg className="w-5 h-5 text-[#5f6368]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
+          </button>
+        </div>
         
-        {/* Scrollable Content */}
-        <div 
-          className="flex-1 overflow-y-auto px-4 py-4"
-          onScroll={handleScroll}
-        >
-          {/* Results count */}
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Cerca de 1.234.567.890 resultados (0,42 segundos)
-          </p>
-          
-          {/* Image Grid - Celebrity selection area */}
-          <div className="mb-6">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-3">Imagens de celebridades</h2>
-            <p className="text-xs text-gray-500 mb-2">(Toque duas vezes para selecionar)</p>
-            <div className="grid grid-cols-4 gap-2">
-              {CELEBRITY_IMAGES.map((celebrity) => (
+        {/* Tabs */}
+        <div className="flex gap-0 px-4 text-sm overflow-x-auto">
+          <button 
+            onClick={() => handleTabChange('all')}
+            className={`py-3 px-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#1A73E8] border-b-2 border-[#1A73E8]' : 'text-[#5f6368]'}`}
+          >
+            Todos
+          </button>
+          <button 
+            onClick={() => handleTabChange('images')}
+            className={`py-3 px-4 font-medium whitespace-nowrap ${activeTab === 'images' ? 'text-[#1A73E8] border-b-2 border-[#1A73E8]' : 'text-[#5f6368]'}`}
+          >
+            Imagens
+          </button>
+          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Notícias</button>
+          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Vídeos</button>
+          <button className="py-3 px-4 text-[#5f6368] whitespace-nowrap">Shopping</button>
+        </div>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div 
+        className="flex-1 overflow-y-auto"
+        onScroll={handleScroll}
+      >
+        {/* Images Tab Content */}
+        {(activeTab === 'images' || stage === 'images') && (
+          <div className="p-2">
+            <div className="grid grid-cols-3 gap-1">
+              {CELEBRITIES.map((celebrity) => (
                 <div
                   key={celebrity.id}
-                  className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
-                    selectedImage?.id === celebrity.id 
-                      ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-[#202124]' 
-                      : 'hover:opacity-80'
-                  }`}
+                  className="aspect-square overflow-hidden cursor-pointer relative group"
                   onDoubleClick={() => handleImageDoubleClick(celebrity)}
                 >
                   <img
                     src={celebrity.image}
                     alt={celebrity.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://via.placeholder.com/200x200/f1f3f4/5f6368?text=${encodeURIComponent(celebrity.name.split(' ')[0])}`;
+                    }}
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                 </div>
               ))}
             </div>
-          </div>
-          
-          {/* Fake Search Results - Links */}
-          <div className="space-y-6">
-            {FAKE_LINKS.map((link, index) => (
-              <div 
-                key={index}
-                className={`cursor-pointer ${stage === 'scrolled' ? 'hover:bg-gray-50 dark:hover:bg-gray-800 -mx-2 px-2 py-2 rounded' : 'opacity-50'}`}
-                onClick={stage === 'scrolled' ? handleLinkClick : undefined}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                    <span className="text-xs text-gray-600 dark:text-gray-300">{link.url[0].toUpperCase()}</span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400">{link.url}</span>
-                  </div>
-                </div>
-                <h3 className="text-lg text-blue-600 dark:text-blue-400 hover:underline mb-1">
-                  {link.title}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Confira as últimas novidades sobre celebridades e personalidades famosas do mundo do entretenimento...
-                </p>
-              </div>
-            ))}
             
-            {/* More fake content to enable scrolling */}
-            <div className="py-8">
-              <h3 className="text-lg text-blue-600 dark:text-blue-400 mb-1">
-                Biografias de Celebridades - Conheça a história
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Descubra a trajetória de vida das maiores celebridades do mundo...
-              </p>
-            </div>
-            <div className="py-8">
-              <h3 className="text-lg text-blue-600 dark:text-blue-400 mb-1">
-                Fotos Exclusivas - Galeria de Celebridades
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Veja fotos exclusivas e momentos especiais das estrelas...
-              </p>
-            </div>
-            <div className="py-8">
-              <h3 className="text-lg text-blue-600 dark:text-blue-400 mb-1">
-                Entrevistas com Celebridades - Bastidores
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Assista entrevistas exclusivas e conheça o lado pessoal...
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        {/* Instruction hint */}
-        {!selectedImage && (
-          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-sm">
-            Toque duas vezes em uma celebridade
+            {/* Links below images */}
+            {hasScrolled && (
+              <div className="mt-4 px-2 space-y-4">
+                <p className="text-xs text-[#70757a]">Pesquisas relacionadas</p>
+                {SEARCH_RESULTS.slice(0, 3).map((result, index) => (
+                  <div 
+                    key={index}
+                    className="cursor-pointer hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded"
+                    onClick={handleLinkClick}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-[#f1f3f4] flex items-center justify-center">
+                        <span className="text-[10px] text-[#5f6368] font-medium">{result.url[0].toUpperCase()}</span>
+                      </div>
+                      <span className="text-xs text-[#202124]">{result.url}</span>
+                    </div>
+                    <h3 className="text-base text-[#1a0dab] hover:underline">{result.title}</h3>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
-        {selectedImage && !hasScrolled && (
-          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-sm">
-            Role a página para baixo
+
+        {/* All Tab Content */}
+        {activeTab === 'all' && stage !== 'images' && (
+          <div className="px-4 py-3">
+            {/* Results count */}
+            <p className="text-xs text-[#70757a] mb-4">
+              Cerca de 1.230.000.000 resultados (0,42 s)
+            </p>
+            
+            {/* Image carousel */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-base font-medium text-[#202124]">Imagens</h2>
+                <button 
+                  onClick={() => handleTabChange('images')}
+                  className="text-sm text-[#1A73E8]"
+                >
+                  Ver todas
+                </button>
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+                {CELEBRITIES.slice(0, 6).map((celebrity) => (
+                  <div
+                    key={celebrity.id}
+                    className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer"
+                    onDoubleClick={() => handleImageDoubleClick(celebrity)}
+                  >
+                    <img
+                      src={celebrity.image}
+                      alt={celebrity.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://via.placeholder.com/100x100/f1f3f4/5f6368?text=${encodeURIComponent(celebrity.name.split(' ')[0])}`;
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Search Results - Links */}
+            <div className="space-y-6">
+              {SEARCH_RESULTS.map((result, index) => (
+                <div 
+                  key={index}
+                  className={`cursor-pointer ${hasScrolled ? 'hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded' : ''}`}
+                  onClick={hasScrolled ? handleLinkClick : undefined}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-6 h-6 rounded-full bg-[#f1f3f4] flex items-center justify-center">
+                      <span className="text-xs text-[#5f6368] font-medium">{result.url[0].toUpperCase()}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-[#202124]">{result.url}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg text-[#1a0dab] hover:underline mb-1">
+                    {result.title}
+                  </h3>
+                  <p className="text-sm text-[#4d5156] line-clamp-2">
+                    {result.snippet}
+                  </p>
+                </div>
+              ))}
+              
+              {/* More content to enable scrolling */}
+              <div className="py-8">
+                <p className="text-center text-[#70757a] text-sm">Pesquisas relacionadas</p>
+                <div className="flex flex-wrap gap-2 mt-4 justify-center">
+                  {['celebridades brasileiras 2024', 'famosos do brasil', 'artistas brasileiros', 'cantores famosos'].map((term, i) => (
+                    <span key={i} className="px-4 py-2 bg-[#f1f3f4] rounded-full text-sm text-[#202124]">{term}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
-        {hasScrolled && (
-          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-sm">
-            Clique em qualquer link
+
+        {/* Scroll indicator when celebrity is selected but not scrolled yet */}
+        {selectedCelebrity && !hasScrolled && (
+          <div className="fixed bottom-20 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm animate-bounce">
+              ↓ Role para continuar
+            </div>
           </div>
         )}
       </div>
-    );
-  }
-
-  // Reveal stage - Show the selected celebrity
-  if (stage === 'reveal' && selectedImage) {
-    return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-        <div className="animate-in fade-in zoom-in duration-500 text-center">
-          <div className="w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden shadow-2xl mb-6 mx-auto ring-4 ring-white/20">
-            <img
-              src={selectedImage.image}
-              alt={selectedImage.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            {selectedImage.name}
-          </h1>
-          <p className="text-gray-400 text-lg mb-8">
-            A celebridade que você escolheu
-          </p>
-        </div>
-        
-        <button
-          onClick={handleReset}
-          className="mt-8 px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-100 transition-colors"
-        >
-          Jogar Novamente
-        </button>
-      </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }
