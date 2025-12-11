@@ -1,51 +1,36 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-
-type Suit = 'espada' | 'ouros' | 'paus' | 'copas';
+import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
 
 type CardDefinition = {
   rank: string;
   label: string;
-  suit: Suit;
+  suit: SuitName;
 };
 
 const initialDeck: CardDefinition[] = [
-  { rank: 'A', label: 'A de espada', suit: 'espada' },
-  { rank: '5', label: '5 de ouros', suit: 'ouros' },
-  { rank: '7', label: '7 de paus', suit: 'paus' },
-  { rank: '9', label: '9 de copas', suit: 'copas' },
-  { rank: 'Q', label: 'Q de espada', suit: 'espada' },
-  { rank: '2', label: '2 de ouros', suit: 'ouros' },
-  { rank: '8', label: '8 de paus', suit: 'paus' },
-  { rank: 'J', label: 'J de copas', suit: 'copas' },
-  { rank: 'K', label: 'K de espada', suit: 'espada' },
+  { rank: 'A', label: 'A de espada', suit: 'spades' },
+  { rank: 'Q', label: 'Q de ouros', suit: 'diamonds' },
+  { rank: 'J', label: 'J de paus', suit: 'clubs' },
+  { rank: 'K', label: 'K de copas', suit: 'hearts' },
+  { rank: '5', label: '5 de espada', suit: 'spades' },
+  { rank: 'J', label: 'J de espada', suit: 'spades' },
+  { rank: 'K', label: 'K de ouros', suit: 'diamonds' },
+  { rank: 'A', label: 'A de paus', suit: 'clubs' },
+  { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
 ];
 
 const oiSumidaDeck: CardDefinition[] = [
-  { rank: 'A', label: 'A de paus', suit: 'paus' },
-  { rank: '5', label: '5 de copas', suit: 'copas' },
-  { rank: '7', label: '7 de espadas', suit: 'espada' },
-  { rank: '9', label: '9 de ouros', suit: 'ouros' },
-  { rank: 'Q', label: 'Q de paus', suit: 'paus' },
-  { rank: '2', label: '2 de copas', suit: 'copas' },
-  { rank: '8', label: '8 de espadas', suit: 'espada' },
-  { rank: 'J', label: 'J de ouros', suit: 'ouros' },
-  { rank: 'K', label: 'K de paus', suit: 'paus' },
+  { rank: 'A', label: 'A de paus', suit: 'clubs' },
+  { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
+  { rank: 'J', label: 'J de espadas', suit: 'spades' },
+  { rank: 'K', label: 'K de ouros', suit: 'diamonds' },
+  { rank: '5', label: '5 de paus', suit: 'clubs' },
+  { rank: 'J', label: 'J de paus', suit: 'clubs' },
+  { rank: 'K', label: 'K de copas', suit: 'hearts' },
+  { rank: 'A', label: 'A de espadas', suit: 'spades' },
+  { rank: 'Q', label: 'Q de ouros', suit: 'diamonds' },
 ];
-
-const suitStyles: Record<Suit, string> = {
-  espada: 'text-slate-800',
-  paus: 'text-emerald-700',
-  ouros: 'text-amber-600',
-  copas: 'text-rose-600',
-};
-
-const suitLabels: Record<Suit, string> = {
-  espada: 'Espada',
-  paus: 'Paus',
-  ouros: 'Ouros',
-  copas: 'Copas',
-};
 
 const shuffleCards = (cards: CardDefinition[]) => {
   const deck = [...cards];
@@ -84,17 +69,27 @@ const OiSumida = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          {cards.map((card) => (
-            <div
-              key={card.label}
-              className="rounded-2xl border border-border bg-white/80 shadow-[0_12px_35px_rgba(15,23,42,0.08)] p-2 flex flex-col items-center justify-between"
-              style={{ aspectRatio: '2 / 3' }}
-            >
-              <span className="text-xs font-medium text-muted-foreground">{card.label}</span>
-              <span className={`text-4xl font-bold ${suitStyles[card.suit]}`}>{card.rank}</span>
-              <span className={`text-sm font-semibold ${suitStyles[card.suit]}`}>{suitLabels[card.suit]}</span>
-            </div>
-          ))}
+          {cards.map((card) => {
+            const imageSrc = getCardImageSrc(card.rank, card.suit);
+            return (
+              <div
+                key={`${card.label}-${card.rank}-${card.suit}`}
+                className="rounded-2xl border border-border bg-white/90 shadow-[0_12px_35px_rgba(15,23,42,0.1)] p-1 flex items-center justify-center"
+                style={{ aspectRatio: '2 / 3' }}
+              >
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt={card.label}
+                    className="h-full w-full object-contain"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="text-sm font-semibold text-muted-foreground">{card.label}</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
