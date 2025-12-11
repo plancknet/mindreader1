@@ -80,13 +80,15 @@ export default function GoogleMime() {
   }, [stage, selectedCelebrity, hasScrolled]);
 
   // Handle link click - reveal the selected image
-  const handleLinkClick = () => {
-    if (!selectedCelebrity || !hasScrolled) {
-      return;
+  const handleLinkClick = useCallback((celebrity?: Celebrity) => {
+    const targetCelebrity = celebrity ?? selectedCelebrity;
+    if (!targetCelebrity || !hasScrolled) return;
+    if (!selectedCelebrity && celebrity) {
+      setSelectedCelebrity(celebrity);
     }
     trackUsage();
     setStage('reveal');
-  };
+  }, [selectedCelebrity, hasScrolled, trackUsage]);
 
   // Handle tab change
   const handleTabChange = (tab: Tab) => {
@@ -560,7 +562,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={handleLinkClick}
+                    onClick={() => handleLinkClick(card)}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '180px' : '240px' }}>
                       <img
@@ -592,7 +594,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={handleLinkClick}
+                    onClick={() => handleLinkClick(card)}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '200px' : '260px' }}>
                       <img
