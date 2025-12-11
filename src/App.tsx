@@ -52,6 +52,7 @@ import OiSumida from "./pages/OiSumida";
 import JogoVelhaBruxa from "./pages/JogoVelhaBruxa";
 import JogoVelhaBruxaInstructions from "./pages/JogoVelhaBruxaInstructions";
 import OiSumidaInstructions from "./pages/OiSumidaInstructions";
+import GoogleMime from "./pages/GoogleMime";
 
 const queryClient = new QueryClient();
 
@@ -264,6 +265,7 @@ const App = () => (
             <Route path="/oi-sumida/instrucoes" element={<ProtectedRoute><OiSumidaInstructions /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa" element={<ProtectedRoute><JogoVelhaBruxa /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa/instrucoes" element={<ProtectedRoute><JogoVelhaBruxaInstructions /></ProtectedRoute>} />
+            <Route path="/google-mime" element={<ProtectedRoute><GoogleMime /></ProtectedRoute>} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />
             <Route path="/start-prompt" element={<ProtectedRoute><StartPrompt /></ProtectedRoute>} />
             <Route path="/gameplay" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />

@@ -76,6 +76,7 @@ const GAME_USAGE_CONFIG = [
   { id: GAME_IDS.CARTA_PENSADA, label: 'Carta Pensada', initials: 'CP' },
   { id: GAME_IDS.OI_SUMIDA, label: 'Oi Sumida', initials: 'OS' },
   { id: GAME_IDS.JOGO_VELHA_BRUXA, label: 'Jogo da Velha Bruxa', initials: 'JVB' },
+  { id: GAME_IDS.GOOGLE_MIME, label: 'Google Mime', initials: 'GM' },
 ] as const;
 
 const createInitialGameUsageFilters = () =>

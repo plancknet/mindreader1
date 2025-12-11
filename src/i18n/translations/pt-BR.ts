@@ -303,6 +303,10 @@ export const ptBR = {
       myEmojis: {
         title: 'Meus Emojis',
         description: 'De quem é qual Emoji'
+      },
+      googleMime: {
+        title: 'Google Mime',
+        description: 'Simule uma pesquisa no Google e revele a celebridade pensada'
       }
     }
   },

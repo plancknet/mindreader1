@@ -259,6 +259,14 @@ export const it = {
         title: 'Punta della Carta',
         description: 'Seleziona carte speciali e mescola per capovolgerle'
       },
+      oiSumida: {
+        title: 'Ciao Scomparsa',
+        description: 'Griglia di carte con mescolamento istantaneo'
+      },
+      jogoVelhaBruxa: {
+        title: 'Tris della Strega',
+        description: 'Sfida la strega in un duello mistico di X e O'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Usa il dorso segreto per rivelare valore e seme'
@@ -298,6 +306,10 @@ export const it = {
       myEmojis: {
         title: 'I Miei Emoji',
         description: 'Di chi è ogni emoji?'
+      },
+      googleMime: {
+        title: 'Google Mime',
+        description: 'Simula una ricerca su Google e rivela la celebrità pensata'
       }
     }
   },

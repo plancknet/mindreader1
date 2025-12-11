@@ -259,6 +259,14 @@ export const en = {
         title: 'Card Edge',
         description: 'Select special cards and shuffle to flip them upside down'
       },
+      oiSumida: {
+        title: 'Hi There',
+        description: 'Card grid with instant shuffle'
+      },
+      jogoVelhaBruxa: {
+        title: 'Witch Tic-Tac-Toe',
+        description: 'Challenge the witch in a mystical X and O duel'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: 'Use the secret back to reveal both value and suit'
@@ -298,6 +306,10 @@ export const en = {
       myEmojis: {
         title: 'My Emojis',
         description: 'Figure out whose emoji belongs to whom'
+      },
+      googleMime: {
+        title: 'Google Mime',
+        description: 'Simulate a Google search and reveal the thought celebrity'
       }
     }
   },

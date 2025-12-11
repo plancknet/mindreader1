@@ -15,6 +15,7 @@ export const GAME_IDS = {
   CARTA_PENSADA: 13,
   OI_SUMIDA: 14,
   JOGO_VELHA_BRUXA: 15,
+  GOOGLE_MIME: 16,
 } as const;
 
 export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];
