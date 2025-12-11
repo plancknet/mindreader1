@@ -52,18 +52,6 @@ export default function GoogleMime() {
     }
   }, [isAdminLoading, isAdmin, navigate]);
 
-  if (isAdminLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Verificando acesso...
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
-
   // Handle search submission
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -109,6 +97,22 @@ export default function GoogleMime() {
       setStage('results');
     }
   };
+
+  if (isAdminLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Verificando acesso...
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Acesso permitido apenas para administradores.
+      </div>
+    );
+  }
 
   // Reset game
   const handleReset = () => {
