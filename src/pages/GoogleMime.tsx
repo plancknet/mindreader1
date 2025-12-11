@@ -1,119 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, ArrowLeft, MoreVertical } from 'lucide-react';
-
-// Real celebrity data with Wikipedia-style info
-const CELEBRITIES = [
-  { 
-    id: 1, 
-    name: 'Anitta', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Anitta_2023.png/440px-Anitta_2023.png',
-    description: 'Larissa de Macedo Machado, conhecida pelo nome artístico Anitta, é uma cantora, compositora, atriz, dançarina e empresária brasileira.',
-    birthDate: '30 de março de 1993',
-    occupation: 'Cantora, compositora, atriz',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 2, 
-    name: 'Neymar Jr', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Bra-Cos_%281%29_%28cropped%29.jpg/440px-Bra-Cos_%281%29_%28cropped%29.jpg',
-    description: 'Neymar da Silva Santos Júnior, conhecido como Neymar Jr., é um futebolista brasileiro que atua como ponta-esquerda e meia-atacante.',
-    birthDate: '5 de fevereiro de 1992',
-    occupation: 'Futebolista',
-    nationality: 'Brasileiro'
-  },
-  { 
-    id: 3, 
-    name: 'Ivete Sangalo', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ivete_Sangalo_2018_%28cropped%29.jpg/440px-Ivete_Sangalo_2018_%28cropped%29.jpg',
-    description: 'Ivete Maria Dias de Sangalo é uma cantora, compositora, instrumentista, apresentadora e atriz brasileira.',
-    birthDate: '27 de maio de 1972',
-    occupation: 'Cantora, apresentadora',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 4, 
-    name: 'Ronaldinho Gaúcho', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Ronaldinho_2019.jpg/440px-Ronaldinho_2019.jpg',
-    description: 'Ronaldo de Assis Moreira, mais conhecido como Ronaldinho Gaúcho, é um ex-futebolista brasileiro, considerado um dos maiores jogadores de todos os tempos.',
-    birthDate: '21 de março de 1980',
-    occupation: 'Ex-futebolista',
-    nationality: 'Brasileiro'
-  },
-  { 
-    id: 5, 
-    name: 'Gisele Bündchen', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gisele_Bundchen_2.jpg/440px-Gisele_Bundchen_2.jpg',
-    description: 'Gisele Caroline Bündchen é uma supermodelo brasileira, considerada uma das mais influentes do mundo da moda.',
-    birthDate: '20 de julho de 1980',
-    occupation: 'Modelo, empresária',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 6, 
-    name: 'Pelé', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Pele_con_brasil_%28cropped%29.jpg/440px-Pele_con_brasil_%28cropped%29.jpg',
-    description: 'Edson Arantes do Nascimento, conhecido mundialmente como Pelé, foi um futebolista brasileiro, amplamente considerado o maior jogador de futebol de todos os tempos.',
-    birthDate: '23 de outubro de 1940',
-    occupation: 'Ex-futebolista',
-    nationality: 'Brasileiro'
-  },
-  { 
-    id: 7, 
-    name: 'Xuxa', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Xuxa_Meneghel_em_2019_%28cropped%29.jpg/440px-Xuxa_Meneghel_em_2019_%28cropped%29.jpg',
-    description: 'Maria da Graça Xuxa Meneghel, conhecida como Xuxa, é uma apresentadora de televisão, cantora, atriz e empresária brasileira.',
-    birthDate: '27 de março de 1963',
-    occupation: 'Apresentadora, cantora, atriz',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 8, 
-    name: 'Gusttavo Lima', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gusttavo_Lima_%28cropped%29.jpg/440px-Gusttavo_Lima_%28cropped%29.jpg',
-    description: 'Nivaldo Batista Lima, mais conhecido pelo nome artístico Gusttavo Lima, é um cantor e compositor brasileiro de música sertaneja.',
-    birthDate: '3 de setembro de 1989',
-    occupation: 'Cantor, compositor',
-    nationality: 'Brasileiro'
-  },
-  { 
-    id: 9, 
-    name: 'Bruna Marquezine', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Bruna_Marquezine_em_2023.jpg/440px-Bruna_Marquezine_em_2023.jpg',
-    description: 'Bruna Reis Maia, conhecida como Bruna Marquezine, é uma atriz brasileira conhecida por seus papéis em novelas da TV Globo.',
-    birthDate: '4 de agosto de 1995',
-    occupation: 'Atriz',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 10, 
-    name: 'Caetano Veloso', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Caetano_Veloso_2012_%28cropped%29.jpg/440px-Caetano_Veloso_2012_%28cropped%29.jpg',
-    description: 'Caetano Emanuel Viana Teles Veloso é um músico, produtor, arranjador e escritor brasileiro, considerado um dos maiores artistas da música brasileira.',
-    birthDate: '7 de agosto de 1942',
-    occupation: 'Cantor, compositor',
-    nationality: 'Brasileiro'
-  },
-  { 
-    id: 11, 
-    name: 'Sabrina Sato', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Sabrina_Sato_em_2019.jpg/440px-Sabrina_Sato_em_2019.jpg',
-    description: 'Sabrina Sato Rahal é uma apresentadora de televisão, atriz, modelo e empresária brasileira.',
-    birthDate: '4 de fevereiro de 1981',
-    occupation: 'Apresentadora, modelo',
-    nationality: 'Brasileira'
-  },
-  { 
-    id: 12, 
-    name: 'Roberto Carlos', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Roberto_Carlos_2019_%28cropped%29.jpg/440px-Roberto_Carlos_2019_%28cropped%29.jpg',
-    description: 'Roberto Carlos Braga é um cantor e compositor brasileiro, considerado o Rei da Música Brasileira e um dos artistas mais influentes do país.',
-    birthDate: '19 de abril de 1941',
-    occupation: 'Cantor, compositor',
-    nationality: 'Brasileiro'
-  },
-];
+import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { CELEBRITIES, type Celebrity } from '@/data/celebrities';
 
 // Fake search results for web tab
 const SEARCH_RESULTS = [
@@ -144,14 +35,34 @@ type Stage = 'search' | 'results' | 'images' | 'scrolled' | 'reveal';
 type Tab = 'all' | 'images' | 'news' | 'videos';
 
 export default function GoogleMime() {
+  const navigate = useNavigate();
+  const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
   const [stage, setStage] = useState<Stage>('search');
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCelebrity, setSelectedCelebrity] = useState<typeof CELEBRITIES[0] | null>(null);
+  const [selectedCelebrity, setSelectedCelebrity] = useState<Celebrity | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
+
+  useEffect(() => {
+    if (!isAdminLoading && !isAdmin) {
+      navigate('/game-selector', { replace: true });
+    }
+  }, [isAdminLoading, isAdmin, navigate]);
+
+  if (isAdminLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Verificando acesso...
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   // Handle search submission
   const handleSearch = (e?: React.FormEvent) => {
@@ -164,7 +75,7 @@ export default function GoogleMime() {
   };
 
   // Handle double click on image to secretly select it
-  const handleImageDoubleClick = useCallback((celebrity: typeof CELEBRITIES[0]) => {
+  const handleImageDoubleClick = useCallback((celebrity: Celebrity) => {
     setSelectedCelebrity(celebrity);
     // No visual feedback - this is the magic trick!
   }, []);
@@ -182,10 +93,11 @@ export default function GoogleMime() {
 
   // Handle link click - reveal the selected image
   const handleLinkClick = () => {
-    if (selectedCelebrity && hasScrolled) {
-      trackUsage();
-      setStage('reveal');
+    if (!selectedCelebrity || !hasScrolled) {
+      return;
     }
+    trackUsage();
+    setStage('reveal');
   };
 
   // Handle tab change
@@ -644,7 +556,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={hasScrolled ? handleLinkClick : undefined}
+                    onClick={handleLinkClick}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '180px' : '240px' }}>
                       <img
@@ -676,7 +588,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={hasScrolled ? handleLinkClick : undefined}
+                    onClick={handleLinkClick}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '200px' : '260px' }}>
                       <img
@@ -749,7 +661,7 @@ export default function GoogleMime() {
                 <div 
                   key={index}
                   className={`cursor-pointer ${hasScrolled ? 'hover:bg-[#f8f9fa] -mx-2 px-2 py-2 rounded' : ''}`}
-                  onClick={hasScrolled ? handleLinkClick : undefined}
+                  onClick={handleLinkClick}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-6 h-6 rounded-full bg-[#f1f3f4] flex items-center justify-center">
