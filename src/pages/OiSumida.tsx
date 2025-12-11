@@ -25,8 +25,8 @@ const OI_SUMIDA_DECK: CardDefinition[] = [
   { rank: 'Q', label: 'Q de ouros', suit: 'diamonds' },
   { rank: 'J', label: 'J de paus', suit: 'clubs' },
   { rank: 'K', label: 'K de copas', suit: 'hearts' },
-  { rank: 'A', label: 'A de paus', suit: 'clubs' },
-  { rank: 'Q', label: 'Q de copas', suit: 'hearts' },
+  { rank: 'A', label: 'A de ouros', suit: 'diamonds' },
+  { rank: 'Q', label: 'Q de espadas', suit: 'spades' },
   { rank: 'J', label: 'J de ouros', suit: 'diamonds' },
   { rank: 'K', label: 'K de paus', suit: 'clubs' },
 ];
