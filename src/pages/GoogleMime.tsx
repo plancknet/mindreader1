@@ -80,12 +80,8 @@ export default function GoogleMime() {
   }, [stage, selectedCelebrity, hasScrolled]);
 
   // Handle link click - reveal the selected image
-  const handleLinkClick = useCallback((celebrity?: Celebrity) => {
-    const targetCelebrity = celebrity ?? selectedCelebrity;
-    if (!targetCelebrity || !hasScrolled) return;
-    if (!selectedCelebrity && celebrity) {
-      setSelectedCelebrity(celebrity);
-    }
+  const handleLinkClick = useCallback(() => {
+    if (!selectedCelebrity || !hasScrolled) return;
     trackUsage();
     setStage('reveal');
   }, [selectedCelebrity, hasScrolled, trackUsage]);
@@ -562,7 +558,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={() => handleLinkClick(card)}
+                    onClick={handleLinkClick}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '180px' : '240px' }}>
                       <img
@@ -594,7 +590,7 @@ export default function GoogleMime() {
                     key={card.uniqueKey}
                     className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer"
                     onDoubleClick={() => handleImageDoubleClick(card)}
-                    onClick={() => handleLinkClick(card)}
+                    onClick={handleLinkClick}
                   >
                     <div className="relative" style={{ height: Math.random() > 0.5 ? '200px' : '260px' }}>
                       <img
@@ -700,13 +696,6 @@ export default function GoogleMime() {
         )}
 
         {/* Scroll indicator when celebrity is selected but not scrolled yet */}
-        {selectedCelebrity && !hasScrolled && (
-          <div className="fixed bottom-20 left-0 right-0 flex justify-center pointer-events-none">
-            <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm animate-bounce">
-              ↓ Role para continuar
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Bottom Navigation */}
