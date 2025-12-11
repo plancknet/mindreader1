@@ -14,7 +14,7 @@ interface HeaderControlsProps {
   showExtras?: boolean;
 }
 
-export const HeaderControls = ({ className, showExtras = false }: HeaderControlsProps) => {
+export const HeaderControls = ({ className, showExtras = true }: HeaderControlsProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();

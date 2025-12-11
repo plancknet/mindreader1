@@ -1,11 +1,11 @@
 import { type ReactNode, useMemo, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, RefreshCw, Shuffle } from 'lucide-react';
+import { RefreshCw, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const EMOJIS = [
   '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯',
@@ -55,7 +55,6 @@ const MatrixBlock = ({
 );
 
 const MyEmojis = () => {
-  const navigate = useNavigate();
   const { incrementUsage } = useUsageLimit();
   const [phase, setPhase] = useState<Phase>('selectInitial');
   const [matrix0, setMatrix0] = useState<string[][]>(generateMatrix0);
@@ -380,11 +379,8 @@ const MyEmojis = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate('/game-selector')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar ao menu
-          </Button>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <HeaderControls showExtras />
           <Button variant="outline" onClick={resetGame}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Reiniciar jogo
@@ -492,10 +488,6 @@ const MyEmojis = () => {
                   Reiniciar jogo
                 </Button>
               )}
-              <Button variant="ghost" onClick={() => navigate('/game-selector')}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Voltar para o menu
-              </Button>
             </div>
           </Card>
         </div>

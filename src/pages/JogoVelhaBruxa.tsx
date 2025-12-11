@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { HeaderControls } from '@/components/HeaderControls';
 
 type CellValue = 'user' | 'ai' | null;
 
@@ -114,6 +115,9 @@ const JogoVelhaBruxa = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-4 py-8 flex items-center justify-center">
       <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-end">
+          <HeaderControls showExtras />
+        </div>
         <div className="text-center space-y-2">
           <p className="text-sm text-slate-300 uppercase tracking-[0.3em]">Jogo da Velha</p>
           <h1 className="text-3xl font-bold text-white">Jogo da Velha Bruxa</h1>

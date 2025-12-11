@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Shuffle } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
+import { HeaderControls } from '@/components/HeaderControls';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -271,6 +272,9 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex flex-col p-4 bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="flex justify-end max-w-md mx-auto w-full mb-4">
+        <HeaderControls showExtras />
+      </div>
       <div className="flex-1 flex items-center justify-center max-w-md mx-auto w-full">
         <Card className="w-full">
           <CardHeader className="text-center space-y-4">
