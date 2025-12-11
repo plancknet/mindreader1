@@ -10,7 +10,8 @@ const instructions = [
   'Mostre o verso de um papel quadrado, mantendo a previsão escondida enquanto o jogo acontece.',
   'Neste papel está anotada a previsão abaixo (formato jogo da velha). Lembre de não revelar até o final.',
   'Peça para ele jogar o Jogo da Velha Bruxa no app, exatamente como sua tia pediu.',
-  'Assim que terminar, revele a previsão e compare com o tabuleiro para finalizar o efeito.',
+  'Assim que a partida do jogo da velhar terminar, observe que o resultado foi parecido com a previsão abaixo.',
+  'O truque está em girar o papel quadrado para que previsão fique idêntica ao tabuleiro final do jogo.'
 ];
 
 const predictionGrid = [

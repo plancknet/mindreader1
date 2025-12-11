@@ -133,6 +133,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'oiSumida',
     icon: CardIcon,
     path: '/oi-sumida',
+    instructionsPath: '/oi-sumida/instrucoes',
     color: 'from-rose-500 via-pink-500 to-orange-400',
     minTier: 'FREE',
     difficulty: 1,
