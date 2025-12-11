@@ -51,6 +51,18 @@ const isLosingMove = (board: CellValue[]): boolean => {
   });
 };
 
+const createsUserAdvantage = (board: CellValue[]): boolean => {
+  return winningLines.some((line) => {
+    let userCount = 0;
+    let emptyCount = 0;
+    line.forEach((index) => {
+      if (board[index] === 'user') userCount += 1;
+      if (board[index] === null) emptyCount += 1;
+    });
+    return userCount === 2 && emptyCount === 1;
+  });
+};
+
 const findNextAvailable = (order: number[], fromIndex: number, board: CellValue[]): number | null => {
   const start = order.indexOf(fromIndex);
   if (start === -1) {
@@ -63,6 +75,23 @@ const findNextAvailable = (order: number[], fromIndex: number, board: CellValue[
     }
   }
   return null;
+};
+
+const findSafeMove = (order: number[], fromIndex: number, board: CellValue[]): number | null => {
+  const start = order.indexOf(fromIndex);
+  if (start === -1) return null;
+
+  for (let offset = 1; offset <= order.length; offset += 1) {
+    const idx = order[(start + offset) % order.length];
+    if (board[idx] !== null) continue;
+    const simulated = [...board];
+    simulated[idx] = 'ai';
+    if (!createsUserAdvantage(simulated)) {
+      return idx;
+    }
+  }
+
+  return findNextAvailable(order, fromIndex, board);
 };
 
 const JogoVelhaBruxa = () => {
@@ -100,8 +129,8 @@ const JogoVelhaBruxa = () => {
     const column = getColumnFromIndex(index);
     const nextIndex =
       column === 2
-        ? findNextAvailable(ANTICLOCKWISE_ORDER, index, updatedBoard)
-        : findNextAvailable(CLOCKWISE_ORDER, index, updatedBoard);
+        ? findSafeMove(ANTICLOCKWISE_ORDER, index, updatedBoard)
+        : findSafeMove(CLOCKWISE_ORDER, index, updatedBoard);
 
     if (nextIndex !== null) {
       updatedBoard[nextIndex] = 'ai';
