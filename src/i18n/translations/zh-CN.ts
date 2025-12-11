@@ -259,6 +259,14 @@ export const zhCN = {
         title: '卡片边缘',
         description: '选择特殊卡片并洗牌将其翻转'
       },
+      oiSumida: {
+        title: '你好消失',
+        description: '即时洗牌的卡片网格'
+      },
+      jogoVelhaBruxa: {
+        title: '女巫井字棋',
+        description: '在神秘的X和O决斗中挑战女巫'
+      },
       cartaMental: {
         title: 'Carta Mental',
         description: '用秘密牌背揭示纸牌的数值与花色'
@@ -298,6 +306,10 @@ export const zhCN = {
       myEmojis: {
         title: '我的表情符号',
         description: '猜出每个表情符号属于谁'
+      },
+      googleMime: {
+        title: 'Google Mime',
+        description: '模拟Google搜索并揭示心中的名人'
       }
     }
   },

@@ -12,6 +12,7 @@ import {
   Shuffle,
   Play,
   Wand2,
+  Search,
   type LucideProps,
 } from 'lucide-react';
 import { HeaderControls } from '@/components/HeaderControls';
@@ -259,6 +260,15 @@ const GAME_CARDS: GameCard[] = [
     badgeKey: 'underConstruction',
     minTier: 'STANDARD',
     difficulty: 2,
+  },
+  {
+    id: 'google-mime',
+    translationKey: 'googleMime',
+    icon: Search,
+    path: '/google-mime',
+    color: 'from-blue-500 via-red-500 to-yellow-500',
+    minTier: 'FREE',
+    difficulty: 1,
   },
 ];
 
