@@ -14,12 +14,24 @@ interface UsageLimitData {
   reason: string;
 }
 
-export const useUsageLimit = () => {
+interface UseUsageLimitOptions {
+  requireAuth?: boolean;
+}
+
+export const useUsageLimit = (options?: UseUsageLimitOptions) => {
+  const requireAuth = options?.requireAuth ?? true;
   const [usageData, setUsageData] = useState<UsageLimitData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const checkUsageLimit = async () => {
+    if (!requireAuth) {
+      setUsageData(null);
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -72,6 +84,10 @@ export const useUsageLimit = () => {
   };
 
   const incrementUsage = async (game_id: number) => {
+    if (!requireAuth) {
+      return null;
+    }
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -105,8 +121,9 @@ export const useUsageLimit = () => {
   };
 
   useEffect(() => {
-    checkUsageLimit();
-  }, []);
+    void checkUsageLimit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requireAuth]);
 
   return {
     usageData,

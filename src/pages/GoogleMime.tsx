@@ -135,7 +135,7 @@ const GoogleMimePublic = () => {
   if (verified) {
     return (
       <Suspense fallback={<LoadingFallback />}>
-        <GoogleMimeAppLazy enforceAdmin={false} />
+        <GoogleMimeAppLazy enforceAdmin={false} publicMode />
       </Suspense>
     );
   }

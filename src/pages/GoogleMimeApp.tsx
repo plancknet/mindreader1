@@ -38,16 +38,19 @@ type Tab = 'all' | 'images' | 'news' | 'videos';
 type GoogleMimeAppProps = {
   enforceAdmin?: boolean;
   requireInfluencer?: boolean;
+  publicMode?: boolean;
 };
 
-const GoogleMimeGameContent = () => {
+const GoogleMimeGameContent = ({ trackUsageEnabled = true }: { trackUsageEnabled?: boolean }) => {
   const [stage, setStage] = useState<Stage>('search');
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCelebrity, setSelectedCelebrity] = useState<Celebrity | null>(null);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
+  const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME, {
+    requireAuth: trackUsageEnabled,
+  });
 
   // Handle search submission
   const handleSearch = (e?: React.FormEvent) => {
@@ -787,8 +790,9 @@ const GoogleMimeInfluencerGate = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-export default function GoogleMimeApp({ enforceAdmin = true, requireInfluencer = false }: GoogleMimeAppProps) {
-  let content: ReactNode = <GoogleMimeGameContent />;
+export default function GoogleMimeApp({ enforceAdmin = true, requireInfluencer = false, publicMode = false }: GoogleMimeAppProps) {
+  const trackUsageEnabled = !publicMode;
+  let content: ReactNode = <GoogleMimeGameContent trackUsageEnabled={trackUsageEnabled} />;
 
   if (requireInfluencer) {
     content = <GoogleMimeInfluencerGate>{content}</GoogleMimeInfluencerGate>;
