@@ -267,7 +267,7 @@ const App = () => (
             <Route path="/oi-sumida/instrucoes" element={<ProtectedRoute><OiSumidaInstructions /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa" element={<ProtectedRoute><JogoVelhaBruxa /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa/instrucoes" element={<ProtectedRoute><JogoVelhaBruxaInstructions /></ProtectedRoute>} />
-            <Route path="/google-mime" element={<ProtectedRoute><GoogleMimeApp enforceAdmin /></ProtectedRoute>} />
+            <Route path="/google-mime" element={<ProtectedRoute><GoogleMimeApp requireInfluencer /></ProtectedRoute>} />
             <Route path="/google-mime/instrucoes" element={<ProtectedRoute><GoogleMimeInstructions /></ProtectedRoute>} />
             <Route path="/google-mime/demo" element={<GoogleMime />} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />

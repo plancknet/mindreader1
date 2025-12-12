@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, MoreVertical, X, Share2, Bookmark, ScanSearch, Languages } from 'lucide-react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useSubscriptionTier } from '@/hooks/useSubscriptionTier';
 import { CELEBRITIES, type Celebrity } from '@/data/celebrities';
 
 // Fake search results for web tab
@@ -36,11 +37,10 @@ type Tab = 'all' | 'images' | 'news' | 'videos';
 
 type GoogleMimeAppProps = {
   enforceAdmin?: boolean;
+  requireInfluencer?: boolean;
 };
 
-export default function GoogleMimeApp({ enforceAdmin = true }: GoogleMimeAppProps) {
-  const navigate = useNavigate();
-  const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
+const GoogleMimeGameContent = () => {
   const [stage, setStage] = useState<Stage>('search');
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,29 +48,6 @@ export default function GoogleMimeApp({ enforceAdmin = true }: GoogleMimeAppProp
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { trackUsage } = useGameUsageTracker(GAME_IDS.GOOGLE_MIME);
-
-  useEffect(() => {
-    if (!enforceAdmin || isAdminLoading) return;
-    if (!isAdmin) {
-      navigate('/game-selector', { replace: true });
-    }
-  }, [enforceAdmin, isAdmin, isAdminLoading, navigate]);
-
-  if (enforceAdmin && isAdminLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Verificando acesso...
-      </div>
-    );
-  }
-
-  if (enforceAdmin && !isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Acesso permitido apenas para administradores.
-      </div>
-    );
-  }
 
   // Handle search submission
   const handleSearch = (e?: React.FormEvent) => {
@@ -753,4 +730,73 @@ export default function GoogleMimeApp({ enforceAdmin = true }: GoogleMimeAppProp
       </div>
     </div>
   );
+}
+
+const LoadingGate = ({ message = 'Verificando acesso...' }: { message?: string }) => (
+  <div className="min-h-screen flex items-center justify-center bg-black text-white">
+    {message}
+  </div>
+);
+
+const GoogleMimeAdminGate = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
+  const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
+
+  useEffect(() => {
+    if (isAdminLoading) return;
+    if (!isAdmin) {
+      navigate('/game-selector', { replace: true });
+    }
+  }, [isAdmin, isAdminLoading, navigate]);
+
+  if (isAdminLoading) {
+    return <LoadingGate />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Acesso permitido apenas para administradores.
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+};
+
+const GoogleMimeInfluencerGate = ({ children }: { children: ReactNode }) => {
+  const { tier, status, loading } = useSubscriptionTier();
+  const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
+
+  if (loading || isAdminLoading) {
+    return <LoadingGate />;
+  }
+
+  if (isAdmin) {
+    return <>{children}</>;
+  }
+
+  if (tier !== 'INFLUENCER' || status !== 'active') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white px-6 text-center">
+        Disponível apenas para assinantes Influencer com assinatura ativa.
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+};
+
+export default function GoogleMimeApp({ enforceAdmin = true, requireInfluencer = false }: GoogleMimeAppProps) {
+  let content: ReactNode = <GoogleMimeGameContent />;
+
+  if (requireInfluencer) {
+    content = <GoogleMimeInfluencerGate>{content}</GoogleMimeInfluencerGate>;
+  }
+
+  if (enforceAdmin) {
+    return <GoogleMimeAdminGate>{content}</GoogleMimeAdminGate>;
+  }
+
+  return <>{content}</>;
 }

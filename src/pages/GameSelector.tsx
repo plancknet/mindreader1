@@ -267,11 +267,11 @@ const GAME_CARDS: GameCard[] = [
     icon: Search,
     path: '/google-mime',
     instructionsPath: '/google-mime/instrucoes',
-    requiresAdmin: true,
-    adminOnly: true,
+    requiresAdmin: false,
+    adminOnly: false,
     color: 'from-blue-500 via-red-500 to-yellow-500',
-    minTier: 'FREE',
-    difficulty: 1,
+    minTier: 'INFLUENCER',
+    difficulty: 5,
   },
 ];
 
