@@ -43,17 +43,6 @@ const GoogleMimeInstructions = () => {
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <HeaderControls />
 
-        <div className="text-center space-y-3">
-          <div className="flex justify-center">
-            <ShieldCheck className="h-12 w-12 text-primary drop-shadow-lg" />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-primary">Google Mime</p>
-          <h1 className="text-4xl font-bold text-foreground">Instruções & Código do Dia</h1>
-          <p className="text-muted-foreground">
-            Consulte o código diário e siga o roteiro para apresentar a previsão exatamente como planejado.
-          </p>
-        </div>
-
         <Card className="border-primary/20 bg-card/80 p-6 shadow-2xl shadow-primary/10 backdrop-blur space-y-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary mb-2">Código do Dia</p>
