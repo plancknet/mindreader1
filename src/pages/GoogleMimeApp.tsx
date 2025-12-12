@@ -39,12 +39,27 @@ type GoogleMimeAppProps = {
   enforceAdmin?: boolean;
   requireInfluencer?: boolean;
   publicMode?: boolean;
+  initialSearchQuery?: string;
+  initialStage?: Stage;
+  initialTab?: Tab;
 };
 
-const GoogleMimeGameContent = ({ trackUsageEnabled = true }: { trackUsageEnabled?: boolean }) => {
-  const [stage, setStage] = useState<Stage>('search');
-  const [activeTab, setActiveTab] = useState<Tab>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+type GameContentProps = {
+  trackUsageEnabled?: boolean;
+  initialSearchQuery?: string;
+  initialStage?: Stage;
+  initialTab?: Tab;
+};
+
+const GoogleMimeGameContent = ({
+  trackUsageEnabled = true,
+  initialSearchQuery,
+  initialStage,
+  initialTab,
+}: GameContentProps) => {
+  const [stage, setStage] = useState<Stage>(initialStage ?? 'search');
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab ?? 'all');
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery ?? '');
   const [selectedCelebrity, setSelectedCelebrity] = useState<Celebrity | null>(null);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -790,9 +805,23 @@ const GoogleMimeInfluencerGate = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-export default function GoogleMimeApp({ enforceAdmin = true, requireInfluencer = false, publicMode = false }: GoogleMimeAppProps) {
+export default function GoogleMimeApp({
+  enforceAdmin = true,
+  requireInfluencer = false,
+  publicMode = false,
+  initialSearchQuery,
+  initialStage,
+  initialTab,
+}: GoogleMimeAppProps) {
   const trackUsageEnabled = !publicMode;
-  let content: ReactNode = <GoogleMimeGameContent trackUsageEnabled={trackUsageEnabled} />;
+  let content: ReactNode = (
+    <GoogleMimeGameContent
+      trackUsageEnabled={trackUsageEnabled}
+      initialSearchQuery={initialSearchQuery}
+      initialStage={initialStage}
+      initialTab={initialTab}
+    />
+  );
 
   if (requireInfluencer) {
     content = <GoogleMimeInfluencerGate>{content}</GoogleMimeInfluencerGate>;

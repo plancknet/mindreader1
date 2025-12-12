@@ -135,7 +135,13 @@ const GoogleMimePublic = () => {
   if (verified) {
     return (
       <Suspense fallback={<LoadingFallback />}>
-        <GoogleMimeAppLazy enforceAdmin={false} publicMode />
+        <GoogleMimeAppLazy
+          enforceAdmin={false}
+          publicMode
+          initialSearchQuery="Celebridade"
+          initialStage="results"
+          initialTab="all"
+        />
       </Suspense>
     );
   }
