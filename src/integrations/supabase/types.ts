@@ -41,6 +41,24 @@ export type Database = {
         }
         Relationships: []
       }
+      google_mime_codes: {
+        Row: {
+          code: string
+          generated_at: string
+          id: number
+        }
+        Insert: {
+          code: string
+          generated_at?: string
+          id?: number
+        }
+        Update: {
+          code?: string
+          generated_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       user_game_usage: {
         Row: {
           created_at: string

@@ -1,7 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
 
-const TABLE = 'google_mime_codes';
-
 export type GoogleMimeCodeRecord = {
   id: number;
   code: string;
@@ -18,7 +16,7 @@ const generateRandomCode = () => Math.floor(100 + Math.random() * 900).toString(
 
 export const fetchLatestGoogleMimeCode = async (): Promise<GoogleMimeCodeRecord | null> => {
   const { data, error } = await supabase
-    .from<GoogleMimeCodeRecord>(TABLE)
+    .from('google_mime_codes' as any)
     .select('*')
     .order('generated_at', { ascending: false })
     .limit(1)
@@ -28,13 +26,13 @@ export const fetchLatestGoogleMimeCode = async (): Promise<GoogleMimeCodeRecord 
     throw error;
   }
 
-  return data ?? null;
+  return data as unknown as GoogleMimeCodeRecord | null;
 };
 
 export const generateGoogleMimeCode = async (): Promise<GoogleMimeCodeRecord> => {
   const newCode = generateRandomCode();
   const { data, error } = await supabase
-    .from(TABLE)
+    .from('google_mime_codes' as any)
     .insert({ code: newCode })
     .select()
     .single();
@@ -43,7 +41,7 @@ export const generateGoogleMimeCode = async (): Promise<GoogleMimeCodeRecord> =>
     throw error;
   }
 
-  return data as GoogleMimeCodeRecord;
+  return data as unknown as GoogleMimeCodeRecord;
 };
 
 export const ensureTodayGoogleMimeCode = async (): Promise<GoogleMimeCodeRecord> => {
@@ -62,7 +60,7 @@ export const verifyGoogleMimeCode = async (code: string): Promise<boolean> => {
   if (!code || code.length !== 3) return false;
 
   const { data, error } = await supabase
-    .from(TABLE)
+    .from('google_mime_codes' as any)
     .select('generated_at')
     .eq('code', code)
     .order('generated_at', { ascending: false })
@@ -77,6 +75,6 @@ export const verifyGoogleMimeCode = async (code: string): Promise<boolean> => {
     return false;
   }
 
-  const generatedAt = new Date(data.generated_at);
+  const generatedAt = new Date((data as any).generated_at);
   return generatedAt >= startOfToday();
 };
