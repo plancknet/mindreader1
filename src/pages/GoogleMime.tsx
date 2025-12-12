@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import GoogleMimeApp from './GoogleMimeApp';
+import { useState, lazy, Suspense } from 'react';
 import { verifyGoogleMimeCode } from '@/lib/googleMimeCode';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AlertCircle, Shield } from 'lucide-react';
+
+const GoogleMimeAppLazy = lazy(() => import('./GoogleMimeApp'));
 
 const GoogleMimePublic = () => {
   const [code, setCode] = useState('');
@@ -36,7 +37,11 @@ const GoogleMimePublic = () => {
   };
 
   if (verified) {
-    return <GoogleMimeApp enforceAdmin={false} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-black text-white">Carregando jogo...</div>}>
+        <GoogleMimeAppLazy enforceAdmin={false} />
+      </Suspense>
+    );
   }
 
   return (
