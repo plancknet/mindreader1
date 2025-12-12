@@ -266,6 +266,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'googleMime',
     icon: Search,
     path: '/google-mime',
+    instructionsPath: '/google-mime/instrucoes',
     requiresAdmin: true,
     adminOnly: true,
     color: 'from-blue-500 via-red-500 to-yellow-500',
