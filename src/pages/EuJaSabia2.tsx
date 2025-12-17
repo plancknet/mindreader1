@@ -77,20 +77,6 @@ const EuJaSabia2 = () => {
   const activeVideoSrc = customVideoSrc ?? adminVideoData?.videoSrc ?? '/videos/eujasabia_base.mp4';
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const storedMaskTime = window.localStorage.getItem('euJaSabia2_maskTime');
-    if (storedMaskTime) {
-      const parsed = Number(storedMaskTime);
-      if (!Number.isNaN(parsed) && parsed >= 0) {
-        setMaskDisplayTime(parsed);
-        setIsMaskTimeReached(parsed === 0);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem('euJaSabia2_maskTime', String(maskDisplayTime));
     if (!videoStarted) {
       setIsMaskTimeReached(maskDisplayTime === 0);
       return;
@@ -136,7 +122,7 @@ const EuJaSabia2 = () => {
       setLoadingVideo(true);
       const { data, error } = await supabase
         .from('user_videos')
-        .select('video_data, mask2_offset_x, mask2_offset_y, mask2_color, mask2_size')
+        .select('video_data, mask2_offset_x, mask2_offset_y, mask2_color, mask2_size, mask2_display_time')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -177,6 +163,14 @@ const EuJaSabia2 = () => {
         setMaskSize(adminVideoData.maskSize);
       } else {
         setMaskSize(DEFAULT_MASK_SIZE);
+      }
+
+      if (typeof data?.mask2_display_time === 'number') {
+        setMaskDisplayTime(data.mask2_display_time);
+        setIsMaskTimeReached(data.mask2_display_time === 0);
+      } else {
+        setMaskDisplayTime(DEFAULT_MASK_DISPLAY_TIME);
+        setIsMaskTimeReached(DEFAULT_MASK_DISPLAY_TIME === 0);
       }
 
       setLoadingVideo(false);
@@ -450,6 +444,7 @@ const EuJaSabia2 = () => {
             mask2_offset_y: maskPosition.y,
             mask2_color: maskColor,
             mask2_size: maskSize,
+            mask2_display_time: maskDisplayTime,
           },
           { onConflict: 'user_id' }
         );
@@ -501,6 +496,7 @@ const EuJaSabia2 = () => {
           mask2_offset_y: maskPosition.y,
           mask2_color: maskColor,
           mask2_size: maskSize,
+          mask2_display_time: maskDisplayTime,
         })
         .eq('user_id', userId);
       if (error) throw error;
