@@ -43,6 +43,19 @@ interface CouponStats {
   last_redeemed_at: string | null;
 }
 
+interface UserVideoData {
+  id: string;
+  user_id: string;
+  email: string;
+  video_data: string;
+  created_at: string;
+  mask2_offset_x: number | null;
+  mask2_offset_y: number | null;
+  mask2_color: string | null;
+  mask2_size: number | null;
+  mask2_display_time: number | null;
+}
+
 const registrationChartConfig = {
   FREE: {
     label: 'Free',
@@ -143,6 +156,9 @@ export default function AdminPanel() {
     couponRedemptions: 0,
   });
   const [isMobileChart, setIsMobileChart] = useState(false);
+  const [userVideos, setUserVideos] = useState<UserVideoData[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<UserVideoData | null>(null);
+  const [videoFilter, setVideoFilter] = useState('');
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -400,10 +416,44 @@ export default function AdminPanel() {
     setTodayStats((prev) => ({ ...prev, couponRedemptions: couponRedemptionsToday }));
   };
 
+  const fetchUserVideos = async () => {
+    const { data: videos, error: videosError } = await supabase
+      .from('user_videos')
+      .select('id, user_id, video_data, created_at, mask2_offset_x, mask2_offset_y, mask2_color, mask2_size, mask2_display_time')
+      .order('created_at', { ascending: false });
+
+    if (videosError) throw videosError;
+
+    const userIds = [...new Set((videos || []).map((v: any) => v.user_id))];
+    const { data: userEmails, error: emailsError } = await supabase
+      .from('users')
+      .select('user_id, email')
+      .in('user_id', userIds);
+
+    if (emailsError) throw emailsError;
+
+    const emailMap = new Map((userEmails || []).map((u: any) => [u.user_id, u.email]));
+
+    const formattedVideos: UserVideoData[] = (videos || []).map((video: any) => ({
+      id: video.id,
+      user_id: video.user_id,
+      email: emailMap.get(video.user_id) ?? 'Email não disponível',
+      video_data: video.video_data,
+      created_at: video.created_at,
+      mask2_offset_x: video.mask2_offset_x,
+      mask2_offset_y: video.mask2_offset_y,
+      mask2_color: video.mask2_color,
+      mask2_size: video.mask2_size,
+      mask2_display_time: video.mask2_display_time,
+    }));
+
+    setUserVideos(formattedVideos);
+  };
+
   const fetchAdminData = async () => {
     try {
       setIsLoading(true);
-      await Promise.all([fetchUsersData(), fetchCouponData()]);
+      await Promise.all([fetchUsersData(), fetchCouponData(), fetchUserVideos()]);
     } catch (error) {
       console.error('Erro ao carregar painel do admin', error);
       toast({
@@ -1342,6 +1392,132 @@ export default function AdminPanel() {
             </div>
           </CardContent>
         </Card>
+
+        {/* User Videos Section */}
+        <Card className="border-primary/10 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Crown className="w-5 h-5 text-primary" />
+              Vídeos dos Usuários (Eu Já Sabia 2)
+            </CardTitle>
+            <span className="text-sm text-muted-foreground">{userVideos.length} vídeo(s)</span>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                placeholder="Filtrar por email..."
+                value={videoFilter}
+                onChange={(e) => setVideoFilter(e.target.value)}
+                className="max-w-sm"
+              />
+            </div>
+
+            {userVideos.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">Nenhum vídeo personalizado encontrado.</p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {userVideos
+                  .filter((v) => v.email.toLowerCase().includes(videoFilter.toLowerCase()))
+                  .map((video) => (
+                    <div
+                      key={video.id}
+                      className="rounded-xl border border-primary/10 bg-muted/30 p-4 space-y-3"
+                    >
+                      <div className="space-y-1">
+                        <p className="font-semibold text-sm truncate">{video.email}</p>
+                        <p className="text-xs text-muted-foreground font-mono truncate">{video.user_id}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Criado: {new Date(video.created_at).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-lg bg-background/50 p-2">
+                          <p className="text-muted-foreground">Posição</p>
+                          <p className="font-medium">
+                            X: {video.mask2_offset_x?.toFixed(1) ?? '-'}, Y: {video.mask2_offset_y?.toFixed(1) ?? '-'}
+                          </p>
+                        </div>
+                        <div className="rounded-lg bg-background/50 p-2">
+                          <p className="text-muted-foreground">Tamanho</p>
+                          <p className="font-medium">{video.mask2_size?.toFixed(2) ?? '-'}</p>
+                        </div>
+                        <div className="rounded-lg bg-background/50 p-2">
+                          <p className="text-muted-foreground">Cor</p>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="w-4 h-4 rounded border border-border"
+                              style={{ backgroundColor: video.mask2_color ?? '#000' }}
+                            />
+                            <span className="font-mono text-[10px]">{video.mask2_color ?? '-'}</span>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-background/50 p-2">
+                          <p className="text-muted-foreground">Tempo</p>
+                          <p className="font-medium">{video.mask2_display_time ?? 0}s</p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="w-full"
+                        onClick={() => setSelectedVideo(video)}
+                      >
+                        Ver Vídeo
+                      </Button>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Video Preview Dialog */}
+        <Dialog open={Boolean(selectedVideo)} onOpenChange={(open) => !open && setSelectedVideo(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Vídeo de {selectedVideo?.email}</DialogTitle>
+            </DialogHeader>
+            {selectedVideo && (
+              <div className="space-y-4">
+                <video
+                  src={selectedVideo.video_data}
+                  controls
+                  className="w-full rounded-xl bg-black aspect-[9/16] max-h-[60vh] object-contain"
+                />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                  <div className="rounded-lg bg-muted/50 p-3">
+                    <p className="text-xs text-muted-foreground">Posição X</p>
+                    <p className="font-semibold">{selectedVideo.mask2_offset_x?.toFixed(2) ?? '-'}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-3">
+                    <p className="text-xs text-muted-foreground">Posição Y</p>
+                    <p className="font-semibold">{selectedVideo.mask2_offset_y?.toFixed(2) ?? '-'}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-3">
+                    <p className="text-xs text-muted-foreground">Tamanho</p>
+                    <p className="font-semibold">{selectedVideo.mask2_size?.toFixed(2) ?? '-'}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-3">
+                    <p className="text-xs text-muted-foreground">Tempo (s)</p>
+                    <p className="font-semibold">{selectedVideo.mask2_display_time ?? 0}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Cor da máscara:</span>
+                  <span
+                    className="w-6 h-6 rounded border border-border"
+                    style={{ backgroundColor: selectedVideo.mask2_color ?? '#000' }}
+                  />
+                  <span className="font-mono text-sm">{selectedVideo.mask2_color ?? '-'}</span>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedVideo(null)}>
+                Fechar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={Boolean(editingUserId)} onOpenChange={(open) => (open ? null : closeUserEditor())}>
           <DialogContent className="max-w-3xl">
