@@ -121,6 +121,7 @@ export type Database = {
           mask_offset_x: number | null
           mask_offset_y: number | null
           mask2_color: string | null
+          mask2_display_time: number | null
           mask2_offset_x: number | null
           mask2_offset_y: number | null
           mask2_size: number | null
@@ -135,6 +136,7 @@ export type Database = {
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           mask2_color?: string | null
+          mask2_display_time?: number | null
           mask2_offset_x?: number | null
           mask2_offset_y?: number | null
           mask2_size?: number | null
@@ -149,6 +151,7 @@ export type Database = {
           mask_offset_x?: number | null
           mask_offset_y?: number | null
           mask2_color?: string | null
+          mask2_display_time?: number | null
           mask2_offset_x?: number | null
           mask2_offset_y?: number | null
           mask2_size?: number | null
