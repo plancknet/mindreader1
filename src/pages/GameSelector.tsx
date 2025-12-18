@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type KeyboardEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -12,11 +12,18 @@ import {
   Play,
   Wand2,
   Search,
+  Home,
+  Moon,
+  Languages as LanguagesIcon,
+  LogOut,
   type LucideProps,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { languages } from '@/i18n/languages';
+import { supabase } from '@/integrations/supabase/client';
 
 type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 
@@ -287,14 +294,14 @@ const GAME_CARDS: GameCard[] = [
 const GameSelector = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, language: currentLanguage } = useTranslation();
+  const { setLanguage } = useLanguageContext();
   const { usageData } = useUsageLimit();
   const { isAdmin } = useIsAdmin();
   const subscriptionTier: Tier = usageData?.subscriptionTier ?? 'FREE';
   const subscriptionStatus = usageData?.subscriptionStatus ?? 'inactive';
   const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
   const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('ALL');
 
   useEffect(() => {
@@ -323,16 +330,32 @@ const GameSelector = () => {
     });
 
   const filteredGames = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-    return games.filter((game) => {
-      const matchesQuery =
-        !normalizedQuery ||
-        game.title.toLowerCase().includes(normalizedQuery) ||
-        game.description.toLowerCase().includes(normalizedQuery);
-      const matchesLevel = selectedLevel === 'ALL' || game.difficulty === selectedLevel;
-      return matchesQuery && matchesLevel;
-    });
-  }, [games, searchQuery, selectedLevel]);
+    return games.filter((game) => selectedLevel === 'ALL' || game.difficulty === selectedLevel);
+  }, [games, selectedLevel]);
+
+  const goHome = () => navigate('/');
+
+  const toggleTheme = () => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('theme-light');
+  };
+
+  const cycleLanguage = () => {
+    const codes = languages.map((lang) => lang.code);
+    const currentIndex = codes.indexOf(currentLanguage);
+    const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+    setLanguage(nextCode);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Failed to sign out', error);
+    } finally {
+      navigate('/');
+    }
+  };
 
   return (
     <div
@@ -368,23 +391,6 @@ const GameSelector = () => {
         </header>
 
         <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 pt-6">
-          <div className="text-center text-base text-white/70">
-            {t('gameSelector.subheading')}
-          </div>
-
-          <div className="relative h-12 w-full rounded-2xl border border-[#7f13ec]/30 bg-[#1e1b4b]/60 shadow-lg shadow-black/30">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
-              <Search className="h-5 w-5" />
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search magic..."
-              className="h-full w-full rounded-2xl bg-transparent pl-12 pr-4 text-base font-medium text-white placeholder:text-white/40 focus:outline-none"
-            />
-          </div>
-
           <div className="hide-scrollbar -mx-4 overflow-x-auto px-4">
             <div className="flex min-w-max gap-2 pb-2 pr-4">
               {levelFilterChips.map((chip) => {
@@ -446,11 +452,30 @@ const GameSelector = () => {
                 disabledMessage = 'Ative sua assinatura para jogar.';
               }
 
+              const handleCardClick = () => {
+                if (!enabled) return;
+                navigate(game.path);
+              };
+
+              const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+                if (!enabled) return;
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  navigate(game.path);
+                }
+              };
+
               return (
                 <div
                   key={game.id}
+                  role="button"
+                  tabIndex={enabled ? 0 : -1}
+                  onClick={handleCardClick}
+                  onKeyDown={handleCardKeyDown}
                   className={`group relative flex items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-4 shadow-lg shadow-black/30 transition-all ${
-                    enabled ? 'hover:border-[#7f13ec]/50 hover:shadow-[0_0_25px_rgba(127,19,236,0.15)]' : 'opacity-60'
+                    enabled
+                      ? 'cursor-pointer hover:border-[#7f13ec]/50 hover:shadow-[0_0_25px_rgba(127,19,236,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f13ec]/60'
+                      : 'cursor-not-allowed opacity-60'
                   }`}
                 >
                   <div
@@ -485,26 +510,22 @@ const GameSelector = () => {
                       <p className="text-[11px] text-white/40">{disabledMessage}</p>
                     )}
 
-                    <div className="flex gap-2 pt-1">
-                      <Button
-                        className="flex-1 rounded-xl bg-[#7f13ec] text-white shadow-[0_4px_18px_rgba(127,19,236,0.45)] transition-transform hover:-translate-y-0.5 hover:bg-[#6d0ecb]"
-                        disabled={!enabled}
-                        onClick={() => enabled && navigate(game.path)}
-                      >
-                        {t('gameSelector.play')}
-                      </Button>
-                      {instructionsPath && (
+                    {instructionsPath && (
+                      <div className="flex justify-end pt-1">
                         <Button
                           size="icon"
                           variant="outline"
                           className="rounded-xl border-white/20 bg-white/5 text-white hover:border-[#7f13ec]/50 hover:bg-[#7f13ec]/30"
-                          onClick={() => navigate(instructionsPath, { state: { from: location.pathname } })}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            navigate(instructionsPath, { state: { from: location.pathname } });
+                          }}
                           aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
                         >
                           <HelpCircle className="h-4 w-4" />
                         </Button>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -513,21 +534,39 @@ const GameSelector = () => {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-xl items-center justify-around py-3 text-[10px] uppercase text-white/50">
-          <button type="button" className="flex flex-col items-center gap-1 text-[#7f13ec]">
-            <div className="rounded-full border border-[#7f13ec]/40 bg-[#7f13ec]/15 px-4 py-1 shadow-[0_0_15px_rgba(127,19,236,0.25)]">
-              Home
-            </div>
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+          <button
+            type="button"
+            onClick={goHome}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+          >
+            <Home className="h-5 w-5" />
+            <span>Home</span>
           </button>
-          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
-            Mode
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <Moon className="h-5 w-5" />
+            <span>Mode</span>
           </button>
-          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
-            Language
+          <button
+            type="button"
+            onClick={cycleLanguage}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <LanguagesIcon className="h-5 w-5" />
+            <span>{currentLanguage.toUpperCase()}</span>
           </button>
-          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
-            Logout
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
           </button>
         </div>
       </nav>
