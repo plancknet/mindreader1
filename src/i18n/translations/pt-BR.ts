@@ -139,7 +139,7 @@ export const ptBR = {
     chooseTitle: "Escolha uma Carta",
     chooseSubtitle: "Selecione qualquer carta do baralho",
     revealTitle: "Mix de Cartas",
-    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revela??o",
+    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelacao",
     chosenCard: "",
     shuffleButton: "Embaralhar",
     resetButton: 'Reiniciar',
@@ -155,18 +155,18 @@ export const ptBR = {
   cartaMental: {
     title: 'Carta Mental',
     subtitle: 'Use o verso personalizado do MindReader para transmitir mentalmente a carta escolhida pelo seu amigo.',
-    gridInstruction: 'Toque discretamente em uma das 12 posi??es invis?veis. Cada toque representa as cartas de 2 a K.',
-    aceHint: 'Se nenhum toque for realizado, voc? indica que a carta pensada foi um ?s.',
-    suitsInstruction: 'Use o bot?o ?Revelar carta? e pressione um dos quatro quadrantes para indicar o naipe desejado.',
+    gridInstruction: 'Toque discretamente em uma das 12 posicoes invisiveis. Cada toque representa as cartas de 2 a K.',
+    aceHint: 'Se nenhum toque for realizado, voce indica que a carta pensada foi um As.',
+    suitsInstruction: 'Use o botao Revelar carta e pressione um dos quatro quadrantes para indicar o naipe desejado.',
     revealButton: 'Revelar carta',
     revealButtonAria: 'Revelar carta escolhendo o naipe {suit}',
     rankButtonAria: 'Selecionar o valor {rank}',
     selectedRank: 'Valor selecionado: {rank}',
-    noRank: 'Nenhum valor selecionado (assumindo ?s)',
+    noRank: 'Nenhum valor selecionado (assumindo As)',
     revealedTitle: 'Carta selecionada',
     revealedDescription: '{rank} de {suit}',
-    noSuitSelected: 'Toque em um dos lados do bot?o ?Revelar carta? para mostrar o naipe.',
-    reset: 'Limpar seleção',
+    noSuitSelected: 'Toque em um dos lados do botao Revelar carta para mostrar o naipe.',
+    reset: 'Limpar selecao',
     suits: {
       spades: 'Espadas',
       hearts: 'Copas',
@@ -258,11 +258,11 @@ export const ptBR = {
       },
       oiSumida: {
         title: 'Oi Sumida',
-        description: 'Grid de cartas com embaralhamento instantÇ­neo'
+        description: 'Grid de cartas com embaralhamento instantaneo'
       },
       jogoVelhaBruxa: {
         title: 'Jogo da Velha Bruxa',
-        description: 'Desafie a bruxa em um duelo m?stico de X e O'
+        description: 'Desafie a bruxa em um duelo mistico de X e O'
       },
       cartaMental: {
         title: 'Carta Mental',
