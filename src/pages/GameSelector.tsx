@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   Brain,
@@ -15,7 +14,6 @@ import {
   Search,
   type LucideProps,
 } from 'lucide-react';
-import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
@@ -107,6 +105,17 @@ const LevelBars = ({ level }: { level: number }) => {
     </div>
   );
 };
+
+type LevelFilter = 'ALL' | 1 | 2 | 3 | 4 | 5;
+
+const levelFilterChips: Array<{ label: string; value: LevelFilter }> = [
+  { label: 'All Levels', value: 'ALL' },
+  { label: 'Level 1', value: 1 },
+  { label: 'Level 2', value: 2 },
+  { label: 'Level 3', value: 3 },
+  { label: 'Level 4', value: 4 },
+  { label: 'Level 5', value: 5 },
+];
 
 const GAME_CARDS: GameCard[] = [
   {
@@ -284,6 +293,9 @@ const GameSelector = () => {
   const subscriptionTier: Tier = usageData?.subscriptionTier ?? 'FREE';
   const subscriptionStatus = usageData?.subscriptionStatus ?? 'inactive';
   const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
+  const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('ALL');
 
   useEffect(() => {
     if (usageData && !usageData.canUse && !usageData.isPremium) {
@@ -310,122 +322,218 @@ const GameSelector = () => {
       return a.difficulty - b.difficulty;
     });
 
+  const filteredGames = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    return games.filter((game) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        game.title.toLowerCase().includes(normalizedQuery) ||
+        game.description.toLowerCase().includes(normalizedQuery);
+      const matchesLevel = selectedLevel === 'ALL' || game.difficulty === selectedLevel;
+      return matchesQuery && matchesLevel;
+    });
+  }, [games, searchQuery, selectedLevel]);
+
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
-      <div className="max-w-6xl w-full space-y-8">
-        <div className="flex justify-end">
-          <HeaderControls showExtras showBack={false} />
-        </div>
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+      style={{ fontFamily: loginFontFamily }}
+    >
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
+      </div>
 
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <Brain className="w-16 h-16 text-primary animate-pulse" />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-xl items-center justify-between">
+            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+              <Brain className="h-6 w-6" />
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.4em] text-white/60">MindReader</p>
+              <h1 className="text-lg font-bold tracking-tight text-white drop-shadow-[0_0_12px_rgba(127,19,236,0.4)]">
+                {t('gameSelector.heading')}
+              </h1>
+            </div>
+            <button
+              type="button"
+              className="relative flex size-10 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white"
+            >
+              <span className="absolute right-2 top-2 size-2 rounded-full bg-[#7f13ec] shadow-[0_0_8px_rgba(127,19,236,0.8)]" />
+              <Sparkles className="h-5 w-5" />
+            </button>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            {t('gameSelector.heading')}
-          </h1>
-          <p className="text-muted-foreground text-lg">
+        </header>
+
+        <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 pt-6">
+          <div className="text-center text-base text-white/70">
             {t('gameSelector.subheading')}
-          </p>
-        </div>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {games.map((game) => {
-            const Icon = game.icon;
-            const instructionsPath = game.instructionsPath;
-            const meetsTier = isAdmin || tierRank[subscriptionTier] >= tierRank[game.minTier];
-            const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
-            const isInfluencerTier = subscriptionTier === 'INFLUENCER';
-            const adminAllowed =
-              (!game.requiresAdmin || isAdmin || isInfluencerTier) &&
-              (!game.adminOnly || isAdmin);
-            const enabled = meetsTier && statusAllowed && adminAllowed;
-            const isCardBackGame = game.id === 'carta-mental';
-            const isRaspaCarta = game.id === 'raspa-carta';
-            const iconWrapperClass = isCardBackGame
-              ? 'p-4 rounded-2xl bg-white/80 shadow-[0_12px_35px_rgba(56,189,248,0.35)] border border-primary/30'
-              : isRaspaCarta
-                ? 'p-4 rounded-2xl bg-slate-900/80 shadow-[0_12px_35px_rgba(15,23,42,0.4)] border border-white/10'
-                : `p-4 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`;
-            const iconColorClass = isCardBackGame ? 'text-sky-600' : isRaspaCarta ? 'text-amber-400' : 'text-primary';
-            let disabledMessage: string | null = null;
-            if (!adminAllowed) {
-              disabledMessage = game.adminOnly
-                ? 'Disponível apenas para administradores.'
-                : 'Disponível apenas para administradores ou plano Influencer.';
-            } else if (!meetsTier) {
-              disabledMessage =
-                subscriptionTier === 'FREE' || subscriptionTier === 'STANDARD'
-                  ? 'Níveis 4 e 5 exigem o plano Influencer.'
-                  : 'Disponível apenas para Influencer.';
-            } else if (!statusAllowed) {
-              disabledMessage = 'Ative sua assinatura para jogar.';
-            }
-            return (
-              <Card
-                key={game.id}
-                className={`p-8 transition-all group relative overflow-hidden ${
-                  enabled ? 'hover:scale-105' : 'opacity-60'
-                }`}
-              >
-                  <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                    <LevelBars level={game.difficulty} />
-                    {game.badge && (
-                      <Badge className="uppercase tracking-wide">
-                        {game.badge}
-                      </Badge>
-                    )}
-                  </div>
+          <div className="relative h-12 w-full rounded-2xl border border-[#7f13ec]/30 bg-[#1e1b4b]/60 shadow-lg shadow-black/30">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
+              <Search className="h-5 w-5" />
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search magic..."
+              className="h-full w-full rounded-2xl bg-transparent pl-12 pr-4 text-base font-medium text-white placeholder:text-white/40 focus:outline-none"
+            />
+          </div>
+
+          <div className="hide-scrollbar -mx-4 overflow-x-auto px-4">
+            <div className="flex min-w-max gap-2 pb-2 pr-4">
+              {levelFilterChips.map((chip) => {
+                const isActive = selectedLevel === chip.value;
+                return (
+                  <button
+                    key={chip.value}
+                    type="button"
+                    onClick={() => setSelectedLevel(chip.value)}
+                    className={`flex h-9 items-center justify-center rounded-full border px-4 text-sm font-semibold transition-all active:scale-95 ${
+                      isActive
+                        ? 'border-[#7f13ec]/50 bg-[#7f13ec] text-white shadow-[0_0_15px_rgba(127,19,236,0.4)]'
+                        : 'border-white/10 bg-[#1e1b4b] text-white/70 hover:border-[#7f13ec]/40 hover:bg-white/5'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm font-semibold uppercase tracking-wider text-white/70">
+            <div className="flex items-center gap-2">
+              <span className="h-4 w-1 rounded-full bg-[#7f13ec] shadow-[0_0_10px_rgba(127,19,236,0.7)]" />
+              Your Library
+            </div>
+            <button
+              type="button"
+              className="flex items-center gap-1 text-xs font-medium text-[#7f13ec] transition-colors hover:text-white"
+            >
+              Sort by: Recent
+              <HelpCircle className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3 pb-10">
+            {filteredGames.map((game) => {
+              const Icon = game.icon;
+              const instructionsPath = game.instructionsPath;
+              const meetsTier = isAdmin || tierRank[subscriptionTier] >= tierRank[game.minTier];
+              const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
+              const isInfluencerTier = subscriptionTier === 'INFLUENCER';
+              const adminAllowed =
+                (!game.requiresAdmin || isAdmin || isInfluencerTier) &&
+                (!game.adminOnly || isAdmin);
+              const enabled = meetsTier && statusAllowed && adminAllowed;
+              let disabledMessage: string | null = null;
+              if (!adminAllowed) {
+                disabledMessage = game.adminOnly
+                  ? 'Dispon?vel apenas para administradores.'
+                  : 'Dispon?vel para administradores ou plano Influencer.';
+              } else if (!meetsTier) {
+                disabledMessage =
+                  subscriptionTier === 'FREE' || subscriptionTier === 'STANDARD'
+                    ? 'N?veis 4 e 5 exigem o plano Influencer.'
+                    : 'Dispon?vel apenas para Influencer.';
+              } else if (!statusAllowed) {
+                disabledMessage = 'Ative sua assinatura para jogar.';
+              }
+
+              return (
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
-                />
-
-                <div className="relative space-y-4">
-                  <div className="flex justify-center">
-                    <div className={iconWrapperClass}>
-                      <Icon className={`w-12 h-12 ${iconColorClass}`} />
+                  key={game.id}
+                  className={`group relative flex items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-4 shadow-lg shadow-black/30 transition-all ${
+                    enabled ? 'hover:border-[#7f13ec]/50 hover:shadow-[0_0_25px_rgba(127,19,236,0.15)]' : 'opacity-60'
+                  }`}
+                >
+                  <div
+                    className={`relative shrink-0 size-[72px] rounded-xl border border-white/10 bg-gradient-to-br ${game.color} shadow-inner`}
+                  >
+                    <div className="absolute inset-0 rounded-xl bg-black/20" />
+                    <div className="relative flex h-full w-full items-center justify-center">
+                      <Icon className="h-9 w-9 text-white" />
                     </div>
                   </div>
 
-                  <h2 className="text-2xl font-bold text-center">{game.title}</h2>
+                  <div className="flex flex-1 flex-col gap-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-base font-bold text-white group-hover:text-[#d8b4fe]">
+                          {game.title}
+                        </h3>
+                        <p className="text-xs font-medium text-white/50">
+                          Difficulty: <span className="text-[#d8b4fe]">Level {game.difficulty}</span>
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <LevelBars level={game.difficulty} />
+                        {game.badge && (
+                          <Badge className="bg-white/5 text-[10px] uppercase tracking-wide text-white">
+                            {game.badge}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
 
-                  <p className="text-muted-foreground text-center text-sm">
-                    {game.description}
-                  </p>
+                    <p className="text-xs text-white/65">{game.description}</p>
 
-                  {!enabled && disabledMessage && (
-                    <p className="text-xs text-center text-muted-foreground">
-                      {disabledMessage}
-                    </p>
-                  )}
-                  <div className="flex gap-2">
-                    <Button
-                      className="flex-1"
-                      disabled={!enabled}
-                      onClick={() => enabled && navigate(game.path)}
-                    >
-                      {t('gameSelector.play')}
-                    </Button>
-                    {instructionsPath && (
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(instructionsPath, { state: { from: location.pathname } });
-                        }}
-                        aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
-                      >
-                        <HelpCircle className="w-4 h-4" />
-                      </Button>
+                    {!enabled && disabledMessage && (
+                      <p className="text-[11px] text-white/40">{disabledMessage}</p>
                     )}
+
+                    <div className="flex gap-2 pt-1">
+                      <Button
+                        className="flex-1 rounded-xl bg-[#7f13ec] text-white shadow-[0_4px_18px_rgba(127,19,236,0.45)] transition-transform hover:-translate-y-0.5 hover:bg-[#6d0ecb]"
+                        disabled={!enabled}
+                        onClick={() => enabled && navigate(game.path)}
+                      >
+                        {t('gameSelector.play')}
+                      </Button>
+                      {instructionsPath && (
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="rounded-xl border-white/20 bg-white/5 text-white hover:border-[#7f13ec]/50 hover:bg-[#7f13ec]/30"
+                          onClick={() => navigate(instructionsPath, { state: { from: location.pathname } })}
+                          aria-label={`${game.title} - ${t('gameSelector.modalTitle')}`}
+                        >
+                          <HelpCircle className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </Card>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </main>
       </div>
+
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-xl items-center justify-around py-3 text-[10px] uppercase text-white/50">
+          <button type="button" className="flex flex-col items-center gap-1 text-[#7f13ec]">
+            <div className="rounded-full border border-[#7f13ec]/40 bg-[#7f13ec]/15 px-4 py-1 shadow-[0_0_15px_rgba(127,19,236,0.25)]">
+              Home
+            </div>
+          </button>
+          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
+            Mode
+          </button>
+          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
+            Language
+          </button>
+          <button type="button" className="flex flex-col items-center gap-1 transition-colors hover:text-white">
+            Logout
+          </button>
+        </div>
+      </nav>
     </div>
   );
 };
