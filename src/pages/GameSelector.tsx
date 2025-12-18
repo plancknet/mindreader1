@@ -468,9 +468,6 @@ const GameSelector = () => {
                         <h3 className="truncate text-base font-bold text-white group-hover:text-[#d8b4fe]">
                           {game.title}
                         </h3>
-                        <p className="text-xs font-medium text-white/50">
-                          Difficulty: <span className="text-[#d8b4fe]">Level {game.difficulty}</span>
-                        </p>
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         <LevelBars level={game.difficulty} />
