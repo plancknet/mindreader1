@@ -110,10 +110,9 @@ const LevelBars = ({ level }: { level: number }) => {
   );
 };
 
-type LevelFilter = 'ALL' | 1 | 2 | 3 | 4 | 5;
+type LevelFilter = 1 | 2 | 3 | 4 | 5;
 
 const levelFilterChips: Array<{ label: string; value: LevelFilter }> = [
-  { label: 'All Levels', value: 'ALL' },
   { label: 'Level 1', value: 1 },
   { label: 'Level 2', value: 2 },
   { label: 'Level 3', value: 3 },
@@ -299,7 +298,7 @@ const GameSelector = () => {
   const subscriptionStatus = usageData?.subscriptionStatus ?? 'inactive';
   const tierRank: Record<Tier, number> = { FREE: 0, STANDARD: 1, INFLUENCER: 2 };
   const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
-  const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('ALL');
+  const [selectedLevel, setSelectedLevel] = useState<LevelFilter | null>(null);
 
   useEffect(() => {
     if (usageData && !usageData.canUse && !usageData.isPremium) {
@@ -327,7 +326,7 @@ const GameSelector = () => {
     });
 
   const filteredGames = useMemo(() => {
-    return games.filter((game) => selectedLevel === 'ALL' || game.difficulty === selectedLevel);
+    return games.filter((game) => selectedLevel === null || game.difficulty === selectedLevel);
   }, [games, selectedLevel]);
 
   const goHome = () => navigate('/');
@@ -395,7 +394,7 @@ const GameSelector = () => {
                   <button
                     key={chip.value}
                     type="button"
-                    onClick={() => setSelectedLevel(chip.value)}
+                    onClick={() => setSelectedLevel(isActive ? null : chip.value)}
                     className={`flex h-9 items-center justify-center rounded-full border px-4 text-sm font-semibold transition-all active:scale-95 ${
                       isActive
                         ? 'border-[#7f13ec]/50 bg-[#7f13ec] text-white shadow-[0_0_15px_rgba(127,19,236,0.4)]'
