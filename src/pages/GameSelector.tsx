@@ -11,7 +11,6 @@ import {
   Shuffle,
   Play,
   Wand2,
-  Search,
   Home,
   Moon,
   Languages as LanguagesIcon,
@@ -87,11 +86,11 @@ const ScratchCardIcon = ({ className, ...props }: LucideProps) => (
   </svg>
 );
 
-const MAX_LEVEL = 4;
+const MAX_LEVEL = 5;
 
 const LevelBars = ({ level }: { level: number }) => {
   return (
-    <div className="flex items-end gap-1" aria-label={`Nivel ${level}`}>
+    <div className="flex items-end gap-1" aria-label={`Nível ${level}`}>
       {Array.from({ length: MAX_LEVEL }).map((_, index) => {
         const barLevel = index + 1;
         const isActive = barLevel <= level;
@@ -106,9 +105,6 @@ const LevelBars = ({ level }: { level: number }) => {
           />
         );
       })}
-      <span className="ml-2 text-[0.6rem] font-semibold uppercase tracking-[0.4em] text-primary">
-        Nivel {level}
-      </span>
     </div>
   );
 };
@@ -375,9 +371,8 @@ const GameSelector = () => {
               <Brain className="h-6 w-6" />
             </div>
             <div className="flex flex-col items-center text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.4em] text-white/60">MindReader</p>
-              <h1 className="text-lg font-bold tracking-tight text-white drop-shadow-[0_0_12px_rgba(127,19,236,0.4)]">
-                {t('gameSelector.heading')}
+              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                MindReader
               </h1>
             </div>
             <button
@@ -411,20 +406,6 @@ const GameSelector = () => {
                 );
               })}
             </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm font-semibold uppercase tracking-wider text-white/70">
-            <div className="flex items-center gap-2">
-              <span className="h-4 w-1 rounded-full bg-[#7f13ec] shadow-[0_0_10px_rgba(127,19,236,0.7)]" />
-              Your Library
-            </div>
-            <button
-              type="button"
-              className="flex items-center gap-1 text-xs font-medium text-[#7f13ec] transition-colors hover:text-white"
-            >
-              Sort by: Recent
-              <HelpCircle className="h-3.5 w-3.5" />
-            </button>
           </div>
 
           <div className="flex flex-col gap-3 pb-10">
@@ -490,7 +471,7 @@ const GameSelector = () => {
                   <div className="flex flex-1 flex-col gap-2">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <h3 className="truncate text-base font-bold text-white group-hover:text-[#d8b4fe]">
+                        <h3 className="two-line-clamp text-base font-semibold leading-snug text-white group-hover:text-[#d8b4fe]">
                           {game.title}
                         </h3>
                       </div>

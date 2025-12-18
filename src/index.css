@@ -146,6 +146,13 @@ All colors MUST be HSL.
   animation: loginFadeInDown 0.8s ease-out;
 }
 
+.two-line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 @keyframes loginFadeInDown {
   0% {
     opacity: 0;
