@@ -6,7 +6,6 @@ import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-reac
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
-import { HeaderControls } from '@/components/HeaderControls';
 
 type GlassInputProps = {
   id: string;
@@ -300,10 +299,6 @@ const Auth = () => {
           className="h-full w-full object-cover object-center opacity-80"
         />
         <div className="absolute inset-0 bg-magic-gradient" />
-      </div>
-
-      <div className="absolute top-4 right-4 z-30">
-        <HeaderControls showExtras />
       </div>
 
       <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center px-4 py-10">
