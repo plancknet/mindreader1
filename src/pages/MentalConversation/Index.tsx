@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { HeaderControls } from '@/components/HeaderControls';
 import { useNavigate } from 'react-router-dom';
 import { Brain, Send } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -10,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
+import { GameLayout } from '@/components/GameLayout';
 
 type Category = 'animal' | 'fruit' | 'country' | null;
 type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
@@ -73,7 +73,7 @@ const COUNTRIES = [
   'vietnã', 'zimbábue', 'zâmbia', 'áfrica do sul', 'áustria', 'índia'
 ];
 
-const TTS_ENABLED = false; // Temporarily disabled
+const TTS_ENABLED = false;
 
 const MentalConversation = () => {
   const navigate = useNavigate();
@@ -118,7 +118,6 @@ const MentalConversation = () => {
       return;
     }
 
-    // Generate and play audio for AI message (non-blocking)
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke('text-to-speech', {
@@ -127,12 +126,12 @@ const MentalConversation = () => {
 
         if (error) {
           console.error('Text-to-speech error:', error);
-          return; // Continue without audio
+          return;
         }
 
         if (data?.error) {
           console.error('Text-to-speech API error:', data.error);
-          return; // Continue without audio
+          return;
         }
 
         if (data?.audioContent) {
@@ -150,7 +149,6 @@ const MentalConversation = () => {
         }
       } catch (error) {
         console.error('Error generating speech:', error);
-        // Continue without audio if there's an error
       }
     })();
   };
@@ -227,7 +225,6 @@ const MentalConversation = () => {
     const wordCount = countWords(userInput);
 
     if (step === 'ready' || step === 'initial') {
-      // Determinar categoria baseado no número de palavras
       let detectedCategory: Category = null;
       if (wordCount === 1) detectedCategory = 'animal';
       else if (wordCount === 2) detectedCategory = 'fruit';
@@ -246,11 +243,9 @@ const MentalConversation = () => {
       setLetters(newLetters);
 
       if (newLetters.length < 3) {
-        // Perguntas para coletar letras
         const questionKey = followUpQuestionKeys[newLetters.length - 1];
         addAiMessage(t(questionKey));
       } else {
-        // Temos 3 letras, filtrar palavras
         const wordList = getWordList(category);
         const filtered = filterWordsByLetters(wordList, newLetters);
         setPossibleWords(filtered);
@@ -295,67 +290,67 @@ const MentalConversation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-b border-border z-10 p-4">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <HeaderControls />
-          <div className="flex items-center gap-2">
-            <Brain className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-bold">{t('mentalConversation.title')}</h1>
+    <GameLayout>
+      <div className="flex flex-col h-[calc(100vh-6rem)]">
+        {/* Header */}
+        <div className="border-b border-white/10 bg-[#0f111a]/80 backdrop-blur-sm p-4">
+          <div className="max-w-4xl mx-auto flex items-center justify-center gap-2">
+            <Brain className="w-6 h-6 text-[#7f13ec]" />
+            <h1 className="text-xl font-bold text-white">{t('mentalConversation.title')}</h1>
+          </div>
+        </div>
+        
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          <div className="max-w-4xl mx-auto space-y-4">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <Card
+                  className={`max-w-[80%] p-4 ${
+                    message.sender === 'user'
+                      ? 'bg-[#7f13ec] text-white'
+                      : message.text.includes('🔮') || message.text.includes('🌟')
+                      ? 'bg-[#1e1b4b] animate-pulse border-2 border-[#7f13ec] shadow-lg shadow-[#7f13ec]/50'
+                      : 'bg-[#1e1b4b]/50 border-white/10 text-white'
+                  }`}
+                >
+                  <p className={`whitespace-pre-wrap ${
+                    message.text.includes('🔮') || message.text.includes('🌟')
+                      ? 'text-center text-lg font-bold'
+                      : ''
+                  }`}>{message.text}</p>
+                </Card>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+
+        {/* Input */}
+        <div className="border-t border-white/10 bg-[#0f111a]/80 backdrop-blur-sm p-4">
+          <div className="max-w-4xl mx-auto flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder={t('mentalConversation.input.placeholder')}
+              className="flex-1 bg-black/30 border-white/20 text-white placeholder:text-white/50"
+            />
+            <Button 
+              onClick={handleSubmit} 
+              size="icon"
+              disabled={!input.trim()}
+              className="bg-[#7f13ec] hover:bg-[#7f13ec]/80"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </div>
-      
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto pt-20 pb-24 px-4">
-        <div className="max-w-4xl mx-auto space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <Card
-                className={`max-w-[80%] p-4 ${
-                  message.sender === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : message.text.includes('🔮') || message.text.includes('🌟')
-                    ? 'bg-card animate-pulse border-2 border-primary shadow-lg shadow-primary/50'
-                    : 'bg-card'
-                }`}
-              >
-                <p className={`whitespace-pre-wrap ${
-                  message.text.includes('🔮') || message.text.includes('🌟')
-                    ? 'text-center text-lg font-bold'
-                    : ''
-                }`}>{message.text}</p>
-              </Card>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-
-      {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border p-4">
-        <div className="max-w-4xl mx-auto flex gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-            placeholder={t('mentalConversation.input.placeholder')}
-            className="flex-1"
-          />
-          <Button 
-            onClick={handleSubmit} 
-            size="icon"
-            disabled={!input.trim()}
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    </GameLayout>
   );
 };
 

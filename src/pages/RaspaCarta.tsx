@@ -1,7 +1,6 @@
-
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { PointerEvent } from 'react';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getCardImageSrc } from '@/lib/cardImages';
@@ -124,11 +123,9 @@ const RaspaCarta = () => {
 
     const scale = window.devicePixelRatio || 1;
 
-    // Garantir que a transformação e composite operation estão corretos
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.globalCompositeOperation = 'destination-out';
     
-    // Criar efeito de raspagem mais suave
     context.beginPath();
     context.arc(x, y, 50, 0, Math.PI * 2);
     context.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -177,30 +174,20 @@ const RaspaCarta = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
-      <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="absolute -top-24 left-12 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 h-40 w-40 rounded-full bg-secondary/30 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-      </div>
-
-      <div className="fixed top-4 right-4 z-20">
-        <HeaderControls />
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 pt-16 pb-10">
-        <div className="rounded-3xl border border-primary/20 bg-background/80 p-6 text-center shadow-2xl shadow-primary/20 backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pt-8">
+        <div className="rounded-3xl border border-[#7f13ec]/30 bg-[#1e1b4b]/50 p-6 text-center shadow-lg backdrop-blur">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#7f13ec]">
             {t('raspaCarta.title')}
           </p>
-          <p className="mt-3 text-base text-muted-foreground">{t('raspaCarta.subtitle')}</p>
+          <p className="mt-3 text-base text-white/70">{t('raspaCarta.subtitle')}</p>
         </div>
 
-        <div className="rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-          <p className="text-center text-sm text-muted-foreground">{t('raspaCarta.gridInstruction')}</p>
+        <div className="rounded-3xl border border-white/10 bg-[#1e1b4b]/30 p-8 shadow-2xl">
+          <p className="text-center text-sm text-white/70">{t('raspaCarta.gridInstruction')}</p>
           <div
             ref={cardAreaRef}
-            className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/20 bg-black/70 shadow-2xl"
+            className="relative mx-auto mt-6 aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-[#7f13ec]/20 bg-black/70 shadow-2xl"
           >
             <div ref={imageContainerRef} className="absolute inset-4 overflow-hidden rounded-[24px] bg-black/70">
               {selectedCard ? (
@@ -234,7 +221,7 @@ const RaspaCarta = () => {
                 rankColumns.map((rank) => (
                   <button
                     key={`${rank}-${suit.id}`}
-                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f13ec]/70"
                     aria-label={t('raspaCarta.gridButtonAria', {
                       rank: faceLabels[rank],
                       suit: suitLabels[suit.id],
@@ -246,20 +233,24 @@ const RaspaCarta = () => {
               )}
             </div>
 
-            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
+            <div className="pointer-events-none absolute inset-x-8 bottom-5 grid grid-cols-3 gap-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-[#7f13ec]/80">
               {rankColumns.map((rank) => (
                 <span key={rank}>{faceLabels[rank]}</span>
               ))}
             </div>
           </div>
           <div className="mt-6 flex justify-center">
-            <Button variant="outline" onClick={handleReset}>
+            <Button 
+              variant="outline" 
+              onClick={handleReset}
+              className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+            >
               Reiniciar
             </Button>
           </div>
         </div>
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

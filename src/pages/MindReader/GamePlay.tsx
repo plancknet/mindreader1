@@ -6,7 +6,7 @@ import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { Brain } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { START_WORDS } from '@/i18n/languages';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -360,10 +360,7 @@ const GamePlay = () => {
   const timeLeft = Math.max(0, Math.ceil(detectionDuration - clampedTimer));
 
   return (
-    <div className="min-h-screen bg-background p-4 relative">
-      <div className="fixed top-4 left-4 z-50">
-        <HeaderControls />
-      </div>
+    <GameLayout>
       {/* Hidden camera */}
       <video
         ref={videoRef}

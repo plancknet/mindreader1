@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { GAME_IDS } from '@/constants/games';
@@ -17,7 +17,6 @@ const suits: Array<{ id: SuitId; symbol: string; tone: 'red' | 'black' }> = [
   { id: 'diamonds', symbol: '♦', tone: 'red' },
   { id: 'clubs', symbol: '♣', tone: 'black' },
 ];
-
 
 const getCardImageIndex = (rank: string, suit: SuitId | null): number | null => {
   if (!suit) {
@@ -97,27 +96,17 @@ const CartaMental = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
-      <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="absolute -top-24 left-12 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 h-40 w-40 rounded-full bg-secondary/30 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-      </div>
-
-      <div className="fixed top-4 right-4 z-20">
-        <HeaderControls />
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 pt-16 pb-10">
-        <div className="rounded-3xl border border-primary/20 bg-background/80 p-6 text-center shadow-2xl shadow-primary/20 backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pt-8">
+        <div className="rounded-3xl border border-[#7f13ec]/30 bg-[#1e1b4b]/50 p-6 text-center shadow-lg backdrop-blur">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#7f13ec]">
             MindReader
           </p>
         </div>
 
         {stage === 'setup' && (
-          <div className="space-y-8 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-            <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-primary/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl">
+          <div className="space-y-8 rounded-3xl border border-white/10 bg-[#1e1b4b]/30 p-8 shadow-2xl">
+            <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[32px] border-[6px] border-[#7f13ec]/30 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-2xl">
               <div className="absolute inset-0 flex items-center justify-center opacity-80">
                 <img
                   src="/icons/icon-144x144.png"
@@ -131,7 +120,7 @@ const CartaMental = () => {
                 {ranks.map((rank) => (
                   <button
                     key={rank}
-                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                    className="rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f13ec]/70"
                     aria-label={t('cartaMental.rankButtonAria', { rank })}
                     onClick={() => handleRankTouch(rank)}
                     style={{ opacity: 0 }}
@@ -141,7 +130,7 @@ const CartaMental = () => {
             </div>
 
             <Button
-              className="relative mx-auto flex w-full max-w-md items-center justify-center rounded-full border border-primary/30 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 py-6 text-lg font-semibold uppercase tracking-[0.35em] text-primary-foreground shadow-lg shadow-primary/20"
+              className="relative mx-auto flex w-full max-w-md items-center justify-center rounded-full border border-[#7f13ec]/30 bg-gradient-to-r from-[#7f13ec]/30 via-[#7f13ec]/20 to-blue-500/30 py-6 text-lg font-semibold uppercase tracking-[0.35em] text-white shadow-lg shadow-[#7f13ec]/20"
               onClick={handleReveal}
             >
               {t('cartaMental.revealButton')}
@@ -167,14 +156,18 @@ const CartaMental = () => {
             </div>
 
             <div className="flex items-center justify-center gap-4">
-              <Button variant="outline" onClick={resetSelection}>
+              <Button 
+                variant="outline" 
+                onClick={resetSelection}
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+              >
                 {t('cartaMental.reset')}
               </Button>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

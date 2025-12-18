@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
 import { GAME_IDS } from '@/constants/games';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
@@ -73,28 +73,34 @@ const OiSumida = () => {
       : [...cards, ...Array.from({ length: 9 - cards.length }, () => null)];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background px-4 py-8 flex items-center justify-center">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex justify-end">
-          <HeaderControls showExtras />
-        </div>
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-8">
         <div className="flex justify-end">
           <Button
             variant="outline"
+            className="border-white/20 bg-white/5 text-white hover:bg-white/10"
             onClick={() => navigate('/oi-sumida/instrucoes')}
           >
             Instruções
           </Button>
         </div>
+
         <div className="text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">Oi Sumida</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-white">Oi Sumida</h1>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button className="w-full" onClick={handlePrimaryButton}>
+          <Button 
+            className="w-full bg-[#7f13ec] hover:bg-[#7f13ec]/80" 
+            onClick={handlePrimaryButton}
+          >
             {isOiSumidaActive ? 'Reiniciar' : 'Embaralhar'}
           </Button>
-          <Button variant="secondary" className="w-full" onClick={handleOiSumida}>
+          <Button 
+            variant="secondary" 
+            className="w-full border-white/20 bg-white/10 text-white hover:bg-white/20" 
+            onClick={handleOiSumida}
+          >
             Oi Sumida
           </Button>
         </div>
@@ -115,25 +121,25 @@ const OiSumida = () => {
             return (
               <div
                 key={`${card.rank}-${card.suit}-${index}`}
-                className="rounded-2xl border border-border bg-black shadow-[0_12px_35px_rgba(15,23,42,0.25)] p-1 flex items-center justify-center"
+                className="rounded-2xl border border-white/20 bg-black/50 shadow-lg p-1 flex items-center justify-center"
                 style={{ aspectRatio: '2 / 3' }}
               >
                 {imageSrc ? (
                   <img
                     src={imageSrc}
                     alt={card.label}
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-contain rounded-xl"
                     loading="lazy"
                   />
                 ) : (
-                  <span className="text-sm font-semibold text-muted-foreground">{card.label}</span>
+                  <span className="text-sm font-semibold text-white/70">{card.label}</span>
                 )}
               </div>
             );
           })}
         </div>
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

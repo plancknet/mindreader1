@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Brain, Square } from 'lucide-react';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -196,17 +196,15 @@ const SuasPalavras = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
-      <div className="w-full max-w-4xl space-y-8">
-        <HeaderControls />
-
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 pt-8">
         {stage === 'greeting' && (
           <div className="text-center space-y-8">
-            <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
-            <Card className="p-6 space-y-6">
-              <p className="text-2xl font-semibold text-primary">{selectedPhrase}</p>
+            <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse mx-auto" />
+            <Card className="p-6 space-y-6 bg-[#1e1b4b]/50 border-white/10">
+              <p className="text-2xl font-semibold text-[#7f13ec]">{selectedPhrase}</p>
               <div className="relative w-full max-w-md mx-auto">
-                <div className="relative rounded-xl bg-primary shadow-lg overflow-hidden">
+                <div className="relative rounded-xl bg-[#7f13ec] shadow-lg overflow-hidden">
                   <div className="flex">
                     <button
                       className="flex-1 h-16 opacity-0"
@@ -219,7 +217,7 @@ const SuasPalavras = () => {
                       onClick={() => handleModeSelection('phrase')}
                     />
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none gap-4 text-primary-foreground font-semibold text-lg">
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none gap-4 text-white font-semibold text-lg">
                     <span>Sim. Vamos lá!</span>
                   </div>
                 </div>
@@ -229,16 +227,16 @@ const SuasPalavras = () => {
         )}
 
         {stage === 'input' && (
-          <Card className="p-6 space-y-6">
-            <h2 className="text-2xl font-bold text-center">Digite suas 5 palavras</h2>
+          <Card className="p-6 space-y-6 bg-[#1e1b4b]/50 border-white/10">
+            <h2 className="text-2xl font-bold text-center text-white">Digite suas 5 palavras</h2>
             <div className="grid gap-3">
               <div>
-                <p className="text-sm text-muted-foreground mb-2">Palavra Misteriosa</p>
+                <p className="text-sm text-white/70 mb-2">Palavra Misteriosa</p>
                 <Input
                   value={words[0]}
                   onChange={(e) => handleWordChange(0, e.target.value)}
                   placeholder="Palavra principal"
-                  className="py-6 text-lg text-center"
+                  className="py-6 text-lg text-center bg-black/30 border-white/20 text-white placeholder:text-white/50"
                 />
               </div>
               {words.slice(1).map((word, idx) => (
@@ -247,11 +245,15 @@ const SuasPalavras = () => {
                   value={word}
                   onChange={(e) => handleWordChange(idx + 1, e.target.value)}
                   placeholder={`Outra palavra ${idx + 1}`}
-                  className="py-4 text-center"
+                  className="py-4 text-center bg-black/30 border-white/20 text-white placeholder:text-white/50"
                 />
               ))}
             </div>
-            <Button size="lg" onClick={handleStart} className="w-full text-lg py-6">
+            <Button 
+              size="lg" 
+              onClick={handleStart} 
+              className="w-full text-lg py-6 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
+            >
               Começar
             </Button>
           </Card>
@@ -259,9 +261,9 @@ const SuasPalavras = () => {
 
         {stage === 'playing' && (
           <div className="text-center space-y-6">
-            <Brain className="w-16 h-16 text-primary animate-pulse mx-auto" />
-            <Card className="p-10 bg-gradient-to-br from-primary/10 to-secondary/10">
-              <div className="text-6xl font-bold tracking-wide text-primary">{currentWord || '...'}</div>
+            <Brain className="w-16 h-16 text-[#7f13ec] animate-pulse mx-auto" />
+            <Card className="p-10 bg-gradient-to-br from-[#7f13ec]/20 to-blue-500/20 border-white/10">
+              <div className="text-6xl font-bold tracking-wide text-[#7f13ec]">{currentWord || '...'}</div>
             </Card>
             <Button
               size="lg"
@@ -277,25 +279,34 @@ const SuasPalavras = () => {
 
         {stage === 'revealed' && (
           <div className="text-center space-y-6">
-            <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
-            <h2 className="text-3xl font-bold">Palavra Revelada</h2>
-            <Card className="p-10 bg-gradient-to-br from-primary/10 to-secondary/10">
-              <div className="text-6xl font-extrabold tracking-wide text-primary">
+            <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse mx-auto" />
+            <h2 className="text-3xl font-bold text-white">Palavra Revelada</h2>
+            <Card className="p-10 bg-gradient-to-br from-[#7f13ec]/20 to-blue-500/20 border-white/10">
+              <div className="text-6xl font-extrabold tracking-wide text-[#7f13ec]">
                 E ai, acertou?
               </div>
             </Card>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
-              <Button variant="outline" size="lg" onClick={() => navigate('/game-selector')}>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={() => navigate('/game-selector')}
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+              >
                 Voltar ao menu
               </Button>
-              <Button size="lg" onClick={handleReset}>
+              <Button 
+                size="lg" 
+                onClick={handleReset}
+                className="bg-[#7f13ec] hover:bg-[#7f13ec]/80"
+              >
                 Usar novamente
               </Button>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </GameLayout>
   );
 };
 
