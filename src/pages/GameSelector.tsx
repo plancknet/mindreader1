@@ -395,7 +395,7 @@ const GameSelector = () => {
                     key={chip.value}
                     type="button"
                     onClick={() => setSelectedLevel(isActive ? null : chip.value)}
-                    className={`flex h-9 items-center justify-center rounded-full border px-4 text-sm font-semibold transition-all active:scale-95 ${
+                    className={`flex h-8 items-center justify-center rounded-full border px-3 text-xs font-semibold uppercase tracking-wide transition-all active:scale-95 ${
                       isActive
                         ? 'border-[#7f13ec]/50 bg-[#7f13ec] text-white shadow-[0_0_15px_rgba(127,19,236,0.4)]'
                         : 'border-white/10 bg-[#1e1b4b] text-white/70 hover:border-[#7f13ec]/40 hover:bg-white/5'
