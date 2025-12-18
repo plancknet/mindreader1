@@ -13,7 +13,7 @@ const Welcome = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const markWelcomeSeen = async () => {
+    const markWelcomeSeenAndRedirect = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -22,13 +22,16 @@ const Welcome = () => {
           .from('users')
           .update({ has_seen_welcome: true })
           .eq('user_id', user.id);
+        
+        navigate('/game-selector');
       } catch (error) {
         console.error('Error updating welcome status:', error);
+        navigate('/game-selector');
       }
     };
 
-    markWelcomeSeen();
-  }, []);
+    markWelcomeSeenAndRedirect();
+  }, [navigate]);
 
   const gameLinks = [
     {
