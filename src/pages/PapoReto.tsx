@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { HeaderControls } from '@/components/HeaderControls';
 import { useNavigate } from 'react-router-dom';
-import { Send } from 'lucide-react';
+import { Send, Home, Moon, Languages as LanguagesIcon, LogOut, Brain } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { languages } from '@/i18n/languages';
 type Category = 'animal' | 'fruit' | 'country' | null;
 type GameStep = 'initial' | 'ready' | 'collecting' | 'filtering' | 'revealing';
 interface Message {
@@ -25,10 +26,8 @@ const LETTER_GRID = Array.from({
 }, (_, index) => String.fromCharCode(65 + index));
 const PapoReto = () => {
   const navigate = useNavigate();
-  const {
-    t,
-    language
-  } = useTranslation();
+  const { t, language } = useTranslation();
+  const { setLanguage } = useLanguageContext();
   const {
     toast
   } = useToast();
@@ -249,20 +248,60 @@ const PapoReto = () => {
     : lastAiMessage?.variant === 'question'
       ? 'text-2xl md:text-3xl'
       : 'text-lg md:text-xl';
-  
+  const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
+
+  const goHome = () => navigate('/game-selector');
+
+  const toggleTheme = () => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('theme-light');
+  };
+
+  const cycleLanguage = () => {
+    const codes = languages.map((lang) => lang.code);
+    const currentIndex = codes.indexOf(language);
+    const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+    setLanguage(nextCode);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Failed to sign out', error);
+    } finally {
+      navigate('/');
+    }
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-6">
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white px-4 py-6"
+      style={{ fontFamily: loginFontFamily }}
+    >
       <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="absolute -top-24 left-12 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 h-40 w-40 rounded-full bg-secondary/30 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -top-24 left-12 h-64 w-64 rounded-full bg-[#7f13ec]/20 blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#7f13ec]/15 blur-3xl" />
       </div>
 
-      <div className="fixed top-4 right-4 z-20">
-        <HeaderControls />
-      </div>
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 pt-16 pb-10">
+        <header className="sticky top-0 z-20 mb-4 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-3xl items-center justify-between">
+            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+              <Brain className="h-6 w-6" />
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                MindReader
+              </h1>
+            </div>
+            <div className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70">
+              {language.toUpperCase()}
+            </div>
+          </div>
+        </header>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 pt-16 pb-10">
         <div className="rounded-3xl border border-primary/20 bg-background/80 p-6 text-center shadow-2xl shadow-primary/20 backdrop-blur">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
             {t('gameSelector.cards.papoReto.title')}
@@ -340,6 +379,43 @@ const PapoReto = () => {
         </span>
       )}
       <div ref={messagesEndRef} />
+
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+          <button
+            type="button"
+            onClick={goHome}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+          >
+            <Home className="h-5 w-5" />
+            <span>Home</span>
+          </button>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <Moon className="h-5 w-5" />
+            <span>Mode</span>
+          </button>
+          <button
+            type="button"
+            onClick={cycleLanguage}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <LanguagesIcon className="h-5 w-5" />
+            <span>{language.toUpperCase()}</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 };

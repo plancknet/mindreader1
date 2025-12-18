@@ -243,8 +243,22 @@ const CartaPensada = () => {
             {columns.map((column, columnIndex) => (
               <div key={columnIndex} className="space-y-4">
                 <div
-                  className={`grid gap-2 rounded-2xl border border-white/10 p-3 shadow-inner ${
-                    selectedColumn === columnIndex ? 'ring-2 ring-[#7f13ec]/50' : ''
+                  role="button"
+                  tabIndex={isProcessing ? -1 : 0}
+                  onClick={() => !isProcessing && processSelection(columnIndex)}
+                  onKeyDown={(event) => {
+                    if (isProcessing) return;
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      processSelection(columnIndex);
+                    }
+                  }}
+                  className={`grid gap-2 rounded-2xl border border-white/10 p-3 shadow-inner transition ${
+                    selectedColumn === columnIndex
+                      ? 'cursor-pointer ring-2 ring-[#7f13ec]/50'
+                      : isProcessing
+                        ? 'cursor-not-allowed opacity-50'
+                        : 'cursor-pointer hover:border-[#7f13ec]/40'
                   }`}
                   style={{
                     gridTemplateRows: 'repeat(7, minmax(0, 1fr))',
