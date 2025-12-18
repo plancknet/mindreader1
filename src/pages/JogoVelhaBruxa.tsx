@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 
@@ -166,13 +166,10 @@ const JogoVelhaBruxa = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-4 py-8 flex items-center justify-center">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex justify-end">
-          <HeaderControls showExtras />
-        </div>
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-8">
         <div className="text-center space-y-2">
-          <p className="text-sm text-slate-300 uppercase tracking-[0.3em]">Jogo da Velha</p>
+          <p className="text-sm text-white/70 uppercase tracking-[0.3em]">Jogo da Velha</p>
           <h1 className="text-3xl font-bold text-white">Jogo da Velha Bruxa</h1>
         </div>
 
@@ -181,20 +178,23 @@ const JogoVelhaBruxa = () => {
             <button
               key={index}
               onClick={() => handleCellClick(index)}
-              className="aspect-square rounded-2xl border border-white/20 bg-slate-800 text-white text-4xl font-bold flex items-center justify-center transition hover:bg-slate-700 active:scale-95"
+              className="aspect-square rounded-2xl border border-white/20 bg-[#1e1b4b]/50 text-white text-4xl font-bold flex items-center justify-center transition hover:bg-[#1e1b4b]/70 active:scale-95"
             >
               {renderCellContent(value)}
             </button>
           ))}
         </div>
 
-        <div className="space-y-2 text-center text-slate-200">
+        <div className="space-y-2 text-center">
           {statusMessage && <p className="text-amber-300 text-sm">{statusMessage}</p>}
-          {resultMessage && <p className="text-lg font-semibold">{resultMessage}</p>}
+          {resultMessage && <p className="text-lg font-semibold text-white">{resultMessage}</p>}
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button className="flex-1" onClick={handleReset}>
+          <Button 
+            className="flex-1 bg-[#7f13ec] hover:bg-[#7f13ec]/80" 
+            onClick={handleReset}
+          >
             Reiniciar
           </Button>
         </div>
@@ -205,7 +205,7 @@ const JogoVelhaBruxa = () => {
           </p>
         )}
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

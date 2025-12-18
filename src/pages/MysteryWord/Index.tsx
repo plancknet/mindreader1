@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Brain, Square } from 'lucide-react';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { GAME_IDS } from '@/constants/games';
@@ -33,8 +33,6 @@ const getPositionFromPhrase = (phrase: string) => {
   const lettersOnly = lastWord.replace(/[^A-Za-z\u00C0-\u024F]/g, '');
   return lettersOnly.length || 4;
 };
-
-const normalizeWord = (value: string) => value.trim().toLowerCase();
 
 const MysteryWord = () => {
   const navigate = useNavigate();
@@ -83,12 +81,9 @@ const MysteryWord = () => {
     return wordPoolRef.current.shift() || '';
   }, [refreshWordPool]);
 
-
   const handleContinueToInput = (mode: 'normal' | 'random-camera') => {
     setGameMode(mode);
-    
     if (mode === 'random-camera') {
-      // Posição aleatória entre 3 e 10
       setSecretPosition(Math.floor(Math.random() * 8) + 3);
       setStage('input');
     } else {
@@ -118,9 +113,7 @@ const MysteryWord = () => {
   const handleStartPlaying = () => {
     const sanitizedSecret = secretWord.trim();
     if (!sanitizedSecret) return;
-
     refreshWordPool();
-
     setStage('playing');
     setIsPlaying(true);
     setWordCount(0);
@@ -156,13 +149,11 @@ const MysteryWord = () => {
       const interval = setInterval(() => {
         setWordCount(prev => {
           const nextCount = prev + 1;
-
           if (nextCount === secretPosition) {
             setCurrentWord(secretWord);
           } else {
             setCurrentWord(getNextUniqueWord());
           }
-
           if (gameMode === 'random-camera') {
             if (nextCount === secretPosition) {
               void activateCamera();
@@ -170,11 +161,9 @@ const MysteryWord = () => {
               stopCamera();
             }
           }
-
           return nextCount;
         });
       }, 3000);
-
       return () => clearInterval(interval);
     }
   }, [isPlaying, secretPosition, secretWord, getNextUniqueWord, gameMode, activateCamera, stopCamera]);
@@ -185,25 +174,22 @@ const MysteryWord = () => {
     };
   }, [stopCamera]);
 
-
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
-      <div className="max-w-4xl w-full space-y-8">
-        <HeaderControls />
-
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 pt-8">
         {stage === 'greeting' && (
           <div className="text-center space-y-8">
             <div className="flex justify-center">
-              <Brain className="w-20 h-20 text-primary animate-pulse" />
+              <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse" />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-bold text-white">
               {t('mysteryWord.title')}
             </h1>
-            <Card className="p-8">
+            <Card className="p-8 bg-[#1e1b4b]/50 border-white/10">
               <div className="space-y-6">
-                <p className="text-2xl font-bold text-primary">{selectedPhrase}</p>
+                <p className="text-2xl font-bold text-[#7f13ec]">{selectedPhrase}</p>
                 <div className="relative inline-block w-full max-w-md">
-                  <div className="relative rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden">
+                  <div className="relative rounded-lg bg-[#7f13ec] hover:bg-[#7f13ec]/90 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden">
                     <div className="flex">
                       <button
                         onClick={() => handleContinueToInput('random-camera')}
@@ -217,13 +203,11 @@ const MysteryWord = () => {
                       />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="flex items-center gap-6 text-primary-foreground text-xl font-medium">
-                        <span></span>
+                      <div className="flex items-center gap-6 text-white text-xl font-medium">
                         <div className="flex items-center gap-2">
                           <Brain className="h-6 w-6" />
                           <span className="whitespace-nowrap">{t('mysteryWord.startButton')}</span>
                         </div>
-                        <span></span>
                       </div>
                     </div>
                   </div>
@@ -233,18 +217,17 @@ const MysteryWord = () => {
           </div>
         )}
 
-
         {stage === 'input' && (
           <div className="text-center space-y-8">
             <div className="flex justify-center">
-              <Brain className="w-20 h-20 text-primary animate-pulse" />
+              <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
               {t('mysteryWord.inputTitle')}
             </h2>
-            <Card className="p-8">
+            <Card className="p-8 bg-[#1e1b4b]/50 border-white/10">
               <div className="space-y-6">
-                <p className="text-muted-foreground">
+                <p className="text-white/70">
                   {t('mysteryWord.inputDescription')}
                 </p>
                 <Input
@@ -252,14 +235,14 @@ const MysteryWord = () => {
                   value={secretWord}
                   onChange={(e) => setSecretWord(e.target.value)}
                   placeholder={t('mysteryWord.inputPlaceholder')}
-                  className="text-center text-2xl py-6"
+                  className="text-center text-2xl py-6 bg-black/30 border-white/20 text-white placeholder:text-white/50"
                   autoFocus
                 />
                 <Button 
                   size="lg" 
                   onClick={handleStartPlaying}
                   disabled={!secretWord.trim()}
-                  className="text-xl px-8 py-6"
+                  className="text-xl px-8 py-6 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
                 >
                   {t('mysteryWord.startPresentation')}
                 </Button>
@@ -271,13 +254,13 @@ const MysteryWord = () => {
         {stage === 'playing' && (
           <div className="text-center space-y-8">
             <div className="flex justify-center">
-              <Brain className="w-20 h-20 text-primary animate-pulse" />
+              <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
               ...
             </h2>
-            <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
-              <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent animate-pulse">
+            <Card className="p-12 bg-gradient-to-br from-[#7f13ec]/20 to-blue-500/20 border-white/10">
+              <div className="text-6xl md:text-8xl font-bold text-[#7f13ec] animate-pulse">
                 {currentWord ? currentWord.toUpperCase() : '...'}
               </div>
             </Card>
@@ -295,15 +278,15 @@ const MysteryWord = () => {
 
         {stage === 'stopped' && (
           <div className="text-center space-y-8">
-            <Brain className="w-20 h-20 text-primary animate-pulse mx-auto" />
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse mx-auto" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
               {t('mysteryWord.stoppedTitle')}
             </h2>
-            <Card className="p-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
-              <p className="text-2xl mb-4 text-muted-foreground">
+            <Card className="p-12 bg-gradient-to-br from-[#7f13ec]/20 to-blue-500/20 border-white/10">
+              <p className="text-2xl mb-4 text-white/70">
                 {t('mysteryWord.stoppedSubtitle')}
               </p>
-              <div className="text-6xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <div className="text-6xl md:text-8xl font-bold text-[#7f13ec]">
                 ...
               </div>
             </Card>
@@ -312,14 +295,14 @@ const MysteryWord = () => {
                 size="lg"
                 variant="outline"
                 onClick={() => navigate('/game-selector')}
-                className="text-xl px-8 py-6"
+                className="text-xl px-8 py-6 border-white/20 bg-white/5 text-white hover:bg-white/10"
               >
                 {t('mysteryWord.menuButton')}
               </Button>
               <Button
                 size="lg"
                 onClick={handlePlayAgain}
-                className="text-xl px-8 py-6"
+                className="text-xl px-8 py-6 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
               >
                 <Brain className="mr-2 h-6 w-6" />
                 {t('mysteryWord.playAgain')}
@@ -328,7 +311,7 @@ const MysteryWord = () => {
           </div>
         )}
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

@@ -1,6 +1,6 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Shuffle } from 'lucide-react';
@@ -87,7 +87,6 @@ const PontaCarta = () => {
       setIsShuffling(false);
       trackUsage();
     }, 180);
-
   };
 
   const handleReset = () => {
@@ -98,34 +97,19 @@ const PontaCarta = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/15 px-4 py-6">
-      <div className="pointer-events-none absolute inset-0 opacity-50">
-        <div className="absolute -top-16 left-6 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute bottom-0 right-4 h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
-        <div className="absolute left-1/3 top-1/4 h-40 w-40 rotate-45 rounded-3xl border border-primary/10" />
-      </div>
-
-      <div className="fixed top-4 right-4 z-20">
-        <HeaderControls />
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 pt-16 pb-10">
-        <div className="rounded-3xl border border-primary/15 bg-background/80 p-6 text-center shadow-2xl shadow-primary/10 backdrop-blur">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pt-8">
+        <div className="rounded-3xl border border-[#7f13ec]/30 bg-[#1e1b4b]/50 p-6 text-center shadow-lg backdrop-blur">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#7f13ec]">
             {t('pontaCarta.hint')}
           </p>
-          <h1 className="mb-2 text-4xl font-extrabold text-foreground md:text-5xl">
+          <h1 className="mb-2 text-4xl font-extrabold text-white md:text-5xl">
             {t('pontaCarta.chooseTitle')}
           </h1>
-          <p className="text-base text-muted-foreground">{t('pontaCarta.chooseSubtitle')}</p>
+          <p className="text-base text-white/70">{t('pontaCarta.chooseSubtitle')}</p>
         </div>
 
-        <div className="rounded-3xl border border-primary/10 bg-card/70 p-4 shadow-xl shadow-primary/5 backdrop-blur">
-          <div className="mb-4 flex items-center justify-center gap-2 text-[0.65rem] uppercase tracking-[0.45em] text-muted-foreground">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+        <div className="rounded-3xl border border-white/10 bg-[#1e1b4b]/30 p-4 shadow-xl backdrop-blur">
           <div className="grid grid-cols-4 gap-3 md:gap-4">
             {cardOrder.map((card) => {
               const isSelected = selectedCardId === card.id;
@@ -133,8 +117,8 @@ const PontaCarta = () => {
               return (
                 <Card
                   key={card.id}
-                  className={`group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 ${
-                    showSelection ? 'border-primary bg-primary/10' : 'border-white/10'
+                  className={`group relative flex aspect-[7/10] w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#7f13ec]/30 bg-black/50 ${
+                    showSelection ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/50' : 'border-white/10'
                   }`}
                   role="button"
                   tabIndex={0}
@@ -151,8 +135,8 @@ const PontaCarta = () => {
                     />
                   ) : (
                     <div className="flex h-full w-full flex-col items-center justify-center text-2xl font-bold">
-                      <span className={card.tone === 'red' ? 'text-rose-400' : 'text-slate-100'}>{card.rank}</span>
-                      <span className={card.tone === 'red' ? 'text-rose-400' : 'text-slate-100'}>{card.suitSymbol}</span>
+                      <span className={card.tone === 'red' ? 'text-rose-400' : 'text-white'}>{card.rank}</span>
+                      <span className={card.tone === 'red' ? 'text-rose-400' : 'text-white'}>{card.suitSymbol}</span>
                     </div>
                   )}
                 </Card>
@@ -164,19 +148,25 @@ const PontaCarta = () => {
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Button
             size="lg"
-            className="gap-2"
+            className="gap-2 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
             disabled={!selectedCardId || isShuffling}
             onClick={handleShuffle}
           >
             <Shuffle size={20} />
             {t('pontaCarta.shuffleButton')}
           </Button>
-          <Button variant="outline" size="lg" onClick={handleReset} disabled={isShuffling && Boolean(selectedCardId)}>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={handleReset} 
+            disabled={isShuffling && Boolean(selectedCardId)}
+            className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+          >
             {t('pontaCarta.resetButton')}
           </Button>
         </div>
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

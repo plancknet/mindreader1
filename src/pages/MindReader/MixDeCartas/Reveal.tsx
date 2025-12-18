@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Shuffle } from 'lucide-react';
 import { getCardImageSrc } from '@/lib/cardImages';
@@ -47,14 +47,12 @@ const fullDeck: DeckCard[] = suits.flatMap((suit) =>
 
 type ReadingMode = 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT';
 
-// Converte carta para indice (1-52)
 const getCardIndex = (suit: SuitName, rank: string): number => {
   const suitIndex = suits.findIndex(s => s.name === suit);
   const rankIndex = ranks.indexOf(rank);
   return suitIndex * 13 + rankIndex + 1;
 };
 
-// Converte indice para binario de 6 bits
 const decimalToBinary6 = (num: number): string => {
   return num.toString(2).padStart(6, '0');
 };
@@ -69,12 +67,10 @@ const pickRandomItem = <T,>(items: T[]): T => {
 
 const bitToColor = (bit: string): 'red' | 'black' => (bit === '1' ? 'red' : 'black');
 
-// Escolhe o sentido aleatoriamente
 const chooseModeRandomly = (): ReadingMode => {
   return Math.random() < 0.5 ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
 };
 
-// Gera sequencia de 6 cartas
 const generateSequence = (chosenSuit: SuitName, chosenRank: string): PlayingCard[] => {
   const chosenIndex = getCardIndex(chosenSuit, chosenRank);
   const binaryBits = decimalToBinary6(chosenIndex).split('');
@@ -164,23 +160,16 @@ export const Reveal = () => {
 
   if (!suit || !rank) return null;
 
-  const chosenSuitData = suits.find(s => s.name === suit);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <div className="fixed top-4 left-4 z-10">
-        <HeaderControls />
-      </div>
-
-      <div className="max-w-6xl mx-auto pt-20 pb-8">
-        <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pt-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             {t('mixDeCartas.revealTitle')}
           </h1>
-          <p className="text-lg text-muted-foreground mb-6">
+          <p className="text-lg text-white/70 mb-6">
             {t('mixDeCartas.revealSubtitle')}
           </p>
-          
         </div>
 
         <div className={`grid grid-cols-3 md:grid-cols-6 gap-4 mb-8 transition-opacity duration-300 ${isShuffling ? 'opacity-0' : 'opacity-100'}`}>
@@ -189,7 +178,7 @@ export const Reveal = () => {
             return (
             <Card
               key={`${card.rank}${card.suit}${index}`}
-              className="aspect-[2/3] flex items-center justify-center overflow-hidden shadow-lg animate-scale-in rounded-md"
+              className="aspect-[2/3] flex items-center justify-center overflow-hidden shadow-lg animate-scale-in rounded-md bg-black/50 border-white/10"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <img
@@ -204,7 +193,12 @@ export const Reveal = () => {
         </div>
 
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button onClick={shuffle} disabled={isShuffling} size="lg" className="gap-2">
+          <Button 
+            onClick={shuffle} 
+            disabled={isShuffling} 
+            size="lg" 
+            className="gap-2 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
+          >
             <Shuffle size={20} />
             {t('mixDeCartas.shuffleButton')}
           </Button>
@@ -213,17 +207,18 @@ export const Reveal = () => {
             variant="outline"
             size="lg"
             disabled={isShuffling}
+            className="border-white/20 bg-white/5 text-white hover:bg-white/10"
           >
             {t('mixDeCartas.resetButton')}
           </Button>
         </div>
 
-        <div className="mt-12 p-6 bg-muted/30 rounded-lg text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-12 p-6 bg-[#1e1b4b]/30 rounded-lg text-center border border-white/10">
+          <p className="text-sm text-white/70">
             {t('mixDeCartas.magicTip')}
           </p>
         </div>
       </div>
-    </div>
+    </GameLayout>
   );
 };

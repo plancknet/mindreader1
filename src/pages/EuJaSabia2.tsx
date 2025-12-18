@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, type ChangeEvent } from 'react';
-import { HeaderControls } from '@/components/HeaderControls';
+import { GameLayout } from '@/components/GameLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -532,17 +532,8 @@ const EuJaSabia2 = () => {
   const shouldShowMask = hasMaskContent && isVideoReadyForMask;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-primary/20 px-4 py-8">
-      <div className="pointer-events-none absolute inset-0 opacity-40">
-        <div className="absolute -top-20 left-10 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute top-1/4 right-0 h-72 w-72 rounded-full bg-secondary/20 blur-[100px]" />
-      </div>
-
-      <div className="fixed top-4 right-4 z-20">
-        <HeaderControls />
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-10 pt-12">
+    <GameLayout>
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 pt-8">
         <div className="space-y-6 rounded-3xl border border-white/10 bg-card/80 p-4 shadow-2xl shadow-primary/10 sm:p-6">
           <div
             ref={videoContainerRef}
@@ -755,7 +746,7 @@ const EuJaSabia2 = () => {
           </div>
         )}
       </div>
-    </div>
+    </GameLayout>
   );
 };
 
