@@ -1,8 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import { HeaderControls } from '@/components/HeaderControls';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
+import {
+  InstructionsLayout,
+  InstructionsCard,
+  InstructionParagraph,
+  InstructionsSection,
+} from '@/components/InstructionsLayout';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
 
@@ -18,17 +20,16 @@ const suits: Array<{ id: SuitName; label: string }> = [
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
 const paragraphsBeforeGrid = [
-  'Assim como na mágica "Carta Mental" no "Raspa Carta" a seleção da carta escolhida pelo seu amigo será por meio de um teclado invisível que está no verso da carta. Desta vez com apenas um clique a carta será selecionada.',
-  'O grid de botões (3 colunas x 4 linhas) está disposto como a seguir:',
+  'Assim como na magica "Carta Mental" no "Raspa Carta" a selecao da carta escolhida pelo seu amigo sera por meio de um teclado invisivel que esta no verso da carta. Desta vez com apenas um clique a carta sera selecionada.',
+  'O grid de botoes (3 colunas x 4 linhas) esta disposto como a seguir:',
 ];
 
 const paragraphsAfterGrid = [
-  'Selecione discretamente a carta escolhida pelo seu amigo e peça a ele para "raspar" a tela do celular para que a carta seja revelada.',
-  'Bora treinar... você consegue!',
+  'Selecione discretamente a carta escolhida pelo seu amigo e peca a ele para "raspar" a tela do celular para que a carta seja revelada.',
+  'Bora treinar... voce consegue!',
 ];
 
 const RaspaCartaInstructions = () => {
-  const navigate = useNavigate();
   const cardButtons = suits.flatMap((suit) =>
     rankColumns.map((rank) => ({
       rank,
@@ -39,39 +40,29 @@ const RaspaCartaInstructions = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 px-4 py-8">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
-        <HeaderControls />
+    <InstructionsLayout
+      icon={Sparkles}
+      label="Raspa Carta"
+      title="Visualize o teclado invisivel"
+      subtitle="Veja exatamente como os botoes se distribuem no verso da carta."
+      backPath="/raspa-carta"
+    >
+      <InstructionsCard>
+        <div className="space-y-5">
+          {paragraphsBeforeGrid.map((paragraph) => (
+            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
+          ))}
 
-        <div className="text-center space-y-3">
-          <div className="flex justify-center">
-            <Sparkles className="h-12 w-12 text-primary drop-shadow-lg" />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-primary">Raspa Carta</p>
-          <h1 className="text-4xl font-bold text-foreground">Visualize o teclado invisível</h1>
-          <p className="text-muted-foreground">Veja exatamente como os botões se distribuem no verso da carta.</p>
-        </div>
-
-        <Card className="border-primary/20 bg-card/80 p-6 shadow-2xl shadow-primary/10 backdrop-blur">
-          <div className="space-y-5 text-base leading-relaxed text-muted-foreground">
-            {paragraphsBeforeGrid.map((paragraph) => (
-              <p key={paragraph} className="text-foreground/90">
-                {paragraph}
-              </p>
-            ))}
-
-            <div className="flex flex-col items-center gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
-                Verso da carta com os botões revelados
-              </p>
-              <div className="relative aspect-[2/3] w-full max-w-xs rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.3),_rgba(17,24,39,0.95))] p-3 shadow-[0_20px_60px_rgba(15,23,42,0.6)]">
-                <div className="absolute inset-1 rounded-[28px] border border-white/20 bg-gradient-to-b from-slate-900/80 via-slate-900 to-slate-950" />
+          <InstructionsSection title="Verso da carta com os botoes revelados">
+            <div className="flex justify-center">
+              <div className="relative aspect-[2/3] w-full max-w-xs rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(127,19,236,0.3),_rgba(17,24,39,0.95))] p-3 shadow-[0_20px_60px_rgba(15,23,42,0.6)]">
+                <div className="absolute inset-1 rounded-[28px] border border-white/20 bg-gradient-to-b from-[#1e1b4b]/80 via-[#1e1b4b] to-[#0f111a]" />
                 <div className="relative z-10 grid h-full grid-cols-3 grid-rows-4 gap-3 p-3">
                   {cardButtons.map((card) => (
                     <button
                       key={`${card.rank}-${card.suit}`}
                       type="button"
-                      className="flex items-center justify-center rounded-2xl border border-primary/20 bg-white/10 text-center text-sm font-semibold text-white shadow-lg shadow-primary/10"
+                      className="flex items-center justify-center rounded-2xl border border-[#7f13ec]/20 bg-white/10 text-center text-sm font-semibold text-white shadow-lg shadow-[#7f13ec]/10"
                       disabled
                     >
                       {card.imageSrc ? (
@@ -89,22 +80,14 @@ const RaspaCartaInstructions = () => {
                 </div>
               </div>
             </div>
+          </InstructionsSection>
 
-            {paragraphsAfterGrid.map((paragraph) => (
-              <p key={paragraph} className="text-foreground/90">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </Card>
-
-        <div className="text-center">
-          <Button size="lg" onClick={() => navigate('/raspa-carta')}>
-            Voltar para o jogo
-          </Button>
+          {paragraphsAfterGrid.map((paragraph) => (
+            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
+          ))}
         </div>
-      </div>
-    </div>
+      </InstructionsCard>
+    </InstructionsLayout>
   );
 };
 
