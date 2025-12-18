@@ -386,8 +386,8 @@ const GameSelector = () => {
         </header>
 
         <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 pt-6">
-          <div className="hide-scrollbar -mx-4 overflow-x-auto px-4">
-            <div className="flex min-w-max gap-2 pb-2 pr-4">
+          <div className="px-4">
+            <div className="flex flex-wrap gap-2 pb-2">
               {levelFilterChips.map((chip) => {
                 const isActive = selectedLevel === chip.value;
                 return (
