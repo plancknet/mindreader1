@@ -11,6 +11,7 @@ import {
   Shuffle,
   Play,
   Wand2,
+  Search,
   Home,
   Moon,
   Languages as LanguagesIcon,
