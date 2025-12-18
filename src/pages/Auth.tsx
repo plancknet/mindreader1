@@ -1,15 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Loader2, Brain, MessageCircle, Sparkles, Shuffle } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
 import { HeaderControls } from '@/components/HeaderControls';
+
+type GlassInputProps = {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  icon: LucideIcon;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  required?: boolean;
+  rightSlot?: ReactNode;
+  autoComplete?: string;
+};
+
+const GlassInput = ({
+  id,
+  label,
+  type,
+  placeholder,
+  icon: Icon,
+  value,
+  onChange,
+  disabled,
+  required = false,
+  rightSlot,
+  autoComplete,
+}: GlassInputProps) => {
+  const paddingRightClass = rightSlot ? 'pr-12' : 'pr-4';
+
+  return (
+    <label className="flex flex-col gap-2" htmlFor={id}>
+      <span className="ml-1 text-sm font-medium text-white/90">{label}</span>
+      <div className="group relative">
+        <Icon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50 transition-colors group-focus-within:text-[#7f13ec]" />
+        <input
+          id={id}
+          name={id}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          required={required}
+          autoComplete={autoComplete}
+          className={`w-full rounded-xl border border-white/10 bg-white/5 py-3.5 pl-12 ${paddingRightClass} text-white placeholder:text-white/35 transition-all duration-300 hover:border-white/20 focus:border-[#7f13ec] focus:outline-none focus:ring-1 focus:ring-[#7f13ec] disabled:cursor-not-allowed disabled:opacity-60`}
+        />
+        {rightSlot}
+      </div>
+    </label>
+  );
+};
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -21,9 +70,6 @@ const Auth = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const defaultGameMessage = 'Me ajude a Ler a Mente dos seus Amigos';
-  const [gameMessage, setGameMessage] = useState(defaultGameMessage);
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -117,7 +163,7 @@ const Auth = () => {
     }
   };
 
-  const handleResetPassword = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!email) {
@@ -167,7 +213,7 @@ const Auth = () => {
     }
   };
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
+  const handleEmailAuth = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -239,273 +285,227 @@ const Auth = () => {
     }
   };
 
-  const games = [
-    {
-      id: 'mystery-word',
-      icon: Sparkles,
-      title: t('gameSelector.cards.mysteryWord.title'),
-      color: 'from-orange-500 to-red-500',
-      message: 'Ele DIGITA uma palavra qualquer e VOCÊ lê a mente dele',
-    },
-    {
-      id: 'mind-reader',
-      icon: Brain,
-      title: t('gameSelector.cards.mindReader.title'),
-      color: 'from-purple-500 to-pink-500',
-      message: 'Ele ANOTA uma das palavras dos quadrantes e EU leio a mente dele',
-    },
-    {
-      id: 'mental-conversation',
-      icon: MessageCircle,
-      title: t('gameSelector.cards.mentalConversation.title'),
-      color: 'from-blue-500 to-cyan-500',
-      message: 'Ele ANOTA, eu e vc conversamos e EU leio a mente dele',
-    },
-    {
-      id: 'mix-de-cartas',
-      icon: Shuffle,
-      title: t('gameSelector.cards.mixDeCartas.title'),
-      color: 'from-emerald-500 to-lime-500',
-      message: 'Ele escolhe uma carta e EU sempre revelo certo',
-    },
-  ];
+  const backgroundImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBLvkwziIMYB9_2Y7zMObXsZWpVDq0QQDx4jXWWQqsoiWNxivIRYw8ys5_UileF3BHslgqTaB2WMmMIFl7BZOdG9V-8zrVgAbNQzxy_xl4iKE5Nz5hzFLbSmadD25QQsGqj7-xOkrYe3uWLFIShuXo7T3R2QxB-Uenhtc7nEP52VI8ZxO4IvBGX4rEElKWk0f7KaRVaQKBj1vsu6oilwZOl5mHJNLWjgkKWTN0uGf19Vf8E9JM66Cjn3OKZqhTj4CeZRxhGqfVvmg';
+  const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 
   return (
-    <div className="min-h-screen flex flex-col p-4 bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="flex justify-end max-w-md mx-auto w-full mb-4">
+    <div
+      className="relative min-h-screen w-full overflow-hidden bg-[#191022] text-white antialiased selection:bg-[#7f13ec] selection:text-white"
+      style={{ fontFamily: loginFontFamily }}
+    >
+      <div className="absolute inset-0 z-0 h-full w-full">
+        <img
+          src={backgroundImageUrl}
+          alt="Textura abstrata roxa lembrando fuma?a m?stica"
+          className="h-full w-full object-cover object-center opacity-80"
+        />
+        <div className="absolute inset-0 bg-magic-gradient" />
+      </div>
+
+      <div className="absolute top-4 right-4 z-30">
         <HeaderControls showExtras />
       </div>
-      <div className="flex-1 flex items-center justify-center max-w-md mx-auto w-full">
-        <Card className="w-full">
-          <CardHeader className="text-center space-y-4">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {isForgotPassword ? t('auth.resetPasswordTitle') : t('auth.title')}
-            </CardTitle>
-            {isForgotPassword && (
-              <CardDescription className="text-base">
-                {t('auth.resetPasswordSubtitle')}
-              </CardDescription>
-            )}
 
-            {!isForgotPassword && (
-              <>
-                <div className="grid grid-cols-4 gap-2 pt-2">
-                  {games.map((game) => {
-                    const Icon = game.icon;
-                    const isSelected = selectedGame === game.id;
-                    return (
-                      <button
-                        type="button"
-                        key={game.id}
-                        onClick={() => {
-                          setSelectedGame(game.id);
-                          setGameMessage(game.message);
-                        }}
-                        className={`p-2 rounded-lg border bg-card/50 hover:scale-105 transition-all group relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
-                          isSelected ? 'border-primary ring-2 ring-primary/30' : ''
-                        }`}
-                      >
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity`}
-                        />
-                        <div className="relative space-y-1">
-                          <div className="flex justify-center">
-                            <div className={`p-1.5 rounded-full bg-gradient-to-br ${game.color} bg-opacity-10`}>
-                              <Icon className="w-4 h-4 text-primary" />
-                            </div>
-                          </div>
-                          <p className="text-[10px] font-semibold text-center leading-tight">{game.title}</p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+      <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center px-4 py-10">
+        <div className="mb-10 flex w-full max-w-md flex-col items-center text-center animate-login-fade-in-down">
+          <div className="mb-6 rounded-full border border-[#7f13ec]/50 bg-[#7f13ec]/20 p-5 login-logo-glow">
+            <Brain className="h-14 w-14 text-white animate-pulse" />
+          </div>
+          <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader</h1>
+          <p className="mt-3 text-lg font-medium tracking-wide text-white/70">Unlock the Impossible</p>
+        </div>
 
-                <div className="text-center space-y-2 pt-4">
-                  <p className="text-[2rem] font-semibold text-foreground animate-pulse bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    {gameMessage}
-                  </p>
-                </div>
-              </>
-            )}
-          </CardHeader>
+        <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl shadow-[0_25px_70px_rgba(127,19,236,0.25)] sm:p-8 login-glass-panel">
+          {isForgotPassword ? (
+            <form onSubmit={handleResetPassword} className="flex flex-col gap-5">
+              <div className="text-center">
+                <h2 className="text-2xl font-semibold">{t('auth.resetPasswordTitle')}</h2>
+                <p className="mt-2 text-sm text-white/70">{t('auth.resetPasswordSubtitle')}</p>
+              </div>
 
-          <CardContent className="space-y-4">
-            {isForgotPassword ? (
-              <form onSubmit={handleResetPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t('auth.emailLabel')}</Label>
-                  <Input
-                    id="email"
+              <GlassInput
+                id="reset-email"
+                type="email"
+                label={t('auth.emailLabel')}
+                placeholder={t('auth.emailPlaceholder')}
+                icon={Mail}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                disabled={isLoading}
+                required
+                autoComplete="email"
+              />
+
+              <button
+                type="submit"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#7f13ec] py-3.5 font-bold transition-all duration-200 hover:bg-[#6d0ecb] hover:shadow-[0_6px_20px_rgba(127,19,236,0.35)] focus:outline-none focus:ring-2 focus:ring-[#d7b5ff] disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
+                <span>{t('auth.sendResetLink')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsForgotPassword(false)}
+                className="w-full rounded-xl border border-white/10 py-3 text-sm font-semibold text-white/80 transition-colors duration-200 hover:border-white/30 hover:text-white"
+              >
+                {t('auth.backToLogin')}
+              </button>
+            </form>
+          ) : (
+            <>
+              <p className="text-center text-lg font-semibold text-white/80">
+                {isSignUp ? 'Receba um link m?gico direto no seu email' : 'Entre e desbloqueie o imposs?vel'}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => handleOAuthLogin('google')}
+                disabled={isLoading}
+                className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-white py-3.5 font-semibold text-slate-900 shadow-lg shadow-[0_10px_40px_rgba(127,19,236,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-white/60 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-[#7f13ec]" />
+                ) : (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      fill="#4285F4"
+                    />
+                    <path
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      fill="#34A853"
+                    />
+                    <path
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      fill="#FBBC05"
+                    />
+                    <path
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      fill="#EA4335"
+                    />
+                  </svg>
+                )}
+                <span>{t('auth.googleButton')}</span>
+              </button>
+
+              <div className="mt-6 flex w-full items-center gap-4 px-1">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-xs font-medium uppercase tracking-wider text-white/40">{t('auth.orDivider')}</span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+
+              {isSignUp ? (
+                <div className="mt-6 flex flex-col gap-5">
+                  <GlassInput
+                    id="signup-email"
                     type="email"
+                    label={t('auth.emailLabel')}
                     placeholder={t('auth.emailPlaceholder')}
+                    icon={Mail}
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     disabled={isLoading}
                     required
+                    autoComplete="email"
                   />
-                </div>
 
-                <Button type="submit" className="w-full h-11" disabled={isLoading}>
-                  {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                  {t('auth.sendResetLink')}
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={() => setIsForgotPassword(false)}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full h-9 text-xs"
-                >
-                  {t('auth.backToLogin')}
-                </Button>
-              </form>
-            ) : (
-              <>
-                <div className="space-y-3">
-                  <Button
-                    onClick={() => handleOAuthLogin('google')}
+                  <button
+                    type="button"
+                    onClick={handleMagicLink}
                     disabled={isLoading}
-                    variant="outline"
-                    className="w-full h-12 text-base"
-                    type="button"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#7f13ec] py-3.5 font-bold transition-all duration-200 hover:bg-[#6d0ecb] hover:shadow-[0_6px_20px_rgba(127,19,236,0.35)] focus:outline-none focus:ring-2 focus:ring-[#d7b5ff] disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {isLoading ? (
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    ) : (
-                      <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                          fill="currentColor"
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                        />
-                      </svg>
-                    )}
-                    {t('auth.googleButton')}
-                  </Button>
+                    {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
+                    <span>Enviar link de acesso</span>
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handleEmailAuth} className="mt-6 flex flex-col gap-5">
+                  <GlassInput
+                    id="login-email"
+                    type="email"
+                    label={t('auth.emailLabel')}
+                    placeholder={t('auth.emailPlaceholder')}
+                    icon={Mail}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    disabled={isLoading}
+                    required
+                    autoComplete="email"
+                  />
 
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      {t('auth.orDivider')}
-                    </span>
-                  </div>
-                </div>
+                  <GlassInput
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    label={t('auth.passwordLabel')}
+                    placeholder={t('auth.passwordPlaceholder')}
+                    icon={Lock}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    disabled={isLoading}
+                    required
+                    autoComplete="current-password"
+                    rightSlot={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 transition-colors hover:text-white"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    }
+                  />
 
-                {isSignUp ? (
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email">{t('auth.emailLabel')}</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder={t('auth.emailPlaceholder')}
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                        disabled={isLoading}
-                        required
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="flex cursor-pointer items-center gap-2 text-white/70">
+                      <input
+                        type="checkbox"
+                        className="rounded border-white/30 bg-white/10 text-[#7f13ec] focus:ring-[#7f13ec] focus:ring-offset-0"
                       />
-                    </div>
-
-                    <Button 
-                      type="button"
-                      onClick={handleMagicLink}
-                      className="w-full h-11" 
-                      disabled={isLoading}
-                    >
-                      {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                      Enviar link de acesso
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleEmailAuth} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email">{t('auth.emailLabel')}</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder={t('auth.emailPlaceholder')}
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="password">{t('auth.passwordLabel')}</Label>
-                      <div className="relative">
-                        <Input
-                          id="password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder={t('auth.passwordPlaceholder')}
-                          value={password}
-                          onChange={(event) => setPassword(event.target.value)}
-                          disabled={isLoading}
-                          required
-                          minLength={8}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          tabIndex={-1}
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <Button type="submit" className="w-full h-11" disabled={isLoading}>
-                      {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                      {t('auth.submitLogin')}
-                    </Button>
-                  </form>
-                )}
-
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    onClick={() => setIsSignUp(!isSignUp)}
-                    variant="ghost"
-                    size="sm"
-                    className="flex-1 h-9 text-xs"
-                  >
-                    {isSignUp ? t('auth.toggleToLogin') : t('auth.toggleToSignUp')}
-                  </Button>
-                  
-                  {!isSignUp && (
-                    <Button
+                      <span>Lembrar de mim</span>
+                    </label>
+                    <button
                       type="button"
                       onClick={() => setIsForgotPassword(true)}
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1 h-9 text-xs"
+                      className="font-semibold text-[#c499ff] transition-colors hover:text-white"
                     >
                       {t('auth.forgotPassword')}
-                    </Button>
-                  )}
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#7f13ec] py-4 font-bold shadow-[0_4px_14px_rgba(127,19,236,0.39)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6d0ecb] hover:shadow-[0_6px_20px_rgba(127,19,236,0.23)] focus:outline-none focus:ring-2 focus:ring-[#d7b5ff] disabled:cursor-not-allowed disabled:opacity-70"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <>
+                        <span>{t('auth.submitLogin')}</span>
+                        <ArrowRight className="h-5 w-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+
+              <div className="mt-6 text-center text-sm text-white/70">
+                <span>{isSignUp ? 'J? tem uma conta?' : 'Ainda n?o tem conta?'}</span>{' '}
+                <button
+                  type="button"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  className="font-semibold text-white transition-colors hover:text-[#c499ff]"
+                >
+                  {isSignUp ? t('auth.toggleToLogin') : t('auth.toggleToSignUp')}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
