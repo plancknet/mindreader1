@@ -497,7 +497,7 @@ const GamePlay = () => {
           </p>
         </Card>
       </div>
-    </div>
+    </GameLayout>
   );
 };
 
