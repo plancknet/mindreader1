@@ -20,6 +20,14 @@ const Result = () => {
   const word = searchParams.get('word') || '';
   const { incrementUsage } = useUsageLimit();
 
+  const formattedWord = useMemo(() => {
+    const normalized = word.trim();
+    if (!normalized) return '';
+    return normalized
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }, [word]);
+
   useEffect(() => {
     const incrementCount = async () => {
       try {
@@ -170,10 +178,3 @@ const Result = () => {
 };
 
 export default Result;
-  const formattedWord = useMemo(() => {
-    const normalized = word.trim();
-    if (!normalized) return '';
-    return normalized
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  }, [word]);
