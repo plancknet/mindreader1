@@ -3,13 +3,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Brain } from 'lucide-react';
+import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { START_WORDS } from '@/i18n/languages';
+import { START_WORDS, languages } from '@/i18n/languages';
 import { themes } from '@/data/themes';
-import { HeaderControls } from '@/components/HeaderControls';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -23,9 +24,34 @@ interface QuadrantWords {
 const StartPrompt = () => {
     const navigate = useNavigate();
     const { t, language } = useTranslation();
+    const { setLanguage } = useLanguageContext();
     const [searchParams] = useSearchParams();
     const themeId = searchParams.get('theme');
     const { trackUsage } = useGameUsageTracker(GAME_IDS.MIND_READER);
+
+    const goHome = () => navigate('/game-selector');
+
+    const toggleTheme = () => {
+        if (typeof document === 'undefined') return;
+        document.documentElement.classList.toggle('theme-light');
+    };
+
+    const cycleLanguage = () => {
+        const codes = languages.map((lang) => lang.code);
+        const currentIndex = codes.indexOf(language);
+        const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+        setLanguage(nextCode);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await supabase.auth.signOut();
+        } catch (error) {
+            console.error('Failed to sign out', error);
+        } finally {
+            navigate('/');
+        }
+    };
 
     const [rawInput, setRawInput] = useState('');
     const [quadrantWords, setQuadrantWords] = useState<QuadrantWords | null>(null);
@@ -137,11 +163,7 @@ const StartPrompt = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background p-4 relative">
-            <div className="fixed top-4 left-4 z-50">
-                <HeaderControls />
-            </div>
-
+        <div className="min-h-screen bg-background p-4 pb-28 relative">
             {/* Central floating card */}
             <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
                 <Card className="p-8 shadow-glow bg-card/20 border border-border/30">
@@ -232,6 +254,44 @@ const StartPrompt = () => {
                     </div>
                 </Card>
             </div>
+
+            {/* Bottom navigation */}
+            <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
+                <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+                    <button
+                        type="button"
+                        onClick={goHome}
+                        className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+                    >
+                        <Home className="h-5 w-5" />
+                        <span>Home</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={toggleTheme}
+                        className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+                    >
+                        <Moon className="h-5 w-5" />
+                        <span>Mode</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={cycleLanguage}
+                        className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+                    >
+                        <LanguagesIcon className="h-5 w-5" />
+                        <span>{language.toUpperCase()}</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+                    >
+                        <LogOut className="h-5 w-5" />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </nav>
         </div>
     );
 };
