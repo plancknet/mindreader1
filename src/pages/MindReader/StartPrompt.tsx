@@ -3,13 +3,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Brain } from 'lucide-react';
+import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { START_WORDS } from '@/i18n/languages';
+import { START_WORDS, languages } from '@/i18n/languages';
 import { themes } from '@/data/themes';
-import { HeaderControls } from '@/components/HeaderControls';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 type Quadrant = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -20,9 +21,13 @@ interface QuadrantWords {
   'bottom-right': string[];
 }
 
+const quadrantOrder: Quadrant[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
+
 const StartPrompt = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
+  const { setLanguage } = useLanguageContext();
   const [searchParams] = useSearchParams();
   const themeId = searchParams.get('theme');
   const { trackUsage } = useGameUsageTracker(GAME_IDS.MIND_READER);
@@ -34,6 +39,30 @@ const StartPrompt = () => {
 
   const theme = themes.find(t => t.id === themeId);
   const themeWords = theme?.words[language] || theme?.words['pt-BR'] || [];
+
+  const goHome = () => navigate('/game-selector');
+
+  const toggleTheme = () => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('theme-light');
+  };
+
+  const cycleLanguage = () => {
+    const codes = languages.map(lang => lang.code);
+    const currentIndex = codes.indexOf(language);
+    const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+    setLanguage(nextCode);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Failed to sign out', error);
+    } finally {
+      navigate('/');
+    }
+  };
 
   const distributeWords = useCallback((wordList: string[]) => {
     const shuffled = [...wordList].sort(() => Math.random() - 0.5);
@@ -137,101 +166,140 @@ const StartPrompt = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 relative">
-      <div className="fixed top-4 left-4 z-50">
-        <HeaderControls />
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+      style={{ fontFamily: loginFontFamily }}
+    >
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
       </div>
 
-      {/* Central floating card */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full max-w-md px-4">
-        <Card className="p-8 shadow-glow bg-card/20 border border-border/30">
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <div className="flex justify-center">
-                <Brain className="w-12 h-12 text-primary animate-pulse" />
-              </div>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-5xl items-center justify-between">
+            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+              <Brain className="h-6 w-6" />
             </div>
-
-            <div className="space-y-4">
-              <label className="text-sm font-medium text-muted-foreground block text-center">
-                {t('startPrompt.placeholder', { word: targetWord })}
-              </label>
-              <div className="relative">
-                <Input
-                  type="text"
-                  value={rawInput}
-                  onChange={handleInputChange}
-                  className="text-center text-2xl font-bold tracking-widest uppercase text-transparent caret-primary selection:bg-transparent bg-transparent backdrop-blur-none"
-                  placeholder=""
-                  autoFocus
-                />
-                <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-2xl font-bold tracking-widest uppercase">
-                  <span className="text-foreground">{typedMask}</span>
-                  <span className="text-muted-foreground/40">{remainingMask}</span>
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground text-center">
-                {t('startPrompt.letterCount', { count: lettersCount, total: targetWord.length })}
+            <div className="flex flex-col items-center text-center">
+              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                MindReader
+              </h1>
+              <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/70">
+                {t('gameSelector.cards.mindReader.title')}
               </p>
-              <Button
-                type="button"
-                className="w-full text-lg font-semibold"
-                onClick={handleSubmit}
-                disabled={!isComplete}
-              >
-                {t('common.send')}
-              </Button>
+            </div>
+            <div className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70">
+              {language.toUpperCase()}
             </div>
           </div>
-        </Card>
+        </header>
+
+        <main className="relative flex-1 px-4 pb-32 pt-6">
+          <div className="pointer-events-none absolute inset-0 z-0 px-2 pb-32">
+            <div className="grid h-full w-full grid-cols-2 gap-3 sm:gap-6">
+              {quadrantOrder.map(quadrant => (
+                <div
+                  key={quadrant}
+                  className={`rounded-3xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/70 to-[#0f111a]/60 p-4 text-center shadow-lg shadow-black/30 transition-all duration-1000 ${getQuadrantColor(quadrant)}`}
+                >
+                  <div className="space-y-2 text-xs font-semibold uppercase tracking-wider text-white/80 sm:text-lg">
+                    {quadrantWords[quadrant].map((word, idx) => (
+                      <div key={`${quadrant}-${word}-${idx}`} className="drop-shadow">
+                        {word}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-10 flex min-h-full items-center justify-center px-2">
+            <Card className="w-full max-w-md rounded-3xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/90 to-[#0f111a]/95 p-8 text-white shadow-2xl shadow-black/40">
+              <div className="space-y-6">
+                <div className="text-center space-y-4">
+                  <div className="flex justify-center">
+                    <Brain className="h-12 w-12 text-[#d8b4fe] animate-pulse" />
+                  </div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#d8b4fe]">
+                    {t('gameSelector.cards.mindReader.title')}
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-center text-base font-semibold text-white/90">
+                    {t('startPrompt.placeholder', { word: targetWord })}
+                  </p>
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      value={rawInput}
+                      onChange={handleInputChange}
+                      className="text-center text-3xl font-bold tracking-[0.3em] uppercase text-transparent caret-[#7f13ec] selection:bg-transparent bg-transparent focus-visible:ring-0"
+                      placeholder=""
+                      autoFocus
+                    />
+                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-3xl font-bold tracking-[0.3em] uppercase">
+                      <span className="text-white">{typedMask}</span>
+                      <span className="text-white/30">{remainingMask}</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-white/70 text-center">
+                    {t('startPrompt.letterCount', { count: lettersCount, total: targetWord.length })}
+                  </p>
+                  <Button
+                    type="button"
+                    className="w-full rounded-2xl bg-[#7f13ec] py-4 text-base font-semibold tracking-wide text-white shadow-[0_12px_30px_rgba(127,19,236,0.35)] transition-colors hover:bg-[#7f13ec]/90 disabled:opacity-40"
+                    onClick={handleSubmit}
+                    disabled={!isComplete}
+                  >
+                    {t('common.send')}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </main>
       </div>
 
-      {/* Quadrants Grid */}
-      <div className="h-screen grid grid-cols-2 gap-8 p-8">
-        {/* Top Left */}
-        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-left')}`}>
-          <div className="text-center space-y-3 relative z-10">
-            {quadrantWords['top-left'].map((word, idx) => (
-              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
-                {word}
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Top Right */}
-        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('top-right')}`}>
-          <div className="text-center space-y-3 relative z-10">
-            {quadrantWords['top-right'].map((word, idx) => (
-              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
-                {word}
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Bottom Left */}
-        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-left')}`}>
-          <div className="text-center space-y-3 relative z-10">
-            {quadrantWords['bottom-left'].map((word, idx) => (
-              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
-                {word}
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Bottom Right */}
-        <Card className={`flex items-center justify-center p-8 transition-all duration-1000 border-0 ${getQuadrantColor('bottom-right')}`}>
-          <div className="text-center space-y-3 relative z-10">
-            {quadrantWords['bottom-right'].map((word, idx) => (
-              <div key={idx} className="text-xl md:text-2xl font-bold text-foreground drop-shadow-lg">
-                {word}
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+          <button
+            type="button"
+            onClick={goHome}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+          >
+            <Home className="h-5 w-5" />
+            <span>Home</span>
+          </button>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <Moon className="h-5 w-5" />
+            <span>Mode</span>
+          </button>
+          <button
+            type="button"
+            onClick={cycleLanguage}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+          >
+            <LanguagesIcon className="h-5 w-5" />
+            <span>{language.toUpperCase()}</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 };

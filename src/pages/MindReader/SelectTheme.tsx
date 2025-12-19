@@ -85,7 +85,7 @@ const SelectTheme = () => {
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
-          <div className="mx-auto flex w-full max-w-xl items-center justify-between">
+          <div className="mx-auto flex w-full max-w-xl items-center justify-center gap-6">
             <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
               <Brain className="h-6 w-6" />
             </div>
@@ -93,9 +93,6 @@ const SelectTheme = () => {
               <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
                 MindReader
               </h1>
-            </div>
-            <div className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70">
-              {language.toUpperCase()}
             </div>
           </div>
         </header>
