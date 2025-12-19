@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -104,8 +104,8 @@ const Result = () => {
 
             <Card className="w-full rounded-3xl border border-[#f5c2ff]/30 bg-gradient-to-br from-[#7f13ec]/70 via-[#c084fc]/60 to-[#0f111a]/95 p-10 text-center shadow-[0_25px_60px_rgba(127,19,236,0.35)]">
               <div className="space-y-6">
-                <div className="text-4xl font-semibold tracking-tight text-[#ffe66d] drop-shadow-[0_0_25px_rgba(255,230,109,0.8)] md:text-5xl">
-                  {word}
+                <div className="text-3xl font-semibold tracking-tight text-[#ffe66d] drop-shadow-[0_0_25px_rgba(255,230,109,0.8)] md:text-4xl">
+                  {formattedWord}
                 </div>
                 <div className="flex justify-center gap-2">
                   {[...Array(5)].map((_, i) => (
@@ -170,3 +170,10 @@ const Result = () => {
 };
 
 export default Result;
+  const formattedWord = useMemo(() => {
+    const normalized = word.trim();
+    if (!normalized) return '';
+    return normalized
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }, [word]);
