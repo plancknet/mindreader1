@@ -177,26 +177,7 @@ const StartPrompt = () => {
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
-          <div className="mx-auto flex w-full max-w-5xl items-center justify-between">
-            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
-              <Brain className="h-6 w-6" />
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
-                MindReader
-              </h1>
-              <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/70">
-                {t('gameSelector.cards.mindReader.title')}
-              </p>
-            </div>
-            <div className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70">
-              {language.toUpperCase()}
-            </div>
-          </div>
-        </header>
-
-        <main className="relative flex-1 px-4 pb-32 pt-6">
+        <main className="relative flex-1 px-4 pb-32 pt-8">
           <div className="pointer-events-none absolute inset-0 z-0 px-2 pb-32">
             <div className="grid h-full w-full grid-cols-2 gap-3 sm:gap-6">
               {quadrantOrder.map(quadrant => (

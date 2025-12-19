@@ -286,22 +286,9 @@ const PapoReto = () => {
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 pt-16 pb-10">
-        <header className="sticky top-0 z-20 mb-4 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
-          <div className="mx-auto flex w-full max-w-3xl items-center justify-center gap-6">
-            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
-              <Brain className="h-6 w-6" />
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
-                MindReader
-              </h1>
-            </div>
-          </div>
-        </header>
-
         <div className="rounded-3xl border border-primary/20 bg-background/80 p-6 text-center shadow-2xl shadow-primary/20 backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
-            {t('gameSelector.cards.papoReto.title')}
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary" aria-hidden="true">
+            &nbsp;
           </p>
         </div>
 

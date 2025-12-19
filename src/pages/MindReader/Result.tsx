@@ -1,8 +1,7 @@
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, RotateCcw, BookOpen, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
+import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { toast } from 'sonner';
@@ -16,7 +15,6 @@ const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 const Result = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const { t, language } = useTranslation();
   const { setLanguage } = useLanguageContext();
   const word = searchParams.get('word') || '';
@@ -104,9 +102,9 @@ const Result = () => {
               </p>
             </div>
 
-            <Card className="w-full rounded-3xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/90 to-[#0f111a]/95 p-10 text-center shadow-2xl shadow-black/30">
+            <Card className="w-full rounded-3xl border border-[#f5c2ff]/30 bg-gradient-to-br from-[#7f13ec]/70 via-[#c084fc]/60 to-[#0f111a]/95 p-10 text-center shadow-[0_25px_60px_rgba(127,19,236,0.35)]">
               <div className="space-y-6">
-                <div className="text-5xl font-bold uppercase tracking-widest text-white drop-shadow-lg md:text-6xl">
+                <div className="text-4xl font-semibold tracking-tight text-[#ffe66d] drop-shadow-[0_0_25px_rgba(255,230,109,0.8)] md:text-5xl">
                   {word}
                 </div>
                 <div className="flex justify-center gap-2">
@@ -126,33 +124,7 @@ const Result = () => {
               <p>Misterio revelado com estilo.</p>
             </div>
 
-            <div className="flex w-full flex-wrap justify-center gap-3">
-              <Button
-                size="lg"
-                className="flex-1 min-w-[180px] rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec] text-white shadow-[0_12px_30px_rgba(127,19,236,0.35)] hover:bg-[#7f13ec]/90"
-                onClick={() => navigate('/select-theme')}
-              >
-                <RotateCcw className="mr-2 h-5 w-5" />
-                {t('common.playAgain')}
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="flex-1 min-w-[180px] rounded-2xl border border-white/20 bg-white/5 text-white/80 hover:border-white/40 hover:text-white"
-                onClick={() => navigate('/')}
-              >
-                {t('common.backHome')}
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="flex-1 min-w-[180px] rounded-2xl border border-white/20 bg-white/5 text-white/80 hover:border-white/40 hover:text-white"
-                onClick={() => navigate('/mind-reader/instructions', { state: { from: location.pathname } })}
-              >
-                <BookOpen className="mr-2 h-5 w-5" />
-                {t('connectMind.instructionsButton')}
-              </Button>
-            </div>
+            <div className="h-4" />
           </div>
         </main>
       </div>
