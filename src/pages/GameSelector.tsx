@@ -217,7 +217,7 @@ const GAME_CARDS: GameCard[] = [
     color: 'from-purple-500 to-pink-500',
     badgeKey: undefined,
     minTier: 'FREE',
-    difficulty: 2,
+    difficulty: 3,
   },
   {
     id: 'mental-conversation',
