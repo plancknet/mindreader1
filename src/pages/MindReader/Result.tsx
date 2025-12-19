@@ -3,8 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useUsageLimit } from '@/hooks/useUsageLimit';
-import { toast } from 'sonner';
+import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
@@ -18,7 +17,7 @@ const Result = () => {
   const { t, language } = useTranslation();
   const { setLanguage } = useLanguageContext();
   const word = searchParams.get('word') || '';
-  const { incrementUsage } = useUsageLimit();
+  const { trackUsage } = useGameUsageTracker(GAME_IDS.MIND_READER);
 
   const formattedWord = useMemo(() => {
     const normalized = word.trim();
@@ -29,17 +28,8 @@ const Result = () => {
   }, [word]);
 
   useEffect(() => {
-    const incrementCount = async () => {
-      try {
-        await incrementUsage(GAME_IDS.MIND_READER);
-      } catch (error) {
-        console.error('Error incrementing usage:', error);
-        toast.error('Erro ao registrar revelacao');
-      }
-    };
-
-    void incrementCount();
-  }, [incrementUsage]);
+    trackUsage();
+  }, [trackUsage]);
 
   const goHome = () => navigate('/game-selector');
 
