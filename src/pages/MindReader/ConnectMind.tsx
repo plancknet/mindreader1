@@ -7,6 +7,7 @@ import { AlertCircle, Camera, Brain, BookOpen } from 'lucide-react';
 import { useHeadPoseDetection } from '@/hooks/useHeadPoseDetection';
 import { HeaderControls } from '@/components/HeaderControls';
 import { useTranslation } from '@/hooks/useTranslation';
+import { STORAGE_KEYS } from '@/constants/storageKeys';
 
 const ConnectMind = () => {
   const navigate = useNavigate();
@@ -20,6 +21,18 @@ const ConnectMind = () => {
       setIsConnecting(false);
     }
   }, [cameraActive, isModelLoading]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (cameraActive && !isModelLoading) {
+      sessionStorage.setItem(STORAGE_KEYS.MINDREADER_CAMERA_READY, 'true');
+    }
+  }, [cameraActive, isModelLoading]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !error) return;
+    sessionStorage.removeItem(STORAGE_KEYS.MINDREADER_CAMERA_READY);
+  }, [error]);
 
   const handleConnect = () => {
     if (cameraActive && !isModelLoading) {

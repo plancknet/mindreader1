@@ -54,7 +54,8 @@ const SelectTheme = () => {
 
   useEffect(() => {
     checkUsageLimit();
-  }, [checkUsageLimit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (

@@ -175,7 +175,7 @@ const CartaPensada = () => {
           <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
         </div>
 
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4">
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 gap-6">
           <Card className="aspect-[7/10] w-56 overflow-hidden rounded-3xl border border-[#7f13ec]/30 bg-transparent shadow-2xl shadow-[#7f13ec]/20">
             <img
               src={finalCard.imageSrc || '/placeholder.svg'}
@@ -184,6 +184,12 @@ const CartaPensada = () => {
               draggable={false}
             />
           </Card>
+          <Button
+            onClick={initializeGame}
+            className="rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white transition hover:border-[#7f13ec]/40 hover:bg-[#7f13ec]/20"
+          >
+            Reiniciar
+          </Button>
         </div>
 
         <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
@@ -279,18 +285,6 @@ const CartaPensada = () => {
                     </Card>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  disabled={isProcessing}
-                  onClick={() => processSelection(columnIndex)}
-                  className={`w-full rounded-2xl border px-4 py-2 text-lg font-semibold transition ${
-                    selectedColumn === columnIndex
-                      ? 'border-[#7f13ec] bg-[#7f13ec]/20 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]'
-                      : 'border-white/10 bg-white/5 text-white/70 hover:border-[#7f13ec]/40 hover:text-white'
-                  }`}
-                >
-                  ↑
-                </button>
               </div>
             ))}
           </div>

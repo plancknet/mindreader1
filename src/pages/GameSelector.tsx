@@ -24,6 +24,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
 import { supabase } from '@/integrations/supabase/client';
+import { STORAGE_KEYS } from '@/constants/storageKeys';
 
 type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 
@@ -119,6 +120,31 @@ const levelFilterChips: Array<{ label: string; value: LevelFilter }> = [
   { label: 'Level 4', value: 4 },
   { label: 'Level 5', value: 5 },
 ];
+
+const getStoredCameraReadyFlag = () =>
+  typeof window !== 'undefined' &&
+  sessionStorage.getItem(STORAGE_KEYS.MINDREADER_CAMERA_READY) === 'true';
+
+const hasMindReaderCameraAccess = async () => {
+  if (typeof navigator !== 'undefined' && navigator.permissions?.query) {
+    try {
+      const status = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      if (status.state === 'granted') {
+        return true;
+      }
+      if (status.state === 'denied') {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem(STORAGE_KEYS.MINDREADER_CAMERA_READY);
+        }
+        return false;
+      }
+    } catch {
+      // Ignore and fall back to stored flag
+    }
+  }
+
+  return getStoredCameraReadyFlag();
+};
 
 const GAME_CARDS: GameCard[] = [
   {
@@ -433,8 +459,13 @@ const GameSelector = () => {
                 disabledMessage = 'Ative sua assinatura para jogar.';
               }
 
-              const handleCardClick = () => {
+              const handleCardNavigation = async () => {
                 if (!enabled) return;
+                if (game.id === 'mind-reader') {
+                  const skipConnectMind = await hasMindReaderCameraAccess();
+                  navigate(skipConnectMind ? '/select-theme' : game.path);
+                  return;
+                }
                 navigate(game.path);
               };
 
@@ -442,7 +473,7 @@ const GameSelector = () => {
                 if (!enabled) return;
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
-                  navigate(game.path);
+                  void handleCardNavigation();
                 }
               };
 
@@ -451,7 +482,9 @@ const GameSelector = () => {
                   key={game.id}
                   role="button"
                   tabIndex={enabled ? 0 : -1}
-                  onClick={handleCardClick}
+                  onClick={() => {
+                    void handleCardNavigation();
+                  }}
                   onKeyDown={handleCardKeyDown}
                   className={`group relative flex items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-4 shadow-lg shadow-black/30 transition-all ${
                     enabled
