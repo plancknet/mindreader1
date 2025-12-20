@@ -307,7 +307,7 @@ const Auth = () => {
             <Brain className="h-14 w-14 text-white animate-pulse" />
           </div>
           <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader</h1>
-          <p className="mt-3 text-lg font-medium tracking-wide text-white/70">Unlock the Impossible</p>
+          <p className="mt-3 text-lg font-medium tracking-wide text-white/70">Leia Pensamentos</p>
         </div>
 
         <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl shadow-[0_25px_70px_rgba(127,19,236,0.25)] sm:p-8 login-glass-panel">
@@ -351,7 +351,7 @@ const Auth = () => {
           ) : (
             <>
               <p className="text-center text-lg font-semibold text-white/80">
-                {isSignUp ? 'Receba um link m?gico direto no seu email' : 'Entre e desbloqueie o imposs?vel'}
+                {isSignUp ? 'Receba um link m?gico direto no seu email' : 'Entre e leia a mente de amigos'}
               </p>
 
               <button
