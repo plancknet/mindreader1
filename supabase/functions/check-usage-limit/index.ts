@@ -6,6 +6,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const FREE_LIMIT_PER_GAME = 3;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -79,12 +81,13 @@ serve(async (req) => {
           canUse: true,
           isPremium: false,
           usageCount: 0,
-          freeLimit: 3,
+          freeLimit: FREE_LIMIT_PER_GAME,
           subscriptionTier: "FREE",
           subscriptionStatus: "inactive",
           planConfirmed: false,
           couponGenerated: false,
           reason: "NEW_USER",
+          gameUsage: {},
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -100,12 +103,13 @@ serve(async (req) => {
           canUse: true,
           isPremium: true,
           usageCount: premiumUser.usage_count,
-          freeLimit: 3,
+          freeLimit: FREE_LIMIT_PER_GAME,
           subscriptionTier: premiumUser.subscription_tier ?? "STANDARD",
           subscriptionStatus: premiumUser.subscription_status ?? "active",
           planConfirmed: premiumUser.plan_confirmed ?? true,
           couponGenerated: premiumUser.coupon_generated ?? false,
           reason: "PREMIUM",
+          gameUsage: {},
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -114,36 +118,43 @@ serve(async (req) => {
       );
     }
 
+    // Get per-game usage for free users
     const { data: usageRows, error: usageError } = await supabaseClient
       .from("user_game_usage")
-      .select("usage_count")
+      .select("game_id, usage_count")
       .eq("user_id", user.id);
 
     if (usageError && usageError.code !== "PGRST116") {
       throw usageError;
     }
 
-    const legacyCount = (premiumUser.jogo1_count || 0) + (premiumUser.jogo2_count || 0) +
-      (premiumUser.jogo3_count || 0) + (premiumUser.jogo4_count || 0);
+    // Build game usage map
+    const gameUsage: Record<number, number> = {};
+    if (usageRows && usageRows.length > 0) {
+      for (const row of usageRows) {
+        gameUsage[row.game_id] = row.usage_count || 0;
+      }
+    }
 
-    const totalCount = usageRows && usageRows.length > 0
-      ? usageRows.reduce((sum, row) => sum + (row.usage_count || 0), 0)
-      : legacyCount;
+    // Calculate total usage for display purposes
+    const totalCount = Object.values(gameUsage).reduce((sum, count) => sum + count, 0);
 
-    // Check if user has reached free limit
-    const canUse = totalCount < 3;
+    // Check if user can use any game (at least one game under limit)
+    const canUseAnyGame = Object.values(gameUsage).length === 0 || 
+      Object.values(gameUsage).some(count => count < FREE_LIMIT_PER_GAME);
 
     return new Response(
       JSON.stringify({
-        canUse,
+        canUse: canUseAnyGame,
         isPremium: false,
         usageCount: totalCount,
-        freeLimit: 3,
+        freeLimit: FREE_LIMIT_PER_GAME,
         subscriptionTier: premiumUser.subscription_tier ?? "FREE",
         subscriptionStatus: premiumUser.subscription_status ?? "inactive",
         planConfirmed: premiumUser.plan_confirmed ?? false,
         couponGenerated: premiumUser.coupon_generated ?? false,
-        reason: canUse ? "FREE_TIER" : "PAYWALL",
+        reason: canUseAnyGame ? "FREE_TIER" : "PAYWALL",
+        gameUsage,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
