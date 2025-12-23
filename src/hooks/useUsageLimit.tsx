@@ -12,6 +12,7 @@ interface UsageLimitData {
   planConfirmed?: boolean;
   couponGenerated?: boolean;
   reason: string;
+  gameUsage?: Record<number, number>;
 }
 
 interface UseUsageLimitOptions {
