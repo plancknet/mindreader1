@@ -6,7 +6,7 @@ import {
   InstructionNote,
 } from '@/components/InstructionsLayout';
 
-const instructions = [
+const steps = [
   'Peça ao seu amigo para memorizar silenciosamente uma das cartas apresentadas na tela.',
   'Explique que ele pode clicar no botão "Embaralhar" quantas vezes quiser. Isso garante que ninguém sabe onde a carta ficou.',
   'Diga que o MindReader irá ler a mente dele e remover a carta memorizada do grid.',
