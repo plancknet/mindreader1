@@ -1,8 +1,8 @@
-﻿import { Shuffle } from 'lucide-react';
+import { Shuffle } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
   InstructionNote,
 } from '@/components/InstructionsLayout';
 
@@ -26,11 +26,11 @@ const OiSumidaInstructions = () => {
     >
       <InstructionsCard>
         <div className="space-y-5">
-          {instructions.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
+          {steps.map((step, index) => (
+            <InstructionStep key={index} number={index + 1}>{step}</InstructionStep>
           ))}
           <InstructionNote>
-            Reforce que apenas o amigo sabe qual carta foi memorizada - o resto é pura "leitura mental".
+            Dica: Reforce que apenas o amigo sabe qual carta foi memorizada - o resto é pura "leitura mental".
           </InstructionNote>
         </div>
       </InstructionsCard>
@@ -39,4 +39,3 @@ const OiSumidaInstructions = () => {
 };
 
 export default OiSumidaInstructions;
-
