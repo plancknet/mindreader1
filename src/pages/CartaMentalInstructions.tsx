@@ -2,7 +2,7 @@
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
   InstructionsSection,
 } from '@/components/InstructionsLayout';
 
@@ -20,15 +20,9 @@ const suits = [
   { id: 'clubs', label: 'Paus', tone: 'text-emerald-200' },
 ];
 
-const paragraphsBeforeGrid = [
+const steps = [
   'Nesta mágica, existe um teclado invisível de 3 colunas por 4 linhas, exatamente como o modelo abaixo.',
-];
-
-const paragraphsBetweenGridAndReveal = [
   'Logo abaixo está o botão "Revelar a Carta", dividido em quatro partes correspondentes aos naipes.',
-];
-
-const paragraphsAfterReveal = [
   'Como o teclado não pode ser visto pelo seu amigo, você deverá imaginar a divisão do grid de botões no verso da carta (3 colunas x 4 linhas) e clicar discretamente para que ele não perceba que você selecionou a carta escolhida por ele.',
   'Com o clique em um dos lados do botão "Revelar a Carta" você estará escolhendo um dos naipes e a carta escolhida por ele será revelada num passe de mágica.',
   'Ah... mas e o Rei (K) ??? Se a carta escolhida for um K, não clique no verso da carta; apenas toque na área do naipe no botão "Revelar a Carta" e o Rei será revelado.',
@@ -46,9 +40,15 @@ const CartaMentalInstructions = () => {
     >
       <InstructionsCard>
         <div className="space-y-6">
-          {paragraphsBeforeGrid.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
+          <InstructionsSection title="Passo a passo">
+            <div className="space-y-3">
+              {steps.map((step, index) => (
+                <InstructionStep key={step} number={index + 1}>
+                  {step}
+                </InstructionStep>
+              ))}
+            </div>
+          </InstructionsSection>
 
           <InstructionsSection title="Verso da carta - teclado exposto">
             <div className="flex justify-center">
@@ -72,10 +72,6 @@ const CartaMentalInstructions = () => {
             </div>
           </InstructionsSection>
 
-          {paragraphsBetweenGridAndReveal.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
-
           <InstructionsSection title='Botão "Revelar a Carta" - áreas dos naipes'>
             <div className="w-full max-w-md mx-auto rounded-full border border-white/20 bg-gradient-to-r from-[#1e1b4b] via-[#0f111a] to-[#1e1b4b] p-1 shadow-[0_20px_40px_rgba(15,23,42,0.5)]">
               <div className="grid grid-cols-4 gap-1">
@@ -90,10 +86,6 @@ const CartaMentalInstructions = () => {
               </div>
             </div>
           </InstructionsSection>
-
-          {paragraphsAfterReveal.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
         </div>
       </InstructionsCard>
     </InstructionsLayout>
@@ -101,4 +93,3 @@ const CartaMentalInstructions = () => {
 };
 
 export default CartaMentalInstructions;
-

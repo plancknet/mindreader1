@@ -2,7 +2,7 @@
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
   InstructionsSection,
 } from '@/components/InstructionsLayout';
 import { getCardImageSrc } from '@/lib/cardImages';
@@ -19,12 +19,9 @@ const suits: Array<{ id: SuitName; label: string }> = [
 
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
-const paragraphsBeforeGrid = [
+const steps = [
   'Assim como na mágica "Carta Mental" no "Raspa Carta" a seleção da carta escolhida pelo seu amigo será por meio de um teclado invisível que está no verso da carta. Desta vez com apenas um clique a carta será selecionada.',
   'O grid de botões (3 colunas x 4 linhas) está disposto como a seguir:',
-];
-
-const paragraphsAfterGrid = [
   'Selecione discretamente a carta escolhida pelo seu amigo e peça a ele para "raspar" a tela do celular para que a carta seja revelada.',
   'Bora treinar... você consegue!',
 ];
@@ -49,11 +46,17 @@ const RaspaCartaInstructions = () => {
     >
       <InstructionsCard>
         <div className="space-y-5">
-          {paragraphsBeforeGrid.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
+          <InstructionsSection title="Passo a passo">
+            <div className="space-y-3">
+              {steps.map((step, index) => (
+                <InstructionStep key={step} number={index + 1}>
+                  {step}
+                </InstructionStep>
+              ))}
+            </div>
+          </InstructionsSection>
 
-          <InstructionsSection title="Verso da carta com os botoes revelados">
+          <InstructionsSection title="Verso da carta com os botões revelados">
             <div className="flex justify-center">
               <div className="relative aspect-[2/3] w-full max-w-xs rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(127,19,236,0.3),_rgba(17,24,39,0.95))] p-3 shadow-[0_20px_60px_rgba(15,23,42,0.6)]">
                 <div className="absolute inset-1 rounded-[28px] border border-white/20 bg-gradient-to-b from-[#1e1b4b]/80 via-[#1e1b4b] to-[#0f111a]" />
@@ -81,10 +84,6 @@ const RaspaCartaInstructions = () => {
               </div>
             </div>
           </InstructionsSection>
-
-          {paragraphsAfterGrid.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
         </div>
       </InstructionsCard>
     </InstructionsLayout>
@@ -92,4 +91,3 @@ const RaspaCartaInstructions = () => {
 };
 
 export default RaspaCartaInstructions;
-

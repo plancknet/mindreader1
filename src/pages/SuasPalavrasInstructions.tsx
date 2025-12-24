@@ -2,10 +2,10 @@
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
 } from '@/components/InstructionsLayout';
 
-const instructionsText = [
+const steps = [
   'O funcionamento desta mágica é exatamente o mesmo da mágica "Palavra Misteriosa". Se ainda não souber os truques, veja as instruções da mágica "Palavra Misteriosa".',
   'E lembre-se... treine antes de fazer com seus amigos!',
 ];
@@ -20,9 +20,11 @@ const SuasPalavrasInstructions = () => {
       backPath="/suas-palavras"
     >
       <InstructionsCard>
-        <div className="space-y-5">
-          {instructionsText.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
+        <div className="space-y-4">
+          {steps.map((step, index) => (
+            <InstructionStep key={step} number={index + 1}>
+              {step}
+            </InstructionStep>
           ))}
         </div>
       </InstructionsCard>
@@ -31,4 +33,3 @@ const SuasPalavrasInstructions = () => {
 };
 
 export default SuasPalavrasInstructions;
-

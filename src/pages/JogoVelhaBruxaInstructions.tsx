@@ -2,12 +2,12 @@
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
   InstructionsSection,
   InstructionNote,
 } from '@/components/InstructionsLayout';
 
-const instructions = [
+const steps = [
   'Diga ao seu amigo que sua tia é uma Bruxa - daquelas que fazem magia e são apaixonadas por jogo da velha.',
   'Explique que ela costuma fazer previsões e que já deixou uma especial para essa partida.',
   'Mostre o verso de um papel quadrado, mantendo a previsão escondida enquanto o jogo acontece.',
@@ -35,9 +35,15 @@ const JogoVelhaBruxaInstructions = () => {
     >
       <InstructionsCard>
         <div className="space-y-5">
-          {instructions.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
+          <InstructionsSection title="Passo a passo">
+            <div className="space-y-3">
+              {steps.map((step, index) => (
+                <InstructionStep key={step} number={index + 1}>
+                  {step}
+                </InstructionStep>
+              ))}
+            </div>
+          </InstructionsSection>
 
           <InstructionsSection title="Previsão anotada no papel">
             <div className="inline-grid grid-cols-3 gap-3 rounded-2xl border border-[#7f13ec]/30 bg-black/50 p-4 shadow-lg shadow-[#7f13ec]/20">
@@ -49,7 +55,7 @@ const JogoVelhaBruxaInstructions = () => {
                   >
                     {value}
                   </div>
-                ))
+                )),
               )}
             </div>
             <InstructionNote>
@@ -63,4 +69,3 @@ const JogoVelhaBruxaInstructions = () => {
 };
 
 export default JogoVelhaBruxaInstructions;
-

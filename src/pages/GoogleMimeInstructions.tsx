@@ -4,6 +4,7 @@ import {
   InstructionsLayout,
   InstructionsCard,
   InstructionsSection,
+  InstructionStep,
 } from '@/components/InstructionsLayout';
 import { ensureTodayGoogleMimeCode, type GoogleMimeCodeRecord } from '@/lib/googleMimeCode';
 
@@ -75,14 +76,14 @@ const GoogleMimeInstructions = () => {
             {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
           </InstructionsSection>
 
-          <InstructionsSection title="Roteiro de apresentação">
-            <ol className="list-decimal pl-5 space-y-3 text-white/80">
-              {steps.map((step) => (
-                <li key={step} className="leading-relaxed">
+          <InstructionsSection title="Passo a passo">
+            <div className="space-y-3">
+              {steps.map((step, index) => (
+                <InstructionStep key={step} number={index + 1}>
                   {step}
-                </li>
+                </InstructionStep>
               ))}
-            </ol>
+            </div>
           </InstructionsSection>
         </div>
       </InstructionsCard>
@@ -91,4 +92,3 @@ const GoogleMimeInstructions = () => {
 };
 
 export default GoogleMimeInstructions;
-

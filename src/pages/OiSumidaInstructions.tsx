@@ -1,4 +1,4 @@
-import { Shuffle } from 'lucide-react';
+﻿import { Shuffle } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -27,7 +27,9 @@ const OiSumidaInstructions = () => {
       <InstructionsCard>
         <div className="space-y-5">
           {steps.map((step, index) => (
-            <InstructionStep key={index} number={index + 1}>{step}</InstructionStep>
+            <InstructionStep key={step} number={index + 1}>
+              {step}
+            </InstructionStep>
           ))}
           <InstructionNote>
             Dica: Reforce que apenas o amigo sabe qual carta foi memorizada - o resto é pura "leitura mental".

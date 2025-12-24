@@ -30,7 +30,7 @@ const CartaPensadaInstructions = () => {
             </InstructionStep>
           ))}
           <InstructionNote>
-            Dica: memorize que a resposta final aparece na 11ª carta para revelar com firmeza.
+            Dica: memorize que a resposta final aparece na 11ª carta para revelar com firmeza, mesmo antes de o app mostrar.
           </InstructionNote>
         </div>
       </InstructionsCard>
@@ -39,4 +39,3 @@ const CartaPensadaInstructions = () => {
 };
 
 export default CartaPensadaInstructions;
-
