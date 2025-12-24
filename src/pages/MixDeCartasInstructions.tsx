@@ -127,12 +127,12 @@ const MixDeCartasInstructions = () => {
                       animationDelay: `${index * 0.8}s`,
                     }}
                   >
-                    <div className="relative aspect-[7/10] w-full overflow-hidden rounded-xl border border-white/10">
+                    <div className="relative aspect-[7/10] w-full overflow-hidden rounded-xl border border-white/10 flex items-center justify-center">
                       {card.imageSrc ? (
                         <img
                           src={card.imageSrc}
                           alt={card.label}
-                          className="h-full w-full object-cover"
+                          className="h-24 w-auto object-contain"
                           draggable={false}
                         />
                       ) : (
