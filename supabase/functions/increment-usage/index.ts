@@ -28,9 +28,9 @@ serve(async (req) => {
 
     const { game_id } = await req.json();
     const MIN_GAME_ID = 1;
-    const MAX_GAME_ID = 12;
+    const MAX_GAME_ID = 16;
     if (!game_id || typeof game_id !== "number" || game_id < MIN_GAME_ID || game_id > MAX_GAME_ID) {
-      throw new Error("game_id inválido. Deve ser um número entre 1 e 12");
+      throw new Error("game_id inválido. Deve ser um número entre 1 e 16");
     }
 
     console.log(`Incrementing usage for user ${user.id}, game ${game_id}`);
