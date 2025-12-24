@@ -117,38 +117,38 @@ const MixDeCartasInstructions = () => {
               e ignoramos os pretos. A soma resultante é <strong>{exampleIndex}</strong>, o que nos leva de volta ao {exampleChosenCard.label}.
             </p>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
               {exampleSequence.map((card, index) => (
-                <div key={`${card.rank}-${card.suit}`} className="space-y-3 text-center">
+                <div key={`${card.rank}-${card.suit}`} className="space-y-1 md:space-y-3 text-center">
                   <div
-                    className="rounded-2xl border border-[#7f13ec]/30 bg-white/5 p-3 shadow-lg shadow-[#7f13ec]/10"
+                    className="rounded-xl md:rounded-2xl border border-[#7f13ec]/30 bg-white/5 p-1.5 md:p-3 shadow-lg shadow-[#7f13ec]/10"
                     style={{
                       animation: 'mixFocus 7s ease-in-out infinite',
                       animationDelay: `${index * 0.8}s`,
                     }}
                   >
-                    <div className="relative aspect-[7/10] w-full overflow-hidden rounded-xl border border-white/10 flex items-center justify-center">
+                    <div className="relative aspect-[7/10] w-full overflow-hidden rounded-lg md:rounded-xl border border-white/10">
                       {card.imageSrc ? (
                         <img
                           src={card.imageSrc}
                           alt={card.label}
-                          className="h-24 w-auto object-contain"
+                          className="h-full w-full object-cover"
                           draggable={false}
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-sm text-white/70">{card.label}</div>
                       )}
-                      <div className="absolute top-2 left-2 rounded-full bg-[#0f111a]/80 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-[#7f13ec]">
+                      <div className="absolute top-1 left-1 md:top-2 md:left-2 rounded-full bg-[#0f111a]/80 px-1.5 py-0.5 md:px-2 md:py-1 text-[0.5rem] md:text-[0.6rem] font-semibold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[#7f13ec]">
                         {card.bit === '1' ? `+${slotValuesDisplay[index]}` : '+0'}
                       </div>
                       {card.isAnchor && (
-                        <div className="absolute bottom-2 right-2 rounded-full bg-[#7f13ec]/80 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white">
+                        <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 rounded-full bg-[#7f13ec]/80 px-1.5 py-0.5 md:px-2 md:py-1 text-[0.5rem] md:text-[0.6rem] font-semibold uppercase tracking-[0.1em] md:tracking-[0.2em] text-white">
                           Âncora
                         </div>
                       )}
                     </div>
                   </div>
-                  <p className="text-xs font-semibold text-white/60">{card.label}</p>
+                  <p className="text-[0.6rem] md:text-xs font-semibold text-white/60 truncate">{card.label}</p>
                 </div>
               ))}
             </div>
