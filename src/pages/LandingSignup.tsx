@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +23,7 @@ const LandingSignup = () => {
     } = await supabase.auth.getSession();
 
     if (!session) {
-      toast.error("Faca login para prosseguir com o checkout");
+      toast.error("Faça login para prosseguir com o checkout");
       navigate("/auth");
       return;
     }
@@ -47,7 +47,7 @@ const LandingSignup = () => {
     if (data?.url) {
       window.location.assign(data.url);
     } else {
-      throw new Error("URL de checkout indisponivel");
+      throw new Error("URL de checkout indisponível");
     }
   };
 
@@ -60,7 +60,7 @@ const LandingSignup = () => {
     }
 
     if (password !== confirmPassword) {
-      toast.error("As senhas nao conferem");
+      toast.error("As senhas não conferem");
       return;
     }
 
@@ -72,7 +72,7 @@ const LandingSignup = () => {
         .max(128, 'Senha muito longa')
         .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
         .regex(/[a-z]/, 'Senha deve conter letra minúscula')
-        .regex(/[0-9]/, 'Senha deve conter número'),
+        .regex(/[0-9]/, 'Senúmero'),
     });
 
     try {
@@ -112,7 +112,7 @@ const LandingSignup = () => {
 
       await triggerCheckout();
     } catch (error: any) {
-      const message = error?.message ?? "Nao foi possivel concluir o cadastro";
+      const message = error?.message ?? "Não foi possível concluir o cadastro";
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -128,7 +128,7 @@ const LandingSignup = () => {
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl">Crie sua conta MindReader</CardTitle>
           <CardDescription>
-            Cadastre-se rapidamente para liberar o checkout premium vitalicio.
+            Cadastre-se rapidamente para liberar o checkout premium vitalício.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -140,7 +140,7 @@ const LandingSignup = () => {
                 type="email"
                 inputMode="email"
                 autoComplete="email"
-                placeholder="voce@email.com"
+                placeholder="você@email.com"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 disabled={isLoading}
@@ -204,3 +204,4 @@ const LandingSignup = () => {
 };
 
 export default LandingSignup;
+

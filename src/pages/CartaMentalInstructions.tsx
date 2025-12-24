@@ -1,4 +1,4 @@
-import { Brain } from 'lucide-react';
+﻿import { Brain } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -21,18 +21,18 @@ const suits = [
 ];
 
 const paragraphsBeforeGrid = [
-  'Nesta magica, existe um teclado invisivel de 3 colunas por 4 linhas, exatamente como o modelo abaixo.',
+  'Nesta mágica, existe um teclado invisível de 3 colunas por 4 linhas, exatamente como o modelo abaixo.',
 ];
 
 const paragraphsBetweenGridAndReveal = [
-  'Logo abaixo esta o botao "Revelar a Carta", dividido em quatro partes correspondentes aos naipes.',
+  'Logo abaixo está o botão "Revelar a Carta", dividido em quatro partes correspondentes aos naipes.',
 ];
 
 const paragraphsAfterReveal = [
-  'Como o teclado nao pode ser visto pelo seu amigo, voce devera imaginar a divisao do grid de botoes no verso da carta (3 colunas x 4 linhas) e clicar discretamente para que ele nao perceba que voce selecionou a carta escolhida por ele.',
-  'Com o clique em um dos lados do botao "Revelar a Carta" voce estara escolhendo um dos naipes e a carta escolhida por ele sera revelado num passe de magica.',
-  'Ah... mas e o Rei (K) ??? Se a carta escolhida for um K, nao clique no verso da carta; apenas toque na area do naipe no botao "Revelar a Carta" e o Rei sera revelado.',
-  'Agora e so treinar e aplicar com seus amigos.',
+  'Como o teclado não pode ser visto pelo seu amigo, você deverá imaginar a divisão do grid de botões no verso da carta (3 colunas x 4 linhas) e clicar discretamente para que ele não perceba que você selecionou a carta escolhida por ele.',
+  'Com o clique em um dos lados do botão "Revelar a Carta" você estará escolhendo um dos naipes e a carta escolhida por ele será revelada num passe de mágica.',
+  'Ah... mas e o Rei (K) ??? Se a carta escolhida for um K, não clique no verso da carta; apenas toque na área do naipe no botão "Revelar a Carta" e o Rei será revelado.',
+  'Agora é só treinar e aplicar com seus amigos.',
 ];
 
 const CartaMentalInstructions = () => {
@@ -40,8 +40,8 @@ const CartaMentalInstructions = () => {
     <InstructionsLayout
       icon={Brain}
       label="Carta Mental"
-      title="Domine o teclado invisivel"
-      subtitle="Visualize o verso da carta e o botao revelador."
+      title="Domine o teclado invisível"
+      subtitle="Visualize o verso da carta e o botão revelador."
       backPath="/carta-mental"
     >
       <InstructionsCard>
@@ -76,7 +76,7 @@ const CartaMentalInstructions = () => {
             <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
           ))}
 
-          <InstructionsSection title='Botao "Revelar a Carta" - areas dos naipes'>
+          <InstructionsSection title='Botão "Revelar a Carta" - áreas dos naipes'>
             <div className="w-full max-w-md mx-auto rounded-full border border-white/20 bg-gradient-to-r from-[#1e1b4b] via-[#0f111a] to-[#1e1b4b] p-1 shadow-[0_20px_40px_rgba(15,23,42,0.5)]">
               <div className="grid grid-cols-4 gap-1">
                 {suits.map((suit) => (
@@ -101,3 +101,4 @@ const CartaMentalInstructions = () => {
 };
 
 export default CartaMentalInstructions;
+

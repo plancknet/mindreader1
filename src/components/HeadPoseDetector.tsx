@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -407,7 +407,7 @@ const HeadPoseDetector = () => {
               </div>
               <Progress value={focusProgress} className="h-3 transition-all duration-500" />
               <div className="text-sm text-muted-foreground text-center">
-                {timer >= 3 ? '3 segundos atingidos!' : 'Mantenha a posicao por 3 segundos'}
+                {timer >= 3 ? '3 segundos atingidos!' : 'Mantenha a posição por 3 segundos'}
               </div>
             </div>
           </Card>
@@ -434,5 +434,6 @@ const HeadPoseDetector = () => {
 };
 
 export default HeadPoseDetector;
+
 
 

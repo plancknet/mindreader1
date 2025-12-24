@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+﻿import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -295,7 +295,7 @@ const Auth = () => {
       <div className="absolute inset-0 z-0 h-full w-full">
         <img
           src={backgroundImageUrl}
-          alt="Textura abstrata roxa lembrando fuma?a m?stica"
+          alt="Textura abstrata roxa lembrando fumaça mística"
           className="h-full w-full object-cover object-center opacity-80"
         />
         <div className="absolute inset-0 bg-magic-gradient" />
@@ -351,7 +351,7 @@ const Auth = () => {
           ) : (
             <>
               <p className="text-center text-lg font-semibold text-white/80">
-                {isSignUp ? 'Receba um link m?gico direto no seu email' : 'Entre e leia a mente de amigos'}
+                {isSignUp ? 'Receba um link mágico direto no seu email' : 'Entre e leia a mente de amigos'}
               </p>
 
               <button
@@ -489,7 +489,7 @@ const Auth = () => {
               )}
 
               <div className="mt-6 text-center text-sm text-white/70">
-                <span>{isSignUp ? 'J? tem uma conta?' : 'Ainda n?o tem conta?'}</span>{' '}
+                <span>{isSignUp ? 'Já tem uma conta?' : 'Ainda não tem conta?'}</span>{' '}
                 <button
                   type="button"
                   onClick={() => setIsSignUp(!isSignUp)}
@@ -507,3 +507,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

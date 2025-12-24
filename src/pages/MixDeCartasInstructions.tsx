@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { Shuffle } from 'lucide-react';
 import {
   InstructionsLayout,
@@ -71,7 +71,7 @@ const MixDeCartasInstructions = () => {
       icon={Shuffle}
       label="Mix de Cartas"
       title="Como o app codifica a carta escolhida"
-      subtitle="Veja a matematica simples que transforma a carta em uma soma e como usar as cores do mix para desfazer o truque."
+      subtitle="Veja a matemática simples que transforma a carta em uma soma e como usar as cores do mix para desfazer o truque."
       backPath="/mind-reader/mix-de-cartas"
     >
       <style>{`
@@ -88,33 +88,33 @@ const MixDeCartasInstructions = () => {
           <InstructionsSection title="Passo a passo">
             <ol className="list-decimal space-y-3 pl-5 text-white/90">
               <li>
-                <strong>Transforme a carta em numero 1-52.</strong> Some 13 para cada bloco de naipe ate chegar ao desejado.
-                Espadas valem 1-13, Copas comecam em 14, Ouros em 27 e Paus em 40. Exemplo: {exampleChosenCard.label} fica na posicao{' '}
-                <strong>{exampleIndex}</strong> porque (Copas = 13 cartas antes) + posicao do 7 dentro do naipe.
+                <strong>Transforme a carta em número 1-52.</strong> Some 13 para cada bloco de naipe até chegar ao desejado.
+                Espadas valem 1-13, Copas começam em 14, Ouros em 27 e Paus em 40. Exemplo: {exampleChosenCard.label} fica na posição{' '}
+                <strong>{exampleIndex}</strong> porque (Copas = 13 cartas antes) + posição do 7 dentro do naipe.
               </li>
               <li>
-                <strong>Associe cada uma das 6 posicoes a um valor fixo.</strong> Seguindo o sentido escolhido pelo app,
-                as cartas representam os valores {slotValuesDisplay.join(', ')} (comecando em {directionLabel}). Voce so precisa saber
-                que sempre havera os valores 32, 16, 8, 4, 2 e 1 colocados em linha.
+                <strong>Associe cada uma das 6 posições a um valor fixo.</strong> Seguindo o sentido escolhido pelo app,
+                as cartas representam os valores {slotValuesDisplay.join(', ')} (começando em {directionLabel}). Você só precisa saber
+                que sempre haverá os valores 32, 16, 8, 4, 2 e 1 colocados em linha.
               </li>
               <li>
-                <strong>Descubra o sentido olhando a ancora.</strong> A menor carta em valor (normalmente um numero baixo de Espadas)
-                aparece na extremidade de onde voce deve comecar a ler. Se ela estiver a direita, leia da direita para a esquerda
-                e atribua os valores nessa ordem; se estiver a esquerda, faca o contrario.
+                <strong>Descubra o sentido olhando a âncora.</strong> A menor carta em valor (normalmente um número baixo de Espadas)
+                aparece na extremidade de onde você deve começar a ler. Se ela estiver à direita, leia da direita para a esquerda
+                e atribua os valores nessa ordem; se estiver à esquerda, faça o contrário.
               </li>
               <li>
-                <strong>Soma das cores = numero da carta.</strong> Percorra as seis cartas adicionando o valor da posicao
+                <strong>Soma das cores = número da carta.</strong> Percorra as seis cartas adicionando o valor da posição
                 toda vez que ela for <span className="font-semibold text-red-400">vermelha</span>. Se a carta for preta,
-                some zero. A soma final e exatamente o numero 1-52 da carta escolhida - basta localizar na tabela do passo 1.
+                some zero. A soma final é exatamente o número 1-52 da carta escolhida - basta localizar na tabela do passo 1.
               </li>
             </ol>
           </InstructionsSection>
 
           <InstructionsSection title="Exemplo animado">
             <p className="text-white/80 mb-4">
-              No exemplo abaixo, a menor carta e o <strong>3 de Espadas</strong>, localizado a direita, entao aplicamos os valores
-              na ordem <strong>{directionLabel}</strong>. Somamos os valores exibidos nos cartoes vermelhos
-              e ignoramos os pretos. A soma resultante e <strong>{exampleIndex}</strong>, o que nos leva de volta ao {exampleChosenCard.label}.
+              No exemplo abaixo, a menor carta é o <strong>3 de Espadas</strong>, localizado à direita, então aplicamos os valores
+              na ordem <strong>{directionLabel}</strong>. Somamos os valores exibidos nos cartões vermelhos
+              e ignoramos os pretos. A soma resultante é <strong>{exampleIndex}</strong>, o que nos leva de volta ao {exampleChosenCard.label}.
             </p>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -143,7 +143,7 @@ const MixDeCartasInstructions = () => {
                       </div>
                       {card.isAnchor && (
                         <div className="absolute bottom-2 right-2 rounded-full bg-[#7f13ec]/80 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white">
-                          Ancora
+                          Âncora
                         </div>
                       )}
                     </div>
@@ -156,9 +156,9 @@ const MixDeCartasInstructions = () => {
 
           <div className="rounded-2xl border border-[#7f13ec]/15 bg-[#0f111a]/60 p-4">
             <InstructionNote>
-              Dica rapida: memorize algumas conversoes para acelerar o processo. Saber de cabeca que Copas comeca no 14
-              e que cada naipe ocupa um bloco de 13 numeros torna a conta muito mais rapida. Depois e so praticar a leitura
-              das cores ate que vire reflexo.
+              Dica rápida: memorize algumas conversões para acelerar o processo. Saber de cabeça que Copas começa no 14
+              e que cada naipe ocupa um bloco de 13 números torna a conta muito mais rápida. Depois é só praticar a leitura
+              das cores até que vire reflexo.
             </InstructionNote>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HeaderControls } from '@/components/HeaderControls';
 
@@ -103,7 +103,7 @@ const MindReaderUltraLanding = () => {
           CLIQUE AQUI PARA GARANTIR SEU ACESSO
         </button>
 
-        {/* Botao amarelo */}
+        {/* Botão amarelo */}
         <a
           href="https://wa.me/5512992090614?text=MindReader"
           target="_blank"
@@ -123,5 +123,6 @@ const MindReaderUltraLanding = () => {
 };
 
 export default MindReaderUltraLanding;
+
 
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
@@ -1063,7 +1063,7 @@ export default function AdminPanel() {
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-2">
-                          {renderCouponSortButton('Codigo', 'coupon_code')}
+                          {renderCouponSortButton('Código', 'coupon_code')}
                           <Input
                             value={couponFilters.code}
                             onChange={(event) =>
@@ -1137,12 +1137,12 @@ export default function AdminPanel() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Usu?rios (edi??o completa)</CardTitle>
+            <CardTitle>Usuários (edição completa)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="space-y-4 rounded-2xl border border-primary/10 bg-muted/10 p-4">
-                <p className="text-xs uppercase tracking-[0.35em] text-primary font-semibold">Filtros dos usu?rios</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-primary font-semibold">Filtros dos usuários</p>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="grid gap-2">
                     <Label>Email</Label>
@@ -1199,7 +1199,7 @@ export default function AdminPanel() {
                       <SelectContent>
                         <SelectItem value="ALL">Todos</SelectItem>
                         <SelectItem value="YES">Sim</SelectItem>
-                        <SelectItem value="NO">N?o</SelectItem>
+                        <SelectItem value="NO">Não</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1223,7 +1223,7 @@ export default function AdminPanel() {
                       <SelectContent>
                         <SelectItem value="ALL">Todos</SelectItem>
                         <SelectItem value="YES">Sim</SelectItem>
-                        <SelectItem value="NO">N?o</SelectItem>
+                        <SelectItem value="NO">Não</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1239,7 +1239,7 @@ export default function AdminPanel() {
                       <SelectContent>
                         <SelectItem value="ALL">Todos</SelectItem>
                         <SelectItem value="YES">Sim</SelectItem>
-                        <SelectItem value="NO">N?o</SelectItem>
+                        <SelectItem value="NO">Não</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1334,7 +1334,7 @@ export default function AdminPanel() {
               </div>
               {sortedUsers.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">
-                  Nenhum usu?rio encontrado para o filtro aplicado.
+                  Nenhum usuário encontrado para o filtro aplicado.
                 </p>
               ) : (
                 <div className="overflow-x-auto">
@@ -1522,7 +1522,7 @@ export default function AdminPanel() {
         <Dialog open={Boolean(editingUserId)} onOpenChange={(open) => (open ? null : closeUserEditor())}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Editar usu?rio</DialogTitle>
+              <DialogTitle>Editar usuário</DialogTitle>
             </DialogHeader>
             {editingUserData && (
               <div className="grid gap-4 md:grid-cols-2">
@@ -1624,7 +1624,7 @@ export default function AdminPanel() {
                         checked={Boolean(editingUserData.is_premium)}
                         onCheckedChange={(checked) => handleEditUserField('is_premium', Boolean(checked))}
                       />
-                      <span>Usu?rio premium</span>
+                      <span>Usuário premium</span>
                     </label>
                   </div>
                 </div>
@@ -1654,3 +1654,4 @@ export default function AdminPanel() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+﻿import { Sparkles } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -20,13 +20,13 @@ const suits: Array<{ id: SuitName; label: string }> = [
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
 const paragraphsBeforeGrid = [
-  'Assim como na magica "Carta Mental" no "Raspa Carta" a selecao da carta escolhida pelo seu amigo sera por meio de um teclado invisivel que esta no verso da carta. Desta vez com apenas um clique a carta sera selecionada.',
-  'O grid de botoes (3 colunas x 4 linhas) esta disposto como a seguir:',
+  'Assim como na mágica "Carta Mental" no "Raspa Carta" a seleção da carta escolhida pelo seu amigo será por meio de um teclado invisível que está no verso da carta. Desta vez com apenas um clique a carta será selecionada.',
+  'O grid de botões (3 colunas x 4 linhas) está disposto como a seguir:',
 ];
 
 const paragraphsAfterGrid = [
-  'Selecione discretamente a carta escolhida pelo seu amigo e peca a ele para "raspar" a tela do celular para que a carta seja revelada.',
-  'Bora treinar... voce consegue!',
+  'Selecione discretamente a carta escolhida pelo seu amigo e peça a ele para "raspar" a tela do celular para que a carta seja revelada.',
+  'Bora treinar... você consegue!',
 ];
 
 const RaspaCartaInstructions = () => {
@@ -43,8 +43,8 @@ const RaspaCartaInstructions = () => {
     <InstructionsLayout
       icon={Sparkles}
       label="Raspa Carta"
-      title="Visualize o teclado invisivel"
-      subtitle="Veja exatamente como os botoes se distribuem no verso da carta."
+      title="Visualize o teclado invisível"
+      subtitle="Veja exatamente como os botões se distribuem no verso da carta."
       backPath="/raspa-carta"
     >
       <InstructionsCard>
@@ -92,3 +92,4 @@ const RaspaCartaInstructions = () => {
 };
 
 export default RaspaCartaInstructions;
+

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type ChangeEvent } from 'react';
+﻿import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -273,8 +273,8 @@ const EuJaSabia = () => {
         })
         .catch(() => {
           toast({
-            title: 'N�o foi poss�vel reproduzir o v�deo',
-            description: 'Tente tocar novamente no bot�o Reproduzir.',
+            title: 'Não foi possível reproduzir o vídeo',
+            description: 'Tente tocar novamente no botão Reproduzir.',
           });
         });
       return;
@@ -695,3 +695,4 @@ const EuJaSabia = () => {
 };
 
 export default EuJaSabia;
+

@@ -1,4 +1,4 @@
-export type Celebrity = {
+﻿export type Celebrity = {
   id: number;
   name: string;
   image: string;
@@ -47,7 +47,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 5,
-    name: 'Gisele B?ndchen',
+    name: 'Gisele Bündchen',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Gisele_B%C3%BCndchen_2018_cropped.png/330px-Gisele_B%C3%BCndchen_2018_cropped.png',
     description: 'Gisele Caroline Bündchen is a Brazilian supermodel and activist. Since 2001, she has been one of the highest-paid models in the world. In 2007, Bündchen was the 16th-richest woman in the entertainment industry and earned the top spot on Forbes top-earning models list in 2012. In 2014, she was listed as the 89th-most-powerful woman in the world by Forbes.',
     birthDate: 'Brazilian fashion model (born 1980)',
@@ -56,7 +56,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 6,
-    name: 'Pel?',
+    name: 'Pelé',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Pele_con_brasil_%28cropped%29.jpg/330px-Pele_con_brasil_%28cropped%29.jpg',
     description: 'Edson Arantes do Nascimento, better known by his nickname Pelé, was a Brazilian professional footballer who played as a forward. Widely regarded as one of the greatest players of all time, he was among the most successful and popular sports figures of the 20th century. His 1,279 goals in 1,363 games, which includes friendlies, is recognised as a Guinness World Record. In 1999, he was named Athlete of the Century by the International Olympic Committee and was included in the Time list of the 100 most important people of the 20th century. In 2000, Pelé was voted World Player of the Century by the International Federation of Football History & Statistics (IFFHS) and was one of the two joint winners of the FIFA Player of the Century, alongside Diego Maradona.',
     birthDate: 'Brazilian footballer (1940–2022)',
@@ -182,7 +182,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 20,
-    name: 'L?zaro Ramos',
+    name: 'Lázaro Ramos',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/O_Topo_da_Montanha_Tom_Brasil_%28L%C3%A1zaro_Ramos%29_%28cropped%29.jpg/330px-O_Topo_da_Montanha_Tom_Brasil_%28L%C3%A1zaro_Ramos%29_%28cropped%29.jpg',
     description: 'Luís Lázaro Sacramento de Araújo Ramos is a Brazilian actor, television presenter, director, writer, and voice actor. He began his acting career with the Flock of Olodum Theater group in Salvador, and is best known for his portrayal of João Francisco dos Santos in the 2002 film Madame Satã. In 2007, he was nominated for the 35th International Emmy Awards\' Best Actor award for his role in Cobras & Lagartos.',
     birthDate: 'Brazilian actor, television presenter, director, writer, and voice actor',
@@ -191,7 +191,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 21,
-    name: 'Ta?s Ara?jo',
+    name: 'Taís Araújo',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Ta%C3%ADs_Ara%C3%BAjo_%40_TEDxSaoPaulo_2017_01_%28cropped%29.JPG/330px-Ta%C3%ADs_Ara%C3%BAjo_%40_TEDxSaoPaulo_2017_01_%28cropped%29.JPG',
     description: 'Taís Bianca Gama de Araújo Ramos is a Brazilian actress, TV host and model. Described by the media and general public as one of the great Brazilian actresses for her versatility in playing comedic and dramatic characters, in addition to being a very famous celebrity in Brazil.',
     birthDate: 'Brazilian actress, TV host and model (born 1978)',
@@ -254,7 +254,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 28,
-    name: 'Michel Tel?',
+    name: 'Michel Teló',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Michel_Tel%C3%B3.jpg/330px-Michel_Tel%C3%B3.jpg',
     description: 'Michel Teló is a Brazilian sertanejo singer-songwriter and actor. Before his solo act, he was a lead singer in various bands, most notably Grupo Tradição. His biggest national and international hit "Ai Se Eu Te Pego" reached number one in most European and Latin American charts.',
     birthDate: 'Brazilian singer',
@@ -281,7 +281,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 31,
-    name: 'F?tima Bernardes',
+    name: 'Fátima Bernardes',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/F%C3%A1tima_Bernardes_no_Lady_Night_5_%28cropped%29.png/330px-F%C3%A1tima_Bernardes_no_Lady_Night_5_%28cropped%29.png',
     description: 'Fátima Gomes Bernardes is a Brazilian journalist and TV host. She joined Rede Globo in 1987 as the host of RJTV, the regional news from Rio de Janeiro, and became widely known in 1989 when she hosted Jornal da Globo, the late night news program. She also hosted Fantástico, Jornal Hoje, and Jornal Nacional, where she was the news anchor from 1998 to 2011.',
     birthDate: 'Brazilian journalist and TV host',
@@ -290,7 +290,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 32,
-    name: 'Tat? Werneck',
+    name: 'Tatá Werneck',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Tat%C3%A1_Werneck_at_Lady_Night_in_2023.jpg/330px-Tat%C3%A1_Werneck_at_Lady_Night_in_2023.jpg',
     description: 'Talita Werneck Arguelhes, better known as Tatá Werneck, is a Brazilian presenter, actress, comedian, musician, voice actress, screenwriter and reporter. She began her acting studies at just nine years old and, at eleven, she performed in her first theater show. Her debut on a televised program occurred in 2008, when she joined the cast of Dilemas de Irene. Two years later, she joined the Quinta Categoria team at MTV Brasil, having participated in several other programs on the network between 2010 and 2012.',
     birthDate: 'Brazilian actress',
@@ -443,7 +443,7 @@ export const CELEBRITIES: Celebrity[] = [
   },
   {
     id: 49,
-    name: 'Beyonc?',
+    name: 'Beyoncé',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Beyonc%C3%A9_-_Tottenham_Hotspur_Stadium_-_1st_June_2023_%2810_of_118%29_%2852946364598%29_%28best_crop%29.jpg/330px-Beyonc%C3%A9_-_Tottenham_Hotspur_Stadium_-_1st_June_2023_%2810_of_118%29_%2852946364598%29_%28best_crop%29.jpg',
     description: 'Beyoncé Giselle Knowles-Carter is an American singer, songwriter, actress, and businesswoman. Known for her vocal ability, artistic reinventions, and live performances, she is widely regarded as one of the most culturally significant figures of the 21st century. Credited with shaping popular music, Beyoncé is often deemed one of the greatest entertainers and most influential artists of all time.',
     birthDate: 'American singer-songwriter (born 1981)',
@@ -541,3 +541,4 @@ export const CELEBRITIES: Celebrity[] = [
     nationality: 'Internacional',
   },
 ];
+

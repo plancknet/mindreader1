@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+﻿import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useMemo, type KeyboardEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -448,13 +448,13 @@ const GameSelector = () => {
               let disabledMessage: string | null = null;
               if (!adminAllowed) {
                 disabledMessage = game.adminOnly
-                  ? 'Dispon?vel apenas para administradores.'
-                  : 'Dispon?vel para administradores ou plano Influencer.';
+                  ? 'Disponível apenas para administradores.'
+                  : 'Disponível para administradores ou plano Influencer.';
               } else if (!meetsTier) {
                 disabledMessage =
                   subscriptionTier === 'FREE' || subscriptionTier === 'STANDARD'
-                    ? 'N?veis 4 e 5 exigem o plano Influencer.'
-                    : 'Dispon?vel apenas para Influencer.';
+                    ? 'Níveis 4 e 5 exigem o plano Influencer.'
+                    : 'Disponível apenas para Influencer.';
               } else if (!statusAllowed) {
                 disabledMessage = 'Ative sua assinatura para jogar.';
               }
@@ -589,3 +589,4 @@ const GameSelector = () => {
 };
 
 export default GameSelector;
+

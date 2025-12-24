@@ -65,7 +65,7 @@ export const ptBR = {
     letterCount: '{count}/{total} letras',
   },
   gameplay: {
-    round: 'Rodada {round} • {count} palavras',
+    round: 'Rodada {round} - {count} palavras',
     thinkWord: 'Pense em uma palavra...',
     observePositions: 'Observe as novas posições...',
     eliminatingSide: 'Eliminando lado {side}...',
@@ -105,7 +105,7 @@ export const ptBR = {
     step3Title: 'Lista de Possibilidades',
     step3Text: 'Se o app tiver mais de uma possibilidade com a categoria e as três letras indicadas, ele mostrará as opções disponíveis.',
     step4Title: 'Escolha final',
-    step4Text: 'Diga 1 palavra para indicar que a escolhida é a 1a. opção. Diga 2 palavras para indicar que a escolhida é a 2a. opção. E assim por diante...',
+    step4Text: 'Diga 1 palavra para indicar que a escolhida é a 1ª opção. Diga 2 palavras para indicar que a escolhida é a 2ª opção. E assim por diante...',
   },
   mysteryWordInstructions: {
     title: 'Como Funciona a Palavra Misteriosa',
@@ -129,21 +129,21 @@ export const ptBR = {
     inputPlaceholder: 'Sua palavra secreta...',
     startPresentation: 'Iniciar Apresentação',
     stopButton: 'Parar',
-    stoppedTitle: 'Li sua mente! ✨',
+    stoppedTitle: 'Li sua mente! 🎉',
     stoppedSubtitle: 'E aí? Acertou?',
     menuButton: 'Voltar ao Menu',
     playAgain: 'Usar Novamente',
     phrases: 'Bora começar!||Podemos começar o modo de leitura de mente já?||Está pronto para o teste da mente? Estou ansioso. Me diga que sim.||Bora começar a leitura da sua mente logo?||Vamos iniciar o modo psíquico agora?||Preparado para o truque mental mentes?||Podemos dar início à leitura. Vou revelar seu segredo.||Podemos abrir o portal do modo da fantasia?||Vamos ativar o poder da telepatia?||Que tal começarmos o desafio da imaginação?'
   },
   mixDeCartas: {
-    chooseTitle: "Escolha uma Carta",
-    chooseSubtitle: "Selecione qualquer carta do baralho",
-    revealTitle: "Mix de Cartas",
-    revealSubtitle: "Clique em Embaralhar para gerar novas cartas de revelacao",
-    chosenCard: "",
-    shuffleButton: "Embaralhar",
+    chooseTitle: 'Escolha uma Carta',
+    chooseSubtitle: 'Selecione qualquer carta do baralho',
+    revealTitle: 'Mix de Cartas',
+    revealSubtitle: 'Clique em Embaralhar para gerar novas cartas de revelação',
+    chosenCard: '',
+    shuffleButton: 'Embaralhar',
     resetButton: 'Reiniciar',
-    magicTip: "",
+    magicTip: '',
   },
   pontaCarta: {
     chooseTitle: 'Ponta da Carta',
@@ -155,9 +155,9 @@ export const ptBR = {
   cartaMental: {
     title: 'Carta Mental',
     subtitle: 'Use o verso personalizado do MindReader para transmitir mentalmente a carta escolhida pelo seu amigo.',
-    gridInstruction: 'Toque discretamente em uma das 12 posicoes invisiveis. Cada toque representa as cartas de 2 a K.',
-    aceHint: 'Se nenhum toque for realizado, voce indica que a carta pensada foi um As.',
-    suitsInstruction: 'Use o botao Revelar carta e pressione um dos quatro quadrantes para indicar o naipe desejado.',
+    gridInstruction: 'Toque discretamente em uma das 12 posições invisíveis. Cada toque representa as cartas de 2 a K.',
+    aceHint: 'Se nenhum toque for realizado, você indica que a carta pensada foi um As.',
+    suitsInstruction: 'Use o botão Revelar carta e pressione um dos quatro quadrantes para indicar o naipe desejado.',
     revealButton: 'Revelar carta',
     revealButtonAria: 'Revelar carta escolhendo o naipe {suit}',
     rankButtonAria: 'Selecionar o valor {rank}',
@@ -165,8 +165,8 @@ export const ptBR = {
     noRank: 'Nenhum valor selecionado (assumindo As)',
     revealedTitle: 'Carta selecionada',
     revealedDescription: '{rank} de {suit}',
-    noSuitSelected: 'Toque em um dos lados do botao Revelar carta para mostrar o naipe.',
-    reset: 'Limpar selecao',
+    noSuitSelected: 'Toque em um dos lados do botão Revelar carta para mostrar o naipe.',
+    reset: 'Limpar seleção',
     suits: {
       spades: 'Espadas',
       hearts: 'Copas',
@@ -176,7 +176,7 @@ export const ptBR = {
   },
   raspaCarta: {
     title: 'Raspa Carta',
-    subtitle: 'Qual a sua figura preferido no baralho (Valete, Dama ou Rei). De que naipe?',
+    subtitle: 'Qual a sua figura preferida no baralho (Valete, Dama ou Rei). De que naipe?',
     gridInstruction: '',
     scratchHint: 'Deslize o dedo como se fosse uma borracha mágica para revelar a carta escolhida.',
     revealedMessage: 'Carta revelada! Escolha outra carta para continuar a apresentação.',
@@ -199,10 +199,10 @@ export const ptBR = {
     messages: {
       greeting: 'Olá! Eu sou uma inteligência artificial com poderes de leitura mental. 🧠✨\n\nPeça ao seu amigo para pensar em um ANIMAL, FRUTA ou PAÍS. Não me conte qual é a categoria ou a palavra, apenas peça para ele pensar!',
       readyCheck: 'Seu amigo já escolheu e está pronto para começar?',
-      startCollecting: 'Perfeito! Vou fazer algumas perguntas para ler a mente do seu amigo... Responda naturalmente! 🔮\n\nQual é a sua cor favorita?',
+      startCollecting: 'Perfeito! Vou fazer algumas perguntas para ler a mente do seu amigo... Responda naturalmente! 📝\n\nQual é a sua cor favorita?',
       askHobby: 'Interessante! E qual é o seu hobby preferido?',
       askSeason: 'Que legal! Última pergunta: qual é a sua estação do ano favorita?',
-      singleResult: '🎯 Incrível! Estou captando uma energia muito forte...\n\n✨ A palavra em que seu amigo pensou é:\n\n🌟 **{word}** 🌟\n\nEstou certo? ✨',
+      singleResult: '🎯 Incrível! Estou captando uma energia muito forte...\n\n🎉 A palavra em que seu amigo pensou é:\n\n🔮 **{word}** 🔮\n\nEstou certo? 🎉',
       multipleOptions: 'Hmm... estou recebendo alguns sinais. Estas são as possibilidades que estou captando: {options}\n\nEstou no caminho certo?',
       noMatch: 'Ops! Parece que não consegui captar a palavra corretamente. Vamos tentar novamente? Digite "reiniciar" para começar de novo.',
       finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nEu li a mente do seu amigo! A categoria era {category} e a palavra era {word}! 🧠✨\n\nQuer usar novamente? Digite qualquer coisa para voltar ao menu!'
@@ -258,11 +258,11 @@ export const ptBR = {
       },
       oiSumida: {
         title: 'Oi Sumida',
-        description: 'Grid de cartas com embaralhamento instantaneo'
+        description: 'Grid de cartas com embaralhamento instantâneo'
       },
       jogoVelhaBruxa: {
         title: 'Jogo da Velha Bruxa',
-        description: 'Desafie a bruxa em um duelo mistico de X e O'
+        description: 'Desafie a bruxa em um duelo místico de X e O'
       },
       cartaMental: {
         title: 'Carta Mental',

@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+﻿import { Sparkles } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -7,10 +7,10 @@ import {
 } from '@/components/InstructionsLayout';
 
 const steps = [
-  'Peca para a pessoa pensar em qualquer carta exibida nas tres colunas e guardar somente na mente.',
+  'Peça para a pessoa pensar em qualquer carta exibida nas três colunas e guardar somente na mente.',
   'Pergunte em qual das colunas a carta aparece.',
-  'As cartas serao redistribuidas. Peca para ele selecionar a coluna novamente e novamente.',
-  'A carta pensada sera revelada.',
+  'As cartas serão redistribuídas. Peça para ele selecionar a coluna novamente e novamente.',
+  'A carta pensada será revelada.',
 ];
 
 const CartaPensadaInstructions = () => {
@@ -18,8 +18,8 @@ const CartaPensadaInstructions = () => {
     <InstructionsLayout
       icon={Sparkles}
       label="Carta Pensada"
-      title="Como conduzir a demonstracao"
-      subtitle="Use apenas a coluna escolhida como informacao e deixe o app trabalhar por voce."
+      title="Como conduzir a demonstração"
+      subtitle="Use apenas a coluna escolhida como informação e deixe o app trabalhar por você."
       backPath="/carta-pensada"
     >
       <InstructionsCard>
@@ -30,7 +30,7 @@ const CartaPensadaInstructions = () => {
             </InstructionStep>
           ))}
           <InstructionNote>
-            Dica: memorize que a resposta final aparece na 11a carta para revelar com firmeza, mesmo antes de o app mostrar.
+            Dica: memorize que a resposta final aparece na 11ª carta para revelar com firmeza, mesmo antes de o app mostrar.
           </InstructionNote>
         </div>
       </InstructionsCard>
@@ -39,3 +39,4 @@ const CartaPensadaInstructions = () => {
 };
 
 export default CartaPensadaInstructions;
+

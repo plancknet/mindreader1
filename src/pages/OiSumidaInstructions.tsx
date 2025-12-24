@@ -1,4 +1,4 @@
-import { Shuffle } from 'lucide-react';
+﻿import { Shuffle } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -7,11 +7,11 @@ import {
 } from '@/components/InstructionsLayout';
 
 const instructions = [
-  'Peca ao seu amigo para memorizar silenciosamente uma das cartas apresentadas na tela.',
-  'Explique que ele pode clicar no botao "Embaralhar" quantas vezes quiser. Isso garante que ninguem sabe onde a carta ficou.',
-  'Diga que o MindReader ira ler a mente dele e remover a carta memorizada do grid.',
-  'Peca para ele clicar no botao "Oi Sumida" quando estiver pronto para revelar.',
-  'Mostre que a carta escolhida "sumiu" misteriosamente, confirmando que a previsao estava correta.',
+  'Peça ao seu amigo para memorizar silenciosamente uma das cartas apresentadas na tela.',
+  'Explique que ele pode clicar no botão "Embaralhar" quantas vezes quiser. Isso garante que ninguém sabe onde a carta ficou.',
+  'Diga que o MindReader irá ler a mente dele e remover a carta memorizada do grid.',
+  'Peça para ele clicar no botão "Oi Sumida" quando estiver pronto para revelar.',
+  'Mostre que a carta escolhida "sumiu" misteriosamente, confirmando que a previsão estava correta.',
 ];
 
 const OiSumidaInstructions = () => {
@@ -20,7 +20,7 @@ const OiSumidaInstructions = () => {
       icon={Shuffle}
       label="Oi Sumida"
       title="Como apresentar o efeito"
-      subtitle="Siga o roteiro abaixo para conduzir o truque e garantir que a carta sumida impressione o publico."
+      subtitle="Siga o roteiro abaixo para conduzir o truque e garantir que a carta sumida impressione o público."
       backPath="/oi-sumida"
       backLabel="Voltar ao jogo"
     >
@@ -30,7 +30,7 @@ const OiSumidaInstructions = () => {
             <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
           ))}
           <InstructionNote>
-            Reforce que apenas o amigo sabe qual carta foi memorizada - o resto e pura "leitura mental".
+            Reforce que apenas o amigo sabe qual carta foi memorizada - o resto é pura "leitura mental".
           </InstructionNote>
         </div>
       </InstructionsCard>
@@ -39,3 +39,4 @@ const OiSumidaInstructions = () => {
 };
 
 export default OiSumidaInstructions;
+

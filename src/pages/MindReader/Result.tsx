@@ -1,4 +1,4 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
+﻿import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Brain, Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
@@ -118,8 +118,8 @@ const Result = () => {
             </Card>
 
             <div className="space-y-4 text-center text-sm text-white/70">
-              <p>Magia? Nao! Ciencia aplicada.</p>
-              <p>Misterio revelado com estilo.</p>
+              <p>Magia? Não! Ciência aplicada.</p>
+              <p>Mistério revelado com estilo.</p>
             </div>
 
             <div className="h-4" />
@@ -168,3 +168,4 @@ const Result = () => {
 };
 
 export default Result;
+

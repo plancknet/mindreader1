@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+﻿import { useState, lazy, Suspense } from 'react';
 import { verifyGoogleMimeCode } from '@/lib/googleMimeCode';
 import { Mic, Camera, Sparkles, Music, Search, Home, Bell, Clock, MoreVertical } from 'lucide-react';
 
@@ -10,13 +10,13 @@ const NEWS_ARTICLES = [
   {
     source: 'Jornal O Globo',
     sourceIcon: 'JG',
-    title: 'As novas superestrelas de IA da Meta comecam a bater de frente com o restante da empresa',
+    title: 'As novas superestrelas de IA da Meta começam a bater de frente com o restante da empresa',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
   },
   {
     source: 'Folha de S.Paulo',
     sourceIcon: 'FS',
-    title: 'Brasil lidera crescimento economico na America Latina em 2024',
+    title: 'Brasil lidera crescimento econômico na América Latina em 2024',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
   },
 ];
@@ -63,7 +63,7 @@ const GoogleLogoFestive = () => (
 const NotFoundScreen = ({ onRetry }: { onRetry: () => void }) => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f9fa] text-[#202124] px-6 text-center">
     <p className="text-6xl font-semibold mb-4">404</p>
-    <p className="text-lg mb-6">A pagina que voce tentou acessar nao existe.</p>
+    <p className="text-lg mb-6">A página que você tentou acessar não existe.</p>
     <button
       className="px-6 py-2 rounded-full border border-[#dadce0] text-sm text-[#3c4043] hover:bg-white"
       onClick={onRetry}
@@ -294,7 +294,7 @@ const GoogleMimePublic = () => {
           <div className="bg-[#e8f0fe] rounded-full px-4 py-1">
             <Home className="w-6 h-6 text-[#1a73e8]" />
           </div>
-          <span className="text-xs text-[#1a73e8] font-medium">Inicio</span>
+          <span className="text-xs text-[#1a73e8] font-medium">Início</span>
         </button>
         <button className="flex flex-col items-center gap-1">
           <Search className="w-6 h-6 text-[#5f6368]" />
@@ -317,3 +317,4 @@ const GoogleMimePublic = () => {
 };
 
 export default GoogleMimePublic;
+
