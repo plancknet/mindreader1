@@ -2,16 +2,16 @@
 import {
   InstructionsLayout,
   InstructionsCard,
-  InstructionParagraph,
+  InstructionStep,
   InstructionsSection,
 } from '@/components/InstructionsLayout';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
 
-const instructionsText = [
+const steps = [
   'Nesta mágica, perceba que todas as cartas têm os naipes centrais apontando para cima. Por exemplo, veja no As de Espadas como o naipe parece uma seta apontando para cima. O mesmo ocorre para todas as outras cartas desta mágica.',
   'Assim que o usuário escolher uma das cartas e clicar em "Embaralhar", a carta escolhida será a única com o naipe apontando para baixo e você facilmente conseguirá identificar a carta escolhida pelo seu amigo.',
-  'A única exceção é a carta 7 de Ouros. Caso o 7 de Ouros seja selecionado, o naipe central ao invés de estar na parte superior da carta, estará na parte inferior da carta.',
+  'A única exceção é a carta 7 de Ouros. Caso o 7 de Ouros seja selecionado, o naipe central, ao invés de estar na parte superior da carta, estará na parte inferior da carta.',
   'Pronto! Agora que o truque foi revelado, ensaie bastante antes de fazer com seus amigos.',
 ];
 
@@ -47,9 +47,15 @@ const PontaCartaInstructions = () => {
       `}</style>
       <InstructionsCard>
         <div className="space-y-5">
-          {instructionsText.map((paragraph) => (
-            <InstructionParagraph key={paragraph}>{paragraph}</InstructionParagraph>
-          ))}
+          <InstructionsSection title="Passo a passo">
+            <div className="space-y-3">
+              {steps.map((step, index) => (
+                <InstructionStep key={step} number={index + 1}>
+                  {step}
+                </InstructionStep>
+              ))}
+            </div>
+          </InstructionsSection>
 
           <InstructionsSection title="Observe a rotação dos naipes importantes">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -88,4 +94,3 @@ const PontaCartaInstructions = () => {
 };
 
 export default PontaCartaInstructions;
-

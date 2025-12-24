@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { GameLayout } from '@/components/GameLayout';
 import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
@@ -44,9 +43,7 @@ const shuffleCards = (cards: CardDefinition[]) => {
   return deck;
 };
 
-const OiSumida = () => {
-  const navigate = useNavigate();
-  const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
+const OiSumida = () => {  const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
   const [isOiSumidaActive, setIsOiSumidaActive] = useState(false);
   const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.OI_SUMIDA);
 
@@ -75,17 +72,7 @@ const OiSumida = () => {
   return (
     <GameLayout>
       <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-8">
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white hover:bg-white/10"
-            onClick={() => navigate('/oi-sumida/instrucoes')}
-          >
-            Instruções
-          </Button>
-        </div>
-
-        <div className="text-center">
+<div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight text-white">Oi Sumida</h1>
         </div>
 
@@ -144,3 +131,4 @@ const OiSumida = () => {
 };
 
 export default OiSumida;
+
