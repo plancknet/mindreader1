@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -35,7 +34,6 @@ const getPositionFromPhrase = (phrase: string) => {
 };
 
 const MysteryWord = () => {
-  const navigate = useNavigate();
   const { t, language } = useTranslation();
   const { incrementUsage } = useUsageLimit();
   const [stage, setStage] = useState<'greeting' | 'input' | 'playing' | 'stopped'>('greeting');
@@ -290,15 +288,7 @@ const MysteryWord = () => {
                 ...
               </div>
             </Card>
-            <div className="flex gap-4 justify-center">
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/game-selector')}
-                className="text-xl px-8 py-6 border-white/20 bg-white/5 text-white hover:bg-white/10"
-              >
-                {t('mysteryWord.menuButton')}
-              </Button>
+            <div className="flex justify-center">
               <Button
                 size="lg"
                 onClick={handlePlayAgain}
