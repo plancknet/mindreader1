@@ -43,6 +43,7 @@ import RaspaCartaInstructions from "./pages/RaspaCartaInstructions";
 import SuasPalavras from "./pages/SuasPalavras";
 import SuasPalavrasInstructions from "./pages/SuasPalavrasInstructions";
 import PapoReto from "./pages/PapoReto";
+import PapoRetoInstructions from "./pages/PapoRetoInstructions";
 import EuJaSabia from "./pages/EuJaSabia";
 import EuJaSabia2 from "./pages/EuJaSabia2";
 import PontaCartaInstructions from "./pages/PontaCartaInstructions";
@@ -261,6 +262,7 @@ const App = () => (
             <Route path="/carta-pensada" element={<ProtectedRoute><CartaPensada /></ProtectedRoute>} />
             <Route path="/carta-pensada/instrucoes" element={<ProtectedRoute><CartaPensadaInstructions /></ProtectedRoute>} />
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
+            <Route path="/papo-reto/instrucoes" element={<ProtectedRoute><PapoRetoInstructions /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><EuJaSabia2 /></ProtectedRoute>} />
             <Route path="/oi-sumida" element={<ProtectedRoute><OiSumida /></ProtectedRoute>} />

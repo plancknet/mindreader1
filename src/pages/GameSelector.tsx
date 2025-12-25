@@ -266,6 +266,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'papoReto',
     icon: MessageCircle,
     path: '/papo-reto',
+    instructionsPath: '/papo-reto/instrucoes',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
     minTier: 'INFLUENCER',
     difficulty: 4,
