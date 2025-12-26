@@ -285,6 +285,7 @@ const GAME_CARDS: GameCard[] = [
     translationKey: 'euJaSabia2',
     icon: Play,
     path: '/eu-ja-sabia-2',
+    instructionsPath: '/eu-ja-sabia-2/instrucoes',
     color: 'from-amber-400 via-pink-400 to-rose-500',
     minTier: 'INFLUENCER',
     difficulty: 5,
