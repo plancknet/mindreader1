@@ -4,29 +4,23 @@ import { Button } from '@/components/ui/button';
 
 type ThemeVariant = 'dark' | 'light';
 
-const applyThemeClasses = (theme: ThemeVariant) => {
-  const root = document.documentElement;
-  if (theme === 'light') {
-    root.classList.remove('dark');
-    root.classList.add('theme-light');
-  } else {
-    root.classList.remove('theme-light');
-    root.classList.add('dark');
-  }
-};
-
 export const ThemeToggle = () => {
   const [theme, setTheme] = useState<ThemeVariant>('dark');
 
   const setAndPersistTheme = useCallback((nextTheme: ThemeVariant) => {
-    applyThemeClasses(nextTheme);
+    const root = document.documentElement;
+    if (nextTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
     localStorage.setItem('theme', nextTheme);
     setTheme(nextTheme);
   }, []);
 
   useEffect(() => {
     const stored = (localStorage.getItem('theme') as ThemeVariant | null) ?? 'dark';
-    setAndPersistTheme(stored === 'light' ? 'light' : 'dark');
+    setAndPersistTheme(stored);
   }, [setAndPersistTheme]);
 
   const toggleTheme = () => {
