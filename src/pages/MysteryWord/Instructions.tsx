@@ -3,6 +3,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import {
   InstructionsLayout,
   InstructionsCard,
+  InstructionsSection,
 } from '@/components/InstructionsLayout';
 
 const MysteryWordInstructions = () => {
@@ -24,14 +25,25 @@ const MysteryWordInstructions = () => {
       backLabel={t('common.understood')}
     >
       <InstructionsCard>
+        <div className="space-y-4">
+          <InstructionsSection title="Modo 1">
+            <p className="text-white/70 text-base">
+              Para saber qual a palavra escolhida pelo seu amigo, simplesmente fique de olho na barra de notificação do celular.
+              Quando na barra de notificação aparecer o ícone que indica que a câmera está em uso, a palavra mostrada naquele momento
+              será a palavra escolhida pelo seu amigo.
+            </p>
+          </InstructionsSection>
+        </div>
+      </InstructionsCard>
+
+      <InstructionsCard>
         <div className="grid gap-6 md:grid-cols-2 items-center">
           <div className="space-y-4">
-            <p className="text-[#7f13ec] font-semibold uppercase tracking-wider text-sm">
-              {t('mysteryWordInstructions.videoTitle')}
-            </p>
-            <p className="text-white/70 text-base">
-              {t('mysteryWordInstructions.videoDescription')}
-            </p>
+            <InstructionsSection title="Modo 2">
+              <p className="text-white/70 text-base">
+                {t('mysteryWordInstructions.videoDescription')}
+              </p>
+            </InstructionsSection>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-xl border border-[#7f13ec]/20 bg-black">
             <div className="relative w-full aspect-[9/16]">
