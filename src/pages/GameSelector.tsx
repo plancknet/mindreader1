@@ -361,7 +361,15 @@ const GameSelector = () => {
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
-    document.documentElement.classList.toggle('theme-light');
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+    if (isDark) {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
   };
 
   const cycleLanguage = () => {
