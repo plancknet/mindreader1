@@ -60,7 +60,7 @@ export const InstructionsLayout = ({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+      className="instructions-layout relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
       style={{ fontFamily: loginFontFamily }}
     >
       {/* Background glows */}
@@ -72,7 +72,7 @@ export const InstructionsLayout = ({
 
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
+        <header className="instructions-header sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
           <div className="mx-auto flex w-full max-w-3xl items-center justify-center gap-4">
             <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
               <Icon className="h-5 w-5" />
@@ -101,7 +101,7 @@ export const InstructionsLayout = ({
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
+      <nav className="instructions-nav fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
         <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
           <button
             type="button"
@@ -143,7 +143,7 @@ export const InstructionsLayout = ({
 
 export const InstructionsCard = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
   <div
-    className={`rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-6 shadow-lg shadow-black/30 ${className}`}
+    className={`instructions-card rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-6 shadow-lg shadow-black/30 ${className}`}
   >
     {children}
   </div>

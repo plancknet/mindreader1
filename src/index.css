@@ -155,6 +155,43 @@ All colors MUST be HSL.
   overflow: hidden;
 }
 
+.theme-light .instructions-layout {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.theme-light .instructions-layout .instructions-header {
+  background: hsl(var(--background) / 0.85);
+  border-color: hsl(var(--border));
+}
+
+.theme-light .instructions-layout .instructions-nav {
+  background: hsl(var(--background) / 0.95);
+  border-color: hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.theme-light .instructions-layout .instructions-card {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: 0 18px 40px hsl(var(--foreground) / 0.08);
+}
+
+.theme-light .instructions-layout .text-white {
+  color: hsl(var(--foreground));
+}
+
+.theme-light .instructions-layout .text-white\/90,
+.theme-light .instructions-layout .text-white\/80 {
+  color: hsl(var(--foreground));
+}
+
+.theme-light .instructions-layout .text-white\/70,
+.theme-light .instructions-layout .text-white\/60,
+.theme-light .instructions-layout .text-white\/50 {
+  color: hsl(var(--muted-foreground));
+}
+
 @keyframes loginFadeInDown {
   0% {
     opacity: 0;
