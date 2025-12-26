@@ -391,31 +391,38 @@ const GameSelector = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+      className="relative min-h-screen overflow-hidden bg-background pb-24 text-foreground"
       style={{ fontFamily: loginFontFamily }}
     >
-      <div className="pointer-events-none fixed inset-0 z-0">
+      {/* Dark mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 dark:block hidden">
         <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
         <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
         <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
       </div>
+      {/* Light mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 dark:hidden block">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-primary/8 blur-[100px]" />
+      </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="sticky top-0 z-20 border-b border-white/5 bg-[#0f111a]/80 px-4 py-3 backdrop-blur-xl">
+        <header className="sticky top-0 z-20 border-b border-border/50 bg-background/80 px-4 py-3 backdrop-blur-xl">
           <div className="mx-auto flex w-full max-w-xl items-center justify-between">
-            <div className="flex size-12 items-center justify-center rounded-full border border-[#7f13ec]/20 bg-[#7f13ec]/15 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+            <div className="flex size-12 items-center justify-center rounded-full border border-primary/20 bg-primary/15 text-primary shadow-glow dark:border-[#7f13ec]/20 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)]">
               <Brain className="h-6 w-6" />
             </div>
             <div className="flex flex-col items-center text-center">
-              <h1 className="text-3xl font-semibold text-white drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+              <h1 className="text-3xl font-semibold text-foreground drop-shadow-sm dark:text-white dark:drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
                 MindReader
               </h1>
             </div>
             <button
               type="button"
-              className="relative flex size-10 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white"
+              className="relative flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
             >
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-[#7f13ec] shadow-[0_0_8px_rgba(127,19,236,0.8)]" />
+              <span className="absolute right-2 top-2 size-2 rounded-full bg-primary shadow-glow dark:bg-[#7f13ec] dark:shadow-[0_0_8px_rgba(127,19,236,0.8)]" />
               <Sparkles className="h-5 w-5" />
             </button>
           </div>
@@ -433,8 +440,8 @@ const GameSelector = () => {
                     onClick={() => setSelectedLevel(isActive ? null : chip.value)}
                     className={`flex h-7 items-center justify-center rounded-full border px-2.5 text-[0.65rem] font-semibold tracking-wide transition-all active:scale-95 ${
                       isActive
-                        ? 'border-[#7f13ec]/50 bg-[#7f13ec] text-white shadow-[0_0_15px_rgba(127,19,236,0.4)]'
-                        : 'border-white/10 bg-[#1e1b4b] text-white/70 hover:border-[#7f13ec]/40 hover:bg-white/5'
+                        ? 'border-primary/50 bg-primary text-primary-foreground shadow-glow dark:border-[#7f13ec]/50 dark:bg-[#7f13ec] dark:text-white dark:shadow-[0_0_15px_rgba(127,19,236,0.4)]'
+                        : 'border-border bg-secondary text-muted-foreground hover:border-primary/40 hover:bg-secondary/80 dark:border-white/10 dark:bg-[#1e1b4b] dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:bg-white/5'
                     }`}
                   >
                     {chip.label}
@@ -496,14 +503,14 @@ const GameSelector = () => {
                     void handleCardNavigation();
                   }}
                   onKeyDown={handleCardKeyDown}
-                  className={`group relative flex items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1b4b]/85 to-[#0f111a]/95 p-4 shadow-lg shadow-black/30 transition-all ${
+                  className={`group relative flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 dark:shadow-black/30 ${
                     enabled
-                      ? 'cursor-pointer hover:border-[#7f13ec]/50 hover:shadow-[0_0_25px_rgba(127,19,236,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f13ec]/60'
+                      ? 'cursor-pointer hover:border-primary/50 hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:hover:border-[#7f13ec]/50 dark:hover:shadow-[0_0_25px_rgba(127,19,236,0.15)] dark:focus-visible:ring-[#7f13ec]/60'
                       : 'cursor-not-allowed opacity-60'
                   }`}
                 >
                   <div
-                    className={`relative shrink-0 size-[72px] rounded-xl border border-white/10 bg-gradient-to-br ${game.color} shadow-inner`}
+                    className={`relative shrink-0 size-[72px] rounded-xl border border-border/50 bg-gradient-to-br ${game.color} shadow-inner dark:border-white/10`}
                   >
                     <div className="absolute inset-0 rounded-xl bg-black/20" />
                     <div className="relative flex h-full w-full items-center justify-center">
@@ -514,24 +521,24 @@ const GameSelector = () => {
                   <div className="flex flex-1 flex-col gap-2">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <h3 className="two-line-clamp text-base font-semibold leading-snug text-white group-hover:text-[#d8b4fe]">
+                        <h3 className="two-line-clamp text-base font-semibold leading-snug text-foreground group-hover:text-primary dark:text-white dark:group-hover:text-[#d8b4fe]">
                           {game.title}
                         </h3>
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         <LevelBars level={game.difficulty} />
                         {game.badge && (
-                          <Badge className="bg-white/5 text-[10px] uppercase tracking-wide text-white">
+                          <Badge className="bg-secondary text-[10px] uppercase tracking-wide text-foreground dark:bg-white/5 dark:text-white">
                             {game.badge}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <p className="text-xs text-white/65">{game.description}</p>
+                    <p className="text-xs text-muted-foreground dark:text-white/65">{game.description}</p>
 
                     {!enabled && disabledMessage && (
-                      <p className="text-[11px] text-white/40">{disabledMessage}</p>
+                      <p className="text-[11px] text-muted-foreground/60 dark:text-white/40">{disabledMessage}</p>
                     )}
 
                     {instructionsPath && (
@@ -539,7 +546,7 @@ const GameSelector = () => {
                         <Button
                           size="icon"
                           variant="outline"
-                          className="rounded-xl border-white/20 bg-white/5 text-white hover:border-[#7f13ec]/50 hover:bg-[#7f13ec]/30"
+                          className="rounded-xl border-border bg-secondary text-foreground hover:border-primary/50 hover:bg-primary/20 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:border-[#7f13ec]/50 dark:hover:bg-[#7f13ec]/30"
                           onClick={(event) => {
                             event.stopPropagation();
                             navigate(instructionsPath, { state: { from: location.pathname } });
@@ -558,12 +565,12 @@ const GameSelector = () => {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border/50 bg-background/95 backdrop-blur-xl dark:border-white/5 dark:bg-[#0f111a]/95">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-muted-foreground dark:text-white/70">
           <button
             type="button"
             onClick={goHome}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-3 py-2 text-primary shadow-glow transition-colors hover:bg-primary/25 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)] dark:hover:bg-[#7f13ec]/25"
           >
             <Home className="h-5 w-5" />
             <span>Home</span>
@@ -571,7 +578,7 @@ const GameSelector = () => {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
           >
             <Moon className="h-5 w-5" />
             <span>Mode</span>
@@ -579,7 +586,7 @@ const GameSelector = () => {
           <button
             type="button"
             onClick={cycleLanguage}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
           >
             <LanguagesIcon className="h-5 w-5" />
             <span>{currentLanguage.toUpperCase()}</span>
@@ -587,7 +594,7 @@ const GameSelector = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-destructive/50 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-red-400/50 dark:hover:text-white"
           >
             <LogOut className="h-5 w-5" />
             <span>Logout</span>
