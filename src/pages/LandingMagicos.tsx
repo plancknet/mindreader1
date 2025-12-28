@@ -89,7 +89,7 @@ const LandingMagicos = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 py-6 px-6 md:px-12">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-[#0a0a12]/80 backdrop-blur-lg border-b border-purple-500/10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Sparkles className="w-8 h-8 text-purple-400" />
@@ -105,6 +105,9 @@ const LandingMagicos = () => {
           </Button>
         </div>
       </nav>
+
+      {/* Spacer for fixed nav */}
+      <div className="h-20" />
 
       {/* Hero Section */}
       <section className="relative z-10 min-h-[90vh] flex items-center justify-center px-6 py-20">
