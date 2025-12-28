@@ -10,7 +10,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
 import { supabase } from '@/integrations/supabase/client';
-import { Home, Moon, Languages as LanguagesIcon, LogOut } from 'lucide-react';
+import { Home, Moon, Sun, Languages as LanguagesIcon, LogOut } from 'lucide-react';
 
 type PlayingCard = {
   rank: string;
@@ -143,7 +143,15 @@ const CartaPensada = () => {
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
-    document.documentElement.classList.toggle('theme-light');
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+    if (isDark) {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
   };
 
   const cycleLanguage = () => {
@@ -156,8 +164,8 @@ const CartaPensada = () => {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-    } catch (error) {
-      console.error('Failed to sign out', error);
+    } catch (err) {
+      console.error('Failed to sign out', err);
     } finally {
       navigate('/');
     }
@@ -166,17 +174,24 @@ const CartaPensada = () => {
   if (isComplete && finalCard) {
     return (
       <div
-        className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+        className="relative min-h-screen overflow-hidden bg-background pb-24 text-foreground"
         style={{ fontFamily: loginFontFamily }}
       >
-        <div className="pointer-events-none fixed inset-0 z-0">
+        {/* Dark mode decorative blurs */}
+        <div className="pointer-events-none fixed inset-0 z-0 hidden dark:block">
           <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
           <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
           <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
         </div>
+        {/* Light mode decorative blurs */}
+        <div className="pointer-events-none fixed inset-0 z-0 block dark:hidden">
+          <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary/10 blur-[120px]" />
+          <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-accent/15 blur-[120px]" />
+          <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-primary/8 blur-[100px]" />
+        </div>
 
         <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 gap-6">
-          <Card className="aspect-[7/10] w-56 overflow-hidden rounded-3xl border border-[#7f13ec]/30 bg-transparent shadow-2xl shadow-[#7f13ec]/20">
+          <Card className="aspect-[7/10] w-56 overflow-hidden rounded-3xl border border-primary/30 bg-transparent shadow-glow dark:border-[#7f13ec]/30 dark:shadow-[0_25px_60px_rgba(127,19,236,0.2)]">
             <img
               src={finalCard.imageSrc || '/placeholder.svg'}
               alt={finalCard.label}
@@ -186,18 +201,19 @@ const CartaPensada = () => {
           </Card>
           <Button
             onClick={initializeGame}
-            className="rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white transition hover:border-[#7f13ec]/40 hover:bg-[#7f13ec]/20"
+            className="rounded-2xl"
           >
             Reiniciar
           </Button>
         </div>
 
-        <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
-          <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+        {/* Bottom navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border/50 bg-background/95 backdrop-blur-xl dark:border-white/5 dark:bg-[#0f111a]/95">
+          <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-muted-foreground dark:text-white/70">
             <button
               type="button"
               onClick={goHome}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+              className="flex flex-col items-center gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-3 py-2 text-primary shadow-glow transition-colors hover:bg-primary/25 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)] dark:hover:bg-[#7f13ec]/25"
             >
               <Home className="h-5 w-5" />
               <span>Home</span>
@@ -205,15 +221,16 @@ const CartaPensada = () => {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
             >
-              <Moon className="h-5 w-5" />
+              <Moon className="hidden h-5 w-5 dark:block" />
+              <Sun className="block h-5 w-5 dark:hidden" />
               <span>Mode</span>
             </button>
             <button
               type="button"
               onClick={cycleLanguage}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
             >
               <LanguagesIcon className="h-5 w-5" />
               <span>{currentLanguage.toUpperCase()}</span>
@@ -221,7 +238,7 @@ const CartaPensada = () => {
             <button
               type="button"
               onClick={handleLogout}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-destructive/50 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-red-400/50 dark:hover:text-white"
             >
               <LogOut className="h-5 w-5" />
               <span>Logout</span>
@@ -234,18 +251,25 @@ const CartaPensada = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0f111a] pb-24 text-white"
+      className="relative min-h-screen overflow-hidden bg-background pb-24 text-foreground"
       style={{ fontFamily: loginFontFamily }}
     >
-      <div className="pointer-events-none fixed inset-0 z-0">
+      {/* Dark mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 hidden dark:block">
         <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
         <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
         <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
       </div>
+      {/* Light mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 block dark:hidden">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-primary/8 blur-[100px]" />
+      </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pt-8">
-          <div className="grid grid-cols-3 gap-4 rounded-3xl border border-[#7f13ec]/10 bg-gradient-to-br from-[#1e1b4b]/50 to-[#0f111a]/80 p-6 shadow-xl shadow-[#7f13ec]/5 backdrop-blur">
+          <div className="grid grid-cols-3 gap-4 rounded-3xl border border-border bg-card p-6 shadow-xl dark:border-[#7f13ec]/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/50 dark:to-[#0f111a]/80 dark:shadow-[#7f13ec]/5 backdrop-blur">
             {columns.map((column, columnIndex) => (
               <div key={columnIndex} className="space-y-4">
                 <div
@@ -259,12 +283,12 @@ const CartaPensada = () => {
                       processSelection(columnIndex);
                     }
                   }}
-                  className={`grid gap-2 rounded-2xl border border-white/10 p-3 shadow-inner transition ${
+                  className={`grid gap-2 rounded-2xl border border-border p-3 shadow-inner transition dark:border-white/10 ${
                     selectedColumn === columnIndex
-                      ? 'cursor-pointer ring-2 ring-[#7f13ec]/50'
+                      ? 'cursor-pointer ring-2 ring-primary/50 dark:ring-[#7f13ec]/50'
                       : isProcessing
                         ? 'cursor-not-allowed opacity-50'
-                        : 'cursor-pointer hover:border-[#7f13ec]/40'
+                        : 'cursor-pointer hover:border-primary/40 dark:hover:border-[#7f13ec]/40'
                   }`}
                   style={{
                     gridTemplateRows: 'repeat(7, minmax(0, 1fr))',
@@ -274,7 +298,7 @@ const CartaPensada = () => {
                   {column.map((card) => (
                     <Card
                       key={`${card.rank}-${card.suit}`}
-                      className="mx-auto aspect-[7/10] w-full max-w-[60px] overflow-hidden rounded-lg border border-white/5 bg-transparent shadow-sm shadow-black/20 sm:max-w-[68px]"
+                      className="mx-auto aspect-[7/10] w-full max-w-[60px] overflow-hidden rounded-lg border border-border/50 bg-transparent shadow-sm dark:border-white/5 dark:shadow-black/20 sm:max-w-[68px]"
                     >
                       <img
                         src={card.imageSrc || '/placeholder.svg'}
@@ -294,7 +318,7 @@ const CartaPensada = () => {
               variant="outline"
               onClick={initializeGame}
               disabled={isProcessing}
-              className="rounded-2xl border-white/20 bg-white/5 text-white hover:border-[#7f13ec]/50 hover:bg-[#7f13ec]/20"
+              className="rounded-2xl"
             >
               Reiniciar apresentação
             </Button>
@@ -302,12 +326,13 @@ const CartaPensada = () => {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/5 bg-[#0f111a]/95 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-white/70">
+      {/* Bottom navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border/50 bg-background/95 backdrop-blur-xl dark:border-white/5 dark:bg-[#0f111a]/95">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-muted-foreground dark:text-white/70">
           <button
             type="button"
             onClick={goHome}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-[#7f13ec]/30 bg-[#7f13ec]/15 px-3 py-2 text-[#7f13ec] shadow-[0_0_15px_rgba(127,19,236,0.3)] transition-colors hover:bg-[#7f13ec]/25"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-3 py-2 text-primary shadow-glow transition-colors hover:bg-primary/25 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)] dark:hover:bg-[#7f13ec]/25"
           >
             <Home className="h-5 w-5" />
             <span>Home</span>
@@ -315,15 +340,16 @@ const CartaPensada = () => {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
           >
-            <Moon className="h-5 w-5" />
+            <Moon className="hidden h-5 w-5 dark:block" />
+            <Sun className="block h-5 w-5 dark:hidden" />
             <span>Mode</span>
           </button>
           <button
             type="button"
             onClick={cycleLanguage}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-[#7f13ec]/40 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
           >
             <LanguagesIcon className="h-5 w-5" />
             <span>{currentLanguage.toUpperCase()}</span>
@@ -331,7 +357,7 @@ const CartaPensada = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-white/70 transition-colors hover:border-red-400/50 hover:text-white"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-destructive/50 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-red-400/50 dark:hover:text-white"
           >
             <LogOut className="h-5 w-5" />
             <span>Logout</span>
