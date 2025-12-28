@@ -1,1 +1,4 @@
 project_id = "wslktfqkeynaxshytmvy"
+
+[functions.register-partner-lead]
+verify_jwt = false

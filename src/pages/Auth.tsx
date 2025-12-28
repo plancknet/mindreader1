@@ -251,26 +251,37 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
-      const { error } = isSignUp
-        ? await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: `${window.location.origin}/`,
-            },
-          })
-        : await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) throw error;
-
       if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+          },
+        });
+
+        if (error) throw error;
+
         toast({
           title: t('auth.toast.signupSuccessTitle'),
           description: t('auth.toast.signupSuccessDescription'),
         });
-      }
+        navigate('/');
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-      navigate('/');
+        if (error) throw error;
+
+        // Check if user needs to change password (partner lead first login)
+        const needsPasswordChange = data.user?.user_metadata?.needs_password_change;
+        
+        if (needsPasswordChange) {
+          // Redirect to password change page
+          navigate('/complete-signup?change=true');
+        } else {
+          navigate('/');
+        }
+      }
     } catch (error: any) {
       toast({
         title: t('auth.toast.authErrorTitle'),

@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Users, Ticket, DollarSign, ArrowRight, Play, Star, Zap, ChevronDown, MessageCircle, Mail, Phone } from "lucide-react";
+import { Sparkles, Users, Ticket, DollarSign, ArrowRight, Play, Star, Zap, ChevronDown, MessageCircle, Mail, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const LandingMagicos = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePartnerClick = () => {
     const contactSection = document.getElementById("contact-section");
@@ -21,6 +25,64 @@ const LandingMagicos = () => {
     const problemSection = document.getElementById("problem-section");
     if (problemSection) {
       problemSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  const handleSubmit = async () => {
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      toast({
+        title: "Email inválido",
+        description: "Por favor, insira um email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clean and validate WhatsApp
+    const cleanWhatsapp = whatsapp.replace(/\D/g, '');
+    if (cleanWhatsapp.length < 10 || cleanWhatsapp.length > 13) {
+      toast({
+        title: "WhatsApp inválido",
+        description: "Insira DDD + número (ex: 11999999999)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('register-partner-lead', {
+        body: { email, whatsapp }
+      });
+
+      if (error) throw error;
+
+      if (data?.error) {
+        toast({
+          title: "Erro no cadastro",
+          description: data.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Cadastro realizado!",
+        description: "Sua senha provisória é seu número de WhatsApp. Faça login para continuar.",
+      });
+
+      // Redirect to auth page
+      navigate('/auth');
+    } catch (error: any) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao cadastrar. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -380,15 +442,24 @@ const LandingMagicos = () => {
                 />
               </div>
               <Button
+                onClick={handleSubmit}
+                disabled={isLoading}
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30 h-auto whitespace-normal text-center"
+                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30 h-auto whitespace-normal text-center disabled:opacity-70"
               >
-                Quero meu cupom personalizado
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Cadastrando...
+                  </>
+                ) : (
+                  'Quero meu cupom personalizado'
+                )}
               </Button>
             </div>
 
             <p className="text-center text-gray-500 text-sm mt-6">
-              Entraremos em contato em até 24 horas úteis.
+              Sua senha provisória será seu número de WhatsApp (somente DDD + número).
             </p>
           </div>
         </div>
