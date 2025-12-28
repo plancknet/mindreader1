@@ -59,6 +59,42 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ind_criou_cupom: boolean
+          ind_interagiu: boolean
+          ind_jogou: boolean
+          ind_logou: boolean
+          user_id: string | null
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ind_criou_cupom?: boolean
+          ind_interagiu?: boolean
+          ind_jogou?: boolean
+          ind_logou?: boolean
+          user_id?: string | null
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ind_criou_cupom?: boolean
+          ind_interagiu?: boolean
+          ind_jogou?: boolean
+          ind_logou?: boolean
+          user_id?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       user_game_usage: {
         Row: {
           created_at: string

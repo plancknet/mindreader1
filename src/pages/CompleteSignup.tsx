@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,12 +13,15 @@ import { z } from 'zod';
 const CompleteSignup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  const isPasswordChange = searchParams.get('change') === 'true';
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -44,7 +47,7 @@ const CompleteSignup = () => {
       } else {
         toast({
           title: 'Sessão inválida',
-          description: 'Por favor, solicite um novo link de acesso.',
+          description: 'Por favor, faça login novamente.',
           variant: 'destructive',
         });
         navigate('/auth');
@@ -96,15 +99,21 @@ const CompleteSignup = () => {
 
     setIsLoading(true);
     try {
+      // Update password and remove the needs_password_change flag
       const { error } = await supabase.auth.updateUser({
         password: password,
+        data: {
+          needs_password_change: false
+        }
       });
 
       if (error) throw error;
 
       toast({
-        title: 'Cadastro concluído!',
-        description: 'Sua conta foi criada com sucesso.',
+        title: isPasswordChange ? 'Senha alterada!' : 'Cadastro concluído!',
+        description: isPasswordChange 
+          ? 'Sua nova senha foi definida com sucesso.'
+          : 'Sua conta foi criada com sucesso.',
       });
 
       navigate('/');
@@ -131,10 +140,12 @@ const CompleteSignup = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Complete seu cadastro
+            {isPasswordChange ? 'Altere sua senha' : 'Complete seu cadastro'}
           </CardTitle>
           <CardDescription className="text-base">
-            Defina uma senha para sua conta
+            {isPasswordChange 
+              ? 'Por segurança, defina uma nova senha para sua conta'
+              : 'Defina uma senha para sua conta'}
           </CardDescription>
         </CardHeader>
 
@@ -190,7 +201,7 @@ const CompleteSignup = () => {
 
             <Button type="submit" className="w-full h-11" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-              Concluir cadastro
+              {isPasswordChange ? 'Alterar senha' : 'Concluir cadastro'}
             </Button>
           </form>
         </CardContent>
