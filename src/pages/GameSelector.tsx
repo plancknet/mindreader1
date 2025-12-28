@@ -25,11 +25,14 @@ import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
 import { supabase } from '@/integrations/supabase/client';
 import { STORAGE_KEYS } from '@/constants/storageKeys';
+import { GAME_IDS } from '@/constants/games';
+import { checkGameAccess, type SubscriptionTier } from '@/lib/gameAccess';
 
-type Tier = 'FREE' | 'STANDARD' | 'INFLUENCER';
+type Tier = SubscriptionTier;
 
 type GameCard = {
   id: string;
+  gameId: number; // Maps to GAME_IDS for usage tracking
   translationKey: string;
   icon: React.ComponentType<LucideProps>;
   path: string;
@@ -147,8 +150,10 @@ const hasMindReaderCameraAccess = async () => {
 };
 
 const GAME_CARDS: GameCard[] = [
+  // Difficulty 1 - FREE unlimited
   {
     id: 'carta-pensada',
+    gameId: GAME_IDS.CARTA_PENSADA,
     translationKey: 'cartaPensada',
     icon: CardIcon,
     path: '/carta-pensada',
@@ -159,6 +164,7 @@ const GAME_CARDS: GameCard[] = [
   },
   {
     id: 'ponta-da-carta',
+    gameId: GAME_IDS.PONTA_DA_CARTA,
     translationKey: 'pontaCarta',
     icon: CardIcon,
     path: '/ponta-da-carta',
@@ -169,6 +175,7 @@ const GAME_CARDS: GameCard[] = [
   },
   {
     id: 'oi-sumida',
+    gameId: GAME_IDS.OI_SUMIDA,
     translationKey: 'oiSumida',
     icon: CardIcon,
     path: '/oi-sumida',
@@ -177,8 +184,10 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'FREE',
     difficulty: 1,
   },
+  // Difficulty 2 - FREE limited (3 uses)
   {
     id: 'jogo-da-velha-bruxa',
+    gameId: GAME_IDS.JOGO_VELHA_BRUXA,
     translationKey: 'jogoVelhaBruxa',
     icon: Wand2,
     path: '/jogo-da-velha-bruxa',
@@ -189,17 +198,18 @@ const GAME_CARDS: GameCard[] = [
   },
   {
     id: 'mystery-word',
+    gameId: GAME_IDS.MYSTERY_WORD,
     translationKey: 'mysteryWord',
     icon: Sparkles,
     path: '/mystery-word',
     instructionsPath: '/mystery-word/instructions',
     color: 'from-orange-500 to-red-500',
-    badgeKey: undefined,
     minTier: 'FREE',
     difficulty: 2,
   },
   {
     id: 'suas-palavras',
+    gameId: GAME_IDS.SUAS_PALAVRAS,
     translationKey: 'suasPalavras',
     icon: Sparkles,
     path: '/suas-palavras',
@@ -209,29 +219,43 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 2,
   },
   {
+    id: 'my-emojis',
+    gameId: GAME_IDS.MY_EMOJIS,
+    translationKey: 'myEmojis',
+    icon: Smile,
+    path: '/my-emojis',
+    instructionsPath: '/my-emojis/instructions',
+    color: 'from-yellow-400 to-lime-400',
+    badgeKey: 'underConstruction',
+    minTier: 'FREE',
+    difficulty: 2,
+  },
+  // Difficulty 3 - FREE limited (3 uses)
+  {
     id: 'mind-reader',
+    gameId: GAME_IDS.MIND_READER,
     translationKey: 'mindReader',
     icon: Brain,
     path: '/connect-mind',
     instructionsPath: '/mind-reader/instructions',
     color: 'from-purple-500 to-pink-500',
-    badgeKey: undefined,
     minTier: 'FREE',
     difficulty: 3,
   },
   {
     id: 'mental-conversation',
+    gameId: GAME_IDS.MENTAL_CONVERSATION,
     translationKey: 'mentalConversation',
     icon: MessageCircle,
     path: '/mental-conversation',
     instructionsPath: '/mental-conversation/instructions',
     color: 'from-blue-500 to-cyan-500',
-    badgeKey: undefined,
     minTier: 'FREE',
     difficulty: 3,
   },
   {
     id: 'mix-de-cartas',
+    gameId: GAME_IDS.MIX_DE_CARTAS,
     translationKey: 'mixDeCartas',
     icon: Shuffle,
     path: '/mind-reader/mix-de-cartas',
@@ -240,39 +264,45 @@ const GAME_CARDS: GameCard[] = [
     minTier: 'FREE',
     difficulty: 3,
   },
+  // Difficulty 4 - STANDARD unlimited
   {
     id: 'carta-mental',
+    gameId: GAME_IDS.CARTA_MENTAL,
     translationKey: 'cartaMental',
     icon: CardIcon,
     path: '/carta-mental',
     instructionsPath: '/carta-mental/instrucoes',
     color: 'from-sky-500 via-blue-500 to-indigo-600',
-    minTier: 'INFLUENCER',
+    minTier: 'STANDARD',
     difficulty: 4,
   },
   {
     id: 'raspa-carta',
+    gameId: GAME_IDS.RASPA_CARTA,
     translationKey: 'raspaCarta',
     icon: ScratchCardIcon,
     path: '/raspa-carta',
     instructionsPath: '/raspa-carta/instrucoes',
     color: 'from-cyan-400 via-sky-500 to-blue-600',
-    minTier: 'INFLUENCER',
+    minTier: 'STANDARD',
     difficulty: 4,
     requiresAdmin: true,
   },
   {
     id: 'papo-reto',
+    gameId: GAME_IDS.PAPO_RETO,
     translationKey: 'papoReto',
     icon: MessageCircle,
     path: '/papo-reto',
     instructionsPath: '/papo-reto/instrucoes',
     color: 'from-fuchsia-500 via-purple-500 to-blue-500',
-    minTier: 'INFLUENCER',
+    minTier: 'STANDARD',
     difficulty: 4,
   },
+  // Difficulty 5 - INFLUENCER only
   {
     id: 'eu-ja-sabia',
+    gameId: GAME_IDS.EU_JA_SABIA,
     translationKey: 'euJaSabia',
     icon: Play,
     path: '/eu-ja-sabia',
@@ -282,6 +312,7 @@ const GAME_CARDS: GameCard[] = [
   },
   {
     id: 'eu-ja-sabia-2',
+    gameId: GAME_IDS.EU_JA_SABIA_2,
     translationKey: 'euJaSabia2',
     icon: Play,
     path: '/eu-ja-sabia-2',
@@ -291,18 +322,8 @@ const GAME_CARDS: GameCard[] = [
     difficulty: 5,
   },
   {
-    id: 'my-emojis',
-    translationKey: 'myEmojis',
-    icon: Smile,
-    path: '/my-emojis',
-    instructionsPath: '/my-emojis/instructions',
-    color: 'from-yellow-400 to-lime-400',
-    badgeKey: 'underConstruction',
-    minTier: 'STANDARD',
-    difficulty: 2,
-  },
-  {
     id: 'google-mime',
+    gameId: GAME_IDS.GOOGLE_MIME,
     translationKey: 'googleMime',
     icon: Search,
     path: '/google-mime',
@@ -455,26 +476,40 @@ const GameSelector = () => {
             {filteredGames.map((game) => {
               const Icon = game.icon;
               const instructionsPath = game.instructionsPath;
-              const meetsTier = isAdmin || tierRank[subscriptionTier] >= tierRank[game.minTier];
-              const statusAllowed = !(game.minTier === 'INFLUENCER') || subscriptionStatus === 'active';
+              
+              // Get usage count for this specific game
+              const gameUsageCount = usageData?.gameUsage?.[game.gameId] ?? 0;
+              
+              // Check access using the new rules
+              const accessResult = checkGameAccess(subscriptionTier, game.difficulty, gameUsageCount);
+              
+              // Admin overrides
               const isInfluencerTier = subscriptionTier === 'INFLUENCER';
               const adminAllowed =
                 (!game.requiresAdmin || isAdmin || isInfluencerTier) &&
                 (!game.adminOnly || isAdmin);
-              const enabled = meetsTier && statusAllowed && adminAllowed;
+              
+              const enabled = isAdmin || (accessResult.canAccess && adminAllowed);
+              
+              // Build disabled message
               let disabledMessage: string | null = null;
               if (!adminAllowed) {
                 disabledMessage = game.adminOnly
                   ? 'Disponível apenas para administradores.'
                   : 'Disponível para administradores ou plano Influencer.';
-              } else if (!meetsTier) {
-                disabledMessage =
-                  subscriptionTier === 'FREE' || subscriptionTier === 'STANDARD'
-                    ? 'Níveis 4 e 5 exigem o plano Influencer.'
-                    : 'Disponível apenas para Influencer.';
-              } else if (!statusAllowed) {
-                disabledMessage = 'Ative sua assinatura para jogar.';
+              } else if (accessResult.reason === 'BLOCKED') {
+                if (game.difficulty === 5) {
+                  disabledMessage = 'Disponível apenas no plano Influencer.';
+                } else if (game.difficulty === 4) {
+                  disabledMessage = 'Disponível a partir do plano Standard.';
+                }
+              } else if (accessResult.reason === 'LIMIT_REACHED') {
+                disabledMessage = `Limite de ${accessResult.usageLimit} usos atingido. Faça upgrade para continuar.`;
               }
+              
+              // Show remaining uses for limited games
+              const showUsageInfo = !accessResult.isUnlimited && accessResult.canAccess && accessResult.usageLimit;
+              const remainingUses = showUsageInfo ? accessResult.usageLimit! - accessResult.usageCount : 0;
 
               const handleCardNavigation = async () => {
                 if (!enabled) return;
@@ -539,6 +574,12 @@ const GameSelector = () => {
 
                     {!enabled && disabledMessage && (
                       <p className="text-[11px] text-muted-foreground/60 dark:text-white/40">{disabledMessage}</p>
+                    )}
+
+                    {showUsageInfo && enabled && (
+                      <p className="text-[11px] text-amber-600 dark:text-amber-400">
+                        {remainingUses} uso{remainingUses !== 1 ? 's' : ''} restante{remainingUses !== 1 ? 's' : ''}
+                      </p>
                     )}
 
                     {instructionsPath && (

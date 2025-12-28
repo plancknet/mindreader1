@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { VALID_GAME_IDS } from '@/constants/games';
 
+interface GameAccessInfo {
+  canAccess: boolean;
+  isUnlimited: boolean;
+  usageLimit: number | null;
+  reason: 'UNLIMITED' | 'LIMITED' | 'BLOCKED' | 'LIMIT_REACHED';
+}
+
 interface UsageLimitData {
   canUse: boolean;
   isPremium: boolean;
@@ -13,6 +20,8 @@ interface UsageLimitData {
   couponGenerated?: boolean;
   reason: string;
   gameUsage?: Record<number, number>;
+  gameDifficulties?: Record<number, number>;
+  gameAccessInfo?: Record<number, GameAccessInfo>;
 }
 
 interface UseUsageLimitOptions {

@@ -22,3 +22,23 @@ export type GameId = typeof GAME_IDS[keyof typeof GAME_IDS];
 
 // Valid game IDs array for validation
 export const VALID_GAME_IDS = Object.values(GAME_IDS);
+
+// Map game IDs to their difficulty levels
+export const GAME_DIFFICULTIES: Record<GameId, number> = {
+  [GAME_IDS.CARTA_PENSADA]: 1,
+  [GAME_IDS.PONTA_DA_CARTA]: 1,
+  [GAME_IDS.OI_SUMIDA]: 1,
+  [GAME_IDS.JOGO_VELHA_BRUXA]: 2,
+  [GAME_IDS.MYSTERY_WORD]: 2,
+  [GAME_IDS.SUAS_PALAVRAS]: 2,
+  [GAME_IDS.MY_EMOJIS]: 2,
+  [GAME_IDS.MIND_READER]: 3,
+  [GAME_IDS.MENTAL_CONVERSATION]: 3,
+  [GAME_IDS.MIX_DE_CARTAS]: 3,
+  [GAME_IDS.CARTA_MENTAL]: 4,
+  [GAME_IDS.RASPA_CARTA]: 4,
+  [GAME_IDS.PAPO_RETO]: 4,
+  [GAME_IDS.EU_JA_SABIA]: 5,
+  [GAME_IDS.EU_JA_SABIA_2]: 5,
+  [GAME_IDS.GOOGLE_MIME]: 5,
+};
