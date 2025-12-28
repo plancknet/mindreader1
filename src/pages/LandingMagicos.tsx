@@ -155,8 +155,23 @@ const LandingMagicos = () => {
             </Button>
           </div>
 
+          {/* YouTube Video */}
+          <div className="mt-12 max-w-3xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 border border-purple-500/30">
+              <div className="aspect-video">
+                <iframe
+                  src="https://www.youtube.com/embed/fcQ8mFwg2eA"
+                  title="MindReader - Como funciona"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Scroll indicator */}
-          <div className="mt-16 animate-bounce">
+          <div className="mt-12 animate-bounce">
             <ChevronDown className="w-8 h-8 text-purple-400/50 mx-auto" />
           </div>
         </div>
@@ -363,10 +378,9 @@ const LandingMagicos = () => {
               </div>
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30 flex-col leading-tight"
+                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30 h-auto whitespace-normal text-center"
               >
-                <span>Quero meu cupom</span>
-                <span>personalizado</span>
+                Quero meu cupom personalizado
               </Button>
             </div>
 
