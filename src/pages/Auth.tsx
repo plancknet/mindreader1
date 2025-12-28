@@ -224,25 +224,16 @@ const Auth = () => {
       return;
     }
 
-    // Validate email and password with zod
-    const authSchema = z.object({
-      email: z.string().trim().email('Email inválido').max(255, 'Email muito longo'),
-      password: z.string()
-        .min(8, 'Senha deve ter no mínimo 8 caracteres')
-        .max(128, 'Senha muito longa')
-        .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
-        .regex(/[a-z]/, 'Senha deve conter letra minúscula')
-        .regex(/[0-9]/, 'Senha deve conter número'),
-    });
+    // Validate email only (password validation skipped for login to allow numeric passwords from partner leads)
+    const emailSchema = z.string().trim().email('Email inválido').max(255, 'Email muito longo');
 
     try {
-      authSchema.parse({ email, password });
+      emailSchema.parse(email);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const firstError = error.errors[0];
         toast({
           title: 'Erro de validação',
-          description: firstError.message,
+          description: 'Email inválido',
           variant: 'destructive',
         });
         return;
