@@ -363,10 +363,10 @@ const LandingMagicos = () => {
               </div>
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30"
+                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 text-white text-lg py-6 shadow-xl shadow-purple-500/30 flex-col leading-tight"
               >
-                Quero meu cupom personalizado
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <span>Quero meu cupom</span>
+                <span>personalizado</span>
               </Button>
             </div>
 
