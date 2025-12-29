@@ -310,4 +310,50 @@ export const ptBR = {
       }
     }
   },
+  premium: {
+    title: 'Escolha seu Plano',
+    upgradeRequired: 'Upgrade necessário',
+    gameBlocked: 'O jogo "{gameTitle}" requer o plano {planName} ou superior.',
+    free: {
+      name: 'Plano Free',
+      features: [
+        'Mágicas do Nível 1 ilimitadas',
+        'Mágicas dos Níveis 2 e 3 limitadas a 3 usos cada',
+      ],
+      button: 'Continuar no Free',
+    },
+    standard: {
+      name: 'Plano Standard',
+      features: [
+        'Uso Vitalício com apenas um pagamento',
+        'Níveis 1, 2, 3 e 4 desbloqueados sem limites',
+        'Atualizações futuras incluídas',
+        'Suporte Prioritário',
+      ],
+      button: 'Fazer Upgrade para Standard',
+      currentButton: 'Continuar no Standard',
+    },
+    influencer: {
+      name: 'Plano Influencer',
+      features: [
+        'Todos os benefícios do Vitalício',
+        'Nível 5 desbloqueado sem limites',
+        'Grupo MindReader e co-criação de novas mágicas',
+        'Cupons com 30% de Desconto para seguidores',
+        'Comissão por cada cupom resgatado',
+      ],
+      button: 'Fazer Upgrade para Influencer',
+      currentButton: 'Continuar no Influencer',
+    },
+    loading: 'Carregando...',
+    processingPayment: 'Processando pagamento...',
+    errorLoadingProfile: 'Não foi possível carregar suas informações.',
+    paymentError: 'Não foi possível iniciar o checkout. Tente novamente.',
+    paymentCanceled: 'Pagamento cancelado. Você pode tentar novamente quando quiser.',
+  },
+  welcome: {
+    title: 'Bem-vindo ao MindReader!',
+    subtitle: 'Agora você está pronto para impressionar seus amigos com mágicas mentais.',
+    startButton: 'Começar a Jogar',
+  },
 };

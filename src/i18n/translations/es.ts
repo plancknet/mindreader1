@@ -313,4 +313,50 @@ export const es = {
       }
     }
   },
+  premium: {
+    title: 'Elige tu Plan',
+    upgradeRequired: 'Upgrade requerido',
+    gameBlocked: 'El juego "{gameTitle}" requiere el plan {planName} o superior.',
+    free: {
+      name: 'Plan Free',
+      features: [
+        'Trucos del Nivel 1 ilimitados',
+        'Trucos de los Niveles 2 y 3 limitados a 3 usos cada uno',
+      ],
+      button: 'Continuar en Free',
+    },
+    standard: {
+      name: 'Plan Standard',
+      features: [
+        'Acceso vitalicio con un solo pago',
+        'Niveles 1, 2, 3 y 4 desbloqueados sin límites',
+        'Actualizaciones futuras incluidas',
+        'Soporte Prioritario',
+      ],
+      button: 'Actualizar a Standard',
+      currentButton: 'Continuar en Standard',
+    },
+    influencer: {
+      name: 'Plan Influencer',
+      features: [
+        'Todos los beneficios del Vitalicio',
+        'Nivel 5 desbloqueado sin límites',
+        'Grupo MindReader y co-creación de nuevos trucos',
+        'Cupones con 30% de descuento para seguidores',
+        'Comisión por cada cupón canjeado',
+      ],
+      button: 'Actualizar a Influencer',
+      currentButton: 'Continuar en Influencer',
+    },
+    loading: 'Cargando...',
+    processingPayment: 'Procesando pago...',
+    errorLoadingProfile: 'No se pudo cargar tu información.',
+    paymentError: 'No se pudo iniciar el checkout. Inténtalo de nuevo.',
+    paymentCanceled: 'Pago cancelado. Puedes intentarlo de nuevo cuando quieras.',
+  },
+  welcome: {
+    title: '¡Bienvenido a MindReader!',
+    subtitle: 'Ahora estás listo para impresionar a tus amigos con trucos mentales.',
+    startButton: 'Empezar a Jugar',
+  },
 };

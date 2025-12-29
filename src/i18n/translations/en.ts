@@ -2,8 +2,8 @@ export const en = {
   common: {
     back: 'Back',
     continue: 'Continue',
-    understood: 'Understood',
-    playAgain: 'Play Again',
+    understood: 'Got it',
+    playAgain: 'Read Again',
     backHome: 'Back to Home',
     select: 'Select',
     send: 'Send',
@@ -79,7 +79,7 @@ export const en = {
   instructions: {
     title: 'How It Works',
     subtitle: 'Understand the mental detection process',
-    videoTitle: 'Watch the Quadrante Mágico video',
+    videoTitle: 'Watch the Magic Quadrant video',
     videoDescription: 'Preview the mobile-friendly walkthrough before starting the game.',
     step1Title: 'Head Movement Detection',
     step1Text: 'We can identify which way you slightly turned your head.',
@@ -91,38 +91,35 @@ export const en = {
     step4Text: 'When typing the start word, you can replace the LAST LETTER with a letter that indicates your thought word. Since each word starts with a different letter, just type that letter at the end. For example: if you thought of "Brazil", type "STARB" instead of "START".',
     tipsTitle: 'Tips for Better Detection',
     tip1: 'Keep your position during the countdown',
-    tip2: 'And most importantly. Be DISCREET, make SMOOTH MOVEMENTS.',
+    tip2: 'And most importantly: Be DISCREET, make SMOOTH MOVEMENTS.',
   },
   mentalConversationInstructions: {
-    title: 'How Mental Conversation Works',
-    subtitle: 'Learn to play this guessing game',
-    videoTitle: 'Watch the highlighted video',
+    title: 'Mental Conversation Instructions',
+    subtitle: 'Follow the cards to master the flow',
+    videoTitle: 'Watch the demo video',
     videoDescription: 'Preview the mobile-friendly walkthrough before starting Mental Conversation.',
-    step1Title: 'Think of a Word',
-    step1Text: 'Think of a word and keep it secret. It can be any word you want.',
-    step2Title: 'Chat with the AI',
-    step2Text: 'The AI will ask questions to try to guess your word. Answer only with YES or NO.',
-    step3Title: 'Be Honest',
-    step3Text: 'For the game to work, you need to answer the AI\'s questions honestly.',
-    step4Title: 'Magical Revelation',
-    step4Text: 'After some questions, the AI will reveal your word with a special magical effect!',
-    tipsTitle: 'Tips for Better Experience',
-    tip1: 'Choose clear words, not too abstract',
-    tip2: 'Answer questions consistently',
+    step1Title: 'Chosen Category',
+    step1Text: 'The category is determined by the word count in the first interaction. 1 word = Animal, 2 words = Fruit, 3 words = Country.',
+    step2Title: 'Revealing Secret Letters',
+    step2Text: 'In the next interactions, the FIRST letter of the LAST word reveals one letter of the secret word. Repeat until you indicate three letters.',
+    step3Title: 'List of Possibilities',
+    step3Text: 'If the app finds more than one match for the category and three letters, it will show the available options.',
+    step4Title: 'Final Selection',
+    step4Text: 'Say 1 word to indicate the 1st option. Say 2 words to indicate the 2nd option. And so on...',
   },
   mysteryWordInstructions: {
     title: 'How Mystery Word Works',
-    subtitle: 'Learn to play this telepathy game',
-    videoTitle: 'Watch the highlight video',
-    videoDescription: 'Review the mobile-friendly walkthrough before you start the routine.',
-    step1Title: 'Chosen Category',
-    step1Text: 'The number of words in the first interaction defines the category: 1 word = Animal, 2 words = Fruit, 3 words = Country.',
-    step2Title: 'Revealing the Secret Letters',
-    step2Text: 'In the next interactions, the FIRST letter of the LAST word reveals one letter of the secret word. Repeat until you have three letters.',
-    step3Title: 'List of Possibilities',
-    step3Text: 'If more than one word matches the category and letters, the app will display the available options.',
-    step4Title: 'Final Selection',
-    step4Text: 'Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
+    subtitle: 'Learn to use this telepathy mode',
+    videoTitle: 'Watch the step-by-step video',
+    videoDescription: 'Preview the mobile-friendly tutorial before starting the presentation.',
+    step1Title: 'Pay Attention to the Opening Phrase',
+    step1Text: 'The app will display an opening phrase. Carefully remember the last word of that phrase, as it determines everything else.',
+    step2Title: 'Count the Letters',
+    step2Text: 'Count how many letters the LAST word of the opening phrase has. Example: if the last word is "Mystery", it has 7 letters.',
+    step3Title: 'Position of the Mystery Word',
+    step3Text: 'The number of letters indicates at which position your friend\'s word will appear. In the example above, the word will appear at position 7.',
+    step4Title: 'Defining the Mystery Word',
+    step4Text: 'If more than one word is displayed, your next interaction defines the correct option: respond with 1 word for the 1st option, 2 words for the 2nd option, and 3 words for the 3rd option.',
   },
   mysteryWord: {
     title: 'Mystery Word',
@@ -132,17 +129,17 @@ export const en = {
     inputPlaceholder: 'Your secret word...',
     startPresentation: 'Start Presentation',
     stopButton: 'Stop',
-    stoppedTitle: 'I read your mind! ✨',
+    stoppedTitle: 'I read your mind!',
     stoppedSubtitle: 'Did I get it right?',
     menuButton: 'Back to Menu',
-    playAgain: 'Play Again',
+    playAgain: 'Use Again',
     phrases: "Let's get started!||Ready for a mind-reading game?||Can I begin reading your thoughts?||Shall we awaken our telepathy powers?||How about starting the psychic challenge?"
   },
   mixDeCartas: {
     chooseTitle: 'Choose a Card',
     chooseSubtitle: 'Select any card from the deck',
-    revealTitle: 'Secret Revelation',
-    revealSubtitle: 'Click Shuffle to generate new revelation cards',
+    revealTitle: 'Card Mix',
+    revealSubtitle: 'Tap Shuffle to generate new revelation cards',
     chosenCard: '',
     shuffleButton: 'Shuffle',
     resetButton: 'Reset',
@@ -150,17 +147,17 @@ export const en = {
   },
   pontaCarta: {
     chooseTitle: 'Card Edge',
-    chooseSubtitle: 'Pick one of the special cards and shuffle to flip it upside down.',
+    chooseSubtitle: 'Select one of the cards and shuffle.',
     shuffleButton: 'Shuffle',
-    hint: 'Select a card and shuffle as many times as you want',
+    hint: '',
     resetButton: 'Reset',
   },
   cartaMental: {
-    title: 'Carta Mental',
-    subtitle: 'Use the MindReader-branded back to silently transmit the card your friend picked.',
-    gridInstruction: 'Tap one of the 12 invisible positions. Each tap represents cards from 2 to K.',
-    aceHint: 'Leave the grid untouched to signal that the thought-of card was an Ace.',
-    suitsInstruction: 'Use the ?Reveal card? bar and press one of its four invisible segments to choose the suit.',
+    title: 'Mental Card',
+    subtitle: 'Use the custom MindReader back to mentally transmit the card chosen by your friend.',
+    gridInstruction: 'Discreetly tap one of the 12 invisible positions. Each tap represents cards from 2 to K.',
+    aceHint: 'If no tap is made, you indicate that the thought-of card was an Ace.',
+    suitsInstruction: 'Use the Reveal card button and press one of the four quadrants to indicate the desired suit.',
     revealButton: 'Reveal card',
     revealButtonAria: 'Reveal card by choosing the {suit} suit',
     rankButtonAria: 'Select value {rank}',
@@ -168,7 +165,7 @@ export const en = {
     noRank: 'No value selected (assuming Ace)',
     revealedTitle: 'Selected card',
     revealedDescription: '{rank} of {suit}',
-    noSuitSelected: 'Tap one side of the ?Reveal card? bar to show the suit.',
+    noSuitSelected: 'Tap one side of the Reveal card button to show the suit.',
     reset: 'Clear selection',
     suits: {
       spades: 'Spades',
@@ -178,37 +175,37 @@ export const en = {
     },
   },
   raspaCarta: {
-    title: 'Raspa Carta',
-    subtitle: 'Secretly pick a Jack, Queen, or King and reveal it by scratching the screen.',
-    gridInstruction: 'Use the first column for Jacks, the second for Queens, and the third for Kings (Spades, Hearts, Diamonds, Clubs).',
-    scratchHint: 'Slide your finger like a digital eraser to gradually uncover the chosen card.',
-    revealedMessage: 'Full reveal complete! Pick another card to keep the mystery going.',
-    reset: 'Pick another card',
+    title: 'Scratch Card',
+    subtitle: 'What is your favorite face card (Jack, Queen or King)? Which suit?',
+    gridInstruction: '',
+    scratchHint: 'Slide your finger like a magic eraser to reveal the chosen card.',
+    revealedMessage: 'Card revealed! Choose another card to continue the presentation.',
+    reset: 'Choose another card',
     columns: {
-      jacks: 'Jacks',
-      queens: 'Queens',
-      kings: 'Kings',
+      jacks: '',
+      queens: '',
+      kings: '',
     },
     faces: {
-      jack: 'Jack',
-      queen: 'Queen',
-      king: 'King',
+      jack: '',
+      queen: '',
+      king: '',
     },
     gridButtonAria: 'Select the {rank} of {suit}',
   },
   mentalConversation: {
-    instructions: '1. Your first reply reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three replies, the first letter of the LAST word tells the app the first letter of your friend’s word. Repeat this three times.\n3. If the app still hasn’t guessed after three letters, it will display a list of possibilities.\n4. Send one more reply with 1, 2, or 3 words to indicate whether the answer is the 1st, 2nd, or 3rd option.',
+    instructions: '1. Your first interaction reveals the chosen category (1 word = Animal, 2 words = Fruit, 3 words = Country).\n2. In the next three interactions, the first letter of the LAST word indicates the first letter of your friend\'s word. Repeat this 3 times.\n3. If the app still hasn\'t guessed after three letters, it will display a list of possibilities.\n4. Make one more interaction with 1, 2, or 3 words to indicate whether the correct word is the 1st, 2nd, or 3rd option.',
     title: 'Mental Conversation',
     messages: {
       greeting: "Hi! I'm an artificial intelligence with mind-reading powers. 🧠✨\n\nAsk your friend to think of an ANIMAL, FRUIT, or COUNTRY. Don't tell me the category or the word, just ask them to think about it!",
       readyCheck: 'Has your friend already chosen and is ready to begin?',
-      startCollecting: "Perfect! I'll ask a few questions to read your friend's mind... Answer naturally! 🔮\n\nWhat is your favorite color?",
+      startCollecting: "Perfect! I'll ask a few questions to read your friend's mind... Answer naturally! 📝\n\nWhat is your favorite color?",
       askHobby: 'Interesting! And what is your favorite hobby?',
       askSeason: 'Great! Last question: what is your favorite season of the year?',
-      singleResult: '🎯 Amazing! I am sensing a very strong energy...\n\n✨ The word your friend thought of is:\n\n🌟 **{word}** 🌟\n\nAm I right? ✨',
-      multipleOptions: 'Hmm... I’m receiving some signals. n\nThese are the possibilities I’m picking up: {options}\n\nAm I on the right track?',
-      noMatch: 'Oops! I couldn’t quite capture the word. Shall we try again? Type "reiniciar" to start over.',
-      finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nI read your friend’s mind! The category was {category} and the word was {word}! 🧠✨\n\nWant to play again? Type anything to go back to the menu!'
+      singleResult: '🎯 Amazing! I am sensing a very strong energy...\n\n🎉 The word your friend thought of is:\n\n🔮 **{word}** 🔮\n\nAm I right? 🎉',
+      multipleOptions: 'Hmm... I\'m receiving some signals.\n\nThese are the possibilities I\'m picking up: {options}\n\nAm I on the right track?',
+      noMatch: 'Oops! I couldn\'t quite capture the word. Shall we try again? Type "restart" to start over.',
+      finalReveal: '🎊 EUREKA!\n\n🔮 **{word}** 🔮\n\nI read your friend\'s mind! The category was {category} and the word was {word}! 🧠✨\n\nWant to play again? Type anything to go back to the menu!'
     },
     status: {
       processingAudio: 'Processing audio...',
@@ -236,28 +233,28 @@ export const en = {
     selectedLetter: 'Letter {letter} selected.',
     toast: {
       selectLetterTitle: 'Select a letter',
-      selectLetterDescription: 'Tap the hidden grid on the card to send the next letter.',
+      selectLetterDescription: 'Discreetly tap the card to send the next letter.',
     },
   },
   gameSelector: {
     heading: 'Mind Readers',
     subheading: 'Choose a mind-reading experience',
-    play: 'Play',
+    play: 'Start',
     comingSoon: 'Coming soon',
     underConstruction: 'Under construction',
-    modalTitle: 'How to Play',
+    modalTitle: 'How?',
     cards: {
       mindReader: {
         title: 'Magic Quadrant',
-        description: 'Read minds through subtle head movements'
+        description: 'In which quadrant is the chosen word?'
       },
       mixDeCartas: {
         title: 'Card Mix',
-        description: 'Encode a hidden card using a six-card color pattern'
+        description: 'Connect your mind and discover the card'
       },
       pontaCarta: {
         title: 'Card Edge',
-        description: 'Select special cards and shuffle to flip them upside down'
+        description: 'Select special cards and reveal only the edge'
       },
       oiSumida: {
         title: 'Hi There',
@@ -268,16 +265,16 @@ export const en = {
         description: 'Challenge the witch in a mystical X and O duel'
       },
       cartaMental: {
-        title: 'Carta Mental',
-        description: 'Use the secret back to reveal both value and suit'
+        title: 'Mental Card',
+        description: 'Connect your friend\'s mind and discover the card'
       },
       raspaCarta: {
-        title: 'Raspa Carta',
-        description: 'Scratch the magic foil to reveal a hidden Jack, Queen, or King'
+        title: 'Scratch Card',
+        description: 'Scratch the digital screen to reveal the secret King, Queen or Jack'
       },
       suasPalavras: {
         title: 'Your Words',
-        description: 'Enter five personal words to reveal the secret'
+        description: 'Use five personal words to reveal the secret'
       },
       cartaPensada: {
         title: 'Thought Card',
@@ -288,8 +285,8 @@ export const en = {
         description: 'Chat with an AI that tries to guess your word'
       },
       papoReto: {
-        title: 'Papo Reto',
-        description: 'Use the card prompts to reveal the chosen word.'
+        title: 'Straight Talk',
+        description: 'Questions inside the card to reveal the thought word.'
       },
       mysteryWord: {
         title: 'Mystery Word',
@@ -297,7 +294,7 @@ export const en = {
       },
       euJaSabia: {
         title: 'I Already Knew',
-        description: 'Capture the chosen number before revealing it with the video'
+        description: 'Record the thought number and reveal it during the video'
       },
       euJaSabia2: {
         title: 'I Already Knew 2',
@@ -312,5 +309,51 @@ export const en = {
         description: 'Simulate a Google search and reveal the thought celebrity'
       }
     }
+  },
+  premium: {
+    title: 'Choose Your Plan',
+    upgradeRequired: 'Upgrade required',
+    gameBlocked: 'The game "{gameTitle}" requires the {planName} plan or higher.',
+    free: {
+      name: 'Free Plan',
+      features: [
+        'Level 1 magic tricks unlimited',
+        'Level 2 and 3 magic tricks limited to 3 uses each',
+      ],
+      button: 'Continue on Free',
+    },
+    standard: {
+      name: 'Standard Plan',
+      features: [
+        'Lifetime access with a single payment',
+        'Levels 1, 2, 3 and 4 unlocked without limits',
+        'Future updates included',
+        'Priority Support',
+      ],
+      button: 'Upgrade to Standard',
+      currentButton: 'Continue on Standard',
+    },
+    influencer: {
+      name: 'Influencer Plan',
+      features: [
+        'All Lifetime benefits',
+        'Level 5 unlocked without limits',
+        'MindReader group and co-creation of new tricks',
+        '30% discount coupons for followers',
+        'Commission for each redeemed coupon',
+      ],
+      button: 'Upgrade to Influencer',
+      currentButton: 'Continue on Influencer',
+    },
+    loading: 'Loading...',
+    processingPayment: 'Processing payment...',
+    errorLoadingProfile: 'Could not load your information.',
+    paymentError: 'Could not start checkout. Please try again.',
+    paymentCanceled: 'Payment canceled. You can try again whenever you want.',
+  },
+  welcome: {
+    title: 'Welcome to MindReader!',
+    subtitle: 'You are now ready to amaze your friends with mental magic tricks.',
+    startButton: 'Start Playing',
   },
 };
