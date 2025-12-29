@@ -24,23 +24,21 @@ interface UserProfile {
 
 const PLAN_FEATURES = {
   FREE: [
-    '3 mágicas gratuitas por dia',
-    'Nível 1: Ponta da Carta, Palavra Misteriosa, Suas Palavras',
-    'Nível 2: Quadrante Mágico',
-    'Nível 3: Conversa Mental e Mix de Cartas',
+    'Mágicas do Nível 1 ilimitadas',
+    'Mágicas dos Níveis 2 e 3 limitadas a 3 usos cada',
   ],
   STANDARD: [
-    'Uso vitalício ilimitado',
-    'Todos os jogos dos níveis 1, 2 e 3',
+    'Uso Vitalício com apenas um pagamento',
+    'Níveis 1, 2, 3 e 4 desbloqueados sem limites',
     'Atualizações futuras incluídas',
-    'Suporte prioritário',
+    'Suporte Prioritário',
   ],
   INFLUENCER: [
     'Todos os benefícios do Vitalício',
-    'Nível 4: Carta Mental, Raspa Carta, Papo Reto',
-    'Nível 5: Eu Já Sabia e Eu Já Sabia 2',
-    'Cupons com 30% para seguidores + R$ 6 por resgate',
-    'Grupo iMindReaders e co-criação de novas mágicas',
+    'Nível 5 desbloqueado sem limites',
+    'Grupo MindReader e co-criação de novas mágicas',
+    'Cupons com 30% de Desconto para seguidores',
+    'Comissão por cada cupom resgatado',
   ],
 } as const;
 
