@@ -7,7 +7,8 @@ import { zhCN } from '@/i18n/translations/zh-CN';
 import { fr } from '@/i18n/translations/fr';
 import { it } from '@/i18n/translations/it';
 
-const translations: Record<string, typeof ptBR> = {
+// Use Record<string, any> to allow partial translations with fallback
+const translations: Record<string, Record<string, any>> = {
   'pt-BR': ptBR,
   'en': en,
   'es': es,
