@@ -59,7 +59,7 @@ const Result = () => {
     } catch (err) {
       console.error('Failed to sign out', err);
     } finally {
-      navigate('/');
+      navigate('/game-selector');
     }
   };
 

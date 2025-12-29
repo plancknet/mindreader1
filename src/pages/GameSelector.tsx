@@ -378,7 +378,7 @@ const GameSelector = () => {
     return games.filter((game) => selectedLevel === null || game.difficulty === selectedLevel);
   }, [games, selectedLevel]);
 
-  const goHome = () => navigate('/');
+  const goHome = () => navigate('/game-selector');
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
@@ -406,7 +406,7 @@ const GameSelector = () => {
     } catch (error) {
       console.error('Failed to sign out', error);
     } finally {
-      navigate('/');
+      navigate('/game-selector');
     }
   };
 

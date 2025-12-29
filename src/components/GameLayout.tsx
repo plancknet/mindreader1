@@ -16,7 +16,7 @@ export const GameLayout = ({ children }: GameLayoutProps) => {
   const { language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
 
-  const goHome = () => navigate('/');
+  const goHome = () => navigate('/game-selector');
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
