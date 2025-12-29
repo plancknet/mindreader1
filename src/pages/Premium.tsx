@@ -257,45 +257,45 @@ const Premium = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Free Plan */}
-            <Card className={`border-border bg-card dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 ${profile?.subscription_tier === 'FREE' ? 'ring-2 ring-primary dark:ring-[#7f13ec]' : ''}`}>
-              <CardHeader>
-                <div className="flex items-center gap-2 text-primary dark:text-[#7f13ec] font-semibold">
-                  <Shield className="w-5 h-5" />
-                  Plano Free
-                  {profile?.subscription_tier === 'FREE' && (
-                    <span className="ml-auto text-xs bg-primary/10 dark:bg-[#7f13ec]/10 text-primary dark:text-[#7f13ec] px-2 py-1 rounded">Seu plano</span>
-                  )}
-                </div>
-                <CardTitle className="text-3xl font-bold text-foreground dark:text-white">R$ 0</CardTitle>
-                <p className="text-muted-foreground text-sm dark:text-white/60">Uso limitado a três execuções</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-2 text-sm text-muted-foreground dark:text-white/70">
-                  {PLAN_FEATURES.FREE.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-primary dark:text-[#7f13ec]" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  variant={profile?.subscription_tier === 'FREE' ? 'default' : 'outline'}
-                  onClick={handleFreePlan}
-                  disabled={freeLoading || (usageData ? usageData.usageCount >= usageData.freeLimit : false)}
-                  className="w-full"
-                >
-                  {profile?.subscription_tier === 'FREE'
-                    ? 'Plano atual'
-                    : usageData && usageData.usageCount >= usageData.freeLimit
-                      ? 'Limite atingido'
-                      : freeLoading
-                        ? 'Confirmando...'
-                        : 'Continuar no Free'}
-                </Button>
-              </CardContent>
-            </Card>
+          <div className={`grid gap-6 ${profile?.subscription_tier === 'STANDARD' || profile?.subscription_tier === 'INFLUENCER' ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
+            {/* Free Plan - Hidden for STANDARD and INFLUENCER users */}
+            {profile?.subscription_tier !== 'STANDARD' && profile?.subscription_tier !== 'INFLUENCER' && (
+              <Card className={`border-border bg-card dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 ${profile?.subscription_tier === 'FREE' ? 'ring-2 ring-primary dark:ring-[#7f13ec]' : ''}`}>
+                <CardHeader>
+                  <div className="flex items-center gap-2 text-primary dark:text-[#7f13ec] font-semibold">
+                    <Shield className="w-5 h-5" />
+                    Plano Free
+                    {profile?.subscription_tier === 'FREE' && (
+                      <span className="ml-auto text-xs bg-primary/10 dark:bg-[#7f13ec]/10 text-primary dark:text-[#7f13ec] px-2 py-1 rounded">Seu plano</span>
+                    )}
+                  </div>
+                  <CardTitle className="text-3xl font-bold text-foreground dark:text-white">R$ 0</CardTitle>
+                  <p className="text-muted-foreground text-sm dark:text-white/60">Uso limitado a três execuções</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-2 text-sm text-muted-foreground dark:text-white/70">
+                    {PLAN_FEATURES.FREE.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-primary dark:text-[#7f13ec]" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    variant={profile?.subscription_tier === 'FREE' ? 'default' : 'outline'}
+                    onClick={handleFreePlan}
+                    disabled={freeLoading}
+                    className="w-full"
+                  >
+                    {freeLoading
+                      ? 'Confirmando...'
+                      : profile?.subscription_tier === 'FREE'
+                        ? 'Continuar no Free'
+                        : 'Selecionar Free'}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Standard Plan */}
             <Card className={`border-border bg-card dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 shadow-lg ${profile?.subscription_tier === 'STANDARD' ? 'ring-2 ring-orange-500' : ''}`}>
@@ -320,14 +320,14 @@ const Premium = () => {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => startCheckout('STANDARD')}
-                  disabled={checkoutLoading === 'STANDARD' || profile?.subscription_tier === 'STANDARD'}
+                  onClick={() => profile?.subscription_tier === 'STANDARD' ? navigate('/game-selector') : startCheckout('STANDARD')}
+                  disabled={checkoutLoading === 'STANDARD'}
                   className="w-full bg-orange-500 hover:bg-orange-500/90"
                 >
-                  {profile?.subscription_tier === 'STANDARD'
-                    ? 'Plano atual'
-                    : checkoutLoading === 'STANDARD' 
-                      ? 'Redirecionando...' 
+                  {checkoutLoading === 'STANDARD'
+                    ? 'Redirecionando...'
+                    : profile?.subscription_tier === 'STANDARD'
+                      ? 'Continuar no Vitalício'
                       : 'Assinar Vitalício'}
                 </Button>
               </CardContent>
@@ -369,14 +369,14 @@ const Premium = () => {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => startCheckout('INFLUENCER')}
-                    disabled={checkoutLoading === 'INFLUENCER' || (profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active')}
+                    onClick={() => profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active' ? navigate('/game-selector') : startCheckout('INFLUENCER')}
+                    disabled={checkoutLoading === 'INFLUENCER'}
                     className="w-full bg-purple-600 hover:bg-purple-600/90"
                   >
-                    {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active'
-                      ? 'Plano atual'
-                      : checkoutLoading === 'INFLUENCER' 
-                        ? 'Redirecionando...' 
+                    {checkoutLoading === 'INFLUENCER'
+                      ? 'Redirecionando...'
+                      : profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active'
+                        ? 'Continuar no Influencer'
                         : 'Assinar Influencer'}
                   </Button>
                 )}
