@@ -1,4 +1,4 @@
-﻿import { Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -7,22 +7,13 @@ import {
 } from '@/components/InstructionsLayout';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
-
-const steps = [
-  'Nesta mágica, perceba que todas as cartas têm os naipes centrais apontando para cima. Por exemplo, veja no As de Espadas como o naipe parece uma seta apontando para cima. O mesmo ocorre para todas as outras cartas desta mágica.',
-  'Assim que o usuário escolher uma das cartas e clicar em "Embaralhar", a carta escolhida será a única com o naipe apontando para baixo e você facilmente conseguirá identificar a carta escolhida pelo seu amigo.',
-  'A única exceção é a carta 7 de Ouros. Caso o 7 de Ouros seja selecionado, o naipe central, ao invés de estar na parte superior da carta, estará na parte inferior da carta.',
-  'Pronto! Agora que o truque foi revelado, ensaie bastante antes de fazer com seus amigos.',
-];
-
-const highlightedCards: Array<{ rank: string; suit: SuitName; label: string }> = [
-  { rank: 'A', suit: 'spades', label: 'As de Espadas' },
-  { rank: 'A', suit: 'hearts', label: 'As de Copas' },
-  { rank: '7', suit: 'clubs', label: '7 de Paus' },
-  { rank: '7', suit: 'diamonds', label: '7 de Ouros' },
-];
+import { useTranslation } from '@/hooks/useTranslation';
 
 const PontaCartaInstructions = () => {
+  const { t } = useTranslation();
+  const steps = t('pontaCartaInstructions.steps') as string[];
+  const highlightedCards = t('pontaCartaInstructions.highlightedCards') as Array<{ rank: string; suit: SuitName; label: string }>;
+
   const cardPreviews = highlightedCards.map((card) => ({
     ...card,
     imageSrc: getCardImageSrc(card.rank, card.suit),
@@ -31,9 +22,9 @@ const PontaCartaInstructions = () => {
   return (
     <InstructionsLayout
       icon={Sparkles}
-      label="Ponta da Carta"
-      title="Revelando o Segredo"
-      subtitle="Entenda o mecanismo antes de apresentar."
+      label={t('pontaCartaInstructions.label')}
+      title={t('pontaCartaInstructions.title')}
+      subtitle={t('pontaCartaInstructions.subtitle')}
       backPath="/ponta-da-carta"
     >
       <style>{`
@@ -47,17 +38,17 @@ const PontaCartaInstructions = () => {
       `}</style>
       <InstructionsCard>
         <div className="space-y-5">
-          <InstructionsSection title="Passo a passo">
+          <InstructionsSection title={t('pontaCartaInstructions.stepByStep')}>
             <div className="space-y-3">
               {steps.map((step, index) => (
-                <InstructionStep key={step} number={index + 1}>
+                <InstructionStep key={index} number={index + 1}>
                   {step}
                 </InstructionStep>
               ))}
             </div>
           </InstructionsSection>
 
-          <InstructionsSection title="Observe a rotação dos naipes importantes">
+          <InstructionsSection title={t('pontaCartaInstructions.rotationTitle')}>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {cardPreviews.map((card) => (
                 <div key={`${card.rank}-${card.suit}`} className="text-center space-y-2">

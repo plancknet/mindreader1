@@ -21,7 +21,7 @@ export const useTranslation = () => {
   const { language } = useLanguageContext();
   const fallbackLanguage = DEFAULT_LANGUAGE;
 
-  const t = (key: string, vars?: Record<string, string | number>): string => {
+  const t = (key: string, vars?: Record<string, string | number>): any => {
     const keys = key.split('.');
     let value: any = translations[language] || translations[fallbackLanguage];
 
@@ -38,9 +38,10 @@ export const useTranslation = () => {
       }
     }
 
-    if (typeof value !== 'string') return key;
+    // Return arrays and objects as-is
+    if (typeof value !== 'string') return value;
 
-    // Replace variables
+    // Replace variables in strings
     if (vars) {
       return Object.entries(vars).reduce((str, [varKey, varValue]) => {
         return str.replace(new RegExp(`\\{${varKey}\\}`, 'g'), String(varValue));
