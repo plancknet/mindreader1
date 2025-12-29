@@ -313,4 +313,50 @@ export const fr = {
       }
     }
   },
+  premium: {
+    title: 'Choisissez votre Plan',
+    upgradeRequired: 'Mise à niveau requise',
+    gameBlocked: 'Le jeu "{gameTitle}" nécessite le plan {planName} ou supérieur.',
+    free: {
+      name: 'Plan Free',
+      features: [
+        'Tours de niveau 1 illimités',
+        'Tours de niveaux 2 et 3 limités à 3 utilisations chacun',
+      ],
+      button: 'Continuer avec Free',
+    },
+    standard: {
+      name: 'Plan Standard',
+      features: [
+        'Accès à vie avec un seul paiement',
+        'Niveaux 1, 2, 3 et 4 débloqués sans limites',
+        'Mises à jour futures incluses',
+        'Support Prioritaire',
+      ],
+      button: 'Passer à Standard',
+      currentButton: 'Continuer avec Standard',
+    },
+    influencer: {
+      name: 'Plan Influencer',
+      features: [
+        'Tous les avantages du plan à vie',
+        'Niveau 5 débloqué sans limites',
+        'Groupe MindReader et co-création de nouveaux tours',
+        'Coupons avec 30% de réduction pour les abonnés',
+        'Commission pour chaque coupon utilisé',
+      ],
+      button: 'Passer à Influencer',
+      currentButton: 'Continuer avec Influencer',
+    },
+    loading: 'Chargement...',
+    processingPayment: 'Traitement du paiement...',
+    errorLoadingProfile: 'Impossible de charger vos informations.',
+    paymentError: 'Impossible de démarrer le paiement. Veuillez réessayer.',
+    paymentCanceled: 'Paiement annulé. Vous pouvez réessayer quand vous le souhaitez.',
+  },
+  welcome: {
+    title: 'Bienvenue sur MindReader !',
+    subtitle: 'Vous êtes maintenant prêt à impressionner vos amis avec des tours de magie mentale.',
+    startButton: 'Commencer à Jouer',
+  },
 };

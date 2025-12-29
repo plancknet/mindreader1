@@ -313,4 +313,50 @@ export const zhCN = {
       }
     }
   },
+  premium: {
+    title: '选择您的计划',
+    upgradeRequired: '需要升级',
+    gameBlocked: '游戏 "{gameTitle}" 需要 {planName} 或更高的计划。',
+    free: {
+      name: 'Free 计划',
+      features: [
+        '1级魔术无限使用',
+        '2级和3级魔术各限3次使用',
+      ],
+      button: '继续使用 Free',
+    },
+    standard: {
+      name: 'Standard 计划',
+      features: [
+        '一次付费，终身使用',
+        '1、2、3、4级全部解锁无限制',
+        '包含未来更新',
+        '优先支持',
+      ],
+      button: '升级到 Standard',
+      currentButton: '继续使用 Standard',
+    },
+    influencer: {
+      name: 'Influencer 计划',
+      features: [
+        '所有终身版权益',
+        '5级解锁无限制',
+        'MindReader群组和共创新魔术',
+        '粉丝专属30%折扣券',
+        '每张兑换券获得佣金',
+      ],
+      button: '升级到 Influencer',
+      currentButton: '继续使用 Influencer',
+    },
+    loading: '加载中...',
+    processingPayment: '处理支付中...',
+    errorLoadingProfile: '无法加载您的信息。',
+    paymentError: '无法启动结账。请重试。',
+    paymentCanceled: '支付已取消。您可以随时重试。',
+  },
+  welcome: {
+    title: '欢迎来到 MindReader！',
+    subtitle: '现在您已准备好用心灵魔术惊艳您的朋友了。',
+    startButton: '开始游戏',
+  },
 };
