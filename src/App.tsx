@@ -32,9 +32,7 @@ import MyEmojis from "./pages/MyEmojis/Index";
 import MyEmojisInstructions from "./pages/MyEmojis/Instructions";
 import Welcome from "./pages/Welcome";
 import AdminPanel from "./pages/AdminPanel";
-import Landing from "./pages/Landing";
 import LandingMagicos from "./pages/LandingMagicos";
-import LandingSignup from "./pages/LandingSignup";
 import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import CartaMental from "./pages/CartaMental";
@@ -233,9 +231,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><PostLoginRedirect /></ProtectedRoute>} />
-            <Route path="/landing" element={<Landing />} />
             <Route path="/magicos" element={<LandingMagicos />} />
-            <Route path="/landing-signup" element={<LandingSignup />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
