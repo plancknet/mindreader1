@@ -75,6 +75,18 @@ export const ptBR = {
       userNotAuthenticated: 'Usuário não autenticado',
     },
   },
+  premiumSuccess: {
+    successTitle: 'Pagamento confirmado!',
+    errorTitle: 'Algo deu errado',
+    successDescription: 'Seu acesso premium foi ativado com sucesso.',
+    errorDescription: 'Não foi possível confirmar seu pagamento. Tente novamente.',
+    goToMindReader: 'Ir para o MindReader',
+    backToPlans: 'Voltar para planos',
+    toast: {
+      invalidSession: 'Sessão inválida.',
+      verificationError: 'Não foi possível confirmar o pagamento.',
+    },
+  },
   influencerDashboard: {
     adminLabel: 'Admin',
     influencerLabel: 'Influencer',

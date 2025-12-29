@@ -75,6 +75,18 @@ export const en = {
       userNotAuthenticated: 'User not authenticated',
     },
   },
+  premiumSuccess: {
+    successTitle: 'Payment confirmed!',
+    errorTitle: 'Something went wrong',
+    successDescription: 'Your premium access has been successfully activated.',
+    errorDescription: 'We could not confirm your payment. Please try again.',
+    goToMindReader: 'Go to MindReader',
+    backToPlans: 'Back to plans',
+    toast: {
+      invalidSession: 'Invalid session.',
+      verificationError: 'Could not confirm payment.',
+    },
+  },
   influencerDashboard: {
     adminLabel: 'Admin',
     influencerLabel: 'Influencer',
