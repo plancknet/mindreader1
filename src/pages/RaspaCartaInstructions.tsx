@@ -1,4 +1,4 @@
-﻿import { Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
@@ -7,31 +7,22 @@ import {
 } from '@/components/InstructionsLayout';
 import { getCardImageSrc } from '@/lib/cardImages';
 import type { SuitName } from '@/lib/cardImages';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type RankId = 'J' | 'Q' | 'K';
 
-const suits: Array<{ id: SuitName; label: string }> = [
-  { id: 'spades', label: 'Espadas' },
-  { id: 'hearts', label: 'Copas' },
-  { id: 'diamonds', label: 'Ouros' },
-  { id: 'clubs', label: 'Paus' },
-];
-
 const rankColumns: RankId[] = ['J', 'Q', 'K'];
 
-const steps = [
-  'Assim como na mágica "Carta Mental" no "Raspa Carta" a seleção da carta escolhida pelo seu amigo será por meio de um teclado invisível que está no verso da carta. Desta vez com apenas um clique a carta será selecionada.',
-  'O grid de botões (3 colunas x 4 linhas) está disposto como a seguir:',
-  'Selecione discretamente a carta escolhida pelo seu amigo e peça a ele para "raspar" a tela do celular para que a carta seja revelada.',
-  'Bora treinar... você consegue!',
-];
-
 const RaspaCartaInstructions = () => {
+  const { t } = useTranslation();
+  const steps = t('raspaCartaInstructions.steps') as string[];
+  const suits = t('raspaCartaInstructions.suits') as Array<{ id: SuitName; label: string }>;
+
   const cardButtons = suits.flatMap((suit) =>
     rankColumns.map((rank) => ({
       rank,
       suit: suit.id,
-      label: `${rank} de ${suit.label}`,
+      label: `${rank} ${t('raspaCartaInstructions.of')} ${suit.label}`,
       imageSrc: getCardImageSrc(rank, suit.id),
     })),
   );
@@ -39,24 +30,24 @@ const RaspaCartaInstructions = () => {
   return (
     <InstructionsLayout
       icon={Sparkles}
-      label="Raspa Carta"
-      title="Visualize o teclado invisível"
-      subtitle="Veja exatamente como os botões se distribuem no verso da carta."
+      label={t('raspaCartaInstructions.label')}
+      title={t('raspaCartaInstructions.title')}
+      subtitle={t('raspaCartaInstructions.subtitle')}
       backPath="/raspa-carta"
     >
       <InstructionsCard>
         <div className="space-y-5">
-          <InstructionsSection title="Passo a passo">
+          <InstructionsSection title={t('raspaCartaInstructions.stepByStep')}>
             <div className="space-y-3">
               {steps.map((step, index) => (
-                <InstructionStep key={step} number={index + 1}>
+                <InstructionStep key={index} number={index + 1}>
                   {step}
                 </InstructionStep>
               ))}
             </div>
           </InstructionsSection>
 
-          <InstructionsSection title="Verso da carta com os botões revelados">
+          <InstructionsSection title={t('raspaCartaInstructions.cardBackTitle')}>
             <div className="flex justify-center">
               <div className="relative aspect-[2/3] w-full max-w-xs rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(127,19,236,0.3),_rgba(17,24,39,0.95))] p-3 shadow-[0_20px_60px_rgba(15,23,42,0.6)]">
                 <div className="absolute inset-1 rounded-[28px] border border-white/20 bg-gradient-to-b from-[#1e1b4b]/80 via-[#1e1b4b] to-[#0f111a]" />

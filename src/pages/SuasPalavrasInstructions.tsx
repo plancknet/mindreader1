@@ -1,28 +1,27 @@
-﻿import { Type } from 'lucide-react';
+import { Type } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
   InstructionStep,
 } from '@/components/InstructionsLayout';
-
-const steps = [
-  'O funcionamento desta mágica é exatamente o mesmo da mágica "Palavra Misteriosa". Se ainda não souber os truques, veja as instruções da mágica "Palavra Misteriosa".',
-  'E lembre-se... treine antes de fazer com seus amigos!',
-];
+import { useTranslation } from '@/hooks/useTranslation';
 
 const SuasPalavrasInstructions = () => {
+  const { t } = useTranslation();
+  const steps = t('suasPalavrasInstructions.steps') as string[];
+
   return (
     <InstructionsLayout
       icon={Type}
-      label="Suas Palavras"
-      title="Como funciona"
-      subtitle="Um lembrete rápido antes de encantar sua plateia."
+      label={t('suasPalavrasInstructions.label')}
+      title={t('suasPalavrasInstructions.title')}
+      subtitle={t('suasPalavrasInstructions.subtitle')}
       backPath="/suas-palavras"
     >
       <InstructionsCard>
         <div className="space-y-4">
           {steps.map((step, index) => (
-            <InstructionStep key={step} number={index + 1}>
+            <InstructionStep key={index} number={index + 1}>
               {step}
             </InstructionStep>
           ))}

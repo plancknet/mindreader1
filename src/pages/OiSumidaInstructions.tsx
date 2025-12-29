@@ -1,38 +1,34 @@
-﻿import { Shuffle } from 'lucide-react';
+import { Shuffle } from 'lucide-react';
 import {
   InstructionsLayout,
   InstructionsCard,
   InstructionStep,
   InstructionNote,
 } from '@/components/InstructionsLayout';
-
-const steps = [
-  'Peça ao seu amigo para memorizar silenciosamente uma das cartas apresentadas na tela.',
-  'Explique que ele pode clicar no botão "Embaralhar" quantas vezes quiser. Isso garante que ninguém sabe onde a carta ficou.',
-  'Diga que o MindReader irá ler a mente dele e remover a carta memorizada do grid.',
-  'Peça para ele clicar no botão "Oi Sumida" quando estiver pronto para revelar.',
-  'Mostre que a carta escolhida "sumiu" misteriosamente, confirmando que a previsão estava correta.',
-];
+import { useTranslation } from '@/hooks/useTranslation';
 
 const OiSumidaInstructions = () => {
+  const { t } = useTranslation();
+  const steps = t('oiSumidaInstructions.steps') as string[];
+
   return (
     <InstructionsLayout
       icon={Shuffle}
-      label="Oi Sumida"
-      title="Como apresentar o efeito"
-      subtitle="Siga o roteiro abaixo para conduzir o truque e garantir que a carta sumida impressione o público."
+      label={t('oiSumidaInstructions.label')}
+      title={t('oiSumidaInstructions.title')}
+      subtitle={t('oiSumidaInstructions.subtitle')}
       backPath="/oi-sumida"
-      backLabel="Voltar ao jogo"
+      backLabel={t('oiSumidaInstructions.backLabel')}
     >
       <InstructionsCard>
         <div className="space-y-5">
           {steps.map((step, index) => (
-            <InstructionStep key={step} number={index + 1}>
+            <InstructionStep key={index} number={index + 1}>
               {step}
             </InstructionStep>
           ))}
           <InstructionNote>
-            Dica: Reforce que apenas o amigo sabe qual carta foi memorizada - o resto é pura "leitura mental".
+            {t('oiSumidaInstructions.tip')}
           </InstructionNote>
         </div>
       </InstructionsCard>
