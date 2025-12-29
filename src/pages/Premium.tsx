@@ -22,26 +22,6 @@ interface UserProfile {
   plan_confirmed: boolean;
 }
 
-const PLAN_FEATURES = {
-  FREE: [
-    'Mágicas do Nível 1 ilimitadas',
-    'Mágicas dos Níveis 2 e 3 limitadas a 3 usos cada',
-  ],
-  STANDARD: [
-    'Uso Vitalício com apenas um pagamento',
-    'Níveis 1, 2, 3 e 4 desbloqueados sem limites',
-    'Atualizações futuras incluídas',
-    'Suporte Prioritário',
-  ],
-  INFLUENCER: [
-    'Todos os benefícios do Vitalício',
-    'Nível 5 desbloqueado sem limites',
-    'Grupo MindReader e co-criação de novas mágicas',
-    'Cupons com 30% de Desconto para seguidores',
-    'Comissão por cada cupom resgatado',
-  ],
-} as const;
-
 const Premium = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +30,7 @@ const Premium = () => {
   const { usageData, isLoading: usageLoading, checkUsageLimit } = useUsageLimit();
   const navigate = useNavigate();
   const location = useLocation();
-  const { language: currentLanguage } = useTranslation();
+  const { t, language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
 
   // Get block reason from navigation state
@@ -72,8 +52,8 @@ const Premium = () => {
         .single();
 
       if (error) {
-        console.error('Erro ao carregar perfil', error);
-        toast.error('Não foi possível carregar suas informações.');
+        console.error('Error loading profile', error);
+        toast.error(t('premium.toast.errorLoadingProfile'));
         return;
       }
 
@@ -98,7 +78,7 @@ const Premium = () => {
     try {
       setFreeLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      if (!user) throw new Error(t('premium.toast.userNotAuthenticated'));
 
       const firstAccess = !profile?.has_seen_welcome;
 
@@ -114,16 +94,16 @@ const Premium = () => {
         }, { onConflict: 'user_id' });
 
       if (error) {
-        console.error('Erro detalhado:', error);
+        console.error('Error details:', error);
         throw error;
       }
       
-      toast.success('Modo Free ativado.');
+      toast.success(t('premium.toast.freeActivated'));
       await checkUsageLimit();
       navigate(firstAccess ? '/welcome' : '/game-selector');
     } catch (error: any) {
-      console.error('Erro ao salvar plano Free', error);
-      toast.error(error?.message || 'Não foi possível confirmar sua escolha.');
+      console.error('Error saving Free plan', error);
+      toast.error(error?.message || t('premium.toast.errorConfirming'));
     } finally {
       setFreeLoading(false);
     }
@@ -150,8 +130,8 @@ const Premium = () => {
         window.location.href = data.url;
       }
     } catch (error: any) {
-      console.error('Erro ao iniciar checkout', error);
-      toast.error(error?.message || 'Não foi possível iniciar o pagamento.');
+      console.error('Error starting checkout', error);
+      toast.error(error?.message || t('premium.toast.errorCheckout'));
     } finally {
       setCheckoutLoading(null);
     }
@@ -231,29 +211,29 @@ const Premium = () => {
             <Alert variant="destructive" className="border-destructive/50 bg-destructive/10 dark:border-red-500/30 dark:bg-red-950/30">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle className="font-semibold">
-                {blockState.gameTitle ? `"${blockState.gameTitle}" não está disponível` : 'Jogo bloqueado'}
+                {blockState.gameTitle ? t('premium.blockAlert.gameUnavailable', { gameTitle: blockState.gameTitle }) : t('premium.blockAlert.gameBlocked')}
               </AlertTitle>
               <AlertDescription>
                 {blockState.blockReason.startsWith('blocked_difficulty_') ? (
                   blockState.gameDifficulty === 5 
-                    ? 'Este jogo é exclusivo para assinantes do plano Influencer.'
+                    ? t('premium.blockAlert.influencerOnly')
                     : blockState.gameDifficulty === 4
-                      ? 'Este jogo requer o plano Standard ou superior.'
-                      : 'Este jogo requer um plano superior.'
+                      ? t('premium.blockAlert.standardRequired')
+                      : t('premium.blockAlert.higherPlanRequired')
                 ) : blockState.blockReason.startsWith('limit_reached_') ? (
-                  'Você atingiu o limite de usos gratuitos para este jogo. Faça upgrade para continuar jogando sem limites.'
+                  t('premium.blockAlert.limitReached')
                 ) : (
-                  'Este jogo requer permissões especiais. Faça upgrade do seu plano para acessar.'
+                  t('premium.blockAlert.specialPermissions')
                 )}
               </AlertDescription>
             </Alert>
           )}
 
           <div className="text-center space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary dark:text-[#7f13ec]">Escolha seu modo</p>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground dark:text-white">Escolha seu plano mágico</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary dark:text-[#7f13ec]">{t('premium.chooseMode')}</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground dark:text-white">{t('premium.title')}</h1>
             <p className="text-muted-foreground text-base dark:text-white/70">
-              Selecione um dos planos abaixo para continuar usando o MindReader.
+              {t('premium.subtitle')}
             </p>
           </div>
 
@@ -264,17 +244,17 @@ const Premium = () => {
                 <CardHeader>
                   <div className="flex items-center gap-2 text-primary dark:text-[#7f13ec] font-semibold">
                     <Shield className="w-5 h-5" />
-                    Plano Free
+                    {t('premium.freePlan.name')}
                     {profile?.subscription_tier === 'FREE' && (
-                      <span className="ml-auto text-xs bg-primary/10 dark:bg-[#7f13ec]/10 text-primary dark:text-[#7f13ec] px-2 py-1 rounded">Seu plano</span>
+                      <span className="ml-auto text-xs bg-primary/10 dark:bg-[#7f13ec]/10 text-primary dark:text-[#7f13ec] px-2 py-1 rounded">{t('premium.yourPlan')}</span>
                     )}
                   </div>
-                  <CardTitle className="text-3xl font-bold text-foreground dark:text-white">R$ 0</CardTitle>
-                  <p className="text-muted-foreground text-sm dark:text-white/60">Uso limitado a três execuções</p>
+                  <CardTitle className="text-3xl font-bold text-foreground dark:text-white">{t('premium.freePlan.price')}</CardTitle>
+                  <p className="text-muted-foreground text-sm dark:text-white/60">{t('premium.freePlan.description')}</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-2 text-sm text-muted-foreground dark:text-white/70">
-                    {PLAN_FEATURES.FREE.map((feature) => (
+                    {(t('premium.freePlan.features') as string[]).map((feature: string) => (
                       <li key={feature} className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-primary dark:text-[#7f13ec]" />
                         {feature}
@@ -288,10 +268,10 @@ const Premium = () => {
                     className="w-full"
                   >
                     {freeLoading
-                      ? 'Confirmando...'
+                      ? t('premium.freePlan.confirming')
                       : profile?.subscription_tier === 'FREE'
-                        ? 'Continuar no Free'
-                        : 'Selecionar Free'}
+                        ? t('premium.freePlan.continueButton')
+                        : t('premium.freePlan.selectButton')}
                   </Button>
                 </CardContent>
               </Card>
@@ -302,17 +282,17 @@ const Premium = () => {
               <CardHeader>
                 <div className="flex items-center gap-2 text-orange-500 font-semibold">
                   <Infinity className="w-5 h-5" />
-                  Vitalício
+                  {t('premium.standardPlan.name')}
                   {profile?.subscription_tier === 'STANDARD' && (
-                    <span className="ml-auto text-xs bg-orange-500/10 text-orange-500 px-2 py-1 rounded">Seu plano</span>
+                    <span className="ml-auto text-xs bg-orange-500/10 text-orange-500 px-2 py-1 rounded">{t('premium.yourPlan')}</span>
                   )}
                 </div>
-                <CardTitle className="text-3xl font-bold text-foreground dark:text-white">R$ 29,90</CardTitle>
-                <p className="text-muted-foreground text-sm dark:text-white/60">Pagamento único</p>
+                <CardTitle className="text-3xl font-bold text-foreground dark:text-white">{t('premium.standardPlan.price')}</CardTitle>
+                <p className="text-muted-foreground text-sm dark:text-white/60">{t('premium.standardPlan.description')}</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-2 text-sm text-muted-foreground dark:text-white/70">
-                  {PLAN_FEATURES.STANDARD.map((feature) => (
+                  {(t('premium.standardPlan.features') as string[]).map((feature: string) => (
                     <li key={feature} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-orange-500" />
                       {feature}
@@ -325,10 +305,10 @@ const Premium = () => {
                   className="w-full bg-orange-500 hover:bg-orange-500/90"
                 >
                   {checkoutLoading === 'STANDARD'
-                    ? 'Redirecionando...'
+                    ? t('premium.standardPlan.redirecting')
                     : profile?.subscription_tier === 'STANDARD'
-                      ? 'Continuar no Vitalício'
-                      : 'Assinar Vitalício'}
+                      ? t('premium.standardPlan.continueButton')
+                      : t('premium.standardPlan.subscribeButton')}
                 </Button>
               </CardContent>
             </Card>
@@ -338,21 +318,21 @@ const Premium = () => {
               <CardHeader>
                 <div className="flex items-center gap-2 text-purple-500 font-semibold">
                   <Sparkles className="w-5 h-5" />
-                  Influencer
+                  {t('premium.influencerPlan.name')}
                   {profile?.subscription_tier === 'INFLUENCER' && (
-                    <span className="ml-auto text-xs bg-purple-500/10 text-purple-500 px-2 py-1 rounded">Seu plano</span>
+                    <span className="ml-auto text-xs bg-purple-500/10 text-purple-500 px-2 py-1 rounded">{t('premium.yourPlan')}</span>
                   )}
                 </div>
-                <CardTitle className="text-3xl font-bold text-foreground dark:text-white">R$ 29,90/mês</CardTitle>
+                <CardTitle className="text-3xl font-bold text-foreground dark:text-white">{t('premium.influencerPlan.price')}</CardTitle>
                 <p className="text-muted-foreground text-sm dark:text-white/60">
                   {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'past_due'
-                    ? 'Pagamento pendente'
-                    : 'Tudo do Vitalício + monetização'}
+                    ? t('premium.influencerPlan.paymentPending')
+                    : t('premium.influencerPlan.description')}
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-2 text-sm text-muted-foreground dark:text-white/70">
-                  {PLAN_FEATURES.INFLUENCER.map((feature) => (
+                  {(t('premium.influencerPlan.features') as string[]).map((feature: string) => (
                     <li key={feature} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-purple-500" />
                       {feature}
@@ -362,10 +342,10 @@ const Premium = () => {
                 {profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'past_due' ? (
                   <Button
                     variant="destructive"
-                    onClick={() => toast.info('Por favor, atualize seu método de pagamento na Stripe')}
+                    onClick={() => toast.info(t('premium.toast.updatePaymentInfo'))}
                     className="w-full"
                   >
-                    Atualizar pagamento
+                    {t('premium.influencerPlan.updatePaymentButton')}
                   </Button>
                 ) : (
                   <Button
@@ -374,10 +354,10 @@ const Premium = () => {
                     className="w-full bg-purple-600 hover:bg-purple-600/90"
                   >
                     {checkoutLoading === 'INFLUENCER'
-                      ? 'Redirecionando...'
+                      ? t('premium.influencerPlan.redirecting')
                       : profile?.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active'
-                        ? 'Continuar no Influencer'
-                        : 'Assinar Influencer'}
+                        ? t('premium.influencerPlan.continueButton')
+                        : t('premium.influencerPlan.subscribeButton')}
                   </Button>
                 )}
               </CardContent>
