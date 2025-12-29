@@ -28,7 +28,7 @@ export const en = {
     },
     standardPlan: {
       name: 'Lifetime',
-      price: '$29.90',
+      price: '$5.99',
       description: 'One-time payment',
       features: [
         'Lifetime access with a single payment',
@@ -42,7 +42,7 @@ export const en = {
     },
     influencerPlan: {
       name: 'Influencer',
-      price: '$29.90/month',
+      price: '$5.99/month',
       description: 'Everything from Lifetime + monetization',
       paymentPending: 'Payment pending',
       features: [
