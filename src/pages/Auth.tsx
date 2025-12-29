@@ -257,7 +257,7 @@ const Auth = () => {
           title: t('auth.toast.signupSuccessTitle'),
           description: t('auth.toast.signupSuccessDescription'),
         });
-        navigate('/');
+        navigate('/game-selector');
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -270,7 +270,7 @@ const Auth = () => {
           // Redirect to password change page
           navigate('/complete-signup?change=true');
         } else {
-          navigate('/');
+          navigate('/game-selector');
         }
       }
     } catch (error: any) {

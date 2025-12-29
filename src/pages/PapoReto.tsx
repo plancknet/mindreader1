@@ -270,7 +270,7 @@ const PapoReto = () => {
     } catch (error) {
       console.error('Failed to sign out', error);
     } finally {
-      navigate('/');
+      navigate('/game-selector');
     }
   };
 

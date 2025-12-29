@@ -157,7 +157,7 @@ const Premium = () => {
     }
   };
 
-  const goHome = () => navigate('/');
+  const goHome = () => navigate('/game-selector');
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
@@ -185,7 +185,7 @@ const Premium = () => {
     } catch (error) {
       console.error('Failed to sign out', error);
     } finally {
-      navigate('/');
+      navigate('/game-selector');
     }
   };
 

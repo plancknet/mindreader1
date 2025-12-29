@@ -121,7 +121,7 @@ const CompleteSignup = () => {
           : 'Sua conta foi criada com sucesso.',
       });
 
-      navigate('/');
+      navigate('/game-selector');
     } catch (error: any) {
       toast({
         title: 'Erro ao criar senha',
@@ -133,7 +133,7 @@ const CompleteSignup = () => {
     }
   };
 
-  const goHome = () => navigate('/');
+  const goHome = () => navigate('/game-selector');
 
   const toggleTheme = () => {
     if (typeof document === 'undefined') return;
@@ -161,7 +161,7 @@ const CompleteSignup = () => {
     } catch (error) {
       console.error('Failed to sign out', error);
     } finally {
-      navigate('/');
+      navigate('/game-selector');
     }
   };
 
