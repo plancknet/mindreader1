@@ -512,7 +512,16 @@ const GameSelector = () => {
               const remainingUses = showUsageInfo ? accessResult.usageLimit! - accessResult.usageCount : 0;
 
               const handleCardNavigation = async () => {
-                if (!enabled) return;
+                // If blocked or limit reached, redirect to Premium page
+                if (!enabled) {
+                  const blockReason = accessResult.reason === 'BLOCKED' 
+                    ? `blocked_difficulty_${game.difficulty}` 
+                    : accessResult.reason === 'LIMIT_REACHED'
+                      ? `limit_reached_${game.gameId}`
+                      : 'admin_required';
+                  navigate('/premium', { state: { blockReason, gameTitle: game.title, gameDifficulty: game.difficulty } });
+                  return;
+                }
                 if (game.id === 'mind-reader') {
                   const skipConnectMind = await hasMindReaderCameraAccess();
                   navigate(skipConnectMind ? '/select-theme' : game.path);
@@ -522,7 +531,6 @@ const GameSelector = () => {
               };
 
               const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-                if (!enabled) return;
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
                   void handleCardNavigation();
@@ -533,15 +541,13 @@ const GameSelector = () => {
                 <div
                   key={game.id}
                   role="button"
-                  tabIndex={enabled ? 0 : -1}
+                  tabIndex={0}
                   onClick={() => {
                     void handleCardNavigation();
                   }}
                   onKeyDown={handleCardKeyDown}
-                  className={`group relative flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 dark:shadow-black/30 ${
-                    enabled
-                      ? 'cursor-pointer hover:border-primary/50 hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:hover:border-[#7f13ec]/50 dark:hover:shadow-[0_0_25px_rgba(127,19,236,0.15)] dark:focus-visible:ring-[#7f13ec]/60'
-                      : 'cursor-not-allowed opacity-60'
+                  className={`group relative flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 dark:shadow-black/30 cursor-pointer hover:border-primary/50 hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:hover:border-[#7f13ec]/50 dark:hover:shadow-[0_0_25px_rgba(127,19,236,0.15)] dark:focus-visible:ring-[#7f13ec]/60 ${
+                    !enabled ? 'opacity-75' : ''
                   }`}
                 >
                   <div

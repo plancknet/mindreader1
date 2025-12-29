@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Infinity, Shield, Sparkles, Home, Moon, Sun, Languages as LanguagesIcon, LogOut, Loader2 } from 'lucide-react';
+import { Check, Infinity, Shield, Sparkles, Home, Moon, Sun, Languages as LanguagesIcon, LogOut, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 
@@ -50,8 +51,12 @@ const Premium = () => {
   const [checkoutLoading, setCheckoutLoading] = useState<'STANDARD' | 'INFLUENCER' | null>(null);
   const { usageData, isLoading: usageLoading, checkUsageLimit } = useUsageLimit();
   const navigate = useNavigate();
+  const location = useLocation();
   const { language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
+
+  // Get block reason from navigation state
+  const blockState = location.state as { blockReason?: string; gameTitle?: string; gameDifficulty?: number } | null;
 
   const fetchProfile = async () => {
     try {
@@ -223,6 +228,29 @@ const Premium = () => {
         </header>
 
         <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 pt-6">
+          {/* Block reason alert */}
+          {blockState?.blockReason && (
+            <Alert variant="destructive" className="border-destructive/50 bg-destructive/10 dark:border-red-500/30 dark:bg-red-950/30">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle className="font-semibold">
+                {blockState.gameTitle ? `"${blockState.gameTitle}" não está disponível` : 'Jogo bloqueado'}
+              </AlertTitle>
+              <AlertDescription>
+                {blockState.blockReason.startsWith('blocked_difficulty_') ? (
+                  blockState.gameDifficulty === 5 
+                    ? 'Este jogo é exclusivo para assinantes do plano Influencer.'
+                    : blockState.gameDifficulty === 4
+                      ? 'Este jogo requer o plano Standard ou superior.'
+                      : 'Este jogo requer um plano superior.'
+                ) : blockState.blockReason.startsWith('limit_reached_') ? (
+                  'Você atingiu o limite de usos gratuitos para este jogo. Faça upgrade para continuar jogando sem limites.'
+                ) : (
+                  'Este jogo requer permissões especiais. Faça upgrade do seu plano para acessar.'
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="text-center space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary dark:text-[#7f13ec]">Escolha seu modo</p>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground dark:text-white">Escolha seu plano mágico</h1>
