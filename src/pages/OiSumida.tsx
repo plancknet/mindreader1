@@ -1,9 +1,10 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { GameLayout } from '@/components/GameLayout';
 import { getCardImageSrc, type SuitName } from '@/lib/cardImages';
 import { GAME_IDS } from '@/constants/games';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type CardDefinition = {
   rank: string;
@@ -43,7 +44,9 @@ const shuffleCards = (cards: CardDefinition[]) => {
   return deck;
 };
 
-const OiSumida = () => {  const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
+const OiSumida = () => {
+  const { t } = useTranslation();
+  const [cards, setCards] = useState<CardDefinition[]>([...BASE_DECK]);
   const [isOiSumidaActive, setIsOiSumidaActive] = useState(false);
   const { trackUsage, resetUsageTracking } = useGameUsageTracker(GAME_IDS.OI_SUMIDA);
 
@@ -73,7 +76,7 @@ const OiSumida = () => {  const [cards, setCards] = useState<CardDefinition[]>([
     <GameLayout>
       <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-8">
 <div className="text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-white">Oi Sumida</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-white">{t('oiSumida.title')}</h1>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -81,14 +84,14 @@ const OiSumida = () => {  const [cards, setCards] = useState<CardDefinition[]>([
             className="w-full bg-[#7f13ec] hover:bg-[#7f13ec]/80" 
             onClick={handlePrimaryButton}
           >
-            {isOiSumidaActive ? 'Reiniciar' : 'Embaralhar'}
+            {isOiSumidaActive ? t('oiSumida.resetButton') : t('oiSumida.shuffleButton')}
           </Button>
           <Button 
             variant="secondary" 
             className="w-full border-white/20 bg-white/10 text-white hover:bg-white/20" 
             onClick={handleOiSumida}
           >
-            Oi Sumida
+            {t('oiSumida.oiSumidaButton')}
           </Button>
         </div>
 

@@ -103,13 +103,13 @@ const SuasPalavras = () => {
   const buildSequence = () => {
     const trimmed = words.map((word) => word.trim());
     if (trimmed.some((word) => !word)) {
-      toast.error('Preencha as cinco palavras antes de continuar.');
+      toast.error(t('toasts.fillAllWords'));
       return false;
     }
     const normalizedSecret = normalizeWord(trimmed[0]);
     const otherWords = trimmed.slice(1);
     if (otherWords.some((word) => normalizeWord(word) === normalizedSecret)) {
-      toast.error('As palavras não podem ser repetidas.');
+      toast.error(t('toasts.noRepeatedWords'));
       return false;
     }
 
@@ -218,7 +218,7 @@ const SuasPalavras = () => {
                     />
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none gap-4 text-white font-semibold text-lg">
-                    <span>Sim. Vamos lá!</span>
+                    <span>{t('suasPalavras.letsGo')}</span>
                   </div>
                 </div>
               </div>
@@ -228,14 +228,14 @@ const SuasPalavras = () => {
 
         {stage === 'input' && (
           <Card className="p-6 space-y-6 bg-[#1e1b4b]/50 border-white/10">
-            <h2 className="text-2xl font-bold text-center text-white">Digite suas 5 palavras</h2>
+            <h2 className="text-2xl font-bold text-center text-white">{t('suasPalavras.inputTitle')}</h2>
             <div className="grid gap-3">
               <div>
-                <p className="text-sm text-white/70 mb-2">Palavra Misteriosa</p>
+                <p className="text-sm text-white/70 mb-2">{t('suasPalavras.mysteryWord')}</p>
                 <Input
                   value={words[0]}
                   onChange={(e) => handleWordChange(0, e.target.value)}
-                  placeholder="Palavra principal"
+                  placeholder={t('suasPalavras.inputPlaceholder')}
                   className="py-6 text-lg text-center bg-black/30 border-white/20 text-white placeholder:text-white/50"
                 />
               </div>
@@ -244,7 +244,7 @@ const SuasPalavras = () => {
                   key={idx + 1}
                   value={word}
                   onChange={(e) => handleWordChange(idx + 1, e.target.value)}
-                  placeholder={`Outra palavra ${idx + 1}`}
+                  placeholder={t('suasPalavras.otherWordPlaceholder', { index: idx + 1 })}
                   className="py-4 text-center bg-black/30 border-white/20 text-white placeholder:text-white/50"
                 />
               ))}
@@ -254,7 +254,7 @@ const SuasPalavras = () => {
               onClick={handleStart} 
               className="w-full text-lg py-6 bg-[#7f13ec] hover:bg-[#7f13ec]/80"
             >
-              Começar
+              {t('suasPalavras.startButton')}
             </Button>
           </Card>
         )}
@@ -272,7 +272,7 @@ const SuasPalavras = () => {
               className="text-lg px-8 py-6 gap-2"
             >
               <Square className="w-5 h-5" />
-              Parar
+              {t('suasPalavras.stopButton')}
             </Button>
           </div>
         )}
@@ -280,10 +280,10 @@ const SuasPalavras = () => {
         {stage === 'revealed' && (
           <div className="text-center space-y-6">
             <Brain className="w-20 h-20 text-[#7f13ec] animate-pulse mx-auto" />
-            <h2 className="text-3xl font-bold text-white">Palavra Revelada</h2>
+            <h2 className="text-3xl font-bold text-white">{t('suasPalavras.revealedTitle')}</h2>
             <Card className="p-10 bg-gradient-to-br from-[#7f13ec]/20 to-blue-500/20 border-white/10">
               <div className="text-6xl font-extrabold tracking-wide text-[#7f13ec]">
-                E ai, acertou?
+                {t('suasPalavras.revealedMessage')}
               </div>
             </Card>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
@@ -293,14 +293,14 @@ const SuasPalavras = () => {
                 onClick={() => navigate('/game-selector')}
                 className="border-white/20 bg-white/5 text-white hover:bg-white/10"
               >
-                Voltar ao menu
+                {t('suasPalavras.menuButton')}
               </Button>
               <Button 
                 size="lg" 
                 onClick={handleReset}
                 className="bg-[#7f13ec] hover:bg-[#7f13ec]/80"
               >
-                Usar novamente
+                {t('suasPalavras.playAgain')}
               </Button>
             </div>
           </div>
