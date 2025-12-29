@@ -1,17 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Home, Moon, Sun, Languages as LanguagesIcon, LogOut, Ticket, TrendingUp, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { HeaderControls } from '@/components/HeaderControls';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { languages } from '@/i18n/languages';
 
 interface Redemption {
   redeemed_at: string;
   amount: number;
 }
+
+const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 
 const InfluencerDashboard = () => {
   const [couponCode, setCouponCode] = useState<string | null>(null);
@@ -20,6 +25,40 @@ const InfluencerDashboard = () => {
   const [isInfluencer, setIsInfluencer] = useState(false);
   const navigate = useNavigate();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const { t, language: currentLanguage } = useTranslation();
+  const { setLanguage } = useLanguageContext();
+
+  const goHome = () => navigate('/game-selector');
+
+  const toggleTheme = () => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+    if (isDark) {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  };
+
+  const cycleLanguage = () => {
+    const codes = languages.map((lang) => lang.code);
+    const currentIndex = codes.indexOf(currentLanguage);
+    const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+    setLanguage(nextCode);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Failed to sign out', error);
+    } finally {
+      navigate('/game-selector');
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,29 +78,25 @@ const InfluencerDashboard = () => {
           .single();
 
         if (profileError || !profile) {
-          toast.error('Erro ao carregar dados do usuário.');
+          toast.error(t('influencerDashboard.errorLoadingData'));
           navigate('/game-selector');
           return;
         }
 
         const userIsInfluencer = profile.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active';
 
-        // Allow access for both admins and active influencers
         if (!isAdmin && !userIsInfluencer) {
-          toast.error('Somente influenciadores podem acessar esta página.');
+          toast.error(t('toasts.influencersOnly'));
           navigate('/game-selector');
           return;
         }
 
         setIsInfluencer(userIsInfluencer);
         setCouponCode(profile.coupon_code ?? null);
-
-        // TODO: Implementar tabela coupon_redemptions quando houver integração com Stripe
-        // Por enquanto, apenas simulamos dados vazios
         setRedemptions([]);
       } catch (error) {
-        console.error('Erro ao carregar dados do influencer', error);
-        toast.error('Não foi possível carregar o painel.');
+        console.error('Error loading influencer data', error);
+        toast.error(t('toasts.couldNotLoadDashboard'));
         navigate('/game-selector');
       } finally {
         setLoading(false);
@@ -69,7 +104,7 @@ const InfluencerDashboard = () => {
     };
 
     loadData();
-  }, [navigate, isAdmin, adminLoading]);
+  }, [navigate, isAdmin, adminLoading, t]);
 
   const revenueSummary = useMemo(() => {
     const daily: Record<string, number> = {};
@@ -92,152 +127,245 @@ const InfluencerDashboard = () => {
     };
   }, [redemptions]);
 
+  const formatDate = (dateString: string) => {
+    const locale = currentLanguage === 'pt-BR' ? 'pt-BR' : currentLanguage === 'es' ? 'es-ES' : 'en-US';
+    return new Date(dateString).toLocaleDateString(locale);
+  };
+
+  const formatTime = (dateString: string) => {
+    const locale = currentLanguage === 'pt-BR' ? 'pt-BR' : currentLanguage === 'es' ? 'es-ES' : 'en-US';
+    return new Date(dateString).toLocaleTimeString(locale);
+  };
+
   if (loading || adminLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        className="relative min-h-screen overflow-hidden bg-background text-foreground flex items-center justify-center"
+        style={{ fontFamily: loginFontFamily }}
+      >
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-[#7f13ec]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <HeaderControls />
+    <div
+      className="relative min-h-screen overflow-hidden bg-background pb-24 text-foreground"
+      style={{ fontFamily: loginFontFamily }}
+    >
+      {/* Dark mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 dark:block hidden">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-[#7f13ec]/15 blur-[100px]" />
+      </div>
+      {/* Light mode decorative blurs */}
+      <div className="pointer-events-none fixed inset-0 z-0 dark:hidden block">
+        <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute bottom-0 left-10 h-60 w-60 rounded-full bg-primary/8 blur-[100px]" />
+      </div>
 
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground uppercase tracking-[0.3em]">
-              {isAdmin ? 'Admin' : 'Influencer'}
-            </p>
-            <h1 className="text-3xl font-bold">
-              {isAdmin ? 'Painel Administrativo - Cupons' : 'Painel de cupons'}
-            </h1>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        {/* Header */}
+        <header className="sticky top-0 z-20 border-b border-border/50 bg-background/80 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-4xl items-center justify-between">
+            <div className="flex size-12 items-center justify-center rounded-full border border-primary/20 bg-primary/15 text-primary shadow-glow dark:border-[#7f13ec]/20 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+              <Ticket className="h-6 w-6" />
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <p className="text-xs text-muted-foreground uppercase tracking-[0.3em]">
+                {isAdmin ? t('influencerDashboard.adminLabel') : t('influencerDashboard.influencerLabel')}
+              </p>
+              <h1 className="text-xl font-semibold text-foreground drop-shadow-sm dark:text-white dark:drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                {isAdmin ? t('influencerDashboard.adminTitle') : t('influencerDashboard.title')}
+              </h1>
+            </div>
+            {!isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/influencer/coupon')}
+                className="border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/10 dark:text-[#7f13ec] dark:hover:bg-[#7f13ec]/20"
+              >
+                {t('influencerDashboard.updateCoupon')}
+              </Button>
+            )}
+            {isAdmin && <div className="w-10" />}
           </div>
-          {!isAdmin && (
-            <Button variant="outline" onClick={() => navigate('/influencer/coupon')}>
-              Atualizar cupom
-            </Button>
-          )}
-        </div>
+        </header>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {!isAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground">Cupom ativo</CardTitle>
+        {/* Main content */}
+        <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 pt-6">
+          {/* Stats cards */}
+          <div className="grid gap-4 md:grid-cols-3">
+            {!isAdmin && (
+              <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm text-muted-foreground font-medium">
+                    {t('influencerDashboard.activeCoupon')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold tracking-[0.3em] text-primary dark:text-[#7f13ec]">
+                    {couponCode || '---'}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm text-muted-foreground font-medium">
+                    {t('influencerDashboard.totalRedemptions')}
+                  </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold tracking-[0.4em]">{couponCode}</p>
+                <p className="text-3xl font-bold text-foreground dark:text-white">{revenueSummary.total}</p>
+                <p className="text-sm text-muted-foreground">
+                  ${(revenueSummary.total * 6).toFixed(2)} {t('influencerDashboard.available')}
+                  {isAdmin && ` (${t('influencerDashboard.allInfluencers')})`}
+                </p>
               </CardContent>
             </Card>
-          )}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Resgates totais</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{revenueSummary.total}</p>
-              <p className="text-sm text-muted-foreground">
-                R$ {(revenueSummary.total * 6).toFixed(2)} já disponíveis
-                {isAdmin && ' (Todos os influenciadores)'}
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Último resgate</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {redemptions[0] ? (
-                <>
-                  <p className="text-lg font-semibold">
-                    {new Date(redemptions[0].redeemed_at).toLocaleDateString('pt-BR')}
-                  </p>
-                  <p className="text-sm text-muted-foreground">+ R$ 6,00</p>
-                </>
-              ) : (
-                <p className="text-muted-foreground text-sm">Sem registros ainda</p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Resumo diário</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              {Object.keys(revenueSummary.daily).length === 0 && (
-                <p className="text-muted-foreground">Nenhum resgate registrado.</p>
-              )}
-              {Object.entries(revenueSummary.daily).map(([day, count]) => (
-                <div key={day} className="flex justify-between">
-                  <span>{new Date(day).toLocaleDateString('pt-BR')}</span>
-                  <span>{count} cupons</span>
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm text-muted-foreground font-medium">
+                    {t('influencerDashboard.lastRedemption')}
+                  </CardTitle>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Resumo mensal</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              {Object.keys(revenueSummary.monthly).length === 0 && (
-                <p className="text-muted-foreground">Nenhum resgate registrado.</p>
-              )}
-              {Object.entries(revenueSummary.monthly).map(([month, count]) => (
-                <div key={month} className="flex justify-between">
-                  <span>
-                    {month.split('-').reverse().join('/')}
-                  </span>
-                  <span>
-                    {count} cupons • R$ {(count * 6).toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Resgates recentes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Horário</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {redemptions.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center text-muted-foreground">
-                      Nenhum resgate registrado ainda.
-                    </TableCell>
-                  </TableRow>
+              </CardHeader>
+              <CardContent>
+                {redemptions[0] ? (
+                  <>
+                    <p className="text-lg font-semibold text-foreground dark:text-white">
+                      {formatDate(redemptions[0].redeemed_at)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">+ $6.00</p>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground text-sm">{t('influencerDashboard.noRecordsYet')}</p>
                 )}
-                {redemptions.map((redemption) => {
-                  const date = new Date(redemption.redeemed_at);
-                  return (
-                    <TableRow key={redemption.redeemed_at + Math.random()}>
-                      <TableCell>{date.toLocaleDateString('pt-BR')}</TableCell>
-                      <TableCell>{date.toLocaleTimeString('pt-BR')}</TableCell>
-                      <TableCell className="text-right">R$ {(redemption.amount || 6).toFixed(2)}</TableCell>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Summary cards */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">{t('influencerDashboard.dailySummary')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {Object.keys(revenueSummary.daily).length === 0 && (
+                  <p className="text-muted-foreground">{t('influencerDashboard.noRedemptions')}</p>
+                )}
+                {Object.entries(revenueSummary.daily).map(([day, count]) => (
+                  <div key={day} className="flex justify-between">
+                    <span className="text-muted-foreground">{formatDate(day)}</span>
+                    <span className="font-medium">{count} {t('influencerDashboard.coupons')}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">{t('influencerDashboard.monthlySummary')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {Object.keys(revenueSummary.monthly).length === 0 && (
+                  <p className="text-muted-foreground">{t('influencerDashboard.noRedemptions')}</p>
+                )}
+                {Object.entries(revenueSummary.monthly).map(([month, count]) => (
+                  <div key={month} className="flex justify-between">
+                    <span className="text-muted-foreground">{month.split('-').reverse().join('/')}</span>
+                    <span className="font-medium">
+                      {count} {t('influencerDashboard.coupons')} • ${(count * 6).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent redemptions table */}
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">{t('influencerDashboard.recentRedemptions')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-border/50 dark:border-white/10">
+                    <TableHead className="text-muted-foreground">{t('influencerDashboard.date')}</TableHead>
+                    <TableHead className="text-muted-foreground">{t('influencerDashboard.time')}</TableHead>
+                    <TableHead className="text-right text-muted-foreground">{t('influencerDashboard.amount')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {redemptions.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
+                        {t('influencerDashboard.noRedemptionsYet')}
+                      </TableCell>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                  )}
+                  {redemptions.map((redemption) => (
+                    <TableRow key={redemption.redeemed_at + Math.random()} className="border-border/50 dark:border-white/10">
+                      <TableCell>{formatDate(redemption.redeemed_at)}</TableCell>
+                      <TableCell>{formatTime(redemption.redeemed_at)}</TableCell>
+                      <TableCell className="text-right font-medium">${(redemption.amount || 6).toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </main>
       </div>
+
+      {/* Bottom navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border/50 bg-background/95 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-3 px-4 py-4 text-[11px] font-semibold uppercase text-muted-foreground">
+          <button
+            type="button"
+            onClick={goHome}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-3 py-2 text-primary shadow-glow transition-colors hover:bg-primary/25 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/15 dark:text-[#7f13ec] dark:shadow-[0_0_15px_rgba(127,19,236,0.3)] dark:hover:bg-[#7f13ec]/25"
+          >
+            <Home className="h-5 w-5" />
+            <span>Home</span>
+          </button>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
+          >
+            <Moon className="hidden h-5 w-5 dark:block" />
+            <Sun className="block h-5 w-5 dark:hidden" />
+            <span>Mode</span>
+          </button>
+          <button
+            type="button"
+            onClick={cycleLanguage}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-[#7f13ec]/40 dark:hover:text-white"
+          >
+            <LanguagesIcon className="h-5 w-5" />
+            <span>{currentLanguage.toUpperCase()}</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-secondary px-3 py-2 text-muted-foreground transition-colors hover:border-red-400/50 hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:text-white"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>{t('common.logout')}</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 };
