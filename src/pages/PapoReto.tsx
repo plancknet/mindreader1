@@ -293,8 +293,8 @@ const PapoReto = () => {
         </div>
 
         <div className="space-y-8 rounded-3xl border border-primary/10 bg-card/80 p-8 shadow-2xl shadow-primary/10">
-          <div className="text-center text-[0.55rem] md:text-xs font-semibold uppercase tracking-[0.35em] text-primary mb-4">
-            RESPONDA A PERGUNTA DE FORMA DIRETA,<br />SEM COMENTÁRIOS EXTRAS.
+          <div className="text-center text-[0.55rem] md:text-xs font-semibold uppercase tracking-[0.35em] text-primary mb-4 whitespace-pre-line">
+            {t('papoReto.hint')}
           </div>
           
           {lastAiMessage && (

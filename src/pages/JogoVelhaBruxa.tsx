@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { GameLayout } from '@/components/GameLayout';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type CellValue = 'user' | 'ai' | null;
 
@@ -95,6 +96,7 @@ const findSafeMove = (order: number[], fromIndex: number, board: CellValue[]): n
 };
 
 const JogoVelhaBruxa = () => {
+  const { t } = useTranslation();
   const [board, setBoard] = useState<CellValue[]>(createInitialBoard);
   const [winner, setWinner] = useState<CellValue>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -103,7 +105,7 @@ const JogoVelhaBruxa = () => {
 
   const handleCellClick = (index: number) => {
     if (board[index] || isFinished) {
-      setStatusMessage('Essa posição já foi usada. Escolha outra.');
+      setStatusMessage(t('jogoVelhaBruxa.positionUsed'));
       return;
     }
 
@@ -111,7 +113,7 @@ const JogoVelhaBruxa = () => {
     tentativeBoard[index] = 'user';
 
     if (isLosingMove(tentativeBoard)) {
-      setStatusMessage('Esse movimento faria você perder. Escolha outro.');
+      setStatusMessage(t('jogoVelhaBruxa.losingMove'));
       return;
     }
 
@@ -154,10 +156,10 @@ const JogoVelhaBruxa = () => {
 
   const resultMessage = useMemo(() => {
     if (!isFinished) return null;
-    if (winner === 'user') return 'Você venceu!';
-    if (winner === 'ai') return 'A Velha Bruxa venceu!';
-    return 'Empate místico!';
-  }, [isFinished, winner]);
+    if (winner === 'user') return t('jogoVelhaBruxa.youWin');
+    if (winner === 'ai') return t('jogoVelhaBruxa.witchWins');
+    return t('jogoVelhaBruxa.draw');
+  }, [isFinished, winner, t]);
 
   const renderCellContent = (value: CellValue) => {
     if (value === 'ai') return 'X';
@@ -169,8 +171,8 @@ const JogoVelhaBruxa = () => {
     <GameLayout>
       <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-8">
         <div className="text-center space-y-2">
-          <p className="text-sm text-white/70 uppercase tracking-[0.3em]">Jogo da Velha</p>
-          <h1 className="text-3xl font-bold text-white">Jogo da Velha Bruxa</h1>
+          <p className="text-sm text-white/70 uppercase tracking-[0.3em]">{t('jogoVelhaBruxa.subtitle')}</p>
+          <h1 className="text-3xl font-bold text-white">{t('jogoVelhaBruxa.title')}</h1>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
@@ -195,13 +197,13 @@ const JogoVelhaBruxa = () => {
             className="flex-1 bg-[#7f13ec] hover:bg-[#7f13ec]/80" 
             onClick={handleReset}
           >
-            Reiniciar
+            {t('jogoVelhaBruxa.resetButton')}
           </Button>
         </div>
 
         {isFinished && (
           <p className="text-center text-lg font-semibold text-white">
-            Veja a previsão da Velha Bruxa
+            {t('jogoVelhaBruxa.prediction')}
           </p>
         )}
       </div>

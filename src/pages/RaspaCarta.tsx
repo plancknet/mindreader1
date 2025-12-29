@@ -245,7 +245,7 @@ const RaspaCarta = () => {
               onClick={handleReset}
               className="border-white/20 bg-white/5 text-white hover:bg-white/10"
             >
-              Reiniciar
+              {t('raspaCarta.reset')}
             </Button>
           </div>
         </div>

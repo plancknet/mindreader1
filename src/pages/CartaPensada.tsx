@@ -94,7 +94,7 @@ const performStacking = (currentDeck: PlayingCard[], selectedColumn: number) => 
 
 const CartaPensada = () => {
   const navigate = useNavigate();
-  const { language: currentLanguage } = useTranslation();
+  const { t, language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
   const [deck, setDeck] = useState<PlayingCard[]>([]);
   const [round, setRound] = useState(1);
@@ -203,7 +203,7 @@ const CartaPensada = () => {
             onClick={initializeGame}
             className="rounded-2xl"
           >
-            Reiniciar
+            {t('cartaPensada.reset')}
           </Button>
         </div>
 
@@ -320,7 +320,7 @@ const CartaPensada = () => {
               disabled={isProcessing}
               className="rounded-2xl"
             >
-              Reiniciar apresentação
+              {t('cartaPensada.resetPresentation')}
             </Button>
           </div>
         </main>
