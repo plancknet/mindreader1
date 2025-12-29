@@ -62,8 +62,12 @@ const ConnectMind = () => {
 
   const cycleLanguage = () => {
     const codes = languages.map((lang) => lang.code);
+    console.log('Available languages:', codes);
+    console.log('Current language:', currentLanguage);
     const currentIndex = codes.indexOf(currentLanguage);
+    console.log('Current index:', currentIndex);
     const nextCode = codes[(currentIndex + 1) % codes.length] ?? codes[0];
+    console.log('Next language:', nextCode);
     setLanguage(nextCode);
   };
 
