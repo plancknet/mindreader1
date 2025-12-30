@@ -225,7 +225,7 @@ const LandingMagicos = () => {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 border border-purple-500/30">
               <div className="aspect-video">
                 <iframe
-                  src="https://www.youtube.com/embed/zxBULPB83a4"
+                  src="https://www.youtube.com/embed/6Zp8g1jF_5A"
                   title="MindReader - Como funciona"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
