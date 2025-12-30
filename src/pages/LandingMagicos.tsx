@@ -90,7 +90,7 @@ const LandingMagicos = () => {
       });
 
       // Redirect to coupon setup page
-      navigate('/influencer/coupon-setup');
+      navigate('/influencer/coupon');
     } catch (error: any) {
       console.error('Error submitting lead:', error);
       toast({
