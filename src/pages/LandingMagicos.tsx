@@ -258,9 +258,16 @@ const LandingMagicos = () => {
               <span className="text-red-400">a oportunidade vai embora.</span>
             </h2>
 
-            <p className="text-gray-400 text-lg leading-relaxed">
+            <p className="text-gray-400 text-lg leading-relaxed mb-8">
               Quando as luzes se apagam, a magia vai embora com o público. Junto com ela, as oportunidades de criar um vínculo duradouro e continuar a conversa. Você encanta, eles aplaudem... e depois? O contato se perde.
             </p>
+            <Button
+              onClick={handlePartnerClick}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         </div>
       </section>
@@ -302,6 +309,17 @@ const LandingMagicos = () => {
               <p className="text-gray-400">Sua marca fica na memória do público.</p>
             </div>
           </div>
+
+          <div className="mt-12 text-center">
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -335,6 +353,17 @@ const LandingMagicos = () => {
               </div>
             ))}
           </div>
+
+          <div className="mt-12 text-center">
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -364,6 +393,17 @@ const LandingMagicos = () => {
               </div>
             ))}
           </div>
+
+          <div className="mt-12 text-center">
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -378,9 +418,17 @@ const LandingMagicos = () => {
                 abre um novo universo
               </span>
             </h2>
-            <p className="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto">
+            <p className="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto mb-8">
               MindReader é perfeito para iniciantes. Ele ensina, diverte e inspira novos apaixonados pela ilusão. Para eles, você será o mestre que abriu a porta para esse universo mágico.
             </p>
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
       </section>
@@ -400,6 +448,16 @@ const LandingMagicos = () => {
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-6 h-6 text-yellow-400 fill-yellow-400" />
             ))}
+          </div>
+          <div className="mt-10">
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
       </section>
@@ -498,6 +556,17 @@ const LandingMagicos = () => {
                 )}
               </div>
             ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button
+              onClick={handlePartnerClick}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+            >
+              Quero ser parceiro MindReader
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
       </section>
