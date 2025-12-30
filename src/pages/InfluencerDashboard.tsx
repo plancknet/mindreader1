@@ -26,20 +26,15 @@ const InfluencerDashboard = () => {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInfluencer, setIsInfluencer] = useState(false);
-  const [instructionsOpen, setInstructionsOpen] = useState(false);
+  const [instructionsOpen, setInstructionsOpen] = useState(() => {
+    const hideInstructions = localStorage.getItem(INSTRUCTIONS_STORAGE_KEY);
+    return hideInstructions !== 'true';
+  });
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const navigate = useNavigate();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const { t, language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
-
-  // Auto-open instructions on mount if not disabled
-  useEffect(() => {
-    const hideInstructions = localStorage.getItem(INSTRUCTIONS_STORAGE_KEY);
-    if (hideInstructions !== 'true' && !loading) {
-      setInstructionsOpen(true);
-    }
-  }, [loading]);
 
   const handleCloseInstructions = () => {
     if (dontShowAgain) {
