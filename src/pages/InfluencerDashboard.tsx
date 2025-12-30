@@ -74,26 +74,24 @@ const InfluencerDashboard = () => {
 
         const { data: profile, error: profileError } = await supabase
           .from('users')
-          .select('subscription_tier, subscription_status, coupon_generated, coupon_code')
+          .select('coupon_generated, coupon_code')
           .eq('user_id', user.id)
           .single();
 
         if (profileError || !profile) {
-          toast.error(t('influencerDashboard.errorLoadingData'));
-          navigate('/game-selector');
+          // User might be new without profile yet - redirect to coupon setup
+          navigate('/influencer/coupon');
           return;
         }
 
-        const userIsInfluencer = profile.subscription_tier === 'INFLUENCER' && profile.subscription_status === 'active';
-
-        if (!isAdmin && !userIsInfluencer) {
-          toast.error(t('toasts.influencersOnly'));
-          navigate('/game-selector');
+        if (!profile.coupon_code) {
+          // No coupon yet - redirect to coupon setup
+          navigate('/influencer/coupon');
           return;
         }
 
-        setIsInfluencer(userIsInfluencer);
-        setCouponCode(profile.coupon_code ?? null);
+        setIsInfluencer(true);
+        setCouponCode(profile.coupon_code);
         setRedemptions([]);
       } catch (error) {
         console.error('Error loading influencer data', error);
