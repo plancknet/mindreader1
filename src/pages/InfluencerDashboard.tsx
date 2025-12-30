@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Moon, Sun, Languages as LanguagesIcon, LogOut, Ticket, TrendingUp, Calendar } from 'lucide-react';
+import { Home, Moon, Sun, Languages as LanguagesIcon, LogOut, Ticket, TrendingUp, Calendar, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -181,17 +182,47 @@ const InfluencerDashboard = () => {
                 {isAdmin ? t('influencerDashboard.adminTitle') : t('influencerDashboard.title')}
               </h1>
             </div>
-            {!isAdmin && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/influencer/coupon')}
-                className="border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/10 dark:text-[#7f13ec] dark:hover:bg-[#7f13ec]/20"
-              >
-                {t('influencerDashboard.updateCoupon')}
-              </Button>
-            )}
-            {isAdmin && <div className="w-10" />}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 dark:border-[#7f13ec]/30 dark:bg-[#7f13ec]/10 dark:text-[#7f13ec] dark:hover:bg-[#7f13ec]/20"
+                >
+                  <Info className="h-4 w-4 mr-1" />
+                  {t('influencerDashboard.instructions')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="border-border/50 bg-card dark:border-white/10 dark:bg-[#1e1b4b]/95">
+                <DialogHeader>
+                  <DialogTitle className="text-foreground dark:text-white">
+                    {t('influencerDashboard.instructionsTitle')}
+                  </DialogTitle>
+                </DialogHeader>
+                <ul className="space-y-3 text-sm text-muted-foreground dark:text-white/70">
+                  <li className="flex gap-2">
+                    <span className="text-primary dark:text-[#7f13ec] font-bold">1.</span>
+                    {t('influencerDashboard.instruction1')}
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-primary dark:text-[#7f13ec] font-bold">2.</span>
+                    {t('influencerDashboard.instruction2')}
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-primary dark:text-[#7f13ec] font-bold">3.</span>
+                    {t('influencerDashboard.instruction3')}
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-primary dark:text-[#7f13ec] font-bold">4.</span>
+                    {t('influencerDashboard.instruction4')}
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-primary dark:text-[#7f13ec] font-bold">5.</span>
+                    {t('influencerDashboard.instruction5')}
+                  </li>
+                </ul>
+              </DialogContent>
+            </Dialog>
           </div>
         </header>
 

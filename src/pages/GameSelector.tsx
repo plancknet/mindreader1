@@ -16,6 +16,7 @@ import {
   Moon,
   Languages as LanguagesIcon,
   LogOut,
+  Ticket,
   type LucideProps,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -451,7 +452,16 @@ const GameSelector = () => {
 
         <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 pt-6">
           <div className="px-4">
-            <div className="flex flex-wrap gap-2 pb-2">
+            <div className="flex flex-wrap items-center gap-2 pb-2">
+              <button
+                type="button"
+                onClick={() => navigate('/influencer/dashboard')}
+                className="flex h-7 items-center justify-center rounded-full border border-primary/50 bg-primary text-primary-foreground px-3 text-[0.65rem] font-semibold tracking-wide transition-all active:scale-95 shadow-glow dark:border-[#7f13ec]/50 dark:bg-[#7f13ec] dark:text-white dark:shadow-[0_0_15px_rgba(127,19,236,0.4)]"
+              >
+                <Ticket className="h-3.5 w-3.5 mr-1" />
+                Cupom
+              </button>
+              <div className="w-px h-5 bg-border/50 dark:bg-white/10" />
               {levelFilterChips.map((chip) => {
                 const isActive = selectedLevel === chip.value;
                 return (
