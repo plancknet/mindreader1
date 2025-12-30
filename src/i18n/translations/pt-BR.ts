@@ -100,6 +100,8 @@ export const ptBR = {
     instruction3: 'Diga que eles podem desbloquear outras mágicas utilizando seu cupom',
     instruction4: 'Peça para o seu público utilizar o seu cupom de desconto',
     instruction5: 'Para cada cupom resgatado você receberá R$ 10',
+    dontShowAgain: 'Não mostrar novamente',
+    understood: 'Entendi',
     activeCoupon: 'Cupom ativo',
     totalRedemptions: 'Resgates totais',
     available: 'já disponíveis',

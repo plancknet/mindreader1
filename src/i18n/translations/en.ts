@@ -100,6 +100,8 @@ export const en = {
     instruction3: 'Tell them they can unlock other tricks using your coupon',
     instruction4: 'Ask your audience to use your discount coupon',
     instruction5: 'For each redeemed coupon you will receive $10',
+    dontShowAgain: "Don't show again",
+    understood: 'Got it',
     activeCoupon: 'Active coupon',
     totalRedemptions: 'Total redemptions',
     available: 'already available',
