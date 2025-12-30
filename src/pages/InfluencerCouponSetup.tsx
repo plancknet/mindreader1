@@ -64,22 +64,14 @@ const InfluencerCouponSetup = () => {
         }
         const { data, error } = await supabase
           .from('users')
-          .select('subscription_tier, subscription_status, coupon_generated, coupon_code')
+          .select('coupon_generated, coupon_code')
           .eq('user_id', user.id)
           .single();
 
         if (error || !data) {
-          throw error;
-        }
-
-        if (data.subscription_tier !== 'INFLUENCER') {
-          navigate('/game-selector');
-          return;
-        }
-
-        if (data.subscription_status !== 'active') {
-          toast.error(t('toasts.subscriptionInactive'));
-          navigate('/premium');
+          // User might be new, allow them to create coupon
+          setEligible(true);
+          setLoading(false);
           return;
         }
 
@@ -91,7 +83,8 @@ const InfluencerCouponSetup = () => {
         }
       } catch (error) {
         console.error('Error loading profile', error);
-        navigate('/game-selector');
+        // Allow access even on error for new users
+        setEligible(true);
       } finally {
         setLoading(false);
       }

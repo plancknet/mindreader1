@@ -67,13 +67,30 @@ const LandingMagicos = () => {
         return;
       }
 
-      toast({
-        title: "Cadastro realizado!",
-        description: "Sua senha provisória é seu número de WhatsApp. Faça login para continuar.",
+      // Auto login with email and whatsapp as password
+      const cleanWhatsappPassword = whatsapp.replace(/\D/g, '');
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(),
+        password: cleanWhatsappPassword,
       });
 
-      // Redirect to auth page
-      navigate('/auth');
+      if (loginError) {
+        console.error('Auto login failed:', loginError);
+        toast({
+          title: "Cadastro realizado!",
+          description: "Sua senha provisória é seu número de WhatsApp. Faça login para continuar.",
+        });
+        navigate('/auth');
+        return;
+      }
+
+      toast({
+        title: "Cadastro realizado!",
+        description: "Agora crie seu cupom personalizado.",
+      });
+
+      // Redirect to coupon setup page
+      navigate('/influencer/coupon-setup');
     } catch (error: any) {
       console.error('Error submitting lead:', error);
       toast({
