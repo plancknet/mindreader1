@@ -5,7 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -18,16 +19,34 @@ interface Redemption {
 }
 
 const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
+const INSTRUCTIONS_STORAGE_KEY = 'coupon-dashboard-hide-instructions';
 
 const InfluencerDashboard = () => {
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInfluencer, setIsInfluencer] = useState(false);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
   const navigate = useNavigate();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const { t, language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
+
+  // Auto-open instructions on mount if not disabled
+  useEffect(() => {
+    const hideInstructions = localStorage.getItem(INSTRUCTIONS_STORAGE_KEY);
+    if (hideInstructions !== 'true' && !loading) {
+      setInstructionsOpen(true);
+    }
+  }, [loading]);
+
+  const handleCloseInstructions = () => {
+    if (dontShowAgain) {
+      localStorage.setItem(INSTRUCTIONS_STORAGE_KEY, 'true');
+    }
+    setInstructionsOpen(false);
+  };
 
   const goHome = () => navigate('/game-selector');
 
@@ -180,7 +199,7 @@ const InfluencerDashboard = () => {
                 {isAdmin ? t('influencerDashboard.adminTitle') : t('influencerDashboard.title')}
               </h1>
             </div>
-            <Dialog>
+            <Dialog open={instructionsOpen} onOpenChange={setInstructionsOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
@@ -219,6 +238,27 @@ const InfluencerDashboard = () => {
                     {t('influencerDashboard.instruction5')}
                   </li>
                 </ul>
+                <DialogFooter className="flex-col sm:flex-col gap-3 pt-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="dontShowAgain" 
+                      checked={dontShowAgain}
+                      onCheckedChange={(checked) => setDontShowAgain(checked === true)}
+                    />
+                    <label 
+                      htmlFor="dontShowAgain" 
+                      className="text-sm text-muted-foreground dark:text-white/70 cursor-pointer"
+                    >
+                      {t('influencerDashboard.dontShowAgain')}
+                    </label>
+                  </div>
+                  <Button 
+                    onClick={handleCloseInstructions}
+                    className="w-full bg-primary hover:bg-primary/90 dark:bg-[#7f13ec] dark:hover:bg-[#7f13ec]/90"
+                  >
+                    {t('influencerDashboard.understood')}
+                  </Button>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
