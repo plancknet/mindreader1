@@ -40,25 +40,15 @@ serve(async (req) => {
 
     console.log("Criando cupom para usuário:", user.id, "código:", code);
 
+    // Check if user already has a coupon
     const { data: userData, error: userError } = await supabaseClient
       .from("users")
-      .select("subscription_tier, subscription_status, coupon_generated")
+      .select("coupon_generated")
       .eq("user_id", user.id)
       .single();
 
-    if (userError || !userData) {
-      throw new Error("Usuário não encontrado");
-    }
-
-    if (userData.subscription_tier !== "INFLUENCER") {
-      throw new Error("Somente influenciadores podem criar cupons");
-    }
-
-    if (userData.subscription_status !== "active") {
-      throw new Error("Assinatura não está ativa");
-    }
-
-    if (userData.coupon_generated) {
+    // If user doesn't exist in the users table yet, that's okay - they're new
+    if (userData?.coupon_generated) {
       throw new Error("Você já possui um cupom ativo");
     }
 
