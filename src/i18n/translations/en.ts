@@ -99,7 +99,7 @@ export const en = {
     instruction2: 'Perform the "Thought Card" magic trick with them',
     instruction3: 'Tell them they can unlock other tricks using your coupon',
     instruction4: 'Ask your audience to use your discount coupon',
-    instruction5: 'For each redeemed coupon you will receive $10',
+    instruction5: 'For each redeemed coupon you will receive $2',
     dontShowAgain: "Don't show again",
     understood: 'Got it',
     activeCoupon: 'Active coupon',
@@ -122,7 +122,7 @@ export const en = {
   influencerCoupon: {
     title: 'Influencer Coupon',
     heading: 'Set up your influencer coupon',
-    description: 'Define the code you will share with your followers. It offers 30% off and guarantees $10.00 per paid redemption.',
+    description: 'Define the code you will share with your followers. It offers 30% off and guarantees $2.00 per paid redemption.',
     alreadyActive: 'Your coupon is already active:',
     viewDashboard: 'View coupon dashboard',
     promoCode: 'Promotional code',
