@@ -309,7 +309,7 @@ const InfluencerDashboard = () => {
                     <p className="text-lg font-semibold text-foreground dark:text-white">
                       {formatDate(redemptions[0].redeemed_at)}
                     </p>
-                    <p className="text-sm text-muted-foreground">+ $6.00</p>
+                    <p className="text-sm text-muted-foreground">+ R$ 10,00</p>
                   </>
                 ) : (
                   <p className="text-muted-foreground text-sm">{t('influencerDashboard.noRecordsYet')}</p>
