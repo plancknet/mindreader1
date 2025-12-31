@@ -122,7 +122,7 @@ export const ptBR = {
   influencerCoupon: {
     title: 'Cupom de Influencer',
     heading: 'Configure seu cupom de influencer',
-    description: 'Defina o código que você compartilhará com seus seguidores. Ele oferece 30% de desconto e garante R$ 6,00 por resgate pago.',
+    description: 'Defina o código que você compartilhará com seus seguidores. Ele oferece 30% de desconto e garante R$ 10,00 por resgate pago.',
     alreadyActive: 'Seu cupom já está ativo:',
     viewDashboard: 'Ver painel de cupons',
     promoCode: 'Código promocional',

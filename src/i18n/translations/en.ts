@@ -122,7 +122,7 @@ export const en = {
   influencerCoupon: {
     title: 'Influencer Coupon',
     heading: 'Set up your influencer coupon',
-    description: 'Define the code you will share with your followers. It offers 30% off and guarantees $6.00 per paid redemption.',
+    description: 'Define the code you will share with your followers. It offers 30% off and guarantees $10.00 per paid redemption.',
     alreadyActive: 'Your coupon is already active:',
     viewDashboard: 'View coupon dashboard',
     promoCode: 'Promotional code',
