@@ -74,6 +74,13 @@ const LandingMagicos = () => {
         password: cleanWhatsappPassword,
       });
 
+      // Track Google Ads conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-1052545747/auOdCIPsot0bENOl8vUD'
+        });
+      }
+
       if (loginError) {
         console.error('Auto login failed:', loginError);
         toast({
