@@ -239,7 +239,7 @@ const DemoCartaPensada = () => {
               ))}
             </div>
             <p className="text-center text-sm font-medium text-muted-foreground">
-              Rodada {round} de 3 — Toque na coluna onde está sua carta
+              {round === 1 ? "Passo 1 - Escolha uma das cartas exibidas e memorize-a." : `Rodada ${round} de 3 — Toque na coluna onde está sua carta`}
             </p>
           </div>
 
