@@ -178,12 +178,12 @@ const DemoCartaPensada = () => {
           <div className="flex items-center gap-3">
             <Sparkles className="h-10 w-10 text-[#7f13ec]" />
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Vamos ler sua mente?
+              MindReader
             </h1>
           </div>
 
           <p className="max-w-md text-lg text-muted-foreground">
-            Pense em uma carta de baralho. Memorize-a bem. Em 3 rodadas, vou descobrir exatamente qual carta você pensou.
+            O MindReader é um app que lê a sua mente.
           </p>
 
           <div className="flex flex-col items-center gap-3">
@@ -194,7 +194,7 @@ const DemoCartaPensada = () => {
                 </div>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground">3 rodadas · Escolha a coluna com sua carta</p>
+            <p className="text-sm text-muted-foreground">Em três passos ele vai descobrir a carta escolhida por você</p>
           </div>
 
           <Button
