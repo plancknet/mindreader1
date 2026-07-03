@@ -120,6 +120,87 @@ All colors MUST be HSL.
   background: linear-gradient(180deg, rgba(25, 16, 34, 0.3) 0%, rgba(25, 16, 34, 0.95) 100%);
 }
 
+/* =========================================================
+   Noir & Gold — alternate design variant (admin selectable)
+   Applied via <html class="theme-noir">. Overrides tokens
+   without removing the classic theme.
+   ========================================================= */
+.theme-noir {
+  --background: 0 0% 5%;
+  --foreground: 45 60% 92%;
+
+  --card: 0 0% 8%;
+  --card-foreground: 45 60% 92%;
+
+  --popover: 0 0% 8%;
+  --popover-foreground: 45 60% 92%;
+
+  --primary: 44 55% 54%;             /* #c9a84c gold */
+  --primary-foreground: 0 0% 6%;
+
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 45 60% 92%;
+
+  --muted: 0 0% 12%;
+  --muted-foreground: 45 15% 70%;
+
+  --accent: 44 78% 76%;               /* #f0d78c warm gold */
+  --accent-foreground: 0 0% 6%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 45 60% 96%;
+
+  --border: 44 30% 22%;
+  --input: 44 30% 22%;
+  --ring: 44 78% 60%;
+
+  --radius: 0.5rem;
+
+  --gradient-primary: linear-gradient(135deg, hsl(44 55% 54%) 0%, hsl(44 78% 76%) 100%);
+  --gradient-alert: linear-gradient(135deg, hsl(44 78% 76%) 0%, hsl(0 72% 55%) 100%);
+
+  --shadow-glow: 0 0 30px hsl(44 78% 60% / 0.35), 0 0 80px hsl(44 55% 40% / 0.25);
+  --shadow-alert: 0 0 30px hsl(0 72% 55% / 0.35);
+
+  font-family: "Manrope", "Noto Sans", sans-serif;
+}
+
+.theme-noir.dark,
+.dark.theme-noir {
+  /* Keep the same tokens in dark — noir is inherently dark */
+  --background: 0 0% 4%;
+  --foreground: 45 60% 94%;
+  --card: 0 0% 7%;
+  --popover: 0 0% 7%;
+  --secondary: 0 0% 11%;
+  --muted: 0 0% 11%;
+  --border: 44 30% 20%;
+  --input: 44 30% 20%;
+}
+
+.theme-noir h1,
+.theme-noir h2,
+.theme-noir h3,
+.theme-noir h4,
+.theme-noir .font-display {
+  font-family: "Sora", "Noto Sans", sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.theme-noir body {
+  background:
+    radial-gradient(ellipse at 20% 10%, hsl(44 55% 24% / 0.18), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, hsl(44 78% 40% / 0.10), transparent 55%),
+    hsl(var(--background));
+}
+
+/* Subtle gold shimmer for primary buttons in noir */
+.theme-noir .bg-primary {
+  background: linear-gradient(135deg, hsl(44 55% 54%), hsl(44 78% 66%));
+  color: hsl(0 0% 6%);
+  box-shadow: 0 1px 0 hsl(44 78% 80% / 0.4) inset, 0 8px 24px -12px hsl(44 78% 50% / 0.6);
+}
+
 .login-text-glow {
   text-shadow: 0 0 25px rgba(127, 19, 236, 0.7);
 }
