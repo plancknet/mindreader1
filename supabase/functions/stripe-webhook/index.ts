@@ -182,11 +182,10 @@ async function handleCheckoutCompleted(
   supabaseClient: any,
   session: Stripe.Checkout.Session,
 ): Promise<string | null> {
-  console.log('[Webhook] Processing checkout.session.completed', { sessionId: session.id });
+  console.log('[Webhook] Processing checkout.session.completed');
 
   const customerId = session.customer as string | null;
   if (!customerId) {
-    console.log('[Webhook] No customer ID in session');
     return null;
   }
 
@@ -194,10 +193,7 @@ async function handleCheckoutCompleted(
 
   // Check if a discount was applied (promotion code used)
   if (session.total_details?.amount_discount && session.total_details.amount_discount > 0) {
-    console.log('[Webhook] Discount detected in session', {
-      amountDiscount: session.total_details.amount_discount,
-      sessionId: session.id
-    });
+    console.log('[Webhook] Discount detected in session');
 
     // Fetch the full session with line items to get discount details
     try {
@@ -211,7 +207,6 @@ async function handleCheckoutCompleted(
 
       if (fullSession.metadata?.coupon_code) {
         promotionCode = fullSession.metadata.coupon_code;
-        console.log('[Webhook] Promotion code from metadata:', promotionCode);
       }
 
       const discountCandidates: any[] = [];
@@ -231,7 +226,6 @@ async function handleCheckoutCompleted(
           if (details?.code) {
             promotionCode = promotionCode ?? details.code;
             promotionCodeId = promotionCodeId ?? details.id ?? null;
-            console.log('[Webhook] Promotion code from discount array:', promotionCode, promotionCodeId);
             break;
           }
         }
@@ -242,8 +236,6 @@ async function handleCheckoutCompleted(
         const influencerId = await findInfluencerByCouponCode(supabaseClient, promotionCode);
         
         if (influencerId) {
-          console.log('[Webhook] Found influencer for code:', { promotionCode, influencerId });
-          
           // Record redemption
           const amount = session.amount_total ? session.amount_total / 100 : 6.00;
           await recordCouponRedemption(
@@ -255,11 +247,7 @@ async function handleCheckoutCompleted(
           );
           
           console.log('[Webhook] Recorded coupon redemption successfully');
-        } else {
-          console.log('[Webhook] No influencer found for coupon code:', promotionCode);
         }
-      } else {
-        console.log('[Webhook] Could not extract promotion code from session');
       }
     } catch (error) {
       console.error('[Webhook] Error processing coupon redemption:', error);
@@ -291,8 +279,6 @@ async function findInfluencerByCouponCode(
   supabaseClient: any,
   couponCode: string
 ): Promise<string | null> {
-  console.log('[Webhook] Looking up influencer for coupon:', couponCode);
-  
   const { data, error } = await supabaseClient
     .from('users')
     .select('user_id')
@@ -314,8 +300,6 @@ async function recordCouponRedemption(
   promotionCodeId: string | null,
   amount: number = 6.00
 ): Promise<void> {
-  console.log('[Webhook] Recording redemption:', { influencerId, couponCode, promotionCodeId, amount });
-  
   const { error } = await supabaseClient
     .from('coupon_redemptions')
     .insert({
