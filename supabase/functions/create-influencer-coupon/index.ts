@@ -38,8 +38,7 @@ serve(async (req) => {
     const body = await req.json();
     const { code } = CodeSchema.parse(body);
 
-    console.log("Criando cupom para usuário:", user.id, "código:", code);
-
+    // Sensitive user identifiers and coupon code intentionally not logged
     // Check if user already has a coupon
     const { data: userData, error: userError } = await supabaseClient
       .from("users")

@@ -115,7 +115,7 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    console.log('Transcription successful:', result.text);
+    // Transcription content intentionally not logged
 
     return new Response(
       JSON.stringify({ text: result.text }),

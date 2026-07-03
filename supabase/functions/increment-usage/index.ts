@@ -33,8 +33,7 @@ serve(async (req) => {
       throw new Error("game_id inválido. Deve ser um número entre 1 e 16");
     }
 
-    console.log(`Incrementing usage for user ${user.id}, game ${game_id}`);
-
+    // Sensitive user identifiers intentionally not logged
     // Get current premium status
     let { data: premiumUser, error: fetchError } = await supabaseClient
       .from("users")

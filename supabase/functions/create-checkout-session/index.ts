@@ -45,8 +45,7 @@ serve(async (req) => {
       throw new Error("Usuário não autenticado");
     }
 
-    console.log("Creating checkout session for user:", user.id);
-
+    // Sensitive user identifiers intentionally not logged
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
@@ -66,8 +65,6 @@ serve(async (req) => {
       
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
-        console.log("Existing Stripe customer found:", customerId);
-        
         // Store customer ID in database for future use
         await supabaseClient
           .from('users')
@@ -76,8 +73,6 @@ serve(async (req) => {
             stripe_customer_id: customerId 
           });
       }
-    } else {
-      console.log("Stripe customer ID from database:", customerId);
     }
 
     const standardPriceId = "price_1SUot7LLVxhpxlCu2FsPNWGA";
