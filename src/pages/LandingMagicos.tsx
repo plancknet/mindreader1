@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Sparkles, Users, Ticket, DollarSign, ArrowRight, Play, Star, Zap, ChevronDown, MessageCircle, Mail, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -167,6 +168,23 @@ const LandingMagicos = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a12] text-white font-sans overflow-x-hidden">
+      <Helmet>
+        <title>Programa de Parceiros para Mágicos — MindReader</title>
+        <meta name="description" content="Ganhe comissões indicando o MindReader: cupom personalizado, pagamento por PIX e material pronto para divulgar. Cadastro gratuito para mágicos parceiros." />
+        <link rel="canonical" href="https://mindreader.site/magicos" />
+        <meta property="og:title" content="Programa de Parceiros para Mágicos — MindReader" />
+        <meta property="og:description" content="Gere comissões indicando o MindReader com seu cupom personalizado. Cadastro gratuito." />
+        <meta property="og:url" content="https://mindreader.site/magicos" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqs.map((f) => ({
+            "@type": "Question",
+            "name": f.question,
+            "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+          })),
+        })}</script>
+      </Helmet>
       {/* Animated background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[150px] animate-pulse" />
