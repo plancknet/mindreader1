@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
 import "@fontsource/sora/400.css";
@@ -28,7 +29,12 @@ const preloadGlobalDesign = async () => {
 };
 
 const container = document.getElementById("root")!;
-const mount = () => createRoot(container).render(<App />);
+const mount = () =>
+  createRoot(container).render(
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>,
+  );
 
 Promise.all([ensureFreshAssets(), preloadGlobalDesign()]).then(([ready]) => {
   if (ready) {

@@ -1,0 +1,11 @@
+# MindReader
+
+> App de mentalismo interativo: 14 truques de leitura de mente prontos para surpreender amigos, família e público direto do seu celular.
+
+MindReader é uma plataforma de mentalismo digital para o público em geral e para mágicos parceiros. O app entrega efeitos como Carta Pensada, Carta Mental, Jogo da Velha da Bruxa, Eu Já Sabia e outros, com versões em português e inglês.
+
+## Pages
+
+- [Home](/): visão geral do MindReader e ponto de entrada para os truques.
+- [Demo grátis — Carta Pensada](/demo): experimente um truque completo sem cadastro.
+- [Programa de parceiros para mágicos](/magicos): informações e inscrição para o programa de influenciadores/mágicos parceiros.

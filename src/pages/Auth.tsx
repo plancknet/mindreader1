@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-react';
@@ -299,6 +300,15 @@ const Auth = () => {
     : 'selection:bg-[#7f13ec] selection:text-white';
 
   return (
+    <>
+    <Helmet>
+      <title>Entrar no MindReader — Mentalismo no seu celular</title>
+      <meta name="description" content="Acesse sua conta MindReader e continue surpreendendo amigos com 14 truques de mentalismo interativo direto do celular." />
+      <link rel="canonical" href="https://mindreader.site/auth" />
+      <meta property="og:title" content="Entrar no MindReader" />
+      <meta property="og:description" content="Acesse sua conta MindReader e continue surpreendendo amigos com truques de mentalismo interativo." />
+      <meta property="og:url" content="https://mindreader.site/auth" />
+    </Helmet>
     <div
       className={`relative min-h-screen w-full overflow-hidden ${rootBg} text-white antialiased ${selectionClasses}`}
       style={{ fontFamily: loginFontFamily }}
@@ -329,7 +339,7 @@ const Auth = () => {
           <div className="mb-6 rounded-full border border-[#7f13ec]/50 bg-[#7f13ec]/20 p-5 login-logo-glow">
             <Brain className="h-14 w-14 text-white animate-pulse" />
           </div>
-          <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader</h1>
+          <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader — Mentalismo profissional no seu celular</h1>
           <p className="mt-3 text-lg font-medium tracking-wide text-white/70">Leia Pensamentos</p>
         </div>
 
@@ -526,6 +536,7 @@ const Auth = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

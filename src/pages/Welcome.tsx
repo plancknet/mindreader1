@@ -153,9 +153,9 @@ const Welcome = () => {
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   
-                  <h3 className="text-lg font-bold text-center text-foreground group-hover:text-primary transition-colors dark:text-white dark:group-hover:text-[#d8b4fe]">
+                  <h2 className="text-lg font-bold text-center text-foreground group-hover:text-primary transition-colors dark:text-white dark:group-hover:text-[#d8b4fe]">
                     {game.title}
-                  </h3>
+                  </h2>
                   
                   <Button
                     variant="ghost"
