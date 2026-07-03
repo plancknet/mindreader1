@@ -1,13 +1,11 @@
 ﻿import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
-import { useGlobalDesign } from '@/hooks/useGlobalDesign';
 
 type GlassInputProps = {
   id: string;
@@ -71,8 +69,6 @@ const Auth = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { designVariant } = useGlobalDesign();
-  const isNoir = designVariant === 'noir';
 
   // Redirect if already logged in
   useEffect(() => {
@@ -291,47 +287,20 @@ const Auth = () => {
   };
 
   const backgroundImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBLvkwziIMYB9_2Y7zMObXsZWpVDq0QQDx4jXWWQqsoiWNxivIRYw8ys5_UileF3BHslgqTaB2WMmMIFl7BZOdG9V-8zrVgAbNQzxy_xl4iKE5Nz5hzFLbSmadD25QQsGqj7-xOkrYe3uWLFIShuXo7T3R2QxB-Uenhtc7nEP52VI8ZxO4IvBGX4rEElKWk0f7KaRVaQKBj1vsu6oilwZOl5mHJNLWjgkKWTN0uGf19Vf8E9JM66Cjn3OKZqhTj4CeZRxhGqfVvmg';
-  const loginFontFamily = isNoir
-    ? '"Sora", "Manrope", "Noto Sans", sans-serif'
-    : '"Spline Sans", "Noto Sans", sans-serif';
-  const rootBg = isNoir ? 'bg-[#0a0a0a]' : 'bg-[#191022]';
-  const selectionClasses = isNoir
-    ? 'selection:bg-[#d4a63c] selection:text-black'
-    : 'selection:bg-[#7f13ec] selection:text-white';
+  const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 
   return (
-    <>
-    <Helmet>
-      <title>Entrar no MindReader — Mentalismo no seu celular</title>
-      <meta name="description" content="Acesse sua conta MindReader e continue surpreendendo amigos com 14 truques de mentalismo interativo direto do celular." />
-      <link rel="canonical" href="https://mindreader.site/auth" />
-      <meta property="og:title" content="Entrar no MindReader" />
-      <meta property="og:description" content="Acesse sua conta MindReader e continue surpreendendo amigos com truques de mentalismo interativo." />
-      <meta property="og:url" content="https://mindreader.site/auth" />
-    </Helmet>
     <div
-      className={`relative min-h-screen w-full overflow-hidden ${rootBg} text-white antialiased ${selectionClasses}`}
+      className="relative min-h-screen w-full overflow-hidden bg-[#191022] text-white antialiased selection:bg-[#7f13ec] selection:text-white"
       style={{ fontFamily: loginFontFamily }}
     >
       <div className="absolute inset-0 z-0 h-full w-full">
-        {isNoir ? (
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(ellipse at 30% 20%, rgba(212,166,60,0.18), transparent 55%), radial-gradient(ellipse at 70% 80%, rgba(212,166,60,0.10), transparent 60%), #0a0a0a',
-            }}
-          />
-        ) : (
-          <>
-            <img
-              src={backgroundImageUrl}
-              alt="Textura abstrata roxa lembrando fumaça mística"
-              className="h-full w-full object-cover object-center opacity-80"
-            />
-            <div className="absolute inset-0 bg-magic-gradient" />
-          </>
-        )}
+        <img
+          src={backgroundImageUrl}
+          alt="Textura abstrata roxa lembrando fumaça mística"
+          className="h-full w-full object-cover object-center opacity-80"
+        />
+        <div className="absolute inset-0 bg-magic-gradient" />
       </div>
 
       <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center px-4 py-10">
@@ -339,7 +308,7 @@ const Auth = () => {
           <div className="mb-6 rounded-full border border-[#7f13ec]/50 bg-[#7f13ec]/20 p-5 login-logo-glow">
             <Brain className="h-14 w-14 text-white animate-pulse" />
           </div>
-          <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader — Mentalismo profissional no seu celular</h1>
+          <h1 className="text-5xl font-bold leading-tight tracking-tight login-text-glow">MindReader</h1>
           <p className="mt-3 text-lg font-medium tracking-wide text-white/70">Leia Pensamentos</p>
         </div>
 
@@ -536,7 +505,6 @@ const Auth = () => {
         </div>
       </div>
     </div>
-    </>
   );
 };
 

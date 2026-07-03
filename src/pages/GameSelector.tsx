@@ -1,6 +1,5 @@
 ﻿import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useMemo, type KeyboardEvent } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -417,14 +416,6 @@ const GameSelector = () => {
       className="relative min-h-screen overflow-hidden bg-background pb-24 text-foreground"
       style={{ fontFamily: loginFontFamily }}
     >
-      <Helmet>
-        <title>Escolha um truque — MindReader</title>
-        <meta name="description" content="14 truques de mentalismo para surpreender amigos: cartas, palavras, emojis, jogo da velha da bruxa e muito mais no MindReader." />
-        <link rel="canonical" href="https://mindreader.site/game-selector" />
-        <meta property="og:title" content="Escolha um truque — MindReader" />
-        <meta property="og:description" content="14 truques de mentalismo interativo prontos para surpreender." />
-        <meta property="og:url" content="https://mindreader.site/game-selector" />
-      </Helmet>
       {/* Dark mode decorative blurs */}
       <div className="pointer-events-none fixed inset-0 z-0 dark:block hidden">
         <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
@@ -446,12 +437,11 @@ const GameSelector = () => {
             </div>
             <div className="flex flex-col items-center text-center">
               <h1 className="text-3xl font-semibold text-foreground drop-shadow-sm dark:text-white dark:drop-shadow-[0_0_15px_rgba(127,19,236,0.5)]">
-                MindReader — Mentalismo profissional no seu celular
+                MindReader
               </h1>
             </div>
             <button
               type="button"
-              aria-label="Premium Features"
               className="relative flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
             >
               <span className="absolute right-2 top-2 size-2 rounded-full bg-primary shadow-glow dark:bg-[#7f13ec] dark:shadow-[0_0_8px_rgba(127,19,236,0.8)]" />

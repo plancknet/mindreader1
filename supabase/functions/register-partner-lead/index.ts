@@ -15,7 +15,8 @@ serve(async (req) => {
   try {
     const { email, whatsapp } = await req.json();
 
-    // PII (email/whatsapp) intentionally not logged
+    console.log('Registering partner lead:', { email, whatsapp });
+
     // Validate inputs
     if (!email || !whatsapp) {
       return new Response(

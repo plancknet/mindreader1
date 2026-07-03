@@ -4,7 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { LogoutButton } from '@/components/LogoutButton';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { DesignVariantToggle } from '@/components/DesignVariantToggle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useSubscriptionTier } from '@/hooks/useSubscriptionTier';
@@ -51,7 +50,6 @@ export const HeaderControls = ({
           {adminLabel === 'common.admin' ? 'Admin' : adminLabel}
         </Button>
       )}
-      {showExtras && isAdmin && <DesignVariantToggle />}
       {showExtras && showCoupons && (
         <Button
           variant="outline"

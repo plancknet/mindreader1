@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getCardImageSrc } from '@/lib/cardImages';
@@ -169,14 +168,6 @@ const DemoCartaPensada = () => {
   if (phase === 'welcome') {
     return (
       <div className="relative min-h-screen overflow-hidden bg-background text-foreground" style={{ fontFamily }}>
-        <Helmet>
-          <title>Demo grátis — Carta Pensada | MindReader</title>
-          <meta name="description" content="Experimente o MindReader sem cadastro: adivinhamos a carta que você pensou em 3 rodadas. Um dos 14 truques do app de mentalismo." />
-          <link rel="canonical" href="https://mindreader.site/demo" />
-          <meta property="og:title" content="Demo grátis — Carta Pensada | MindReader" />
-          <meta property="og:description" content="Adivinhamos a carta que você pensou em 3 rodadas. Experimente um truque completo do MindReader sem cadastro." />
-          <meta property="og:url" content="https://mindreader.site/demo" />
-        </Helmet>
         <div className="pointer-events-none fixed inset-0 z-0">
           <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-[#7f13ec]/20 blur-[120px]" />
           <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px]" />
@@ -187,7 +178,7 @@ const DemoCartaPensada = () => {
           <div className="flex items-center gap-3">
             <Sparkles className="h-10 w-10 text-[#7f13ec]" />
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              MindReader — Mentalismo profissional no seu celular
+              MindReader
             </h1>
           </div>
 

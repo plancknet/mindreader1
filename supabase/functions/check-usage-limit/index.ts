@@ -127,7 +127,8 @@ serve(async (req) => {
 
     const user = data.user;
 
-    // Sensitive user identifiers intentionally not logged
+    console.log("Checking usage limit for user:", user.id);
+
     // Get or create premium user record
     const { data: premiumUser, error: fetchError } = await supabaseClient
       .from("users")
