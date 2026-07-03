@@ -6,6 +6,7 @@ import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-reac
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { z } from 'zod';
+import { useGlobalDesign } from '@/hooks/useGlobalDesign';
 
 type GlassInputProps = {
   id: string;
@@ -69,6 +70,8 @@ const Auth = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { designVariant } = useGlobalDesign();
+  const isNoir = designVariant === 'noir';
 
   // Redirect if already logged in
   useEffect(() => {
@@ -287,20 +290,38 @@ const Auth = () => {
   };
 
   const backgroundImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBLvkwziIMYB9_2Y7zMObXsZWpVDq0QQDx4jXWWQqsoiWNxivIRYw8ys5_UileF3BHslgqTaB2WMmMIFl7BZOdG9V-8zrVgAbNQzxy_xl4iKE5Nz5hzFLbSmadD25QQsGqj7-xOkrYe3uWLFIShuXo7T3R2QxB-Uenhtc7nEP52VI8ZxO4IvBGX4rEElKWk0f7KaRVaQKBj1vsu6oilwZOl5mHJNLWjgkKWTN0uGf19Vf8E9JM66Cjn3OKZqhTj4CeZRxhGqfVvmg';
-  const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
+  const loginFontFamily = isNoir
+    ? '"Sora", "Manrope", "Noto Sans", sans-serif'
+    : '"Spline Sans", "Noto Sans", sans-serif';
+  const rootBg = isNoir ? 'bg-[#0a0a0a]' : 'bg-[#191022]';
+  const selectionClasses = isNoir
+    ? 'selection:bg-[#d4a63c] selection:text-black'
+    : 'selection:bg-[#7f13ec] selection:text-white';
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden bg-[#191022] text-white antialiased selection:bg-[#7f13ec] selection:text-white"
+      className={`relative min-h-screen w-full overflow-hidden ${rootBg} text-white antialiased ${selectionClasses}`}
       style={{ fontFamily: loginFontFamily }}
     >
       <div className="absolute inset-0 z-0 h-full w-full">
-        <img
-          src={backgroundImageUrl}
-          alt="Textura abstrata roxa lembrando fumaça mística"
-          className="h-full w-full object-cover object-center opacity-80"
-        />
-        <div className="absolute inset-0 bg-magic-gradient" />
+        {isNoir ? (
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse at 30% 20%, rgba(212,166,60,0.18), transparent 55%), radial-gradient(ellipse at 70% 80%, rgba(212,166,60,0.10), transparent 60%), #0a0a0a',
+            }}
+          />
+        ) : (
+          <>
+            <img
+              src={backgroundImageUrl}
+              alt="Textura abstrata roxa lembrando fumaça mística"
+              className="h-full w-full object-cover object-center opacity-80"
+            />
+            <div className="absolute inset-0 bg-magic-gradient" />
+          </>
+        )}
       </div>
 
       <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center px-4 py-10">

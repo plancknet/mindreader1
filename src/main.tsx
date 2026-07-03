@@ -8,18 +8,29 @@ import "@fontsource/manrope/400.css";
 import "@fontsource/manrope/500.css";
 import "@fontsource/manrope/600.css";
 import { ensureFreshAssets } from "./versioning/ensureFreshAssets";
+import { supabase } from "./integrations/supabase/client";
+import { applyDesignClasses } from "./hooks/useGlobalDesign";
 
-try {
-  const variant = localStorage.getItem("design-variant");
-  if (variant === "noir") {
-    document.documentElement.classList.add("theme-noir");
+const preloadGlobalDesign = async () => {
+  try {
+    const { data } = await supabase
+      .from("app_settings")
+      .select("design_variant, theme_mode")
+      .limit(1)
+      .maybeSingle();
+    applyDesignClasses(
+      (data?.design_variant as "classic" | "noir") ?? "classic",
+      (data?.theme_mode as "light" | "dark") ?? "light",
+    );
+  } catch {
+    applyDesignClasses("classic", "light");
   }
-} catch {}
+};
 
 const container = document.getElementById("root")!;
 const mount = () => createRoot(container).render(<App />);
 
-ensureFreshAssets().then((ready) => {
+Promise.all([ensureFreshAssets(), preloadGlobalDesign()]).then(([ready]) => {
   if (ready) {
     mount();
   }

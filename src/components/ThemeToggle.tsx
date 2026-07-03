@@ -1,40 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-type ThemeVariant = 'dark' | 'light';
+import { useGlobalDesign } from '@/hooks/useGlobalDesign';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 export const ThemeToggle = () => {
-  const [theme, setTheme] = useState<ThemeVariant>('dark');
+  const { themeMode, setThemeMode } = useGlobalDesign();
+  const { isAdmin } = useIsAdmin();
 
-  const setAndPersistTheme = useCallback((nextTheme: ThemeVariant) => {
-    const root = document.documentElement;
-    if (nextTheme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('theme', nextTheme);
-    setTheme(nextTheme);
-  }, []);
+  if (!isAdmin) return null;
 
-  useEffect(() => {
-    const stored = (localStorage.getItem('theme') as ThemeVariant | null) ?? 'dark';
-    setAndPersistTheme(stored);
-  }, [setAndPersistTheme]);
-
-  const toggleTheme = () => {
-    setAndPersistTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  const toggle = () => setThemeMode(themeMode === 'dark' ? 'light' : 'dark');
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={toggleTheme}
-      aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+      onClick={toggle}
+      aria-label={themeMode === 'dark' ? 'Ativar modo claro (global)' : 'Ativar modo escuro (global)'}
+      title="Alternar modo claro/escuro global (Admin)"
     >
-      {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {themeMode === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
   );
 };
