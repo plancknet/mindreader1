@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          design_variant: string
+          id: string
+          singleton: boolean
+          theme_mode: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          design_variant?: string
+          id?: string
+          singleton?: boolean
+          theme_mode?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          design_variant?: string
+          id?: string
+          singleton?: boolean
+          theme_mode?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       coupon_redemptions: {
         Row: {
           amount: number
