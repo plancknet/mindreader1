@@ -57,7 +57,7 @@ serve(async (req) => {
 
     const { text, voice } = parseResult.data;
 
-    console.log('Generating speech for text:', text.substring(0, 100) + (text.length > 100 ? '...' : ''));
+    // Text content intentionally not logged
 
     const response = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
