@@ -228,6 +228,44 @@ All colors MUST be HSL.
   box-shadow: 0 1px 0 hsl(44 78% 80% / 0.4) inset, 0 8px 24px -12px hsl(44 78% 50% / 0.6);
 }
 
+/* -------------------------------------------------------------
+   Noir light mode — legibility overrides
+   Many pages use hardcoded `text-white`, `bg-white/xx`, `border-white/xx`
+   and dark hex backgrounds intended for the classic purple theme.
+   In noir light the page surface becomes ivory, so white text on
+   white becomes invisible. Remap the common offenders to noir tokens.
+   Dark noir keeps original behaviour (these rules are scoped to :not(.dark)).
+   ------------------------------------------------------------- */
+.theme-noir:not(.dark) .text-white {
+  color: hsl(var(--foreground)) !important;
+}
+.theme-noir:not(.dark) [class*="text-white\\/"] {
+  color: hsl(var(--foreground) / 0.75) !important;
+}
+.theme-noir:not(.dark) .placeholder\:text-white\/50::placeholder,
+.theme-noir:not(.dark) [class*="placeholder\\:text-white"]::placeholder {
+  color: hsl(var(--foreground) / 0.5) !important;
+}
+.theme-noir:not(.dark) .bg-white\/5,
+.theme-noir:not(.dark) .bg-white\/10,
+.theme-noir:not(.dark) [class*="bg-white\\/"] {
+  background-color: hsl(var(--foreground) / 0.06) !important;
+}
+.theme-noir:not(.dark) .border-white\/10,
+.theme-noir:not(.dark) .border-white\/20,
+.theme-noir:not(.dark) [class*="border-white\\/"] {
+  border-color: hsl(var(--foreground) / 0.15) !important;
+}
+/* Neutralise hardcoded purple/indigo/dark surface backgrounds so noir-light
+   pages don't render as almost-black panels. */
+.theme-noir:not(.dark) [class*="bg-[#1e1b4b"],
+.theme-noir:not(.dark) [class*="bg-[#191022"],
+.theme-noir:not(.dark) [class*="bg-[#0a0a0a"],
+.theme-noir:not(.dark) [class*="bg-black\\/"] {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground));
+}
+
 .login-text-glow {
   text-shadow: 0 0 25px rgba(127, 19, 236, 0.7);
 }
