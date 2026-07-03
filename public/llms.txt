@@ -1,0 +1,14 @@
+# MindReader
+
+> App interativo de mentalismo: descubra a carta, a palavra ou o pensamento do seu público com mais de 15 truques prontos para usar no celular.
+
+## Pages
+
+- [Home](/): Visão geral do MindReader e acesso aos truques.
+- [Demo Carta Pensada](/demo): Onboarding público do truque "Carta Pensada", sem cadastro.
+- [Para Mágicos](/magicos): Landing para mágicos parceiros com perguntas frequentes.
+- [Demo Google Mímica](/google-mime/demo): Demonstração pública do truque "Google Mímica".
+
+## Optional
+
+- [Premium](/premium): Planos e preços.
