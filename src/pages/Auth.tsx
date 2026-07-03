@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2, Brain, Mail, Lock, ArrowRight } from 'lucide-react';
