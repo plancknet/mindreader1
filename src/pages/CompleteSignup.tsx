@@ -198,6 +198,9 @@ const CompleteSignup = () => {
         </header>
 
         <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 pt-6">
+          <h1 className="sr-only">
+            {isPasswordChange ? 'Alterar sua senha do MindReader' : 'Completar cadastro no MindReader'}
+          </h1>
           <Card className="w-full border-border bg-card dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1e1b4b]/85 dark:to-[#0f111a]/95 shadow-lg">
             <CardHeader className="text-center space-y-2">
               <CardTitle className="text-2xl font-bold text-foreground dark:text-white">
