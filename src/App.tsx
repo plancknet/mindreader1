@@ -37,6 +37,8 @@ import { hasPendingCheckout } from "@/lib/checkout";
 import { GameAccessGate } from "@/components/GameAccessGate";
 import { GAME_IDS } from "@/constants/games";
 import Oferta from "./pages/Oferta";
+import CompraConfirmada from './pages/CompraConfirmada';
+import DefinirSenha from './pages/DefinirSenha';
 import DemoCartaPensada from "./pages/DemoCartaPensada";
 import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
@@ -245,6 +247,8 @@ const App = () => (
             <Route path="/magicos" element={<LandingMagicos />} />
             <Route path="/demo" element={<DemoCartaPensada />} />
             <Route path="/oferta" element={<Oferta />} />
+            <Route path="/compra-confirmada" element={<CompraConfirmada />} />
+            <Route path="/definir-senha" element={<DefinirSenha />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />

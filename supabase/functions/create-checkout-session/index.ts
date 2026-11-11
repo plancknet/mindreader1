@@ -50,8 +50,26 @@ serve(async (req) => {
     const token = (req.headers.get("Authorization") ?? "").replace("Bearer ", "");
     const { data: authData } = await supabase.auth.getUser(token);
     const user = authData.user;
+    const origin = req.headers.get("origin") ?? Deno.env.get("SITE_URL") ?? "";
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
+
+    // Guest checkout: pay first, the account is created from the checkout email afterwards.
     if (!user?.email) {
-      return json({ error: "not_authenticated" }, 401);
+      if (items.includes("EJS2") && !items.includes("MAIN")) items = ["MAIN", "EJS2"];
+      const guestItems = items.join(",");
+      const guestSession = await stripe.checkout.sessions.create({
+        customer_creation: "always",
+        line_items: items.map((item) => ({ price: OFFER_PRICES[item][currency], quantity: 1 })),
+        mode: "payment",
+        success_url: `${origin}/compra-confirmada?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/oferta#preco`,
+        allow_promotion_codes: true,
+        locale: currency === "brl" ? "pt-BR" : "en",
+        metadata: { app: "mindreader", type: "one_time", guest: "1", items: guestItems, planType: "STANDARD" },
+      });
+      return json({ url: guestSession.url });
     }
 
     const { data: profile } = await supabase
@@ -74,10 +92,6 @@ serve(async (req) => {
       return json({ alreadyOwned: true });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
     let customerId = profile?.stripe_customer_id ?? undefined;
     if (!customerId) {
       const customers = await stripe.customers.list({ email: user.email, limit: 1 });
@@ -87,7 +101,6 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") ?? Deno.env.get("SITE_URL") ?? "";
     const itemsParam = items.join(",");
 
     const session = await stripe.checkout.sessions.create({

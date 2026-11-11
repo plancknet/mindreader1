@@ -67,19 +67,13 @@ export const postAuthPath = (defaultPath: string): string =>
 export type CheckoutResult = 'redirected' | 'needs_auth' | 'already_owned';
 
 /**
- * Opens Stripe Checkout for the chosen items. When the visitor isn't signed in,
- * the choice is remembered and they're sent to sign in first.
+ * Opens Stripe Checkout for the chosen items. Visitors without an account pay first;
+ * their account is created from the checkout email after the payment is confirmed.
  */
 export const startOfferCheckout = async (
   items: OfferItem[],
   language: string,
 ): Promise<CheckoutResult> => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    savePendingCheckout(items);
-    return 'needs_auth';
-  }
-
   const { data, error } = await supabase.functions.invoke('create-checkout-session', {
     body: { items, currency: currencyForLanguage(language) },
   });

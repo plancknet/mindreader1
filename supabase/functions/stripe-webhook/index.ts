@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { grantsForItems, parseItems } from "../_shared/offer.ts";
+import { buyerEmail, ensureBuyerAccount, grantPurchase, sendSetPasswordEmail } from "../_shared/guest.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -184,6 +185,17 @@ async function handleCheckoutCompleted(
   session: Stripe.Checkout.Session,
 ): Promise<string | null> {
   console.log('[Webhook] Processing checkout.session.completed', { sessionId: session.id });
+
+  // Guest checkout: create/link the account from the checkout email and grant access.
+  if (session.metadata?.guest === '1' && session.payment_status === 'paid') {
+    const email = buyerEmail(session);
+    if (email) {
+      const { userId } = await ensureBuyerAccount(supabaseClient, email);
+      await grantPurchase(supabaseClient, userId, session as any);
+      await sendSetPasswordEmail(stripe, supabaseClient, session.id, email);
+      return userId;
+    }
+  }
 
   const customerId = session.customer as string | null;
   if (!customerId) {

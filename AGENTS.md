@@ -4,3 +4,4 @@
 - Paid fields on `public.users` (tier, premium flags, add-on flags, Stripe IDs, coupon) can only be changed by server functions or admins; a database trigger resets them on user writes. Why: users can update their own row, so access must not be self-grantable.
 - Sales-page copy for `/oferta`, `/premium` and the post-purchase upsell lives in `src/pages/oferta/copy.ts` (PT-BR + EN), not in the global translation files. Why: long marketing copy is edited as a unit.
 - Tests run with `bun run test` (vitest); keep rule tests next to the module they cover.
+- Guest checkout: signed-out buyers pay first; the webhook and `claim-guest-purchase` create/link the account by checkout email (`_shared/guest.ts`) and email a set-password link once per session. Why: removes sign-up friction before payment while keeping grants server-side.

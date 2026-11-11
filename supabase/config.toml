@@ -2,3 +2,6 @@ project_id = "wslktfqkeynaxshytmvy"
 
 [functions.register-partner-lead]
 verify_jwt = false
+
+[functions.claim-guest-purchase]
+verify_jwt = false

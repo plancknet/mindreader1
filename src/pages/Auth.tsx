@@ -191,7 +191,7 @@ const Auth = () => {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/connect-mind`,
+        redirectTo: `${window.location.origin}/definir-senha`,
       });
 
       if (error) throw error;

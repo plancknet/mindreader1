@@ -63,10 +63,7 @@ const Oferta = () => {
     setLoading(true);
     try {
       const result = await startOfferCheckout(items, language);
-      if (result === 'needs_auth') {
-        toast.info(copy.pricing.signInNotice);
-        navigate('/auth');
-      } else if (result === 'already_owned') {
+      if (result === 'already_owned') {
         navigate('/game-selector');
       }
     } catch (error) {
