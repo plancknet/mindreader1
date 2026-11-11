@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { languages } from '@/i18n/languages';
+import { priceLabel, startOfferCheckout } from '@/lib/checkout';
+import { getOfferCopy } from './oferta/copy';
 
 const loginFontFamily = '"Spline Sans", "Noto Sans", sans-serif';
 
@@ -18,6 +20,9 @@ const PremiumSuccess = () => {
   const sessionId = searchParams.get('session_id');
   const { t, language: currentLanguage } = useTranslation();
   const { setLanguage } = useLanguageContext();
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [upsellLoading, setUpsellLoading] = useState(false);
+  const offerCopy = getOfferCopy(currentLanguage);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -47,6 +52,7 @@ const PremiumSuccess = () => {
 
         if (data?.success) {
           setStatus('success');
+          setShowUpsell(!data?.hasEuJaSabia2);
         } else {
           setStatus('error');
         }
@@ -62,6 +68,18 @@ const PremiumSuccess = () => {
 
   const handleContinue = () => {
     navigate('/welcome');
+  };
+
+  const handleUpsell = async () => {
+    setUpsellLoading(true);
+    try {
+      await startOfferCheckout(['EJS2'], currentLanguage);
+    } catch (err) {
+      console.error('Upsell checkout error', err);
+      toast.error(offerCopy.premium.errorCheckout);
+    } finally {
+      setUpsellLoading(false);
+    }
   };
 
   const goHome = () => navigate('/game-selector');
@@ -148,7 +166,23 @@ const PremiumSuccess = () => {
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              {status === 'success' ? (
+              {status === 'success' && showUpsell ? (
+                <div className="space-y-3 rounded-2xl border-2 border-dashed border-magic/50 bg-magic/5 p-4 text-left">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-magic">{offerCopy.success.upsellKicker}</p>
+                  <p className="text-lg font-bold text-foreground">{offerCopy.success.upsellTitle}</p>
+                  <p className="text-sm text-muted-foreground">{offerCopy.success.upsellText}</p>
+                  <Button
+                    className="h-12 w-full rounded-2xl bg-gradient-magic font-bold text-magic-foreground hover:opacity-95"
+                    disabled={upsellLoading}
+                    onClick={handleUpsell}
+                  >
+                    {upsellLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : `${offerCopy.success.upsellButton} ${priceLabel('EJS2', currentLanguage)}`}
+                  </Button>
+                  <button type="button" onClick={handleContinue} className="w-full text-center text-sm text-muted-foreground underline-offset-4 hover:underline">
+                    {offerCopy.success.upsellSkip}
+                  </button>
+                </div>
+              ) : status === 'success' ? (
                 <Button className="w-full" onClick={handleContinue}>
                   {t('premiumSuccess.goToMindReader')}
                 </Button>

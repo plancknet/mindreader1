@@ -8,6 +8,7 @@ interface SubscriptionInfo {
   tier: SubscriptionTier;
   status: SubscriptionStatus;
   couponGenerated: boolean;
+  hasEuJaSabia2: boolean;
 }
 
 export const useSubscriptionTier = () => {
@@ -15,6 +16,7 @@ export const useSubscriptionTier = () => {
     tier: 'FREE',
     status: 'inactive',
     couponGenerated: false,
+    hasEuJaSabia2: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -28,13 +30,14 @@ export const useSubscriptionTier = () => {
             tier: 'FREE',
             status: 'inactive',
             couponGenerated: false,
+            hasEuJaSabia2: false,
           });
           return;
         }
 
         const { data, error } = await supabase
           .from('users')
-          .select('subscription_tier, subscription_status, coupon_generated')
+          .select('subscription_tier, subscription_status, coupon_generated, has_eu_ja_sabia_2')
           .eq('user_id', user.id)
           .maybeSingle();
 
@@ -44,6 +47,7 @@ export const useSubscriptionTier = () => {
             tier: 'FREE',
             status: 'inactive',
             couponGenerated: false,
+            hasEuJaSabia2: false,
           });
           return;
         }
@@ -52,6 +56,7 @@ export const useSubscriptionTier = () => {
           tier: (data?.subscription_tier as SubscriptionTier) ?? 'FREE',
           status: (data?.subscription_status as SubscriptionStatus) ?? 'inactive',
           couponGenerated: Boolean(data?.coupon_generated),
+          hasEuJaSabia2: Boolean(data?.has_eu_ja_sabia_2) || data?.subscription_tier === 'INFLUENCER',
         });
       } finally {
         setLoading(false);

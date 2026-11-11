@@ -2,45 +2,43 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { grantsForItems, parseItems, type OfferItem } from "../_shared/offer.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-type PlanType = "STANDARD" | "INFLUENCER";
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status,
+  });
+
+const PaymentSchema = z.object({
+  sessionId: z.string().min(1).max(255).regex(/^cs_[a-zA-Z0-9_]+$/, "Invalid Stripe session ID format"),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
+  const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const token = (req.headers.get("Authorization") ?? "").replace("Bearer ", "");
+    const { data } = await supabase.auth.getUser(token);
     const user = data.user;
+    if (!user) return json({ error: "not_authenticated" }, 401);
 
-    if (!user) {
-      throw new Error("Usuário não autenticado");
-    }
-
-    const PaymentSchema = z.object({
-      sessionId: z.string()
-        .min(1, "Session ID is required")
-        .regex(/^cs_[a-zA-Z0-9_]+$/, "Invalid Stripe session ID format")
-        .max(255, "Session ID too long")
-    });
-
-    const body = await req.json();
-    const { sessionId } = PaymentSchema.parse(body);
-
-    console.log("Verifying payment for session:", sessionId);
+    const parsed = PaymentSchema.safeParse(await req.json().catch(() => ({})));
+    if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400);
+    const { sessionId } = parsed.data;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -48,82 +46,47 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    if (session.metadata?.userId && session.metadata.userId !== user.id) {
+      return json({ success: false, message: "Session does not belong to this user" }, 403);
+    }
+
     if (session.payment_status !== "paid") {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          isPremium: false,
-          message: "Pagamento ainda não confirmado",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
-      );
+      return json({ success: false, message: "payment_not_confirmed" });
     }
 
-    console.log("Payment confirmed for user:", user.id);
-
-    let planType = (session.metadata?.planType as PlanType | undefined) ?? undefined;
-    if (!planType) {
-      planType = session.mode === "subscription" || session.subscription ? "INFLUENCER" : "STANDARD";
-    }
-    const normalizedPlan: PlanType = planType === "INFLUENCER" ? "INFLUENCER" : "STANDARD";
+    let items: OfferItem[] = parseItems(session.metadata?.items);
+    // Older sessions (before the lifetime offer) only had planType
+    if (items.length === 0) items = ["MAIN"];
 
     const updates: Record<string, unknown> = {
-      user_id: user.id,
-      is_premium: true,
-      subscription_tier: normalizedPlan,
-      premium_type: normalizedPlan === "INFLUENCER" ? "influencer" : "standard",
-      plan_confirmed: true,
-      purchase_date: new Date().toISOString(),
+      ...grantsForItems(items),
       stripe_customer_id: session.customer,
       stripe_session_id: sessionId,
-      stripe_subscription_id: normalizedPlan === "INFLUENCER" ? (session.subscription as string | null) : null,
-      coupon_generated: normalizedPlan === "INFLUENCER" ? false : true,
-      subscription_status: "active",
       updated_at: new Date().toISOString(),
     };
 
-    if (normalizedPlan === "INFLUENCER" && typeof session.subscription === "string") {
-      const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
-      updates.subscription_status = subscription.status ?? "active";
-      updates.current_period_end = subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000).toISOString()
-        : null;
-    } else {
-      updates.current_period_end = null;
-    }
-
-    const { error: upsertError } = await supabaseClient
+    // Never downgrade a legacy influencer subscriber
+    const { data: existing } = await supabase
       .from("users")
-      .upsert(updates, {
-        onConflict: "user_id",
-      });
-
-    if (upsertError) {
-      console.error("Error updating premium status:", upsertError);
-      throw upsertError;
+      .select("subscription_tier, has_eu_ja_sabia_2")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existing?.subscription_tier === "INFLUENCER") {
+      delete updates.subscription_tier;
+      delete updates.premium_type;
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        isPremium: true,
-        plan: normalizedPlan,
-        requiresCouponSetup: normalizedPlan === "INFLUENCER",
-        message: "Pagamento confirmado! Você agora é Premium 🎉",
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
-  } catch (error: any) {
+    const { error: updateError } = await supabase
+      .from("users")
+      .upsert({ user_id: user.id, ...updates }, { onConflict: "user_id" });
+    if (updateError) throw updateError;
+
+    const hasEjs2 = items.includes("EJS2") || Boolean(existing?.has_eu_ja_sabia_2) ||
+      existing?.subscription_tier === "INFLUENCER";
+
+    return json({ success: true, isPremium: true, items, hasEuJaSabia2: hasEjs2 });
+  } catch (error) {
     console.error("Error verifying payment:", error);
-    return new Response(JSON.stringify({ error: "Payment verification failed. Please try again." }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    return json({ error: "Payment verification failed. Please try again." }, 500);
   }
 });

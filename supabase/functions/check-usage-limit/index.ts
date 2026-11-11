@@ -6,12 +6,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FREE_LIMIT_PER_GAME = 3;
+const FREE_LIMIT_PER_GAME = 0;
 
-// Game access rules by tier and difficulty
-// FREE: Difficulty 1 = unlimited, Difficulty 2-3 = 3 uses each, Difficulty 4-5 = blocked
-// STANDARD: Difficulty 1-4 = unlimited, Difficulty 5 = blocked
-// INFLUENCER: All difficulties = unlimited
+// Game access rules (lifetime offer):
+// FREE: no tricks inside the app (the free taste is the public demo/quiz)
+// STANDARD (lifetime purchase): every trick except Eu Já Sabia 2, which needs the add-on
+// INFLUENCER (legacy subscribers): everything
+
+const EU_JA_SABIA_2_ID = 12;
 
 const GAME_DIFFICULTIES: Record<number, number> = {
   1: 3,  // MIND_READER
@@ -32,12 +34,6 @@ const GAME_DIFFICULTIES: Record<number, number> = {
   16: 5, // GOOGLE_MIME
 };
 
-const FREE_LIMITED_DIFFICULTIES = [2, 3];
-const BLOCKED_DIFFICULTIES_FREE = [4, 5];
-const BLOCKED_DIFFICULTIES_STANDARD = [5];
-const UNLIMITED_DIFFICULTIES_FREE = [1];
-const UNLIMITED_DIFFICULTIES_STANDARD = [1, 2, 3, 4];
-
 type SubscriptionTier = 'FREE' | 'STANDARD' | 'INFLUENCER';
 
 interface GameAccessInfo {
@@ -47,46 +43,16 @@ interface GameAccessInfo {
   reason: 'UNLIMITED' | 'LIMITED' | 'BLOCKED' | 'LIMIT_REACHED';
 }
 
-function checkGameAccessByDifficulty(
-  tier: SubscriptionTier,
-  difficulty: number,
-  gameUsageCount: number
-): GameAccessInfo {
-  // INFLUENCER has unlimited access to everything
-  if (tier === 'INFLUENCER') {
-    return { canAccess: true, isUnlimited: true, usageLimit: null, reason: 'UNLIMITED' };
-  }
+const UNLIMITED: GameAccessInfo = { canAccess: true, isUnlimited: true, usageLimit: null, reason: 'UNLIMITED' };
+const BLOCKED: GameAccessInfo = { canAccess: false, isUnlimited: false, usageLimit: 0, reason: 'BLOCKED' };
 
-  // STANDARD tier
+function checkGameAccess(tier: SubscriptionTier, gameId: number, hasEuJaSabia2: boolean): GameAccessInfo {
+  if (tier === 'INFLUENCER') return UNLIMITED;
   if (tier === 'STANDARD') {
-    if (BLOCKED_DIFFICULTIES_STANDARD.includes(difficulty)) {
-      return { canAccess: false, isUnlimited: false, usageLimit: 0, reason: 'BLOCKED' };
-    }
-    return { canAccess: true, isUnlimited: true, usageLimit: null, reason: 'UNLIMITED' };
+    if (gameId === EU_JA_SABIA_2_ID && !hasEuJaSabia2) return BLOCKED;
+    return UNLIMITED;
   }
-
-  // FREE tier
-  if (BLOCKED_DIFFICULTIES_FREE.includes(difficulty)) {
-    return { canAccess: false, isUnlimited: false, usageLimit: 0, reason: 'BLOCKED' };
-  }
-
-  if (UNLIMITED_DIFFICULTIES_FREE.includes(difficulty)) {
-    return { canAccess: true, isUnlimited: true, usageLimit: null, reason: 'UNLIMITED' };
-  }
-
-  // Limited difficulties (2, 3) for FREE tier
-  if (FREE_LIMITED_DIFFICULTIES.includes(difficulty)) {
-    const canUse = gameUsageCount < FREE_LIMIT_PER_GAME;
-    return {
-      canAccess: canUse,
-      isUnlimited: false,
-      usageLimit: FREE_LIMIT_PER_GAME,
-      reason: canUse ? 'LIMITED' : 'LIMIT_REACHED',
-    };
-  }
-
-  // Default: unlimited
-  return { canAccess: true, isUnlimited: true, usageLimit: null, reason: 'UNLIMITED' };
+  return BLOCKED;
 }
 
 serve(async (req) => {
@@ -159,7 +125,7 @@ serve(async (req) => {
 
       return new Response(
         JSON.stringify({
-          canUse: true,
+          canUse: false,
           isPremium: false,
           usageCount: 0,
           freeLimit: FREE_LIMIT_PER_GAME,
@@ -204,10 +170,10 @@ serve(async (req) => {
 
     // Build game access info for each game
     const gameAccessInfo: Record<number, GameAccessInfo> = {};
-    for (const [gameIdStr, difficulty] of Object.entries(GAME_DIFFICULTIES)) {
+    const hasEuJaSabia2 = Boolean(premiumUser.has_eu_ja_sabia_2) || tier === "INFLUENCER";
+    for (const gameIdStr of Object.keys(GAME_DIFFICULTIES)) {
       const gameId = parseInt(gameIdStr);
-      const usageCount = gameUsage[gameId] || 0;
-      gameAccessInfo[gameId] = checkGameAccessByDifficulty(tier, difficulty, usageCount);
+      gameAccessInfo[gameId] = checkGameAccess(tier, gameId, hasEuJaSabia2);
     }
 
     // Check if user can use any game
@@ -223,6 +189,7 @@ serve(async (req) => {
         subscriptionStatus: premiumUser.subscription_status ?? "inactive",
         planConfirmed: premiumUser.plan_confirmed ?? false,
         couponGenerated: premiumUser.coupon_generated ?? false,
+        hasEuJaSabia2,
         reason: canUseAnyGame ? (isPremium ? "PREMIUM" : "FREE_TIER") : "PAYWALL",
         gameUsage,
         gameDifficulties: GAME_DIFFICULTIES,

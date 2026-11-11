@@ -161,7 +161,7 @@ const DemoCartaPensada = () => {
         send_to: 'AW-1052545747/auOdCIPsot0bENOl8vUD',
       });
     }
-    navigate('/auth');
+    navigate('/oferta#preco');
   };
 
   // ─── WELCOME ───
@@ -417,7 +417,7 @@ const DemoCartaPensada = () => {
           className="w-full rounded-2xl bg-[#7f13ec] py-6 text-lg font-bold text-white hover:bg-[#6b0fd0] shadow-[0_0_30px_rgba(127,19,236,0.4)] gap-2"
         >
           <ShoppingCart className="h-5 w-5" />
-          Comprar Agora — R$ 29,90
+          Comprar Agora — R$ 19,90
         </Button>
       </div>
     </div>

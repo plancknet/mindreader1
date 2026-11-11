@@ -33,6 +33,10 @@ import MyEmojisInstructions from "./pages/MyEmojis/Instructions";
 import Welcome from "./pages/Welcome";
 import AdminPanel from "./pages/AdminPanel";
 import LandingMagicos from "./pages/LandingMagicos";
+import { hasPendingCheckout } from "@/lib/checkout";
+import { GameAccessGate } from "@/components/GameAccessGate";
+import { GAME_IDS } from "@/constants/games";
+import Oferta from "./pages/Oferta";
 import DemoCartaPensada from "./pages/DemoCartaPensada";
 import InfluencerCouponSetup from "./pages/InfluencerCouponSetup";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
@@ -143,6 +147,12 @@ const PostLoginRedirect = () => {
         }
 
         const tier = (data?.subscription_tier as 'FREE' | 'STANDARD' | 'INFLUENCER' | null) ?? 'FREE';
+
+        // A visitor who clicked "buy" before signing in goes straight to checkout
+        if (hasPendingCheckout() && tier !== 'INFLUENCER') {
+          setTargetPath('/premium');
+          return;
+        }
         const status = data?.subscription_status ?? 'inactive';
         const planConfirmed = Boolean(data?.plan_confirmed);
 
@@ -234,6 +244,7 @@ const App = () => (
             <Route path="/" element={<ProtectedRoute><PostLoginRedirect /></ProtectedRoute>} />
             <Route path="/magicos" element={<LandingMagicos />} />
             <Route path="/demo" element={<DemoCartaPensada />} />
+            <Route path="/oferta" element={<Oferta />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/complete-signup" element={<CompleteSignup />} />
             <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
@@ -265,13 +276,13 @@ const App = () => (
             <Route path="/papo-reto" element={<ProtectedRoute><PapoReto /></ProtectedRoute>} />
             <Route path="/papo-reto/instrucoes" element={<ProtectedRoute><PapoRetoInstructions /></ProtectedRoute>} />
             <Route path="/eu-ja-sabia" element={<ProtectedRoute><EuJaSabia /></ProtectedRoute>} />
-            <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><EuJaSabia2 /></ProtectedRoute>} />
+            <Route path="/eu-ja-sabia-2" element={<ProtectedRoute><GameAccessGate gameId={GAME_IDS.EU_JA_SABIA_2}><EuJaSabia2 /></GameAccessGate></ProtectedRoute>} />
             <Route path="/eu-ja-sabia-2/instrucoes" element={<ProtectedRoute><EuJaSabia2Instructions /></ProtectedRoute>} />
             <Route path="/oi-sumida" element={<ProtectedRoute><OiSumida /></ProtectedRoute>} />
             <Route path="/oi-sumida/instrucoes" element={<ProtectedRoute><OiSumidaInstructions /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa" element={<ProtectedRoute><JogoVelhaBruxa /></ProtectedRoute>} />
             <Route path="/jogo-da-velha-bruxa/instrucoes" element={<ProtectedRoute><JogoVelhaBruxaInstructions /></ProtectedRoute>} />
-            <Route path="/google-mime" element={<ProtectedRoute><GoogleMimeApp requireInfluencer /></ProtectedRoute>} />
+            <Route path="/google-mime" element={<ProtectedRoute><GoogleMimeApp enforceAdmin={false} requireInfluencer /></ProtectedRoute>} />
             <Route path="/google-mime/instrucoes" element={<ProtectedRoute><GoogleMimeInstructions /></ProtectedRoute>} />
             <Route path="/google-mime/demo" element={<GoogleMime />} />
             <Route path="/select-theme" element={<ProtectedRoute><SelectTheme /></ProtectedRoute>} />

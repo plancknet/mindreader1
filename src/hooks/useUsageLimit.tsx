@@ -18,6 +18,7 @@ interface UsageLimitData {
   subscriptionStatus?: string;
   planConfirmed?: boolean;
   couponGenerated?: boolean;
+  hasEuJaSabia2?: boolean;
   reason: string;
   gameUsage?: Record<number, number>;
   gameDifficulties?: Record<number, number>;

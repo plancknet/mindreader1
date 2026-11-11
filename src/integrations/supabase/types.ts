@@ -230,6 +230,7 @@ export type Database = {
           created_at: string
           current_period_end: string | null
           email: string | null
+          has_eu_ja_sabia_2: boolean
           has_seen_welcome: boolean | null
           id: string
           is_premium: boolean
@@ -258,6 +259,7 @@ export type Database = {
           created_at?: string
           current_period_end?: string | null
           email?: string | null
+          has_eu_ja_sabia_2?: boolean
           has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean
@@ -286,6 +288,7 @@ export type Database = {
           created_at?: string
           current_period_end?: string | null
           email?: string | null
+          has_eu_ja_sabia_2?: boolean
           has_seen_welcome?: boolean | null
           id?: string
           is_premium?: boolean

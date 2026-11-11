@@ -53,14 +53,20 @@ export default {
         alert: "hsl(var(--alert))",
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
+        magic: {
+          DEFAULT: "hsl(var(--magic))",
+          foreground: "hsl(var(--magic-foreground))",
+        },
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-alert': 'var(--gradient-alert)',
+        'gradient-magic': 'var(--gradient-magic)',
       },
       boxShadow: {
         'glow': 'var(--shadow-glow)',
         'alert': 'var(--shadow-alert)',
+        'magic': 'var(--shadow-magic)',
       },
       transitionProperty: {
         'smooth': 'var(--transition-smooth)',

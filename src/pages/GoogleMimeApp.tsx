@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useGameUsageTracker } from '@/hooks/useGameUsageTracker';
 import { GAME_IDS } from '@/constants/games';
 import { Mic, Camera, Home, Search, Bell, Clock, Sparkles, Music, MoreVertical, X, Share2, Bookmark, ScanSearch, Languages } from 'lucide-react';
@@ -794,12 +794,8 @@ const GoogleMimeInfluencerGate = ({ children }: { children: ReactNode }) => {
     return <>{children}</>;
   }
 
-  if (tier !== 'INFLUENCER' || status !== 'active') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white px-6 text-center">
-        Disponível apenas para assinantes Influencer com assinatura ativa.
-      </div>
-    );
+  if (tier !== 'STANDARD' && !(tier === 'INFLUENCER' && status === 'active')) {
+    return <Navigate to="/premium" replace state={{ blockReason: 'needs_main' }} />;
   }
 
   return <>{children}</>;

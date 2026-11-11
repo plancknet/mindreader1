@@ -361,6 +361,11 @@ export const en = {
     },
   },
   gameSelector: {
+    locked: {
+      needsMain: 'Unlock with lifetime access.',
+      needsEjs2: 'Unlock with the Eu Já Sabia 2 add-on.',
+      adminOnly: 'Available to admins only.',
+    },
     heading: 'Mind Readers',
     subheading: 'Choose a mind-reading experience',
     play: 'Start',

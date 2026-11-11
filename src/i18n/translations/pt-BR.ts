@@ -361,6 +361,11 @@ export const ptBR = {
     },
   },
   gameSelector: {
+    locked: {
+      needsMain: 'Desbloqueie com o acesso vitalício.',
+      needsEjs2: 'Desbloqueie com o adicional Eu Já Sabia 2.',
+      adminOnly: 'Disponível apenas para administradores.',
+    },
     heading: 'Leitores de Mente',
     subheading: 'Escolha uma experiência de leitura mental',
     play: 'Iniciar',

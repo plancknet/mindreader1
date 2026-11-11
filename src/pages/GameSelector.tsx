@@ -490,31 +490,27 @@ const GameSelector = () => {
               // Get usage count for this specific game
               const gameUsageCount = usageData?.gameUsage?.[game.gameId] ?? 0;
               
-              // Check access using the new rules
-              const accessResult = checkGameAccess(subscriptionTier, game.difficulty, gameUsageCount);
+              // Check access using the lifetime-offer rules
+              const accessResult = checkGameAccess(
+                subscriptionTier,
+                game.gameId,
+                Boolean(usageData?.hasEuJaSabia2),
+                gameUsageCount,
+              );
               
               // Admin overrides
-              const isInfluencerTier = subscriptionTier === 'INFLUENCER';
-              const adminAllowed =
-                (!game.requiresAdmin || isAdmin || isInfluencerTier) &&
-                (!game.adminOnly || isAdmin);
+              const adminAllowed = !game.adminOnly || isAdmin;
               
               const enabled = isAdmin || (accessResult.canAccess && adminAllowed);
               
               // Build disabled message
               let disabledMessage: string | null = null;
               if (!adminAllowed) {
-                disabledMessage = game.adminOnly
-                  ? 'Disponível apenas para administradores.'
-                  : 'Disponível para administradores ou plano Influencer.';
+                disabledMessage = t('gameSelector.locked.adminOnly');
               } else if (accessResult.reason === 'BLOCKED') {
-                if (game.difficulty === 5) {
-                  disabledMessage = 'Disponível apenas no plano Influencer.';
-                } else if (game.difficulty === 4) {
-                  disabledMessage = 'Disponível a partir do plano Standard.';
-                }
-              } else if (accessResult.reason === 'LIMIT_REACHED') {
-                disabledMessage = `Limite de ${accessResult.usageLimit} usos atingido. Faça upgrade para continuar.`;
+                disabledMessage = accessResult.requires === 'EJS2'
+                  ? t('gameSelector.locked.needsEjs2')
+                  : t('gameSelector.locked.needsMain');
               }
               
               // Show remaining uses for limited games
@@ -524,10 +520,10 @@ const GameSelector = () => {
               const handleCardNavigation = async () => {
                 // If blocked or limit reached, redirect to Premium page
                 if (!enabled) {
-                  const blockReason = accessResult.reason === 'BLOCKED' 
-                    ? `blocked_difficulty_${game.difficulty}` 
-                    : accessResult.reason === 'LIMIT_REACHED'
-                      ? `limit_reached_${game.gameId}`
+                  const blockReason = accessResult.requires === 'EJS2'
+                    ? 'needs_ejs2'
+                    : accessResult.reason === 'BLOCKED'
+                      ? 'needs_main'
                       : 'admin_required';
                   navigate('/premium', { state: { blockReason, gameTitle: game.title, gameDifficulty: game.difficulty } });
                   return;

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { grantsForItems, parseItems } from "../_shared/offer.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -190,7 +191,33 @@ async function handleCheckoutCompleted(
     return null;
   }
 
-  const userId = await findUserId(supabaseClient, undefined, customerId);
+  const metadataUserId = session.metadata?.userId ?? null;
+  const userId = metadataUserId ?? await findUserId(supabaseClient, undefined, customerId);
+
+  // Grant lifetime purchases (main product and/or Eu Já Sabia 2 add-on)
+  const items = parseItems(session.metadata?.items);
+  if (userId && items.length > 0 && session.payment_status === 'paid') {
+    const updates: Record<string, unknown> = {
+      ...grantsForItems(items),
+      stripe_customer_id: customerId,
+      stripe_session_id: session.id,
+      updated_at: new Date().toISOString(),
+    };
+    const { data: existing } = await supabaseClient
+      .from('users')
+      .select('subscription_tier')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (existing?.subscription_tier === 'INFLUENCER') {
+      delete updates.subscription_tier;
+      delete updates.premium_type;
+    }
+    const { error: grantError } = await supabaseClient
+      .from('users')
+      .update(updates)
+      .eq('user_id', userId);
+    if (grantError) console.error('[Webhook] Error granting purchase', grantError);
+  }
 
   // Check if a discount was applied (promotion code used)
   if (session.total_details?.amount_discount && session.total_details.amount_discount > 0) {

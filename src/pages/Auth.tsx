@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import { postAuthPath } from '@/lib/checkout';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -75,14 +76,14 @@ const Auth = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-        navigate(hasSeenWelcome ? '/game-selector' : '/welcome', { replace: true });
+        navigate(postAuthPath(hasSeenWelcome ? '/game-selector' : '/welcome'), { replace: true });
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && event !== 'SIGNED_OUT') {
         const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-        navigate(hasSeenWelcome ? '/game-selector' : '/welcome', { replace: true });
+        navigate(postAuthPath(hasSeenWelcome ? '/game-selector' : '/welcome'), { replace: true });
       }
     });
 
@@ -257,7 +258,7 @@ const Auth = () => {
           title: t('auth.toast.signupSuccessTitle'),
           description: t('auth.toast.signupSuccessDescription'),
         });
-        navigate('/game-selector');
+        navigate(postAuthPath('/game-selector'));
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -270,7 +271,7 @@ const Auth = () => {
           // Redirect to password change page
           navigate('/complete-signup?change=true');
         } else {
-          navigate('/game-selector');
+          navigate(postAuthPath('/game-selector'));
         }
       }
     } catch (error: any) {
